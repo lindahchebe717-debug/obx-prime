@@ -93,10 +93,10 @@
 
     <script>
         // ==========================================
-        // 1. SUPABASE CONNECTION (UPDATE THESE!)
+        // 1. SUPABASE CONNECTION (YOUR ACTUAL KEYS)
         // ==========================================
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const SUPABASE_URL = 'https://twvwpywcmjdrocsfhyha.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         
         // Initialize Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -162,7 +162,7 @@
                 return;
             }
 
-            statusMsg.innerText = "Trade placed...";
+            statusMsg.innerText = "Trade placed... waiting for tick...";
             statusMsg.className = "";
 
             // Wait 1 second to simulate the tick result
@@ -184,8 +184,17 @@
                 // Update balance on screen
                 document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
 
-                // TODO: Save this trade to Supabase here!
-                // await supabase.from('trades').insert({ ... })
+                // Save this trade to Supabase Database
+                try {
+                    await supabase.from('trades').insert({
+                        trade_type: choice,
+                        stake: stake,
+                        profit: won ? stake * 0.95 : 0,
+                        result: won ? 'win' : 'loss'
+                    });
+                } catch (error) {
+                    console.error("Error saving trade:", error);
+                }
 
             }, 1000);
         }
