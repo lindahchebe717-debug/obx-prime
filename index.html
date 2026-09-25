@@ -7,15 +7,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #0f0a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f0a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-bottom: 80px; }
         
         /* Header */
-        .header { background-color: #1a1025; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; position: sticky; top: 0; z-index: 100; }
+        .header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 5px; }
-        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; color: #a855f7; }
-        .logo span { color: white; }
-        .balance-box { background: #2a1f3d; padding: 10px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; border: 1px solid #a855f7; }
+        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; color: white; }
+        .balance-box { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 8px; font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .deposit-btn { background: #7c3aed; padding: 10px 20px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
         
         /* Sidebar */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; display: none; }
@@ -24,9 +24,8 @@
         .sidebar.active { left: 0; }
         
         .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
-        .sidebar-title { font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .sidebar-title { font-size: 1.3rem; font-weight: bold; }
         .close-sidebar { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
-        .lang-selector { display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
         
         .user-profile { padding: 25px 20px; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 15px; }
         .user-avatar { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -41,15 +40,15 @@
         .menu-text { flex: 1; font-size: 1rem; }
         .menu-arrow { color: #6b7280; }
         
-        .theme-toggle { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #2a1f3d; border-bottom: 1px solid #2a1f3d; margin: 10px 0; }
-        .toggle-switch { width: 50px; height: 26px; background: #a855f7; border-radius: 13px; position: relative; cursor: pointer; }
-        .toggle-switch::after { content: ''; position: absolute; right: 3px; top: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; }
-        
         .sidebar-footer { padding: 20px; text-align: center; color: #6b7280; font-size: 0.8rem; border-top: 1px solid #2a1f3d; margin-top: 20px; }
         .online-indicator { display: inline-block; width: 8px; height: 8px; background: #a855f7; border-radius: 50%; margin-left: 5px; }
         
-        /* Main Layout */
+        /* Main Container */
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        /* Page Sections */
+        .page { display: none; }
+        .page.active { display: block; }
         
         /* Chart Area */
         .chart-area { background: #130f1c; height: 250px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #2a1f3d; position: relative; }
@@ -75,10 +74,40 @@
         .btn-odd { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
         .payout-text { font-size: 0.8rem; font-weight: normal; opacity: 0.9; margin-top: 5px; }
 
-        /* Status Message */
         #status-msg { text-align: center; margin-top: 15px; font-weight: bold; min-height: 24px; }
         .win { color: #22c55e; }
         .loss { color: #ef4444; }
+        
+        /* Positions Page */
+        .positions-header { background: #1a1025; border-bottom: 1px solid #2a1f3d; }
+        .positions-tabs { display: flex; background: #130f1c; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; color: #6b7280; font-weight: 600; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab.active { color: #a855f7; border-bottom: 2px solid #a855f7; background: rgba(168, 85, 247, 0.1); }
+        
+        .positions-content { min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+        .positions-icon { width: 100px; height: 100px; background: #1a1025; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .positions-icon svg { width: 50px; height: 50px; color: #6b7280; }
+        .no-positions-text { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; }
+        .no-positions-subtext { color: #6b7280; text-align: center; }
+        
+        /* Trade Item */
+        .trade-item { background: #1a1025; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #2a1f3d; }
+        .trade-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .trade-type { font-weight: bold; font-size: 1.1rem; }
+        .trade-stake { color: #a855f7; font-weight: bold; }
+        .trade-details { display: flex; justify-content: space-between; font-size: 0.9rem; color: #6b7280; }
+        .trade-result { margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a1f3d; font-weight: bold; text-align: right; }
+        .trade-result.win { color: #22c55e; }
+        .trade-result.loss { color: #ef4444; }
+        
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; color: #6b7280; padding: 5px 20px; transition: color 0.3s; }
+        .nav-item.active { color: #a855f7; }
+        .nav-item svg { width: 24px; height: 24px; }
+        .nav-item span { font-size: 0.8rem; font-weight: 500; }
+        .nav-item.ai { background: linear-gradient(135deg, #f97316, #a855f7); padding: 15px 25px; border-radius: 15px; color: white; margin-top: -10px; }
+        .nav-item.ai svg { width: 28px; height: 28px; }
     </style>
 </head>
 <body>
@@ -89,9 +118,7 @@
     <!-- Sidebar Menu -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">
-                <span>🇬🇧</span> Menu
-            </div>
+            <div class="sidebar-title">Menu</div>
             <button class="close-sidebar" onclick="toggleSidebar()">×</button>
         </div>
 
@@ -99,12 +126,12 @@
             <div class="user-avatar" id="user-avatar">U</div>
             <div class="user-info">
                 <h3 id="user-name">User</h3>
-                <p id="user-email">user@example.com</p>
+                <p id="user-email">user@obxprime.com</p>
             </div>
         </div>
 
         <div class="menu-section">
-            <div class="menu-item">
+            <div class="menu-item" onclick="showPage('trade')">
                 <span class="menu-icon">🅿️</span>
                 <span class="menu-text">OBX Prime</span>
             </div>
@@ -114,7 +141,7 @@
                 <span class="menu-arrow">›</span>
             </div>
             <div class="menu-item">
-                <span class="menu-icon">⬇️</span>
+                <span class="menu-icon">️</span>
                 <span class="menu-text">Deposit</span>
                 <span class="menu-arrow">›</span>
             </div>
@@ -123,7 +150,7 @@
                 <span class="menu-text">Withdraw</span>
                 <span class="menu-arrow">›</span>
             </div>
-            <div class="menu-item">
+            <div class="menu-item" onclick="showPage('positions')">
                 <span class="menu-icon">🕐</span>
                 <span class="menu-text">History</span>
                 <span class="menu-arrow">›</span>
@@ -131,30 +158,6 @@
             <div class="menu-item highlight">
                 <span class="menu-icon">🎁</span>
                 <span class="menu-text">Refer & Earn</span>
-            </div>
-        </div>
-
-        <div class="theme-toggle">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span class="menu-icon"></span>
-                <span class="menu-text">Dark theme</span>
-            </div>
-            <div class="toggle-switch"></div>
-        </div>
-
-        <div class="menu-section">
-            <div class="menu-item">
-                <span class="menu-icon"></span>
-                <span class="menu-text">Help Centre</span>
-            </div>
-            <div class="menu-item">
-                <span class="menu-icon">🛡️</span>
-                <span class="menu-text">Responsible Trading</span>
-                <span class="menu-arrow">›</span>
-            </div>
-            <div class="menu-item">
-                <span class="menu-icon">💬</span>
-                <span class="menu-text">Live Chat</span>
             </div>
         </div>
 
@@ -168,40 +171,85 @@
     <div class="header">
         <div class="header-left">
             <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-            <div class="logo">OBX <span>PRIME</span></div>
+            <div class="logo">OBX PRIME</div>
         </div>
         <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
+        <button class="deposit-btn">Deposit</button>
     </div>
 
-    <div class="container">
-        <!-- Chart -->
-        <div class="chart-area">
-            <div class="market-name">Vol 10 (1s) Index</div>
-            <div class="current-price" id="live-price">9320.42</div>
+    <!-- Trade Page -->
+    <div id="trade-page" class="page active">
+        <div class="container">
+            <div class="chart-area">
+                <div class="market-name">Vol 10 (1s) Index</div>
+                <div class="current-price" id="live-price">9320.42</div>
+            </div>
+
+            <div class="digits-bar" id="digits-bar"></div>
+
+            <div class="controls">
+                <div class="stake-section">
+                    <div class="stake-label">STAKE AMOUNT</div>
+                    <input type="number" id="stake-amount" class="stake-input" value="10" min="1">
+                </div>
+
+                <div class="trade-buttons">
+                    <button class="btn btn-even" onclick="placeTrade('Even')">
+                        EVEN
+                        <div class="payout-text">95% Payout</div>
+                    </button>
+                    <button class="btn btn-odd" onclick="placeTrade('Odd')">
+                        ODD
+                        <div class="payout-text">95% Payout</div>
+                    </button>
+                </div>
+                
+                <div id="status-msg"></div>
+            </div>
         </div>
+    </div>
 
-        <!-- Last Digit Stats -->
-        <div class="digits-bar" id="digits-bar"></div>
-
-        <!-- Trading Controls -->
-        <div class="controls">
-            <div class="stake-section">
-                <div class="stake-label">STAKE AMOUNT</div>
-                <input type="number" id="stake-amount" class="stake-input" value="10" min="1">
+    <!-- Positions Page -->
+    <div id="positions-page" class="page">
+        <div class="positions-header">
+            <div class="positions-tabs">
+                <div class="tab active" onclick="switchTab('open')">Open (<span id="open-count">0</span>)</div>
+                <div class="tab" onclick="switchTab('closed')">Closed (<span id="closed-count">0</span>)</div>
+                <div class="tab" onclick="switchTab('transactions')">Transactions</div>
             </div>
-
-            <div class="trade-buttons">
-                <button class="btn btn-even" onclick="placeTrade('Even')">
-                    EVEN
-                    <div class="payout-text">95% Payout</div>
-                </button>
-                <button class="btn btn-odd" onclick="placeTrade('Odd')">
-                    ODD
-                    <div class="payout-text">95% Payout</div>
-                </button>
+        </div>
+        
+        <div id="positions-content" class="positions-content">
+            <div class="positions-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                </svg>
             </div>
-            
-            <div id="status-msg"></div>
+            <div class="no-positions-text">No open positions</div>
+            <div class="no-positions-subtext">Your active trades will appear here</div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('trade')" id="nav-trade">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+            </svg>
+            <span>Trade</span>
+        </div>
+        <div class="nav-item ai">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            <span>AI</span>
+        </div>
+        <div class="nav-item" onclick="showPage('positions')" id="nav-positions">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Positions</span>
         </div>
     </div>
 
@@ -217,9 +265,40 @@
         let currentBalance = 1000.00;
         let currentPrice = 9320.42;
         let lastDigit = 2;
+        let activeTrades = [];
+        let closedTrades = [];
+        let currentTab = 'open';
 
         // ==========================================
-        // 2. SIDEBAR TOGGLE
+        // 2. PAGE NAVIGATION
+        // ==========================================
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            // Show selected page
+            if (pageName === 'trade') {
+                document.getElementById('trade-page').classList.add('active');
+                document.getElementById('nav-trade').classList.add('active');
+            } else if (pageName === 'positions') {
+                document.getElementById('positions-page').classList.add('active');
+                document.getElementById('nav-positions').classList.add('active');
+                renderPositions();
+            }
+            
+            toggleSidebar();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderPositions();
+        }
+
+        // ==========================================
+        // 3. SIDEBAR TOGGLE
         // ==========================================
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -227,7 +306,7 @@
         }
 
         // ==========================================
-        // 3. UPDATE TIME
+        // 4. UPDATE TIME
         // ==========================================
         function updateTime() {
             const now = new Date();
@@ -238,7 +317,7 @@
         updateTime();
 
         // ==========================================
-        // 4. INITIALIZE UI
+        // 5. INITIALIZE UI
         // ==========================================
         function initDigitsBar() {
             const bar = document.getElementById('digits-bar');
@@ -253,7 +332,7 @@
         initDigitsBar();
 
         // ==========================================
-        // 5. LIVE PRICE SIMULATION
+        // 6. LIVE PRICE SIMULATION
         // ==========================================
         setInterval(() => {
             const change = (Math.random() - 0.5) * 1.5;
@@ -270,7 +349,7 @@
         }, 1000);
 
         // ==========================================
-        // 6. TRADING LOGIC
+        // 7. TRADING LOGIC
         // ==========================================
         async function placeTrade(choice) {
             const stakeInput = document.getElementById('stake-amount');
@@ -291,6 +370,16 @@
             statusMsg.innerText = "Trade placed... waiting for tick...";
             statusMsg.className = "";
 
+            // Create trade object
+            const trade = {
+                id: Date.now(),
+                type: choice,
+                stake: stake,
+                entryDigit: lastDigit,
+                entryTime: new Date().toLocaleTimeString(),
+                status: 'open'
+            };
+
             setTimeout(async () => {
                 const isEven = lastDigit % 2 === 0;
                 const won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
@@ -298,15 +387,25 @@
                 if (won) {
                     const profit = stake * 0.95;
                     currentBalance += profit;
+                    trade.result = 'win';
+                    trade.profit = profit;
+                    trade.exitDigit = lastDigit;
                     statusMsg.innerText = `WIN! Last digit: ${lastDigit}. +$${profit.toFixed(2)}`;
                     statusMsg.className = "win";
                 } else {
                     currentBalance -= stake;
+                    trade.result = 'loss';
+                    trade.profit = -stake;
+                    trade.exitDigit = lastDigit;
                     statusMsg.innerText = `LOSS. Last digit: ${lastDigit}. -$${stake.toFixed(2)}`;
                     statusMsg.className = "loss";
                 }
 
+                trade.status = 'closed';
+                closedTrades.push(trade);
+                
                 document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
+                document.getElementById('closed-count').textContent = closedTrades.length;
 
                 // Save to Supabase
                 try {
@@ -323,7 +422,81 @@
             }, 1000);
         }
 
-        // Demo user info (replace with actual Supabase auth later)
+        // ==========================================
+        // 8. RENDER POSITIONS
+        // ==========================================
+        function renderPositions() {
+            const content = document.getElementById('positions-content');
+            
+            if (currentTab === 'open') {
+                if (activeTrades.length === 0) {
+                    content.innerHTML = `
+                        <div class="positions-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="no-positions-text">No open positions</div>
+                        <div class="no-positions-subtext">Your active trades will appear here</div>
+                    `;
+                } else {
+                    content.innerHTML = activeTrades.map(trade => `
+                        <div class="trade-item">
+                            <div class="trade-header">
+                                <div class="trade-type">${trade.type}</div>
+                                <div class="trade-stake">$${trade.stake.toFixed(2)}</div>
+                            </div>
+                            <div class="trade-details">
+                                <span>Entry: ${trade.entryDigit}</span>
+                                <span>${trade.entryTime}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else if (currentTab === 'closed') {
+                if (closedTrades.length === 0) {
+                    content.innerHTML = `
+                        <div class="positions-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="no-positions-text">No closed positions</div>
+                        <div class="no-positions-subtext">Your completed trades will appear here</div>
+                    `;
+                } else {
+                    content.innerHTML = closedTrades.map(trade => `
+                        <div class="trade-item">
+                            <div class="trade-header">
+                                <div class="trade-type">${trade.type}</div>
+                                <div class="trade-stake">$${trade.stake.toFixed(2)}</div>
+                            </div>
+                            <div class="trade-details">
+                                <span>Entry: ${trade.entryDigit} → Exit: ${trade.exitDigit}</span>
+                                <span>${trade.entryTime}</span>
+                            </div>
+                            <div class="trade-result ${trade.result}">
+                                ${trade.result === 'win' ? '+' : ''}$${trade.profit.toFixed(2)}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                content.innerHTML = `
+                    <div class="positions-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <div class="no-positions-text">No transactions</div>
+                    <div class="no-positions-subtext">Your deposit and withdrawal history will appear here</div>
+                `;
+            }
+        }
+
+        // Demo user info
         document.getElementById('user-name').textContent = 'Demo User';
         document.getElementById('user-email').textContent = 'demo@obxprime.com';
         document.getElementById('user-avatar').textContent = 'D';
