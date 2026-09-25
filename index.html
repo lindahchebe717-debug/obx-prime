@@ -76,8 +76,6 @@
 
         /* Controls Card */
         .controls-card { background: #1a1025; border-radius: 16px; border: 1px solid #2a1f3d; overflow: hidden; }
-        
-        /* AUTO/MANUAL Toggle */
         .mode-toggle { display: flex; border-bottom: 1px solid #2a1f3d; }
         .mode-btn { flex: 1; padding: 16px; border: none; background: transparent; color: #6b7280; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; position: relative; }
         .mode-btn.active { color: white; }
@@ -92,7 +90,6 @@
         .stake-display { background: #0f0a1a; border: 2px solid #2a1f3d; border-radius: 12px; padding: 10px 25px; text-align: center; min-width: 160px; }
         .stake-currency { color: #a855f7; font-size: 1rem; vertical-align: top; margin-right: 2px; }
         .stake-value { font-size: 1.8rem; font-weight: bold; color: white; }
-        
         .quick-stakes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .quick-stake { background: #0f0a1a; border: 1px solid #2a1f3d; color: #9ca3af; padding: 10px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .quick-stake:active, .quick-stake.active { background: rgba(168, 85, 247, 0.2); border-color: #a855f7; color: #a855f7; }
@@ -141,6 +138,31 @@
         .trade-result.win { color: #22c55e; }
         .trade-result.loss { color: #ef4444; }
 
+        /* HISTORY PAGE STYLES */
+        .history-header { padding: 20px 15px 10px; }
+        .history-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; }
+        .history-tabs { display: flex; background: #130f1c; border-radius: 12px; padding: 5px; margin-bottom: 15px; border: 1px solid #2a1f3d; }
+        .history-tab { flex: 1; padding: 12px; text-align: center; color: #6b7280; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
+        .history-tab.active { background: #1a1025; color: #a855f7; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .history-list { padding: 0 15px; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: #1a1025; border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; border: 1px solid #2a1f3d; }
+        .history-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .history-icon.win { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .history-icon.loss { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .history-icon.dep { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .history-icon.wit { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+        .history-info { flex: 1; }
+        .history-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .history-status { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: normal; }
+        .history-status.pending { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+        .history-status.approved { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .history-sub { font-size: 0.75rem; color: #6b7280; }
+        .history-amount { text-align: right; font-weight: bold; font-size: 0.95rem; }
+        .history-amount.win { color: #22c55e; }
+        .history-amount.loss { color: #ef4444; }
+        .history-amount.dep { color: #a855f7; }
+        .history-amount.wit { color: #f97316; }
+
         /* Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #6b7280; padding: 5px 15px; transition: color 0.3s; }
@@ -173,7 +195,7 @@
             <div class="menu-item" onclick="showPage('trade')"><span class="menu-icon">🏠</span><span class="menu-text">OBX Prime Home</span></div>
             <div class="menu-item" onclick="showPage('deposit')"><span class="menu-icon">⬇️</span><span class="menu-text">Deposit</span><span class="menu-arrow">›</span></div>
             <div class="menu-item" onclick="showPage('withdraw')"><span class="menu-icon">⬆️</span><span class="menu-text">Withdraw</span><span class="menu-arrow">›</span></div>
-            <div class="menu-item" onclick="showPage('positions')"><span class="menu-icon">🕐</span><span class="menu-text">History</span><span class="menu-arrow">›</span></div>
+            <div class="menu-item" onclick="showPage('history')"><span class="menu-icon">🕐</span><span class="menu-text">History</span><span class="menu-arrow">›</span></div>
             <div class="menu-item highlight"><span class="menu-icon">🎁</span><span class="menu-text">Refer & Earn</span></div>
         </div>
         <div class="sidebar-footer">
@@ -200,34 +222,24 @@
     <!-- Trade Page -->
     <div id="trade-page" class="page active">
         <div class="container">
-            <!-- Trade Types -->
             <div class="trade-types">
                 <div class="type-tab active">Even/Odd</div>
                 <div class="type-tab">Matches/Differs</div>
                 <div class="type-tab">Over/Under</div>
             </div>
-
-            <!-- Chart Area -->
             <div class="chart-area">
                 <div class="market-name">📊 Vol 10 (1s) Index</div>
                 <div class="current-price" id="live-price">9320.42</div>
                 <div class="price-change up" id="price-change">+0.45%</div>
             </div>
-
-            <!-- Digits Bar -->
             <div class="digits-container">
                 <div class="digits-bar" id="digits-bar"></div>
             </div>
-
-            <!-- Controls Card -->
             <div class="controls-card">
-                <!-- AUTO/MANUAL Toggle -->
                 <div class="mode-toggle">
                     <button class="mode-btn active" onclick="setMode('auto', this)">AUTO</button>
                     <button class="mode-btn" onclick="setMode('manual', this)">MANUAL</button>
                 </div>
-
-                <!-- Stake Section -->
                 <div class="stake-section">
                     <div class="stake-label">STAKE AMOUNT</div>
                     <div class="stake-control">
@@ -247,8 +259,6 @@
                         <button class="quick-stake" onclick="setStake(100)">$100</button>
                     </div>
                 </div>
-
-                <!-- Advanced Options -->
                 <div class="advanced-options">
                     <div class="option-row">
                         <span class="option-label">Target Profit ($)</span>
@@ -259,8 +269,6 @@
                         <input type="number" class="option-input" value="50">
                     </div>
                 </div>
-
-                <!-- Trade Buttons -->
                 <div class="trade-buttons">
                     <button class="trade-btn trade-btn-even" onclick="placeTrade('Even')">
                         <span class="trade-btn-title">EVEN</span>
@@ -318,6 +326,21 @@
         </div>
     </div>
 
+    <!-- HISTORY PAGE (NEW!) -->
+    <div id="history-page" class="page">
+        <div class="history-header">
+            <div class="history-title">History</div>
+            <div class="history-tabs">
+                <div class="history-tab active" onclick="switchHistoryTab('trades', this)">Trades</div>
+                <div class="history-tab" onclick="switchHistoryTab('deposits', this)">Deposits</div>
+                <div class="history-tab" onclick="switchHistoryTab('withdrawals', this)">Withdrawals</div>
+            </div>
+        </div>
+        <div id="history-list" class="history-list">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+
     <!-- Positions Page -->
     <div id="positions-page" class="page">
         <div class="positions-header">
@@ -357,6 +380,8 @@
         let lastDigit = 2;
         let activeTrades = [];
         let closedTrades = [];
+        let depositHistory = [];
+        let withdrawHistory = [];
         let currentTab = 'open';
 
         // 2. PAGE NAVIGATION
@@ -375,6 +400,9 @@
                 document.getElementById('deposit-page').classList.add('active');
             } else if (pageName === 'withdraw') {
                 document.getElementById('withdraw-page').classList.add('active');
+            } else if (pageName === 'history') {
+                document.getElementById('history-page').classList.add('active');
+                renderHistory('trades');
             }
             
             if(document.getElementById('sidebar').classList.contains('active')) {
@@ -387,6 +415,13 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
             renderPositions();
+        }
+
+        // HISTORY TABS
+        function switchHistoryTab(tab, element) {
+            document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            renderHistory(tab);
         }
 
         // 3. SIDEBAR TOGGLE
@@ -408,7 +443,6 @@
         function setStake(amount) {
             document.getElementById('stake-value').innerText = amount;
             document.querySelectorAll('.quick-stake').forEach(btn => btn.classList.remove('active'));
-            // Highlight matching quick stake button
             document.querySelectorAll('.quick-stake').forEach(btn => {
                 if (btn.innerText.replace('$', '') == amount) btn.classList.add('active');
             });
@@ -429,27 +463,45 @@
 
         // 5. DEPOSIT & WITHDRAW LOGIC
         function submitDeposit() {
-            const amount = document.getElementById('deposit-amount').value;
+            const amount = parseFloat(document.getElementById('deposit-amount').value);
             const method = document.getElementById('deposit-method').value;
             if (!amount || amount <= 0) return alert("Please enter a valid amount");
+            
+            // Add to history
+            depositHistory.unshift({
+                amount: amount,
+                method: method,
+                time: new Date().toLocaleTimeString(),
+                status: 'pending'
+            });
+            
             alert(`Deposit request for $${amount} via ${method} submitted!`);
             document.getElementById('deposit-amount').value = '';
-            showPage('trade');
+            showPage('history');
         }
 
         function submitWithdraw() {
-            const amount = document.getElementById('withdraw-amount').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const address = document.getElementById('withdraw-address').value;
             if (!amount || amount <= 0) return alert("Please enter a valid amount");
             if (!address) return alert("Please enter your wallet address");
             if (amount > currentBalance) return alert("Insufficient balance!");
             
-            currentBalance -= parseFloat(amount);
+            currentBalance -= amount;
             document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
+            
+            // Add to history
+            withdrawHistory.unshift({
+                amount: amount,
+                address: address,
+                time: new Date().toLocaleTimeString(),
+                status: 'pending'
+            });
+            
             alert(`Withdrawal request for $${amount} submitted!`);
             document.getElementById('withdraw-amount').value = '';
             document.getElementById('withdraw-address').value = '';
-            showPage('trade');
+            showPage('history');
         }
 
         // 6. UPDATE TIME
@@ -518,19 +570,30 @@
                 const isEven = lastDigit % 2 === 0;
                 const won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
                 
+                const tradeRecord = {
+                    type: choice,
+                    stake: stake,
+                    time: new Date().toLocaleTimeString(),
+                    exitDigit: lastDigit
+                };
+
                 if (won) {
                     const profit = stake * 0.95;
                     currentBalance += profit;
+                    tradeRecord.profit = profit;
+                    tradeRecord.result = 'win';
                     statusMsg.innerText = `WIN! Last digit: ${lastDigit}. +$${profit.toFixed(2)}`;
                     statusMsg.className = "win";
-                    closedTrades.push({ type: choice, stake: stake, profit: profit, result: 'win', time: new Date().toLocaleTimeString() });
                 } else {
                     currentBalance -= stake;
+                    tradeRecord.profit = -stake;
+                    tradeRecord.result = 'loss';
                     statusMsg.innerText = `LOSS. Last digit: ${lastDigit}. -$${stake.toFixed(2)}`;
                     statusMsg.className = "loss";
-                    closedTrades.push({ type: choice, stake: stake, profit: -stake, result: 'loss', time: new Date().toLocaleTimeString() });
                 }
 
+                closedTrades.unshift(tradeRecord); // Add to beginning of array
+                
                 document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
                 document.getElementById('closed-count').textContent = closedTrades.length;
 
@@ -556,10 +619,66 @@
                 if (closedTrades.length === 0) {
                     content.innerHTML = `<div class="positions-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></div><div class="no-positions-text">No closed positions</div><div class="no-positions-subtext">Your completed trades will appear here</div>`;
                 } else {
-                    content.innerHTML = closedTrades.map(t => `<div class="trade-item"><div class="trade-header"><div class="trade-type">${t.type}</div><div class="trade-stake">$${t.stake.toFixed(2)}</div></div><div class="trade-details"><span>Digit: ${lastDigit}</span><span>${t.time}</span></div><div class="trade-result ${t.result}">${t.result === 'win' ? '+' : ''}$${t.profit.toFixed(2)}</div></div>`).join('');
+                    content.innerHTML = closedTrades.map(t => `<div class="trade-item"><div class="trade-header"><div class="trade-type">${t.type}</div><div class="trade-stake">$${t.stake.toFixed(2)}</div></div><div class="trade-details"><span>Digit: ${t.exitDigit}</span><span>${t.time}</span></div><div class="trade-result ${t.result}">${t.result === 'win' ? '+' : ''}$${t.profit.toFixed(2)}</div></div>`).join('');
                 }
             } else {
                 content.innerHTML = `<div class="positions-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><div class="no-positions-text">No transactions</div><div class="no-positions-subtext">Your deposit and withdrawal history will appear here</div>`;
+            }
+        }
+
+        // 11. RENDER HISTORY (NEW!)
+        function renderHistory(tab) {
+            const container = document.getElementById('history-list');
+            
+            if (tab === 'trades') {
+                if (closedTrades.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: #6b7280;">No trade history yet.<br>Place a trade to see it here!</div>`;
+                } else {
+                    container.innerHTML = closedTrades.map(t => `
+                        <div class="history-item">
+                            <div class="history-icon ${t.result}">
+                                ${t.type === 'Even' ? '⚖️' : ''}
+                            </div>
+                            <div class="history-info">
+                                <div class="history-name">${t.type} Trade</div>
+                                <div class="history-sub">Stake: $${t.stake.toFixed(2)} • ${t.time}</div>
+                            </div>
+                            <div class="history-amount ${t.result}">
+                                ${t.result === 'win' ? '+' : ''}$${t.profit.toFixed(2)}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else if (tab === 'deposits') {
+                if (depositHistory.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: #6b7280;">No deposit history yet.</div>`;
+                } else {
+                    container.innerHTML = depositHistory.map(d => `
+                        <div class="history-item">
+                            <div class="history-icon dep">⬇️</div>
+                            <div class="history-info">
+                                <div class="history-name">Deposit <span class="history-status ${d.status}">${d.status}</span></div>
+                                <div class="history-sub">${d.method} • ${d.time}</div>
+                            </div>
+                            <div class="history-amount dep">+$${d.amount.toFixed(2)}</div>
+                        </div>
+                    `).join('');
+                }
+            } else if (tab === 'withdrawals') {
+                if (withdrawHistory.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: #6b7280;">No withdrawal history yet.</div>`;
+                } else {
+                    container.innerHTML = withdrawHistory.map(w => `
+                        <div class="history-item">
+                            <div class="history-icon wit">⬆️</div>
+                            <div class="history-info">
+                                <div class="history-name">Withdrawal <span class="history-status ${w.status}">${w.status}</span></div>
+                                <div class="history-sub">${w.address.substring(0, 10)}... • ${w.time}</div>
+                            </div>
+                            <div class="history-amount wit">-$${w.amount.toFixed(2)}</div>
+                        </div>
+                    `).join('');
+                }
             }
         }
 
