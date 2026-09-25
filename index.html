@@ -4,17 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBX PRIME | Synthetic Trading</title>
-    <!-- Load Supabase directly from the internet (No installation needed!) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* OBX PRIME Dark Theme Styling */
-        body { background-color: #0f0a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0f0a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         /* Header */
-        .header { background-color: #1a1025; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
+        .header { background-color: #1a1025; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 5px; }
         .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; color: #a855f7; }
         .logo span { color: white; }
         .balance-box { background: #2a1f3d; padding: 10px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; border: 1px solid #a855f7; }
+        
+        /* Sidebar */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; display: none; }
+        .sidebar-overlay.active { display: block; }
+        .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background: #130f1c; z-index: 201; transition: left 0.3s ease; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        
+        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
+        .sidebar-title { font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .close-sidebar { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+        .lang-selector { display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
+        
+        .user-profile { padding: 25px 20px; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+        .user-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .user-info p { color: #6b7280; font-size: 0.9rem; }
+        
+        .menu-section { padding: 10px 0; }
+        .menu-item { padding: 15px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: background 0.2s; color: #e5e7eb; }
+        .menu-item:hover { background: #1a1025; }
+        .menu-item.highlight { color: #a855f7; background: #1f1530; }
+        .menu-icon { width: 24px; text-align: center; font-size: 1.2rem; }
+        .menu-text { flex: 1; font-size: 1rem; }
+        .menu-arrow { color: #6b7280; }
+        
+        .theme-toggle { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #2a1f3d; border-bottom: 1px solid #2a1f3d; margin: 10px 0; }
+        .toggle-switch { width: 50px; height: 26px; background: #a855f7; border-radius: 13px; position: relative; cursor: pointer; }
+        .toggle-switch::after { content: ''; position: absolute; right: 3px; top: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; }
+        
+        .sidebar-footer { padding: 20px; text-align: center; color: #6b7280; font-size: 0.8rem; border-top: 1px solid #2a1f3d; margin-top: 20px; }
+        .online-indicator { display: inline-block; width: 8px; height: 8px; background: #a855f7; border-radius: 50%; margin-left: 5px; }
         
         /* Main Layout */
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -51,9 +83,93 @@
 </head>
 <body>
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                <span>🇬🇧</span> Menu
+            </div>
+            <button class="close-sidebar" onclick="toggleSidebar()">×</button>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <div class="user-info">
+                <h3 id="user-name">User</h3>
+                <p id="user-email">user@example.com</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-item">
+                <span class="menu-icon">🅿️</span>
+                <span class="menu-text">OBX Prime</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Account settings</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">⬇️</span>
+                <span class="menu-text">Deposit</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">⬆️</span>
+                <span class="menu-text">Withdraw</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">🕐</span>
+                <span class="menu-text">History</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item highlight">
+                <span class="menu-icon">🎁</span>
+                <span class="menu-text">Refer & Earn</span>
+            </div>
+        </div>
+
+        <div class="theme-toggle">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span class="menu-icon"></span>
+                <span class="menu-text">Dark theme</span>
+            </div>
+            <div class="toggle-switch"></div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-item">
+                <span class="menu-icon"></span>
+                <span class="menu-text">Help Centre</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">🛡️</span>
+                <span class="menu-text">Responsible Trading</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-icon">💬</span>
+                <span class="menu-text">Live Chat</span>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <span id="current-time">2026-09-25 17:20:51 GMT</span>
+            <span class="online-indicator"></span>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="header">
-        <div class="logo">OBX <span>PRIME</span></div>
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="logo">OBX <span>PRIME</span></div>
+        </div>
         <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
     </div>
 
@@ -65,9 +181,7 @@
         </div>
 
         <!-- Last Digit Stats -->
-        <div class="digits-bar" id="digits-bar">
-            <!-- Generated by JS -->
-        </div>
+        <div class="digits-bar" id="digits-bar"></div>
 
         <!-- Trading Controls -->
         <div class="controls">
@@ -93,20 +207,38 @@
 
     <script>
         // ==========================================
-        // 1. SUPABASE CONNECTION (YOUR ACTUAL KEYS)
+        // 1. SUPABASE CONNECTION
         // ==========================================
         const SUPABASE_URL = 'https://twvwpywcmjdrocsfhyha.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         
-        // Initialize Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentBalance = 1000.00; // Starting demo balance
+        let currentBalance = 1000.00;
         let currentPrice = 9320.42;
         let lastDigit = 2;
 
         // ==========================================
-        // 2. INITIALIZE UI
+        // 2. SIDEBAR TOGGLE
+        // ==========================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        // ==========================================
+        // 3. UPDATE TIME
+        // ==========================================
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toISOString().replace('T', ' ').split('.')[0] + ' GMT';
+            document.getElementById('current-time').textContent = timeStr;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ==========================================
+        // 4. INITIALIZE UI
         // ==========================================
         function initDigitsBar() {
             const bar = document.getElementById('digits-bar');
@@ -121,30 +253,24 @@
         initDigitsBar();
 
         // ==========================================
-        // 3. LIVE PRICE SIMULATION (Vol 10 1s)
+        // 5. LIVE PRICE SIMULATION
         // ==========================================
         setInterval(() => {
-            // Simulate a tiny price movement
             const change = (Math.random() - 0.5) * 1.5;
             currentPrice += change;
-            
-            // Get the last digit of the decimal (e.g., 9320.42 -> 2)
             const priceStr = currentPrice.toFixed(2);
             lastDigit = parseInt(priceStr.split('.')[1].slice(-1));
 
-            // Update UI
             const priceEl = document.getElementById('live-price');
             priceEl.innerText = priceStr;
             priceEl.style.color = change >= 0 ? '#22c55e' : '#ef4444';
 
-            // Highlight active digit
             document.querySelectorAll('.digit').forEach(d => d.classList.remove('active'));
             document.getElementById(`digit-${lastDigit}`).classList.add('active');
-
-        }, 1000); // Updates every 1 second
+        }, 1000);
 
         // ==========================================
-        // 4. TRADING LOGIC
+        // 6. TRADING LOGIC
         // ==========================================
         async function placeTrade(choice) {
             const stakeInput = document.getElementById('stake-amount');
@@ -165,13 +291,12 @@
             statusMsg.innerText = "Trade placed... waiting for tick...";
             statusMsg.className = "";
 
-            // Wait 1 second to simulate the tick result
             setTimeout(async () => {
                 const isEven = lastDigit % 2 === 0;
                 const won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
                 
                 if (won) {
-                    const profit = stake * 0.95; // 95% profit
+                    const profit = stake * 0.95;
                     currentBalance += profit;
                     statusMsg.innerText = `WIN! Last digit: ${lastDigit}. +$${profit.toFixed(2)}`;
                     statusMsg.className = "win";
@@ -181,10 +306,9 @@
                     statusMsg.className = "loss";
                 }
 
-                // Update balance on screen
                 document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
 
-                // Save this trade to Supabase Database
+                // Save to Supabase
                 try {
                     await supabase.from('trades').insert({
                         trade_type: choice,
@@ -198,6 +322,11 @@
 
             }, 1000);
         }
+
+        // Demo user info (replace with actual Supabase auth later)
+        document.getElementById('user-name').textContent = 'Demo User';
+        document.getElementById('user-email').textContent = 'demo@obxprime.com';
+        document.getElementById('user-avatar').textContent = 'D';
     </script>
 </body>
 </html>
