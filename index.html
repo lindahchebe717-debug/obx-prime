@@ -13,14 +13,13 @@
         .header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .header-left { display: flex; align-items: center; }
         
-        /* FIXED: Bigger, easier to tap menu button */
         .menu-btn { background: rgba(255,255,255,0.15); border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 8px 12px; border-radius: 8px; margin-right: 12px; display: flex; align-items: center; justify-content: center; }
         .menu-btn:active { background: rgba(255,255,255,0.3); }
         
         .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: white; }
         .balance-box { background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Sidebar - FIXED: Higher z-index and better mobile handling */
+        /* Sidebar */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9998; display: none; opacity: 0; transition: opacity 0.3s; }
         .sidebar-overlay.active { display: block; opacity: 1; }
         
@@ -47,12 +46,15 @@
         .sidebar-footer { padding: 20px; text-align: center; color: #6b7280; font-size: 0.75rem; border-top: 1px solid #2a1f3d; margin-top: 10px; }
         .online-indicator { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-left: 5px; }
         
-        /* Main Container */
+        /* Main Container & Pages */
         .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-        
-        /* Page Sections */
-        .page { display: none; }
+        .page { display: none; animation: fadeIn 0.3s; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Form Styles for Deposit/Withdraw */
+        .form-input { width: 100%; background: #0f0a1a; border: 1px solid #2a1f3d; color: white; padding: 12px; border-radius: 8px; font-size: 1rem; text-align: left; }
+        .form-input:focus { outline: none; border-color: #a855f7; }
         
         /* Chart Area */
         .chart-area { background: #130f1c; height: 220px; border-radius: 12px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #2a1f3d; position: relative; }
@@ -136,20 +138,15 @@
 
         <div class="menu-section">
             <div class="menu-item" onclick="showPage('trade')">
-                <span class="menu-icon"></span>
+                <span class="menu-icon">🏠</span>
                 <span class="menu-text">OBX Prime Home</span>
             </div>
-            <div class="menu-item">
-                <span class="menu-icon">️</span>
-                <span class="menu-text">Account settings</span>
-                <span class="menu-arrow">›</span>
-            </div>
-            <div class="menu-item">
+            <div class="menu-item" onclick="showPage('deposit')">
                 <span class="menu-icon">⬇️</span>
                 <span class="menu-text">Deposit</span>
                 <span class="menu-arrow">›</span>
             </div>
-            <div class="menu-item">
+            <div class="menu-item" onclick="showPage('withdraw')">
                 <span class="menu-icon">⬆️</span>
                 <span class="menu-text">Withdraw</span>
                 <span class="menu-arrow">›</span>
@@ -206,8 +203,47 @@
                         <div class="payout-text">95% Payout</div>
                     </button>
                 </div>
-                
                 <div id="status-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Page -->
+    <div id="deposit-page" class="page">
+        <div class="container">
+            <div class="controls" style="margin-top: 20px;">
+                <h2 style="text-align: center; margin-bottom: 20px; color: #a855f7;">Deposit Funds</h2>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #6b7280; font-size: 0.9rem;">Amount ($)</label>
+                    <input type="number" id="deposit-amount" class="form-input" placeholder="Enter amount">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #6b7280; font-size: 0.9rem;">Payment Method</label>
+                    <select id="deposit-method" class="form-input">
+                        <option value="USDT">USDT (TRC20)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="BANK">Bank Transfer</option>
+                    </select>
+                </div>
+                <button class="btn btn-even" style="width: 100%;" onclick="submitDeposit()">Request Deposit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Page -->
+    <div id="withdraw-page" class="page">
+        <div class="container">
+            <div class="controls" style="margin-top: 20px;">
+                <h2 style="text-align: center; margin-bottom: 20px; color: #a855f7;">Withdraw Funds</h2>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #6b7280; font-size: 0.9rem;">Amount ($)</label>
+                    <input type="number" id="withdraw-amount" class="form-input" placeholder="Enter amount">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #6b7280; font-size: 0.9rem;">Wallet Address / Bank Details</label>
+                    <input type="text" id="withdraw-address" class="form-input" placeholder="Enter your wallet address">
+                </div>
+                <button class="btn btn-odd" style="width: 100%;" onclick="submitWithdraw()">Request Withdrawal</button>
             </div>
         </div>
     </div>
@@ -221,10 +257,7 @@
                 <div class="tab" onclick="switchTab('transactions', this)">Transactions</div>
             </div>
         </div>
-        
-        <div id="positions-content" class="positions-content">
-            <!-- Content injected by JS -->
-        </div>
+        <div id="positions-content" class="positions-content"></div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -266,7 +299,7 @@
         let currentTab = 'open';
 
         // ==========================================
-        // 2. PAGE NAVIGATION
+        // 2. PAGE NAVIGATION (UPDATED)
         // ==========================================
         function showPage(pageName) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -279,9 +312,12 @@
                 document.getElementById('positions-page').classList.add('active');
                 document.getElementById('nav-positions').classList.add('active');
                 renderPositions();
+            } else if (pageName === 'deposit') {
+                document.getElementById('deposit-page').classList.add('active');
+            } else if (pageName === 'withdraw') {
+                document.getElementById('withdraw-page').classList.add('active');
             }
             
-            // Close sidebar if it's open
             if(document.getElementById('sidebar').classList.contains('active')) {
                 toggleSidebar();
             }
@@ -295,7 +331,7 @@
         }
 
         // ==========================================
-        // 3. SIDEBAR TOGGLE (FIXED)
+        // 3. SIDEBAR TOGGLE
         // ==========================================
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -305,7 +341,47 @@
         }
 
         // ==========================================
-        // 4. UPDATE TIME
+        // 4. DEPOSIT & WITHDRAW LOGIC (NEW)
+        // ==========================================
+        function submitDeposit() {
+            const amount = document.getElementById('deposit-amount').value;
+            const method = document.getElementById('deposit-method').value;
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid amount");
+                return;
+            }
+            alert(`Deposit request for $${amount} via ${method} submitted! An admin will review it.`);
+            document.getElementById('deposit-amount').value = '';
+            showPage('trade');
+        }
+
+        function submitWithdraw() {
+            const amount = document.getElementById('withdraw-amount').value;
+            const address = document.getElementById('withdraw-address').value;
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid amount");
+                return;
+            }
+            if (!address) {
+                alert("Please enter your wallet address");
+                return;
+            }
+            if (amount > currentBalance) {
+                alert("Insufficient balance!");
+                return;
+            }
+            
+            currentBalance -= parseFloat(amount);
+            document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
+            
+            alert(`Withdrawal request for $${amount} submitted!`);
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-address').value = '';
+            showPage('trade');
+        }
+
+        // ==========================================
+        // 5. UPDATE TIME
         // ==========================================
         function updateTime() {
             const now = new Date();
@@ -316,7 +392,7 @@
         updateTime();
 
         // ==========================================
-        // 5. INITIALIZE UI
+        // 6. INITIALIZE UI
         // ==========================================
         function initDigitsBar() {
             const bar = document.getElementById('digits-bar');
@@ -329,10 +405,10 @@
             }
         }
         initDigitsBar();
-        renderPositions(); // Initialize positions view
+        renderPositions();
 
         // ==========================================
-        // 6. LIVE PRICE SIMULATION
+        // 7. LIVE PRICE SIMULATION
         // ==========================================
         setInterval(() => {
             const change = (Math.random() - 0.5) * 1.5;
@@ -349,7 +425,7 @@
         }, 1000);
 
         // ==========================================
-        // 7. TRADING LOGIC
+        // 8. TRADING LOGIC
         // ==========================================
         async function placeTrade(choice) {
             const stakeInput = document.getElementById('stake-amount');
@@ -421,7 +497,7 @@
         }
 
         // ==========================================
-        // 8. RENDER POSITIONS
+        // 9. RENDER POSITIONS
         // ==========================================
         function renderPositions() {
             const content = document.getElementById('positions-content');
