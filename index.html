@@ -12,8 +12,25 @@
         /* Top Header */
         .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .menu-btn { background: rgba(255,255,255,0.15); border: none; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; }
-        .menu-btn:active { background: rgba(255,255,255,0.3); }
+        
+        /* BULLETPROOF MENU BUTTON */
+        .menu-btn { 
+            background: rgba(255,255,255,0.15); 
+            border: none; 
+            color: white; 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.4rem; 
+            cursor: pointer; 
+            z-index: 100000 !important;
+            position: relative;
+        }
+        .menu-btn:active { background: rgba(255,255,255,0.4); }
+        
         .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: white; }
         .balance-section { display: flex; align-items: center; gap: 10px; }
         .balance-box { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); }
@@ -21,11 +38,40 @@
         .balance-amount { font-weight: bold; font-size: 1rem; }
         .deposit-btn { background: #7c3aed; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.4); }
         
-        /* Sidebar */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9998; display: none; opacity: 0; transition: opacity 0.3s; }
-        .sidebar-overlay.active { display: block; opacity: 1; }
-        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: #130f1c; z-index: 9999; transition: left 0.3s ease; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        .sidebar.active { left: 0; }
+        /* BULLETPROOF SIDEBAR (Uses Transform instead of Left) */
+        .sidebar-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.7); 
+            z-index: 99998 !important; 
+            opacity: 0; 
+            pointer-events: none;
+            transition: opacity 0.3s ease; 
+        }
+        .sidebar-overlay.active { 
+            opacity: 1; 
+            pointer-events: auto;
+        }
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 280px; 
+            height: 100%; 
+            background: #130f1c; 
+            z-index: 99999 !important; 
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow-y: auto; 
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5); 
+        }
+        .sidebar.active { 
+            transform: translateX(0); 
+        }
+        
         .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; background: #1a1025; }
         .sidebar-title { font-size: 1.2rem; font-weight: bold; }
         .close-sidebar { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 1.5rem; cursor: pointer; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -326,7 +372,7 @@
         </div>
     </div>
 
-    <!-- HISTORY PAGE (NEW!) -->
+    <!-- HISTORY PAGE -->
     <div id="history-page" class="page">
         <div class="history-header">
             <div class="history-title">History</div>
@@ -336,9 +382,7 @@
                 <div class="history-tab" onclick="switchHistoryTab('withdrawals', this)">Withdrawals</div>
             </div>
         </div>
-        <div id="history-list" class="history-list">
-            <!-- Content injected by JS -->
-        </div>
+        <div id="history-list" class="history-list"></div>
     </div>
 
     <!-- Positions Page -->
@@ -405,9 +449,9 @@
                 renderHistory('trades');
             }
             
-            if(document.getElementById('sidebar').classList.contains('active')) {
-                toggleSidebar();
-            }
+            // Force close sidebar when navigating
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         }
 
         function switchTab(tab, element) {
@@ -417,19 +461,25 @@
             renderPositions();
         }
 
-        // HISTORY TABS
         function switchHistoryTab(tab, element) {
             document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
             renderHistory(tab);
         }
 
-        // 3. SIDEBAR TOGGLE
+        // 3. BULLETPROOF SIDEBAR TOGGLE
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            
+            // Explicitly check and toggle to prevent mobile glitches
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+            }
         }
 
         // 4. STAKE CONTROLS
@@ -467,14 +517,7 @@
             const method = document.getElementById('deposit-method').value;
             if (!amount || amount <= 0) return alert("Please enter a valid amount");
             
-            // Add to history
-            depositHistory.unshift({
-                amount: amount,
-                method: method,
-                time: new Date().toLocaleTimeString(),
-                status: 'pending'
-            });
-            
+            depositHistory.unshift({ amount: amount, method: method, time: new Date().toLocaleTimeString(), status: 'pending' });
             alert(`Deposit request for $${amount} via ${method} submitted!`);
             document.getElementById('deposit-amount').value = '';
             showPage('history');
@@ -490,14 +533,7 @@
             currentBalance -= amount;
             document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
             
-            // Add to history
-            withdrawHistory.unshift({
-                amount: amount,
-                address: address,
-                time: new Date().toLocaleTimeString(),
-                status: 'pending'
-            });
-            
+            withdrawHistory.unshift({ amount: amount, address: address, time: new Date().toLocaleTimeString(), status: 'pending' });
             alert(`Withdrawal request for $${amount} submitted!`);
             document.getElementById('withdraw-amount').value = '';
             document.getElementById('withdraw-address').value = '';
@@ -570,12 +606,7 @@
                 const isEven = lastDigit % 2 === 0;
                 const won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
                 
-                const tradeRecord = {
-                    type: choice,
-                    stake: stake,
-                    time: new Date().toLocaleTimeString(),
-                    exitDigit: lastDigit
-                };
+                const tradeRecord = { type: choice, stake: stake, time: new Date().toLocaleTimeString(), exitDigit: lastDigit };
 
                 if (won) {
                     const profit = stake * 0.95;
@@ -592,8 +623,7 @@
                     statusMsg.className = "loss";
                 }
 
-                closedTrades.unshift(tradeRecord); // Add to beginning of array
-                
+                closedTrades.unshift(tradeRecord);
                 document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
                 document.getElementById('closed-count').textContent = closedTrades.length;
 
@@ -626,26 +656,21 @@
             }
         }
 
-        // 11. RENDER HISTORY (NEW!)
+        // 11. RENDER HISTORY
         function renderHistory(tab) {
             const container = document.getElementById('history-list');
-            
             if (tab === 'trades') {
                 if (closedTrades.length === 0) {
                     container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: #6b7280;">No trade history yet.<br>Place a trade to see it here!</div>`;
                 } else {
                     container.innerHTML = closedTrades.map(t => `
                         <div class="history-item">
-                            <div class="history-icon ${t.result}">
-                                ${t.type === 'Even' ? '⚖️' : ''}
-                            </div>
+                            <div class="history-icon ${t.result}">${t.type === 'Even' ? '⚖️' : '🎲'}</div>
                             <div class="history-info">
                                 <div class="history-name">${t.type} Trade</div>
                                 <div class="history-sub">Stake: $${t.stake.toFixed(2)} • ${t.time}</div>
                             </div>
-                            <div class="history-amount ${t.result}">
-                                ${t.result === 'win' ? '+' : ''}$${t.profit.toFixed(2)}
-                            </div>
+                            <div class="history-amount ${t.result}">${t.result === 'win' ? '+' : ''}$${t.profit.toFixed(2)}</div>
                         </div>
                     `).join('');
                 }
