@@ -9,6 +9,8 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         body { background-color: #141021; }
+        .page-view { display: none; }
+        .page-view.active { display: block; }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -23,7 +25,7 @@
                 <span class="text-white font-bold text-lg">Menu</span>
             </div>
             <div class="flex items-center gap-2 text-white text-sm font-medium cursor-pointer">
-                <span class="text-lg">🇧</span> <span>EN</span>
+                <span class="text-lg"></span> <span>EN</span>
             </div>
         </div>
         
@@ -202,113 +204,137 @@
                     </div>
                 </header>
 
-                <!-- Trade Types -->
-                <div class="bg-[#181329] px-2 py-2 border-b border-white/[0.07]">
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar">
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Matches/Differs</span></button>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 bg-[#1F1936] text-white border border-white/[0.07] shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg><span>Even/Odd</span></button>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"></path><path d="M17 20V4"></path><path d="m3 8 4-4 4 4"></path><path d="M7 4v16"></path></svg><span>Over/Under</span></button>
+                <!-- TRADE PAGE VIEW -->
+                <div id="trade-page" class="page-view active flex-1 flex flex-col">
+                    <!-- Trade Types -->
+                    <div class="bg-[#181329] px-2 py-2 border-b border-white/[0.07]">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                            <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Matches/Differs</span></button>
+                            <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 bg-[#1F1936] text-white border border-white/[0.07] shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg><span>Even/Odd</span></button>
+                            <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"></path><path d="M17 20V4"></path><path d="m3 8 4-4 4 4"></path><path d="M7 4v16"></path></svg><span>Over/Under</span></button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Chart Area -->
-                <div class="flex-1 relative overflow-hidden">
-                    <div class="absolute top-2 left-2 z-20">
-                        <div class="relative">
-                            <button class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#1F1936] border border-white/[0.07] shadow-lg active:scale-[0.98] transition-transform">
-                                <div class="w-6 h-6 rounded bg-[#282041] flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg></div>
-                                <div class="flex flex-col items-start">
-                                    <span class="text-xs font-medium text-white">Vol 10 (1s)</span>
-                                    <div class="flex items-center gap-1">
-                                        <span class="text-[10px] text-gray-400" id="chart-price-display">9501.21</span>
-                                        <span class="text-[9px] text-emerald-500" id="chart-change-display">+0.01%</span>
+                    <!-- Chart Area -->
+                    <div class="flex-1 relative overflow-hidden">
+                        <div class="absolute top-2 left-2 z-20">
+                            <div class="relative">
+                                <button class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#1F1936] border border-white/[0.07] shadow-lg active:scale-[0.98] transition-transform">
+                                    <div class="w-6 h-6 rounded bg-[#282041] flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg></div>
+                                    <div class="flex flex-col items-start">
+                                        <span class="text-xs font-medium text-white">Vol 10 (1s)</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-[10px] text-gray-400" id="chart-price-display">9501.21</span>
+                                            <span class="text-[9px] text-emerald-500" id="chart-change-display">+0.01%</span>
+                                        </div>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col bg-[#151a25]">
+                            <div class="flex-1 relative min-h-0">
+                                <canvas id="priceChart" class="absolute inset-0 w-full h-full touch-none"></canvas>
+                                <div class="absolute bottom-2 left-2 flex flex-col gap-1">
+                                    <button class="w-8 h-8 bg-[#1e2535] rounded-lg flex items-center justify-center border border-[#2a3548] active:scale-95 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
+                                    <button class="w-8 h-8 bg-[#1e2535] rounded-lg flex items-center justify-center border border-[#2a3548] active:scale-95 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path></svg></button>
+                                </div>
+                                <div class="absolute top-2 right-2 px-2 py-1 bg-[#1e2535] rounded border border-[#2a3548]"><span class="text-xs text-gray-400">100%</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digit Stats -->
+                    <div class="shrink-0 px-2 py-2 bg-[#1F1936] border-t border-white/[0.07]">
+                        <div class="flex justify-between items-center" id="digits-container">
+                            <!-- Digits 0-9 will be injected here by JS to keep code clean but fully functional -->
+                        </div>
+                    </div>
+
+                    <!-- Controls Card -->
+                    <div class="bg-[#141021]/95 backdrop-blur-xl border-t border-white/[0.07]">
+                        <div class="px-3 pt-2.5 pb-2 space-y-2">
+                            <div class="flex rounded-lg overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.07); background-color: rgba(255, 255, 255, 0.04);">
+                                <button class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: rgb(124, 58, 237); color: rgb(255, 255, 255);">auto</button>
+                                <button class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: transparent; color: rgb(148, 163, 184);">manual</button>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center active:scale-90 transition-all bg-white/[0.06]" onclick="adjustStake(-1)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path></svg></button>
+                                <div class="flex-1 rounded-xl py-1.5 px-2 cursor-text" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(124, 58, 237, 0.03)); border: 1.5px solid rgba(124, 58, 237, 0.25);">
+                                    <div class="text-[8px] font-bold uppercase tracking-wider text-[#7C3AED] text-center mb-0.5">Stake</div>
+                                    <div class="flex items-center justify-center gap-0.5">
+                                        <span class="text-xs font-bold text-[#7C3AED]">$</span>
+                                        <input id="stake-input" inputmode="decimal" placeholder="0.10" class="w-full bg-transparent text-center text-lg font-extrabold outline-none text-white" type="text" value="10">
                                     </div>
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="absolute inset-0 flex flex-col bg-[#151a25]">
-                        <div class="flex-1 relative min-h-0">
-                            <canvas id="priceChart" class="absolute inset-0 w-full h-full touch-none"></canvas>
-                            <div class="absolute bottom-2 left-2 flex flex-col gap-1">
-                                <button class="w-8 h-8 bg-[#1e2535] rounded-lg flex items-center justify-center border border-[#2a3548] active:scale-95 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
-                                <button class="w-8 h-8 bg-[#1e2535] rounded-lg flex items-center justify-center border border-[#2a3548] active:scale-95 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path></svg></button>
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center active:scale-90 transition-all bg-white/[0.06]" onclick="adjustStake(1)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
                             </div>
-                            <div class="absolute top-2 right-2 px-2 py-1 bg-[#1e2535] rounded border border-[#2a3548]"><span class="text-xs text-gray-400">100%</span></div>
+                            <div class="flex gap-1">
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(1)">$1</button>
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(5)">$5</button>
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(124, 58, 237, 0.18); color: rgb(124, 58, 237); border: 1px solid rgba(124, 58, 237, 0.3);" onclick="setStake(10)">$10</button>
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(25)">$25</button>
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(50)">$50</button>
+                                <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(100)">$100</button>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <div class="text-[8px] font-bold uppercase tracking-wider text-emerald-500 mb-0.5">Target Profit</div>
+                                    <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-emerald-500/60">$</span><input class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="200"></div>
+                                </div>
+                                <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <div class="text-[8px] font-bold uppercase tracking-wider text-[#ff444f] mb-0.5">Stop Loss</div>
+                                    <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#ff444f]/60">$</span><input class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="999"></div>
+                                </div>
+                                <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
+                                    <div class="text-[8px] font-bold uppercase tracking-wider text-[#f59e0b] mb-0.5">Multiplier</div>
+                                    <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#f59e0b]/60">x</span><input step="0.1" class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="2"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Even')">
+                                    <div class="flex items-center justify-between w-full px-3">
+                                        <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Even</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
+                                        <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="even-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                    </div>
+                                </button>
+                                <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="placeTrade('Odd')">
+                                    <div class="flex items-center justify-between w-full px-3">
+                                        <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Odd</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
+                                        <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="odd-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Digit Stats -->
-                <div class="shrink-0 px-2 py-2 bg-[#1F1936] border-t border-white/[0.07]">
-                    <div class="flex justify-between items-center" id="digits-container">
-                        <!-- Digits 0-9 will be injected here by JS to keep code clean but fully functional -->
+                <!-- POSITIONS PAGE VIEW -->
+                <div id="positions-page" class="page-view flex-1 flex flex-col">
+                    <!-- Positions Header Tabs -->
+                    <div class="bg-[#1F1936] border-b border-white/[0.07]">
+                        <div class="flex">
+                            <button onclick="switchPositionsTab('open')" id="tab-open" class="flex-1 py-3.5 text-sm font-medium transition-colors text-[#7C3AED] border-b-2 border-[#7C3AED]">Open (0)</button>
+                            <button onclick="switchPositionsTab('closed')" id="tab-closed" class="flex-1 py-3.5 text-sm font-medium transition-colors text-gray-400 hover:text-white">Closed (0)</button>
+                            <button onclick="switchPositionsTab('transactions')" id="tab-transactions" class="flex-1 py-3.5 text-sm font-medium transition-colors text-gray-400 hover:text-white">Transactions</button>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Controls Card -->
-                <div class="bg-[#141021]/95 backdrop-blur-xl border-t border-white/[0.07]">
-                    <div class="px-3 pt-2.5 pb-2 space-y-2">
-                        <div class="flex rounded-lg overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.07); background-color: rgba(255, 255, 255, 0.04);">
-                            <button class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: rgb(124, 58, 237); color: rgb(255, 255, 255);">auto</button>
-                            <button class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: transparent; color: rgb(148, 163, 184);">manual</button>
+                    
+                    <!-- Positions Content -->
+                    <div class="flex-1 flex flex-col items-center justify-center p-6">
+                        <div class="w-20 h-20 rounded-full bg-[#1e1b4b] flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center active:scale-90 transition-all bg-white/[0.06]" onclick="adjustStake(-1)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path></svg></button>
-                            <div class="flex-1 rounded-xl py-1.5 px-2 cursor-text" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(124, 58, 237, 0.03)); border: 1.5px solid rgba(124, 58, 237, 0.25);">
-                                <div class="text-[8px] font-bold uppercase tracking-wider text-[#7C3AED] text-center mb-0.5">Stake</div>
-                                <div class="flex items-center justify-center gap-0.5">
-                                    <span class="text-xs font-bold text-[#7C3AED]">$</span>
-                                    <input id="stake-input" inputmode="decimal" placeholder="0.10" class="w-full bg-transparent text-center text-lg font-extrabold outline-none text-white" type="text" value="10">
-                                </div>
-                            </div>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center active:scale-90 transition-all bg-white/[0.06]" onclick="adjustStake(1)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
-                        </div>
-                        <div class="flex gap-1">
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(1)">$1</button>
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(5)">$5</button>
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(124, 58, 237, 0.18); color: rgb(124, 58, 237); border: 1px solid rgba(124, 58, 237, 0.3);" onclick="setStake(10)">$10</button>
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(25)">$25</button>
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(50)">$50</button>
-                            <button class="flex-1 py-1 rounded-md text-[10px] font-bold transition-all active:scale-95" style="background-color: rgba(255, 255, 255, 0.04); color: rgb(100, 116, 139); border: 1px solid rgba(255, 255, 255, 0.06);" onclick="setStake(100)">$100</button>
-                        </div>
-                        <div class="flex gap-1.5">
-                            <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
-                                <div class="text-[8px] font-bold uppercase tracking-wider text-emerald-500 mb-0.5">Target Profit</div>
-                                <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-emerald-500/60">$</span><input class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="200"></div>
-                            </div>
-                            <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
-                                <div class="text-[8px] font-bold uppercase tracking-wider text-[#ff444f] mb-0.5">Stop Loss</div>
-                                <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#ff444f]/60">$</span><input class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="999"></div>
-                            </div>
-                            <div class="flex-1 rounded-lg px-2 py-1.5 text-center" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
-                                <div class="text-[8px] font-bold uppercase tracking-wider text-[#f59e0b] mb-0.5">Multiplier</div>
-                                <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#f59e0b]/60">x</span><input step="0.1" class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="2"></div>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Even')">
-                                <div class="flex items-center justify-between w-full px-3">
-                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Even</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
-                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="even-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
-                                </div>
-                            </button>
-                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="placeTrade('Odd')">
-                                <div class="flex items-center justify-between w-full px-3">
-                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Odd</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
-                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="odd-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
-                                </div>
-                            </button>
-                        </div>
+                        <h3 class="text-white text-lg font-semibold mb-2">No open positions</h3>
+                        <p class="text-gray-400 text-sm text-center">Your active trades will appear here</p>
                     </div>
                 </div>
 
                 <!-- Bottom Navigation -->
                 <nav class="shrink-0 grid grid-cols-3 bg-[#1F1936] border-t border-white/[0.07]">
-                    <button class="flex flex-col items-center py-3 text-[#7C3AED]"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg><span class="text-xs mt-1">Trade</span></button>
+                    <button onclick="showPage('trade')" class="flex flex-col items-center py-3 text-[#7C3AED]"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg><span class="text-xs mt-1">Trade</span></button>
                     <button class="flex flex-col items-center py-3 relative group"><span aria-hidden="true" class="absolute top-1.5 w-10 h-10 rounded-full animate-ping opacity-40 pointer-events-none" style="background: radial-gradient(circle, rgba(244, 114, 182, 0.55), rgba(251, 146, 60, 0) 70%);"></span><div class="relative w-9 h-9 -mt-0.5 rounded-xl flex items-center justify-center shadow-lg" style="background: linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(236, 72, 153) 55%, rgb(139, 92, 246) 100%); box-shadow: rgba(236, 72, 153, 0.55) 0px 6px 18px -6px, rgba(255, 255, 255, 0.12) 0px 0px 0px 1px inset;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] animate-pulse"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><span class="text-[11px] mt-0.5 font-bold tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(135deg, rgb(245, 158, 11), rgb(236, 72, 153), rgb(139, 92, 246));">AI</span></button>
-                    <button class="flex flex-col items-center py-3 relative text-gray-500"><div class="relative"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><span class="text-xs mt-1">Positions</span></button>
+                    <button onclick="showPage('positions')" class="flex flex-col items-center py-3 relative text-gray-500"><div class="relative"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><span class="text-xs mt-1">Positions</span></button>
                 </nav>
             </div>
         </div>
@@ -427,6 +453,51 @@
                 submenu.classList.add('hidden');
                 arrow.style.transform = 'rotate(0deg)';
             }
+        }
+
+        // NEW: Page Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            if (pageName === 'trade') {
+                document.getElementById('trade-page').classList.add('active');
+            } else if (pageName === 'positions') {
+                document.getElementById('positions-page').classList.add('active');
+            }
+            
+            // Update bottom nav active states
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {
+                btn.classList.remove('text-[#7C3AED]');
+                btn.classList.add('text-gray-500');
+            });
+            
+            // Set active nav item
+            if (pageName === 'trade') {
+                document.querySelector('.bottom-nav button:nth-child(1)').classList.add('text-[#7C3AED]');
+                document.querySelector('.bottom-nav button:nth-child(1)').classList.remove('text-gray-500');
+            } else if (pageName === 'positions') {
+                document.querySelector('.bottom-nav button:nth-child(3)').classList.add('text-[#7C3AED]');
+                document.querySelector('.bottom-nav button:nth-child(3)').classList.remove('text-gray-500');
+            }
+        }
+
+        // NEW: Positions Tab Switching
+        function switchPositionsTab(tab) {
+            // Reset all tabs
+            document.getElementById('tab-open').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
+            document.getElementById('tab-open').classList.add('text-gray-400');
+            document.getElementById('tab-closed').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
+            document.getElementById('tab-closed').classList.add('text-gray-400');
+            document.getElementById('tab-transactions').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
+            document.getElementById('tab-transactions').classList.add('text-gray-400');
+            
+            // Activate selected tab
+            document.getElementById('tab-' + tab).classList.add('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
+            document.getElementById('tab-' + tab).classList.remove('text-gray-400');
         }
 
         // ==========================================
