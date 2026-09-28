@@ -10,7 +10,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         body { background-color: #141021; }
         .page-view { display: none; }
-        .page-view.active { display: block; }
+        .page-view.active { display: flex; }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -317,7 +317,7 @@
                     </div>
                 </div>
 
-                <!-- Bottom Navigation - EXACT LAYOUT -->
+                <!-- Bottom Navigation -->
                 <nav class="shrink-0 grid grid-cols-3 bg-[#1F1936] border-t border-white/[0.07]">
                     <button onclick="showPage('trade')" class="flex flex-col items-center py-3 text-[#7C3AED]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
@@ -459,23 +459,9 @@
             
             if (pageName === 'trade') {
                 document.getElementById('trade-page').classList.add('active');
-                // Update nav
-                document.querySelectorAll('.bottom-nav button').forEach(btn => {
-                    btn.classList.remove('text-[#7C3AED]');
-                    btn.classList.add('text-gray-500');
-                });
-                document.querySelector('.bottom-nav button:nth-child(1)').classList.add('text-[#7C3AED]');
-                document.querySelector('.bottom-nav button:nth-child(1)').classList.remove('text-gray-500');
             } else if (pageName === 'positions') {
                 document.getElementById('positions-page').classList.add('active');
                 switchPositionsTab('open');
-                // Update nav
-                document.querySelectorAll('.bottom-nav button').forEach(btn => {
-                    btn.classList.remove('text-[#7C3AED]');
-                    btn.classList.add('text-gray-500');
-                });
-                document.querySelector('.bottom-nav button:nth-child(3)').classList.add('text-[#7C3AED]');
-                document.querySelector('.bottom-nav button:nth-child(3)').classList.remove('text-gray-500');
             }
         }
 
