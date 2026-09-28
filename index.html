@@ -186,7 +186,6 @@
                 <!-- Header -->
                 <header class="shrink-0 flex items-center justify-between px-3 py-2 bg-[#1F1936] border-b border-white/[0.07] z-40">
                     <div class="flex items-center gap-2">
-                        <!-- UPDATED: Menu button now opens the sidebar -->
                         <button onclick="openMenu()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button>
                         <div class="w-7 h-7 rounded-lg bg-[#7C3AED] flex items-center justify-center"><span class="text-white font-bold text-xs">O</span></div>
                     </div>
@@ -246,9 +245,7 @@
 
                     <!-- Digit Stats -->
                     <div class="shrink-0 px-2 py-2 bg-[#1F1936] border-t border-white/[0.07]">
-                        <div class="flex justify-between items-center" id="digits-container">
-                            <!-- Digits 0-9 will be injected here by JS to keep code clean but fully functional -->
-                        </div>
+                        <div class="flex justify-between items-center" id="digits-container"></div>
                     </div>
 
                     <!-- Controls Card -->
@@ -311,7 +308,6 @@
 
                 <!-- POSITIONS PAGE VIEW -->
                 <div id="positions-page" class="page-view flex-1 flex flex-col">
-                    <!-- Positions Header Tabs -->
                     <div class="bg-[#1F1936] border-b border-white/[0.07]">
                         <div class="flex">
                             <button onclick="switchPositionsTab('open')" id="tab-open" class="flex-1 py-3.5 text-sm font-medium transition-colors text-[#7C3AED] border-b-2 border-[#7C3AED]">Open (0)</button>
@@ -319,9 +315,7 @@
                             <button onclick="switchPositionsTab('transactions')" id="tab-transactions" class="flex-1 py-3.5 text-sm font-medium transition-colors text-gray-400 hover:text-white">Transactions</button>
                         </div>
                     </div>
-                    
-                    <!-- Positions Content -->
-                    <div class="flex-1 flex flex-col items-center justify-center p-6">
+                    <div id="positions-content" class="flex-1 flex flex-col items-center justify-center p-6 w-full">
                         <div class="w-20 h-20 rounded-full bg-[#1e1b4b] flex items-center justify-center mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
                         </div>
@@ -421,7 +415,7 @@
 
     <script>
         // ==========================================
-        // MENU FUNCTIONS (NEW)
+        // MENU FUNCTIONS
         // ==========================================
         function openMenu() {
             document.getElementById('menu-overlay').classList.remove('hidden');
@@ -441,7 +435,6 @@
             }, 300);
         }
 
-        // NEW: Toggle Account Settings Submenu
         function toggleAccountSettings() {
             const submenu = document.getElementById('account-settings-submenu');
             const arrow = document.getElementById('account-settings-arrow');
@@ -455,27 +448,23 @@
             }
         }
 
-        // NEW: Page Navigation
         function showPage(pageName) {
-            // Hide all pages
             document.querySelectorAll('.page-view').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Show selected page
             if (pageName === 'trade') {
                 document.getElementById('trade-page').classList.add('active');
             } else if (pageName === 'positions') {
                 document.getElementById('positions-page').classList.add('active');
+                switchPositionsTab('open'); // Reset to open tab when entering
             }
             
-            // Update bottom nav active states
             document.querySelectorAll('.bottom-nav button').forEach(btn => {
                 btn.classList.remove('text-[#7C3AED]');
                 btn.classList.add('text-gray-500');
             });
             
-            // Set active nav item
             if (pageName === 'trade') {
                 document.querySelector('.bottom-nav button:nth-child(1)').classList.add('text-[#7C3AED]');
                 document.querySelector('.bottom-nav button:nth-child(1)').classList.remove('text-gray-500');
@@ -485,9 +474,12 @@
             }
         }
 
-        // NEW: Positions Tab Switching
+        // ==========================================
+        // POSITIONS & TRADING LOGIC
+        // ==========================================
+        let closedTrades = [];
+
         function switchPositionsTab(tab) {
-            // Reset all tabs
             document.getElementById('tab-open').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
             document.getElementById('tab-open').classList.add('text-gray-400');
             document.getElementById('tab-closed').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
@@ -495,13 +487,96 @@
             document.getElementById('tab-transactions').classList.remove('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
             document.getElementById('tab-transactions').classList.add('text-gray-400');
             
-            // Activate selected tab
             document.getElementById('tab-' + tab).classList.add('text-[#7C3AED]', 'border-b-2', 'border-[#7C3AED]');
             document.getElementById('tab-' + tab).classList.remove('text-gray-400');
+
+            const contentDiv = document.getElementById('positions-content');
+            if (tab === 'open') {
+                contentDiv.innerHTML = `
+                    <div class="w-20 h-20 rounded-full bg-[#1e1b4b] flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                    <h3 class="text-white text-lg font-semibold mb-2">No open positions</h3>
+                    <p class="text-gray-400 text-sm text-center">Your active trades will appear here</p>
+                `;
+            } else if (tab === 'closed') {
+                if (closedTrades.length === 0) {
+                    contentDiv.innerHTML = `
+                        <div class="w-20 h-20 rounded-full bg-[#1e1b4b] flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                        <h3 class="text-white text-lg font-semibold mb-2">No closed positions</h3>
+                        <p class="text-gray-400 text-sm text-center">Your completed trades will appear here</p>
+                    `;
+                } else {
+                    let tradesHtml = closedTrades.map(trade => `
+                        <div class="w-full bg-[#1e1b4b] rounded-xl p-4 mb-3 flex items-center justify-between border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full ${trade.result === 'win' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-red-500/20 text-red-500'} flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white">${trade.type}</div>
+                                    <div class="text-xs text-gray-400">Stake: $${trade.stake.toFixed(2)} • ${trade.time}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold ${trade.result === 'win' ? 'text-emerald-500' : 'text-red-500'}">
+                                    ${trade.result === 'win' ? '+' : ''}$${trade.profit.toFixed(2)}
+                                </div>
+                                <div class="text-xs text-gray-400">Payout</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    contentDiv.innerHTML = `<div class="w-full flex flex-col items-center overflow-y-auto max-h-[60vh]">${tradesHtml}</div>`;
+                }
+            } else {
+                contentDiv.innerHTML = `
+                    <div class="w-20 h-20 rounded-full bg-[#1e1b4b] flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                    <h3 class="text-white text-lg font-semibold mb-2">No transactions</h3>
+                    <p class="text-gray-400 text-sm text-center">Your deposits and withdrawals will appear here</p>
+                `;
+            }
+        }
+
+        function placeTrade(choice) {
+            let stake = parseInt(document.getElementById('stake-input').value) || 10;
+            if(stake > balance) { alert("Insufficient balance!"); return; }
+            
+            setTimeout(() => {
+                let isEven = lastDigit % 2 === 0;
+                let won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
+                let profit = 0;
+                
+                if(won) {
+                    profit = stake * 0.952;
+                    balance += profit;
+                    alert(`WIN! Last digit: ${lastDigit}. Profit: $${profit.toFixed(2)}`);
+                } else {
+                    profit = -stake;
+                    balance -= stake;
+                    alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
+                }
+                
+                closedTrades.unshift({
+                    type: choice,
+                    stake: stake,
+                    profit: profit,
+                    result: won ? 'win' : 'loss',
+                    time: new Date().toLocaleTimeString()
+                });
+                
+                document.getElementById('tab-closed').innerText = `Closed (${closedTrades.length})`;
+                
+                document.getElementById('header-balance').innerText = balance.toFixed(2);
+                if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+            }, 500);
         }
 
         // ==========================================
-        // OBX PRIME TRADING LOGIC
+        // CHART & DIGITS LOGIC
         // ==========================================
         let balance = 1000.00;
         let price = 9501.21;
@@ -510,7 +585,6 @@
         let digitCounts = [0,0,0,0,0,0,0,0,0,0];
         let totalTicks = 0;
 
-        // Initialize Digit UI (0-9)
         function initDigits() {
             const container = document.getElementById('digits-container');
             if (!container) return;
@@ -535,13 +609,11 @@
         }
         initDigits();
 
-        // Chart Drawing Function
         function drawChart(canvasId) {
             const canvas = document.getElementById(canvasId);
             if (!canvas || priceHistory.length < 2) return;
             const ctx = canvas.getContext('2d');
             
-            // Resize canvas to parent
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
 
@@ -563,7 +635,6 @@
             }
             ctx.stroke();
 
-            // Draw current price dot
             const lastX = canvas.width;
             const lastY = canvas.height - ((priceHistory[priceHistory.length-1] - min) / range) * canvas.height;
             ctx.beginPath();
@@ -572,7 +643,6 @@
             ctx.fill();
         }
 
-        // Stake Logic
         function adjustStake(amt) {
             let val = parseInt(document.getElementById('stake-input').value) + amt;
             if (val < 1) val = 1;
@@ -592,36 +662,12 @@
             if(document.getElementById('desktop-odd-payout')) document.getElementById('desktop-odd-payout').innerText = payout;
         }
 
-        // Trading Logic
-        function placeTrade(choice) {
-            let stake = parseInt(document.getElementById('stake-input').value) || 10;
-            if(stake > balance) { alert("Insufficient balance!"); return; }
-            
-            setTimeout(() => {
-                let isEven = lastDigit % 2 === 0;
-                let won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
-                
-                if(won) {
-                    let profit = stake * 0.952;
-                    balance += profit;
-                    alert(`WIN! Last digit: ${lastDigit}. Profit: $${profit.toFixed(2)}`);
-                } else {
-                    balance -= stake;
-                    alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
-                }
-                document.getElementById('header-balance').innerText = balance.toFixed(2);
-                if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
-            }, 500);
-        }
-
-        // Live Simulation Loop
         setInterval(() => {
             const change = (Math.random() - 0.5) * 3;
             price += change;
             const pStr = price.toFixed(2);
             lastDigit = parseInt(pStr.split('.')[1].slice(-1));
             
-            // Update UI Text
             document.getElementById('chart-price-display').innerText = pStr;
             if(document.getElementById('desktop-price')) document.getElementById('desktop-price').innerText = pStr;
             
@@ -635,13 +681,11 @@
                 document.getElementById('desktop-change').className = change >= 0 ? 'text-[10px] text-[#4bb4b3]' : 'text-[10px] text-[#ff444f]';
             }
 
-            // Update Chart
             priceHistory.push(price);
             if(priceHistory.length > 60) priceHistory.shift();
             drawChart('priceChart');
             drawChart('desktopChart');
 
-            // Update Digits
             digitCounts[lastDigit]++;
             totalTicks++;
             for(let i=0; i<=9; i++) {
@@ -649,18 +693,16 @@
                 const pctStr = pct.toFixed(1) + '%';
                 document.getElementById(`digit-pct-${i}`).innerText = pctStr;
                 
-                // Update ring offset (98.96 is full circumference)
                 const offset = 98.96 - (98.96 * (pct / 100));
                 document.getElementById(`digit-ring-${i}`).setAttribute('stroke-dashoffset', offset);
                 
-                // Highlight active digit
                 const valEl = document.getElementById(`digit-val-${i}`);
                 const pctEl = document.getElementById(`digit-pct-${i}`);
                 const ringEl = document.getElementById(`digit-ring-${i}`);
                 
                 if(i === lastDigit) {
                     valEl.style.color = '#ffffff';
-                    pctEl.style.color = '#f59e0b'; // Orange for active
+                    pctEl.style.color = '#f59e0b';
                     ringEl.setAttribute('stroke', '#f59e0b');
                 } else {
                     valEl.style.color = '#ffffff';
@@ -670,7 +712,6 @@
             }
         }, 1000);
 
-        // Initial setup
         window.addEventListener('resize', () => {
             drawChart('priceChart');
             drawChart('desktopChart');
