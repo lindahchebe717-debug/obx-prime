@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | History</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0f0a1a; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
+        
+        /* Header */
+        .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .logo { font-size: 1.2rem; font-weight: 900; color: white; text-decoration: none; }
+        .balance-box { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        
+        /* Sidebar Menu */
+        #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998; display: none; }
+        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 9999; display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
+        .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .menu-item { padding: 16px 20px; color: white; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .menu-item:active { background: #2a1f3d; }
+
+        /* History Page Styles */
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+        .page-title { font-size: 1.5rem; font-weight: bold; margin: 20px 0 15px; }
+        
+        /* Tabs */
+        .history-tabs { display: flex; background: #130f1c; border-radius: 12px; padding: 5px; margin-bottom: 20px; border: 1px solid #2a1f3d; }
+        .history-tab { flex: 1; padding: 12px; text-align: center; color: #6b7280; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; text-decoration: none; transition: all 0.3s; }
+        .history-tab.active { background: #1a1025; color: #a855f7; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* History List */
+        .history-list { display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: #1a1025; border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; border: 1px solid #2a1f3d; }
+        .history-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .history-icon.win { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .history-icon.loss { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .history-icon.dep { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .history-icon.wit { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+        
+        .history-info { flex: 1; }
+        .history-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .history-status { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: normal; }
+        .history-status.pending { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+        .history-status.completed { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .history-sub { font-size: 0.75rem; color: #6b7280; }
+        
+        .history-amount { text-align: right; font-weight: bold; font-size: 0.95rem; }
+        .history-amount.win { color: #22c55e; }
+        .history-amount.loss { color: #ef4444; }
+        .history-amount.dep { color: #a855f7; }
+        .history-amount.wit { color: #f97316; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; text-decoration: none; font-size: 0.8rem; }
+        .nav-item.active { color: #a855f7; }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Overlay & Menu -->
+    <div id="sidebar-overlay" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';"></div>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span style="font-weight:bold; font-size:1.2rem;">Menu</span>
+            <button class="close-btn" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">×</button>
+        </div>
+        <a href="index.html" class="menu-item"> OBX Prime Home</a>
+        <a href="deposit.html" class="menu-item">️ Deposit</a>
+        <a href="withdraw.html" class="menu-item">⬆️ Withdraw</a>
+        <a href="history.html" class="menu-item">🕐 History</a>
+    </div>
+
+    <!-- Header -->
+    <div class="top-header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="document.getElementById('sidebar').style.display='block'; document.getElementById('sidebar-overlay').style.display='block';">☰</button>
+            <a href="index.html" class="logo">OBX PRIME</a>
+        </div>
+        <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
+    </div>
+
+    <!-- History Content -->
+    <div class="container">
+        <div class="page-title">History</div>
+        
+        <!-- Tabs -->
+        <div class="history-tabs">
+            <a href="#" class="history-tab active">Trades</a>
+            <a href="#" class="history-tab">Deposits</a>
+            <a href="#" class="history-tab">Withdrawals</a>
+        </div>
+
+        <!-- List (Hardcoded examples to show the design) -->
+        <div class="history-list">
+            
+            <!-- Example Win -->
+            <div class="history-item">
+                <div class="history-icon win">⚖️</div>
+                <div class="history-info">
+                    <div class="history-name">Even Trade</div>
+                    <div class="history-sub">Stake: $10.00 • 15:16:42</div>
+                </div>
+                <div class="history-amount win">+$9.50</div>
+            </div>
+
+            <!-- Example Loss -->
+            <div class="history-item">
+                <div class="history-icon loss"></div>
+                <div class="history-info">
+                    <div class="history-name">Odd Trade</div>
+                    <div class="history-sub">Stake: $25.00 • 15:14:10</div>
+                </div>
+                <div class="history-amount loss">-$25.00</div>
+            </div>
+
+            <!-- Example Deposit -->
+            <div class="history-item">
+                <div class="history-icon dep">⬇️</div>
+                <div class="history-info">
+                    <div class="history-name">Deposit <span class="history-status completed">Completed</span></div>
+                    <div class="history-sub">USDT (TRC20) • 14:30:00</div>
+                </div>
+                <div class="history-amount dep">+$500.00</div>
+            </div>
+
+            <!-- Example Withdrawal -->
+            <div class="history-item">
+                <div class="history-icon wit">⬆️</div>
+                <div class="history-info">
+                    <div class="history-name">Withdrawal <span class="history-status pending">Pending</span></div>
+                    <div class="history-sub">Bitcoin (BTC) • 12:15:33</div>
+                </div>
+                <div class="history-amount wit">-$150.00</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            Trade
+        </a>
+        <a href="history.html" class="nav-item active">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            History
+        </a>
+    </div>
+
+    <script>
+        // Simple script to just show the balance
+        document.getElementById('user-balance').innerText = "1000.00";
+    </script>
+</body>
+</html>
