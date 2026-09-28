@@ -36,7 +36,10 @@
         .chart-header h3 { font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
         .chart-header p { font-size: 0.85rem; color: #ef4444; margin-top: 2px; }
         .chart-header p.up { color: #22c55e; }
-        canvas { width: 100%; height: 100%; display: block; }
+        
+        /* FIX 1: Changed 'canvas' to '#priceChart' so it targets the specific element */
+        #priceChart { width: 100%; height: 100%; display: block; }
+        
         .current-price-tag { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: #0f0a1a; border: 1px solid #22c55e; color: #22c55e; padding: 4px 8px; font-size: 0.85rem; font-weight: bold; border-radius: 4px 0 0 4px; z-index: 10; }
         .zoom-btns { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 5px; z-index: 10; }
         .zoom-btn { background: #1e162e; border: 1px solid #2a1f3d; color: white; width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
@@ -118,7 +121,7 @@
         </div>
         <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🏠 Home</div>
         <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">⬇️ Deposit</div>
-        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">️ Withdraw</div>
+        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">⬆️ Withdraw</div>
         <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🕐 History</div>
     </div>
 
@@ -265,21 +268,26 @@
         const canvas = document.getElementById('priceChart');
         const ctx = canvas.getContext('2d');
         
+        // FIX 2: Improved resize function to ensure canvas gets correct pixel dimensions
         function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            drawChart(); // Redraw immediately after resizing
         }
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        
+        // FIX 3: Added a tiny delay to ensure the parent container is fully rendered before measuring
+        setTimeout(resizeCanvas, 100);
 
         function drawChart() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             if(priceHistory.length < 2) return;
 
             const min = Math.min(...priceHistory) - 5;
             const max = Math.max(...priceHistory) + 5;
             const range = max - min;
             
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 2;
