@@ -12,6 +12,113 @@
     </style>
 </head>
 <body class="antialiased text-white">
+    
+    <!-- NEW: Menu Overlay & Sidebar -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/70 z-[9998] hidden" onclick="closeMenu()"></div>
+    <div id="menu-sidebar" class="fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-[#130f1c] z-[9999] hidden flex flex-col shadow-2xl transform transition-transform duration-300 -translate-x-full">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between px-4 py-4 border-b border-white/10 bg-[#130f1c]">
+            <div class="flex items-center gap-3">
+                <button onclick="closeMenu()" class="text-white text-xl p-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                <span class="text-white font-bold text-lg">Menu</span>
+            </div>
+            <div class="flex items-center gap-2 text-white text-sm font-medium cursor-pointer">
+                <span class="text-lg">🇬🇧</span> <span>EN</span>
+            </div>
+        </div>
+        
+        <!-- Sidebar Scrollable Content -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-2">
+            <!-- User Profile -->
+            <div class="flex items-center gap-3 px-4 py-4 border-b border-white/10">
+                <div class="w-12 h-12 rounded-full bg-[#7C3AED] flex items-center justify-center text-white font-bold text-xl shrink-0">C</div>
+                <div class="min-w-0">
+                    <div class="text-white font-bold text-base truncate">Citra Slamet</div>
+                    <div class="text-gray-400 text-sm truncate">ci***t7@gmail.com</div>
+                </div>
+            </div>
+            
+            <!-- Menu Items -->
+            <div class="mt-2">
+                <div class="flex items-center gap-3 px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-[#7C3AED] flex items-center justify-center text-white font-bold text-sm shrink-0">P</div>
+                    <span class="text-[15px]">PalOption</span>
+                </div>
+                
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <span class="text-[15px]">Account settings</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                        <span class="text-[15px]">Deposit</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg>
+                        <span class="text-[15px]">Withdraw</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+                        <span class="text-[15px]">History</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+
+                <div class="flex items-center gap-3 px-4 py-3.5 bg-[#7C3AED]/15 text-[#A78BFA] cursor-pointer border-l-4 border-[#7C3AED] transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path></svg>
+                    <span class="text-[15px] font-medium">Refer & Earn</span>
+                </div>
+
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors mt-2 border-t border-white/5 pt-4">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                        <span class="text-[15px]">Dark theme</span>
+                    </div>
+                    <div class="w-12 h-7 bg-[#7C3AED] rounded-full relative cursor-pointer shrink-0">
+                        <div class="absolute right-1 top-1 w-5 h-5 bg-white rounded-full shadow-md"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-[15px]">Help Centre</span>
+                </div>
+
+                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                        <span class="text-[15px]">Responsible Trading</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+
+                <div class="flex items-center gap-3 px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span class="text-[15px]">Live Chat</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar Footer -->
+        <div class="px-4 py-3 border-t border-white/10 text-center text-gray-500 text-xs flex items-center justify-center gap-2 bg-[#130f1c]">
+            <span id="menu-datetime">2026-09-24 14:20:51 GMT</span>
+            <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+        </div>
+    </div>
+
     <div class="fixed inset-0 overflow-hidden bg-[#141021]">
         <!-- MOBILE LAYOUT -->
         <div class="block md:hidden h-full overflow-hidden">
@@ -39,7 +146,8 @@
                 <!-- Header -->
                 <header class="shrink-0 flex items-center justify-between px-3 py-2 bg-[#1F1936] border-b border-white/[0.07] z-40">
                     <div class="flex items-center gap-2">
-                        <button onclick="alert('Menu clicked')"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button>
+                        <!-- UPDATED: Menu button now opens the sidebar -->
+                        <button onclick="openMenu()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button>
                         <div class="w-7 h-7 rounded-lg bg-[#7C3AED] flex items-center justify-center"><span class="text-white font-bold text-xs">O</span></div>
                     </div>
                     <div class="relative">
@@ -248,6 +356,27 @@
     </div>
 
     <script>
+        // ==========================================
+        // MENU FUNCTIONS (NEW)
+        // ==========================================
+        function openMenu() {
+            document.getElementById('menu-overlay').classList.remove('hidden');
+            const sidebar = document.getElementById('menu-sidebar');
+            sidebar.classList.remove('hidden');
+            setTimeout(() => {
+                sidebar.style.transform = 'translateX(0)';
+            }, 10);
+        }
+
+        function closeMenu() {
+            const sidebar = document.getElementById('menu-sidebar');
+            sidebar.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                sidebar.classList.add('hidden');
+                document.getElementById('menu-overlay').classList.add('hidden');
+            }, 300);
+        }
+
         // ==========================================
         // OBX PRIME TRADING LOGIC
         // ==========================================
