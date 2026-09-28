@@ -7,69 +7,104 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0f0a1a; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
+        body { background-color: #0b0814; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
         
         /* Header */
-        .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .top-header { background: linear-gradient(90deg, #5b21b6, #7c3aed); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .logo { font-size: 1.2rem; font-weight: 900; color: white; }
-        .balance-box { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        .deposit-btn { background: #7c3aed; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .logo-box { background: #7c3aed; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; }
+        .balance-box { background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .deposit-btn { background: #7c3aed; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.4); }
         
         /* Sidebar (Proven Working Method) */
         #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998; display: none; }
-        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 9999; display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
-        .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 9999; display: none; overflow-y: auto; }
+        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #2a1f3d; font-weight: bold; font-size: 1.2rem; }
         .menu-link { padding: 16px 20px; color: white; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
         .menu-link:active { background: #2a1f3d; }
 
-        /* Pages */
-        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-        .page { display: none; }
-        .page.active { display: block; }
+        /* Trade Type Tabs */
+        .trade-types { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0814; }
+        .trade-types::-webkit-scrollbar { display: none; }
+        .type-tab { background: #161122; padding: 10px 18px; border-radius: 20px; white-space: nowrap; border: 1px solid #2a1f3d; color: #9ca3af; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .type-tab.active { background: #2e1065; border-color: #7c3aed; color: white; }
 
-        /* Trade UI */
-        .chart-area { background: #130f1c; height: 200px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid #2a1f3d; position: relative; }
-        .current-price { font-size: 2.5rem; font-weight: bold; color: #22c55e; }
-        .digits-bar { display: flex; justify-content: space-between; gap: 4px; background: #1a1025; padding: 12px; border-radius: 12px; margin-bottom: 15px; }
-        .digit-item { flex: 1; text-align: center; padding: 8px 0; border-radius: 8px; font-weight: bold; color: #6b7280; }
-        .digit-item.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-        .controls-card { background: #1a1025; border-radius: 16px; border: 1px solid #2a1f3d; padding: 20px; }
-        .stake-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; }
-        .stake-adjust { background: #0f0a1a; border: 1px solid #2a1f3d; color: white; width: 45px; height: 45px; border-radius: 12px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .stake-display { background: #0f0a1a; border: 2px solid #2a1f3d; border-radius: 12px; padding: 10px 25px; font-size: 1.8rem; font-weight: bold; min-width: 140px; text-align: center; }
-        .quick-stakes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .quick-stake { background: #0f0a1a; border: 1px solid #2a1f3d; color: #9ca3af; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-        .quick-stake.active { background: rgba(168, 85, 247, 0.2); border-color: #a855f7; color: #a855f7; }
-        .trade-buttons { display: flex; gap: 12px; }
-        .trade-btn { flex: 1; padding: 18px; border: none; border-radius: 12px; color: white; font-weight: 900; font-size: 1.2rem; cursor: pointer; }
+        /* Chart Area */
+        .chart-container { background: #130f1c; margin: 0 15px 15px; border-radius: 12px; border: 1px solid #2a1f3d; position: relative; height: 240px; overflow: hidden; }
+        .chart-header { position: absolute; top: 12px; left: 15px; z-index: 10; }
+        .chart-header h3 { font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .chart-header p { font-size: 0.85rem; color: #ef4444; margin-top: 2px; }
+        .chart-header p.up { color: #22c55e; }
+        canvas { width: 100%; height: 100%; display: block; }
+        .current-price-tag { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: #0f0a1a; border: 1px solid #22c55e; color: #22c55e; padding: 4px 8px; font-size: 0.85rem; font-weight: bold; border-radius: 4px 0 0 4px; z-index: 10; }
+        .zoom-btns { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 5px; z-index: 10; }
+        .zoom-btn { background: #1e162e; border: 1px solid #2a1f3d; color: white; width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+
+        /* Digit Stats */
+        .digits-container { padding: 0 15px 15px; display: flex; justify-content: space-between; gap: 4px; }
+        .digit-stat { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .digit-circle { width: 38px; height: 38px; border-radius: 50%; background: #161122; border: 2px solid #2a1f3d; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; margin-bottom: 4px; position: relative; }
+        .digit-stat.active .digit-circle { border-color: #f97316; }
+        .digit-stat.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #f97316; }
+        .digit-percent { font-size: 0.7rem; color: #6b7280; }
+        .digit-stat.active .digit-percent { color: #f97316; }
+
+        /* Controls Card */
+        .controls-card { background: #161122; margin: 0 15px; border-radius: 16px; border: 1px solid #2a1f3d; overflow: hidden; }
+        
+        /* Auto/Manual */
+        .mode-toggle { display: flex; border-bottom: 1px solid #2a1f3d; }
+        .mode-btn { flex: 1; padding: 14px; border: none; background: transparent; color: #9ca3af; font-weight: bold; font-size: 0.95rem; cursor: pointer; letter-spacing: 1px; }
+        .mode-btn.active { background: #7c3aed; color: white; }
+
+        /* Stake Section */
+        .stake-section { padding: 20px; border-bottom: 1px solid #2a1f3d; }
+        .stake-label { text-align: center; color: #a855f7; font-size: 0.75rem; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 12px; }
+        .stake-control { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .stake-adjust { background: #0f0a1a; border: 1px solid #2a1f3d; color: white; width: 45px; height: 55px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .stake-display { flex: 1; background: #0f0a1a; border: 2px solid #2a1f3d; border-radius: 12px; padding: 12px; text-align: center; min-height: 55px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .stake-currency { color: #a855f7; font-size: 1.2rem; font-weight: bold; }
+        .stake-value { font-size: 2rem; font-weight: 900; color: white; }
+        
+        .quick-stakes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
+        .quick-stake { background: #0f0a1a; border: 1px solid #2a1f3d; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: center; }
+        .quick-stake.active { background: rgba(124, 58, 237, 0.2); border-color: #7c3aed; color: #a855f7; }
+
+        /* Advanced Options */
+        .advanced-options { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid #2a1f3d; }
+        .option-box { padding: 15px 10px; text-align: center; border-right: 1px solid #2a1f3d; }
+        .option-box:last-child { border-right: none; }
+        .option-label { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .option-label.profit { color: #22c55e; }
+        .option-label.loss { color: #ef4444; }
+        .option-label.mult { color: #f97316; }
+        .option-val { font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .option-val span { font-size: 0.9rem; color: #6b7280; font-weight: normal; }
+
+        /* Trade Buttons */
+        .trade-buttons { display: flex; padding: 15px; gap: 12px; }
+        .trade-btn { flex: 1; padding: 20px 10px; border: none; border-radius: 12px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; position: relative; }
         .trade-btn-even { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .trade-btn-odd { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        #status-msg { text-align: center; margin-top: 15px; font-weight: bold; min-height: 24px; }
+        .trade-btn-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; }
+        .trade-btn-payout { font-size: 0.75rem; opacity: 0.9; margin-top: 2px; }
+        .trade-btn-amount { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); text-align: right; }
+        .trade-btn-amount .val { font-size: 1.2rem; font-weight: 900; display: block; }
+        .trade-btn-amount .lbl { font-size: 0.75rem; opacity: 0.9; }
+
+        #status-msg { text-align: center; padding: 0 15px 15px; font-weight: bold; font-size: 0.9rem; min-height: 20px; }
         .win { color: #22c55e; }
         .loss { color: #ef4444; }
 
-        /* Forms (Deposit/Withdraw) */
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; color: #9ca3af; font-size: 0.9rem; font-weight: 600; }
-        .form-input, .form-select { width: 100%; background: #0f0a1a; border: 1px solid #2a1f3d; color: white; padding: 14px; border-radius: 10px; font-size: 1rem; outline: none; }
-        .form-input:focus, .form-select:focus { border-color: #a855f7; }
-
-        /* History */
-        .history-header { padding: 15px 0; margin-bottom: 15px; border-bottom: 1px solid #2a1f3d; }
-        .history-tabs { display: flex; background: #130f1c; border-radius: 12px; padding: 5px; margin-bottom: 15px; }
-        .history-tab { flex: 1; padding: 10px; text-align: center; color: #6b7280; font-weight: 600; cursor: pointer; border-radius: 8px; }
-        .history-tab.active { background: #1a1025; color: #a855f7; }
-        .history-item { background: #1a1025; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a1f3d; }
-
         /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #130f1c; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; cursor: pointer; flex: 1; }
         .nav-item.active { color: #a855f7; }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
         .nav-item span { font-size: 0.75rem; font-weight: 500; }
+        .nav-item.ai { color: white; }
+        .nav-item.ai svg { background: linear-gradient(135deg, #f97316, #a855f7); padding: 8px; border-radius: 12px; width: 40px; height: 40px; margin-top: -20px; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4); }
     </style>
 </head>
 <body>
@@ -78,132 +113,127 @@
     <div id="sidebar-overlay" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';"></div>
     <div id="sidebar">
         <div class="sidebar-header">
-            <span style="font-weight:bold; font-size:1.2rem;">Menu</span>
-            <button class="close-btn" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">×</button>
+            <span>Menu</span>
+            <button style="background:none; border:none; color:white; font-size:1.5rem;" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">×</button>
         </div>
-        <div class="menu-link" onclick="showPage('trade'); document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🏠 OBX Prime Home</div>
-        <div class="menu-link" onclick="showPage('deposit'); document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">⬇️ Deposit</div>
-        <div class="menu-link" onclick="showPage('withdraw'); document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">⬆️ Withdraw</div>
-        <div class="menu-link" onclick="showPage('history'); document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🕐 History</div>
+        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🏠 Home</div>
+        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">⬇️ Deposit</div>
+        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">️ Withdraw</div>
+        <div class="menu-link" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">🕐 History</div>
     </div>
 
     <!-- Header -->
     <div class="top-header">
         <div class="header-left">
             <button class="menu-btn" onclick="document.getElementById('sidebar').style.display='block'; document.getElementById('sidebar-overlay').style.display='block';">☰</button>
-            <div class="logo">OBX PRIME</div>
+            <div class="logo-box">P</div>
+            <div class="balance-box">R $ <span id="user-balance">1000.00</span></div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
-            <button class="deposit-btn" onclick="showPage('deposit')">Deposit</button>
-        </div>
+        <button class="deposit-btn">Deposit</button>
     </div>
 
-    <!-- TRADE PAGE -->
-    <div id="trade-page" class="page active">
-        <div class="container">
-            <div class="chart-area">
-                <div style="position:absolute; top:10px; left:15px; color:#a855f7; font-weight:bold;">Vol 10 (1s) Index</div>
-                <div class="current-price" id="live-price">9320.42</div>
-            </div>
-            <div class="digits-bar" id="digits-bar"></div>
-            <div class="controls-card">
-                <div class="stake-control">
-                    <button class="stake-adjust" onclick="adjustStake(-1)">−</button>
-                    <div class="stake-display">$<span id="stake-value">10</span></div>
-                    <button class="stake-adjust" onclick="adjustStake(1)">+</button>
-                </div>
-                <div class="quick-stakes">
-                    <button class="quick-stake" onclick="setStake(1)">$1</button>
-                    <button class="quick-stake" onclick="setStake(5)">$5</button>
-                    <button class="quick-stake active" onclick="setStake(10)">$10</button>
-                    <button class="quick-stake" onclick="setStake(25)">$25</button>
-                    <button class="quick-stake" onclick="setStake(50)">$50</button>
-                    <button class="quick-stake" onclick="setStake(100)">$100</button>
-                </div>
-                <div class="trade-buttons">
-                    <button class="trade-btn trade-btn-even" onclick="placeTrade('Even')">EVEN</button>
-                    <button class="trade-btn trade-btn-odd" onclick="placeTrade('Odd')">ODD</button>
-                </div>
-                <div id="status-msg"></div>
-            </div>
-        </div>
+    <!-- Trade Types -->
+    <div class="trade-types">
+        <div class="type-tab">◎ Matches/Differs</div>
+        <div class="type-tab active"> Even/Odd</div>
+        <div class="type-tab">⇅ Over/Under</div>
     </div>
 
-    <!-- DEPOSIT PAGE -->
-    <div id="deposit-page" class="page">
-        <div class="container">
-            <div class="controls-card" style="margin-top:20px;">
-                <h2 style="text-align:center; color:#a855f7; margin-bottom:20px;">Deposit Funds</h2>
-                <div class="form-group">
-                    <label class="form-label">Amount ($)</label>
-                    <input type="number" id="deposit-amount" class="form-input" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Payment Method</label>
-                    <select class="form-select">
-                        <option>USDT (TRC20)</option>
-                        <option>Bitcoin (BTC)</option>
-                        <option>Bank Transfer</option>
-                    </select>
-                </div>
-                <button class="trade-btn trade-btn-even" style="width:100%;" onclick="alert('Deposit requested!'); showPage('history');">Request Deposit</button>
-            </div>
+    <!-- Chart Area -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <h3>📊 Vol 10 (1s) <span style="font-size:0.8rem; color:#6b7280;">⌄</span></h3>
+            <p id="price-change" class="down">-1.89%</p>
         </div>
+        <div class="zoom-btns">
+            <button class="zoom-btn">+</button>
+            <button class="zoom-btn">−</button>
+        </div>
+        <canvas id="priceChart"></canvas>
+        <div class="current-price-tag" id="current-price-tag">9320.42</div>
     </div>
 
-    <!-- WITHDRAW PAGE -->
-    <div id="withdraw-page" class="page">
-        <div class="container">
-            <div class="controls-card" style="margin-top:20px;">
-                <h2 style="text-align:center; color:#a855f7; margin-bottom:20px;">Withdraw Funds</h2>
-                <div class="form-group">
-                    <label class="form-label">Amount ($)</label>
-                    <input type="number" id="withdraw-amount" class="form-input" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Wallet Address / Bank Details</label>
-                    <input type="text" class="form-input" placeholder="Enter your details">
-                </div>
-                <button class="trade-btn trade-btn-odd" style="width:100%;" onclick="alert('Withdrawal requested!'); showPage('history');">Request Withdrawal</button>
-            </div>
-        </div>
+    <!-- Digit Stats -->
+    <div class="digits-container" id="digits-container">
+        <!-- Generated by JS -->
     </div>
 
-    <!-- HISTORY PAGE -->
-    <div id="history-page" class="page">
-        <div class="container">
-            <div class="history-header">
-                <h2 style="color:#a855f7;">History</h2>
+    <!-- Controls Card -->
+    <div class="controls-card">
+        <div class="mode-toggle">
+            <button class="mode-btn active">AUTO</button>
+            <button class="mode-btn">MANUAL</button>
+        </div>
+
+        <div class="stake-section">
+            <div class="stake-label">STAKE</div>
+            <div class="stake-control">
+                <button class="stake-adjust" onclick="adjustStake(-1)">−</button>
+                <div class="stake-display">
+                    <span class="stake-currency">$</span>
+                    <span class="stake-value" id="stake-value">10</span>
+                </div>
+                <button class="stake-adjust" onclick="adjustStake(1)">+</button>
             </div>
-            <div class="history-tabs">
-                <div class="history-tab active" onclick="renderHistory('trades', this)">Trades</div>
-                <div class="history-tab" onclick="renderHistory('deposits', this)">Deposits</div>
-                <div class="history-tab" onclick="renderHistory('withdrawals', this)">Withdrawals</div>
-            </div>
-            <div id="history-list">
-                <div style="text-align:center; padding:40px; color:#6b7280;">No history yet.</div>
+            <div class="quick-stakes">
+                <button class="quick-stake" onclick="setStake(1)">$1</button>
+                <button class="quick-stake" onclick="setStake(5)">$5</button>
+                <button class="quick-stake active" onclick="setStake(10)">$10</button>
+                <button class="quick-stake" onclick="setStake(25)">$25</button>
+                <button class="quick-stake" onclick="setStake(50)">$50</button>
+                <button class="quick-stake" onclick="setStake(100)">$100</button>
             </div>
         </div>
+
+        <div class="advanced-options">
+            <div class="option-box">
+                <div class="option-label profit">TARGET PROFIT</div>
+                <div class="option-val"><span>$</span> 200</div>
+            </div>
+            <div class="option-box">
+                <div class="option-label loss">STOP LOSS</div>
+                <div class="option-val"><span>$</span> 999</div>
+            </div>
+            <div class="option-box">
+                <div class="option-label mult">MULTIPLIER</div>
+                <div class="option-val"><span>x</span> 2</div>
+            </div>
+        </div>
+
+        <div class="trade-buttons">
+            <button class="trade-btn trade-btn-even" onclick="placeTrade('Even')">
+                <span class="trade-btn-title">Even</span>
+                <span class="trade-btn-payout">95.2% Payout</span>
+                <div class="trade-btn-amount">
+                    <span class="val" id="even-payout">$19.52</span>
+                    <span class="lbl">Payout</span>
+                </div>
+            </button>
+            <button class="trade-btn trade-btn-odd" onclick="placeTrade('Odd')">
+                <span class="trade-btn-title">Odd</span>
+                <span class="trade-btn-payout">95.2% Payout</span>
+                <div class="trade-btn-amount">
+                    <span class="val" id="odd-payout">$19.52</span>
+                    <span class="lbl">Payout</span>
+                </div>
+            </button>
+        </div>
+        <div id="status-msg"></div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('trade')" id="nav-trade">
+        <div class="nav-item active">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
             <span>Trade</span>
         </div>
-        <div class="nav-item" onclick="showPage('deposit')" id="nav-deposit">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span>Deposit</span>
+        <div class="nav-item ai">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+            <span>AI</span>
         </div>
-        <div class="nav-item" onclick="showPage('withdraw')" id="nav-withdraw">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m-8 8l8-8 8 8"/></svg>
-            <span>Withdraw</span>
-        </div>
-        <div class="nav-item" onclick="showPage('history')" id="nav-history">
+        <div class="nav-item">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>History</span>
+            <span>Positions</span>
         </div>
     </div>
 
@@ -214,20 +244,65 @@
         let balance = 1000.00;
         let price = 9320.42;
         let lastDigit = 2;
-        let trades = [];
-        let deposits = [];
-        let withdrawals = [];
+        let priceHistory = [];
+        let digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        let totalTicks = 0;
 
-        // NAVIGATION
-        function showPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(page + '-page').classList.add('active');
-            document.getElementById('nav-' + page).classList.add('active');
-            if(page === 'history') renderHistory('trades');
+        // INIT DIGITS UI
+        function initDigits() {
+            const container = document.getElementById('digits-container');
+            for(let i=0; i<=9; i++) {
+                const div = document.createElement('div');
+                div.className = 'digit-stat';
+                div.id = 'digit-stat-' + i;
+                div.innerHTML = `<div class="digit-circle">${i}</div><div class="digit-percent" id="digit-pct-${i}">10%</div>`;
+                container.appendChild(div);
+            }
+        }
+        initDigits();
+
+        // CHART DRAWING
+        const canvas = document.getElementById('priceChart');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(priceHistory.length < 2) return;
+
+            const min = Math.min(...priceHistory) - 5;
+            const max = Math.max(...priceHistory) + 5;
+            const range = max - min;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.lineJoin = 'round';
+
+            for(let i=0; i<priceHistory.length; i++) {
+                const x = (i / (priceHistory.length - 1)) * canvas.width;
+                const y = canvas.height - ((priceHistory[i] - min) / range) * canvas.height;
+                if(i===0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Draw current price dot
+            const lastX = canvas.width;
+            const lastY = canvas.height - ((priceHistory[priceHistory.length-1] - min) / range) * canvas.height;
+            ctx.beginPath();
+            ctx.arc(lastX - 2, lastY, 4, 0, Math.PI*2);
+            ctx.fillStyle = 'white';
+            ctx.fill();
         }
 
-        // STAKE
+        // STAKE LOGIC
         function adjustStake(amt) {
             let val = parseInt(document.getElementById('stake-value').innerText) + amt;
             if (val < 1) val = 1;
@@ -237,6 +312,13 @@
             document.getElementById('stake-value').innerText = amt;
             document.querySelectorAll('.quick-stake').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.quick-stake').forEach(b => { if(b.innerText === '$'+amt) b.classList.add('active'); });
+            updatePayouts();
+        }
+        function updatePayouts() {
+            const stake = parseInt(document.getElementById('stake-value').innerText);
+            const payout = (stake * 1.952).toFixed(2);
+            document.getElementById('even-payout').innerText = '$' + payout;
+            document.getElementById('odd-payout').innerText = '$' + payout;
         }
 
         // TRADING
@@ -251,57 +333,50 @@
                 let won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
                 
                 if(won) {
-                    let profit = stake * 0.95;
+                    let profit = stake * 0.952;
                     balance += profit;
-                    msg.innerText = "WIN! +" + profit.toFixed(2);
+                    msg.innerText = "WIN! Last digit: " + lastDigit;
                     msg.className = "win";
-                    trades.unshift({type: choice, amount: stake, result: 'win', profit: profit, time: new Date().toLocaleTimeString()});
                 } else {
                     balance -= stake;
-                    msg.innerText = "LOSS. -" + stake.toFixed(2);
+                    msg.innerText = "LOSS. Last digit: " + lastDigit;
                     msg.className = "loss";
-                    trades.unshift({type: choice, amount: stake, result: 'loss', profit: -stake, time: new Date().toLocaleTimeString()});
                 }
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-            }, 1000);
+            }, 500);
         }
 
-        // HISTORY RENDER
-        function renderHistory(tab, el) {
-            if(el) {
-                document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
-                el.classList.add('active');
-            }
-            let list = document.getElementById('history-list');
-            if(tab === 'trades') {
-                if(trades.length === 0) { list.innerHTML = '<div style="text-align:center; padding:40px; color:#6b7280;">No trades yet.</div>'; return; }
-                list.innerHTML = trades.map(t => `<div class="history-item"><div><b>${t.type}</b><br><small style="color:#6b7280">$${t.amount} • ${t.time}</small></div><div style="color:${t.result==='win'?'#22c55e':'#ef4444'}; font-weight:bold;">${t.result==='win'?'+':''}$${t.profit.toFixed(2)}</div></div>`).join('');
-            } else if(tab === 'deposits') {
-                list.innerHTML = deposits.length ? deposits.map(d => `<div class="history-item"><div><b>Deposit</b><br><small style="color:#6b7280">${d.method} • ${d.time}</small></div><div style="color:#a855f7; font-weight:bold;">+$${d.amount}</div></div>`).join('') : '<div style="text-align:center; padding:40px; color:#6b7280;">No deposits yet.</div>';
-            } else {
-                list.innerHTML = withdrawals.length ? withdrawals.map(w => `<div class="history-item"><div><b>Withdrawal</b><br><small style="color:#6b7280">${w.time}</small></div><div style="color:#f97316; font-weight:bold;">-$${w.amount}</div></div>`).join('') : '<div style="text-align:center; padding:40px; color:#6b7280;">No withdrawals yet.</div>';
-            }
-        }
-
-        // INIT
-        function initDigits() {
-            let bar = document.getElementById('digits-bar');
-            for(let i=0; i<=9; i++) {
-                let d = document.createElement('div');
-                d.className = 'digit-item'; d.id = 'digit-' + i; d.innerText = i;
-                bar.appendChild(d);
-            }
-        }
-        initDigits();
-
+        // LIVE SIMULATION
         setInterval(() => {
-            price += (Math.random() - 0.5) * 1.5;
-            let pStr = price.toFixed(2);
+            const change = (Math.random() - 0.5) * 3;
+            price += change;
+            const pStr = price.toFixed(2);
             lastDigit = parseInt(pStr.split('.')[1].slice(-1));
-            document.getElementById('live-price').innerText = pStr;
-            document.querySelectorAll('.digit-item').forEach(d => d.classList.remove('active'));
-            let activeDigit = document.getElementById('digit-' + lastDigit);
-            if(activeDigit) activeDigit.classList.add('active');
+            
+            // Update UI
+            document.getElementById('current-price-tag').innerText = pStr;
+            document.getElementById('current-price-tag').style.borderColor = change >= 0 ? '#22c55e' : '#ef4444';
+            document.getElementById('current-price-tag').style.color = change >= 0 ? '#22c55e' : '#ef4444';
+            
+            const changeEl = document.getElementById('price-change');
+            changeEl.innerText = (change >= 0 ? '+' : '') + (Math.random() * 2).toFixed(2) + '%';
+            changeEl.className = change >= 0 ? 'up' : 'down';
+
+            // Update Chart
+            priceHistory.push(price);
+            if(priceHistory.length > 60) priceHistory.shift();
+            drawChart();
+
+            // Update Digits
+            digitCounts[lastDigit]++;
+            totalTicks++;
+            for(let i=0; i<=9; i++) {
+                const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100).toFixed(1) : '0.0';
+                document.getElementById('digit-pct-' + i).innerText = pct + '%';
+                const statEl = document.getElementById('digit-stat-' + i);
+                if(i === lastDigit) statEl.classList.add('active');
+                else statEl.classList.remove('active');
+            }
         }, 1000);
     </script>
 </body>
