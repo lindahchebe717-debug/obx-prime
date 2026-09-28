@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Withdraw Funds</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0f0a1a; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
+        
+        /* Header */
+        .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .logo { font-size: 1.2rem; font-weight: 900; color: white; text-decoration: none; }
+        .balance-box { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        
+        /* Sidebar Menu */
+        #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998; display: none; }
+        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 9999; display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
+        .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .menu-item { padding: 16px 20px; color: white; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .menu-item:active { background: #2a1f3d; }
+
+        /* Withdraw Page Styles */
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+        .withdraw-card { background: #1a1025; border-radius: 16px; border: 1px solid #2a1f3d; padding: 25px 20px; margin-top: 20px; }
+        .withdraw-header { text-align: center; margin-bottom: 25px; }
+        .withdraw-header h2 { color: #a855f7; font-size: 1.5rem; margin-bottom: 8px; }
+        .withdraw-header p { color: #6b7280; font-size: 0.9rem; }
+        
+        .available-balance { background: rgba(168, 85, 247, 0.1); border: 1px solid #a855f7; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px; }
+        .available-balance span { display: block; color: #d8b4fe; font-size: 0.85rem; margin-bottom: 5px; }
+        .available-balance strong { font-size: 1.8rem; color: white; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; color: #9ca3af; font-size: 0.9rem; font-weight: 600; }
+        .max-btn { background: rgba(168, 85, 247, 0.2); color: #a855f7; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        
+        .form-input, .form-select { width: 100%; background: #0f0a1a; border: 1px solid #2a1f3d; color: white; padding: 14px; border-radius: 10px; font-size: 1rem; outline: none; }
+        .form-input:focus, .form-select:focus { border-color: #a855f7; }
+        
+        .submit-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; text-decoration: none; font-size: 0.8rem; }
+        .nav-item.active { color: #a855f7; }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Overlay & Menu -->
+    <div id="sidebar-overlay" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';"></div>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span style="font-weight:bold; font-size:1.2rem;">Menu</span>
+            <button class="close-btn" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">×</button>
+        </div>
+        <!-- Notice these are now normal links! -->
+        <a href="index.html" class="menu-item"> OBX Prime Home</a>
+        <a href="deposit.html" class="menu-item">⬇️ Deposit</a>
+        <a href="withdraw.html" class="menu-item">️ Withdraw</a>
+        <a href="history.html" class="menu-item">🕐 History</a>
+    </div>
+
+    <!-- Header -->
+    <div class="top-header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="document.getElementById('sidebar').style.display='block'; document.getElementById('sidebar-overlay').style.display='block';">☰</button>
+            <a href="index.html" class="logo">OBX PRIME</a>
+        </div>
+        <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
+    </div>
+
+    <!-- Withdraw Content -->
+    <div class="container">
+        <div class="withdraw-card">
+            <div class="withdraw-header">
+                <h2>Withdraw Funds</h2>
+                <p>Process time: 1-24 hours</p>
+            </div>
+
+            <div class="available-balance">
+                <span>Available Balance</span>
+                <strong>$ <span id="avail-bal">1000.00</span></strong>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span>Amount ($)</span>
+                    <button class="max-btn" onclick="document.getElementById('amount').value = document.getElementById('avail-bal').innerText">MAX</button>
+                </div>
+                <input type="number" id="amount" class="form-input" placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <div class="form-label"><span>Payment Method</span></div>
+                <select class="form-select">
+                    <option>USDT (TRC20)</option>
+                    <option>Bitcoin (BTC)</option>
+                    <option>Bank Transfer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label"><span>Wallet Address / Bank Details</span></div>
+                <input type="text" class="form-input" placeholder="Enter your details here">
+            </div>
+
+            <button class="submit-btn" onclick="alert('Withdrawal request submitted!'); window.location.href='history.html'">Request Withdrawal</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            Trade
+        </a>
+        <a href="history.html" class="nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            History
+        </a>
+    </div>
+
+    <script>
+        // Simple script to just show the balance
+        document.getElementById('user-balance').innerText = "1000.00";
+        document.getElementById('avail-bal').innerText = "1000.00";
+    </script>
+</body>
+</html>
