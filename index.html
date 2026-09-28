@@ -13,20 +13,7 @@
         .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         
-        /* Menu Button */
-        .menu-btn { 
-            background: rgba(255,255,255,0.2); 
-            border: none; 
-            color: white; 
-            width: 44px; 
-            height: 44px; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
-        }
+        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .menu-btn:active { background: rgba(255,255,255,0.4); }
         
         .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: white; }
@@ -36,17 +23,12 @@
         .balance-amount { font-weight: bold; font-size: 1rem; }
         .deposit-btn { background: #7c3aed; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
         
-        /* ULTRA-FOOLPROOF SIDEBAR (No animations, just display none/block) */
-        .sidebar-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); z-index: 99998 !important; 
-            display: none; 
-        }
-        .sidebar { 
-            position: fixed; top: 0; left: 0; width: 280px; height: 100%; 
-            background: #130f1c; z-index: 99999 !important; 
-            display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); 
-        }
+        /* FOOLPROOF SIDEBAR (Uses classList toggle with !important) */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99998 !important; display: none; }
+        .sidebar-overlay.active { display: block !important; }
+        
+        .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 99999 !important; display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { display: block !important; }
         
         .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; background: #1a1025; }
         .sidebar-title { font-size: 1.2rem; font-weight: bold; }
@@ -119,6 +101,7 @@
         /* Trade Buttons */
         .trade-buttons { padding: 20px; display: flex; gap: 12px; }
         .trade-btn { flex: 1; padding: 18px 10px; border: none; border-radius: 12px; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .trade-btn:active { transform: scale(0.97); }
         .trade-btn-even { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .trade-btn-odd { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .trade-btn-title { font-size: 1.3rem; font-weight: 900; letter-spacing: 1px; }
@@ -146,12 +129,12 @@
         .trade-result.win { color: #22c55e; }
         .trade-result.loss { color: #ef4444; }
 
+        /* UPDATED BOTTOM NAV (Now includes Withdraw and History) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #6b7280; padding: 5px 15px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #6b7280; padding: 5px 10px; flex: 1; }
         .nav-item.active { color: #a855f7; }
         .nav-item svg { width: 22px; height: 22px; }
-        .nav-item span { font-size: 0.75rem; font-weight: 500; }
-        .nav-item.ai { background: linear-gradient(135deg, #f97316, #a855f7); padding: 10px 20px; border-radius: 12px; color: white; margin-top: -15px; }
+        .nav-item span { font-size: 0.7rem; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -331,19 +314,23 @@
         <div id="positions-content" class="positions-content"></div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- UPDATED Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="showPage('trade')" id="nav-trade">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
             <span>Trade</span>
         </div>
-        <div class="nav-item ai">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-            <span>AI</span>
+        <div class="nav-item" onclick="showPage('deposit')" id="nav-deposit">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Deposit</span>
         </div>
-        <div class="nav-item" onclick="showPage('positions')" id="nav-positions">
+        <div class="nav-item" onclick="showPage('withdraw')" id="nav-withdraw">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m-8 8l8-8 8 8"/></svg>
+            <span>Withdraw</span>
+        </div>
+        <div class="nav-item" onclick="showPage('history')" id="nav-history">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Positions</span>
+            <span>History</span>
         </div>
     </div>
 
@@ -361,22 +348,10 @@
         let withdrawHistory = [];
         let currentTab = 'open';
 
-        // ==========================================
-        // ULTRA-FOOLPROOF MENU TOGGLE
-        // ==========================================
+        // FOOLPROOF MENU TOGGLE (Uses classList, no inline style conflicts)
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            // This directly changes the display style, bypassing ALL CSS animation bugs
-            if (sidebar.style.display === 'block') {
-                sidebar.style.display = 'none';
-                overlay.style.display = 'none';
-            } else {
-                sidebar.style.display = 'block';
-                overlay.style.display = 'block';
-                alert("Menu is now OPEN! If you see this, the button works perfectly.");
-            }
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
         }
 
         // PAGE NAVIGATION
@@ -387,17 +362,18 @@
             if (pageName === 'trade') {
                 document.getElementById('trade-page').classList.add('active');
                 document.getElementById('nav-trade').classList.add('active');
-            } else if (pageName === 'positions') {
-                document.getElementById('positions-page').classList.add('active');
-                document.getElementById('nav-positions').classList.add('active');
-                renderPositions();
             } else if (pageName === 'deposit') {
                 document.getElementById('deposit-page').classList.add('active');
+                document.getElementById('nav-deposit').classList.add('active');
             } else if (pageName === 'withdraw') {
                 document.getElementById('withdraw-page').classList.add('active');
+                document.getElementById('nav-withdraw').classList.add('active');
             } else if (pageName === 'history') {
                 document.getElementById('history-page').classList.add('active');
+                document.getElementById('nav-history').classList.add('active');
                 renderHistory('trades');
+            } else if (pageName === 'positions') {
+                document.getElementById('positions-page').classList.add('active');
             }
         }
 
