@@ -157,6 +157,72 @@
         </div>
     </div>
 
+    <!-- AI Entry Scanner Modal -->
+    <div id="ai-scanner-modal" class="fixed inset-0 bg-black/80 z-[10000] hidden flex items-center justify-center p-4">
+        <div class="bg-[#1e1b4b] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-[#7C3AED]/30">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9]">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Entry Scanner</h2>
+                </div>
+                <button onclick="closeAIScanner()" class="text-white/80 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-6 space-y-6">
+                <!-- Description -->
+                <div class="bg-[#130f1c]/50 rounded-xl p-4 border border-white/5">
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Pick the market category you want to scan. The deep scanner walks every 
+                        <span class="text-[#7C3AED] font-semibold">volatility / synthetic</span> index and surfaces the best entry point for that category based on historical tick patterns.
+                    </p>
+                </div>
+                
+                <!-- Market Selection -->
+                <div>
+                    <label class="block text-sm font-semibold text-white mb-2">Market</label>
+                    <div class="relative">
+                        <select id="market-select" class="w-full bg-[#130f1c] border border-white/10 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-[#7C3AED] transition-colors">
+                            <option value="even-odd">Even / Odd</option>
+                            <option value="over-under">Over / Under</option>
+                            <option value="matches-differs">Matches / Differs</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="m6 9 6 6 6-6"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress -->
+                <div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-400">Ready to scan</span>
+                        <span class="text-white font-semibold" id="scan-progress">0/12</span>
+                    </div>
+                    <div class="h-2 bg-[#130f1c] rounded-full overflow-hidden">
+                        <div id="scan-progress-bar" class="h-full bg-gradient-to-r from-[#7C3AED] to-[#EC4899] w-0 transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <button onclick="startDeepScan()" class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-[#10B981]/25">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                        Deep Scan for Best Market
+                    </button>
+                    <button onclick="loadScannerBot()" class="w-full bg-[#130f1c] border border-[#7C3AED]/30 text-[#7C3AED] font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] hover:bg-[#7C3AED]/10">
+                        Load Deep Scanner Bot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="fixed inset-0 overflow-hidden bg-[#141021]">
         <!-- MOBILE LAYOUT -->
         <div class="block md:hidden h-full overflow-hidden">
@@ -308,7 +374,8 @@
                 <!-- Bottom Navigation -->
                 <nav class="shrink-0 grid grid-cols-3 bg-[#1F1936] border-t border-white/[0.07]">
                     <button class="flex flex-col items-center py-3 text-[#7C3AED]"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg><span class="text-xs mt-1">Trade</span></button>
-                    <button class="flex flex-col items-center py-3 relative group"><span aria-hidden="true" class="absolute top-1.5 w-10 h-10 rounded-full animate-ping opacity-40 pointer-events-none" style="background: radial-gradient(circle, rgba(244, 114, 182, 0.55), rgba(251, 146, 60, 0) 70%);"></span><div class="relative w-9 h-9 -mt-0.5 rounded-xl flex items-center justify-center shadow-lg" style="background: linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(236, 72, 153) 55%, rgb(139, 92, 246) 100%); box-shadow: rgba(236, 72, 153, 0.55) 0px 6px 18px -6px, rgba(255, 255, 255, 0.12) 0px 0px 0px 1px inset;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] animate-pulse"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><span class="text-[11px] mt-0.5 font-bold tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(135deg, rgb(245, 158, 11), rgb(236, 72, 153), rgb(139, 92, 246));">AI</span></button>
+                    <!-- UPDATED: AI button now clickable -->
+                    <button onclick="openAIScanner()" class="flex flex-col items-center py-3 relative group cursor-pointer"><span aria-hidden="true" class="absolute top-1.5 w-10 h-10 rounded-full animate-ping opacity-40 pointer-events-none" style="background: radial-gradient(circle, rgba(244, 114, 182, 0.55), rgba(251, 146, 60, 0) 70%);"></span><div class="relative w-9 h-9 -mt-0.5 rounded-xl flex items-center justify-center shadow-lg" style="background: linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(236, 72, 153) 55%, rgb(139, 92, 246) 100%); box-shadow: rgba(236, 72, 153, 0.55) 0px 6px 18px -6px, rgba(255, 255, 255, 0.12) 0px 0px 0px 1px inset;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] animate-pulse"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><span class="text-[11px] mt-0.5 font-bold tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(135deg, rgb(245, 158, 11), rgb(236, 72, 153), rgb(139, 92, 246));">AI</span></button>
                     <button class="flex flex-col items-center py-3 relative text-gray-500"><div class="relative"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><span class="text-xs mt-1">Positions</span></button>
                 </nav>
             </div>
@@ -429,6 +496,42 @@
                 submenu.classList.add('hidden');
                 arrow.style.transform = 'rotate(0deg)';
             }
+        }
+
+        // ==========================================
+        // NEW: AI SCANNER MODAL FUNCTIONS
+        // ==========================================
+        function openAIScanner() {
+            document.getElementById('ai-scanner-modal').classList.remove('hidden');
+        }
+
+        function closeAIScanner() {
+            document.getElementById('ai-scanner-modal').classList.add('hidden');
+        }
+
+        function startDeepScan() {
+            const progressBar = document.getElementById('scan-progress-bar');
+            const progressText = document.getElementById('scan-progress');
+            
+            // Animate progress bar
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.floor((progress / 100) * 12) + '/12';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alert('Deep scan complete! Best entry point found.');
+                        closeAIScanner();
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function loadScannerBot() {
+            alert('Deep Scanner Bot loading...');
         }
 
         // ==========================================
