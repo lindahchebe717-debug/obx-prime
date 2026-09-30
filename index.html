@@ -718,13 +718,20 @@
         }
 
         // ==========================================
-        // NEW: AUTO TRADING & STOP BUTTON LOGIC
+        // NEW: AUTO TRADING & STOP BUTTON LOGIC (FIXED)
         // ==========================================
         let autoTradeInterval = null;
         let autoTradeChoice = null;
         let isAutoTrading = false;
+        let isShowingAlert = false; // Prevent multiple alerts
 
         function startAutoTrade(choice) {
+            // Clear any existing interval first to prevent duplicates
+            if (autoTradeInterval) {
+                clearInterval(autoTradeInterval);
+                autoTradeInterval = null;
+            }
+            
             if (currentTradingMode !== 'auto') {
                 placeTrade(choice);
                 return;
@@ -732,6 +739,7 @@
             
             isAutoTrading = true;
             autoTradeChoice = choice;
+            isShowingAlert = false; // Reset alert flag
             
             // Show STOP button, hide Even button
             document.getElementById('even-btn').classList.add('hidden');
@@ -747,10 +755,17 @@
         }
 
         function executeAutoTrade() {
+            // Prevent execution if alert is already showing
+            if (isShowingAlert) return;
+            
             let stake = parseInt(document.getElementById('stake-input').value) || 10;
             if(stake > balance) {
+                isShowingAlert = true; // Set flag to prevent more alerts
                 stopAutoTrade();
-                alert("Insufficient balance! Auto-trade stopped.");
+                setTimeout(() => {
+                    alert("Insufficient balance! Auto-trade stopped.");
+                    isShowingAlert = false; // Reset flag after alert
+                }, 100);
                 return;
             }
             
@@ -770,6 +785,8 @@
         function stopAutoTrade() {
             isAutoTrading = false;
             autoTradeChoice = null;
+            
+            // Clear the interval
             if (autoTradeInterval) {
                 clearInterval(autoTradeInterval);
                 autoTradeInterval = null;
