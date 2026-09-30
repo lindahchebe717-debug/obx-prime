@@ -569,7 +569,7 @@
         let balance = 1000.00;
         let price = 9501.21;
         let lastDigit = 2;
-        let priceHistory = [];
+        let priceHistory = [9501.21, 9501.25, 9501.18, 9501.22, 9501.30, 9501.28, 9501.35, 9501.32, 9501.40, 9501.38]; // Initial data
         let digitCounts = [0,0,0,0,0,0,0,0,0,0];
         let totalTicks = 0;
 
@@ -704,10 +704,13 @@
             drawChart('priceChart');
             drawChart('desktopChart');
         });
+        
+        // Initial draw after DOM is ready
         setTimeout(() => {
             drawChart('priceChart');
             drawChart('desktopChart');
         }, 100);
+        
         updatePayouts();
     </script>
 </body>
