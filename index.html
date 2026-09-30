@@ -201,21 +201,36 @@
                 <!-- Progress -->
                 <div>
                     <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-400">Ready to scan</span>
+                        <span class="text-gray-400" id="scan-status">Ready to scan</span>
                         <span class="text-white font-semibold" id="scan-progress">0/12</span>
                     </div>
                     <div class="h-2 bg-[#130f1c] rounded-full overflow-hidden">
                         <div id="scan-progress-bar" class="h-full bg-gradient-to-r from-[#7C3AED] to-[#EC4899] w-0 transition-all duration-500"></div>
                     </div>
                 </div>
+
+                <!-- Best Entry Found Result (Hidden by default) -->
+                <div id="best-entry-result" class="hidden bg-[#10B981]/10 border border-[#10B981]/30 rounded-xl p-4 space-y-3">
+                    <div class="text-[#10B981] text-xs font-bold uppercase tracking-wider">BEST ENTRY FOUND</div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-white font-bold text-lg">Volatility 75 (1s) Index</div>
+                            <div class="text-gray-400 text-sm">Suggested side: <span class="text-white font-semibold">Odd</span></div>
+                        </div>
+                        <div class="bg-[#10B981] text-white px-3 py-1.5 rounded-lg font-bold text-sm flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"></path><path d="M17 20V4"></path><path d="m3 8 4-4 4 4"></path><path d="M7 4v16"></path></svg>
+                            90%
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Action Buttons -->
                 <div class="space-y-3">
-                    <button onclick="startDeepScan()" class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-[#10B981]/25">
+                    <button onclick="startDeepScan()" id="scan-button" class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-[#10B981]/25">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                         Deep Scan for Best Market
                     </button>
-                    <button onclick="loadScannerBot()" class="w-full bg-[#130f1c] border border-[#7C3AED]/30 text-[#7C3AED] font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] hover:bg-[#7C3AED]/10">
+                    <button onclick="loadScannerBot()" id="bot-button" class="w-full bg-[#130f1c] border border-[#7C3AED]/30 text-[#7C3AED] font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] hover:bg-[#7C3AED]/10">
                         Load Deep Scanner Bot
                     </button>
                 </div>
@@ -503,15 +518,36 @@
         // ==========================================
         function openAIScanner() {
             document.getElementById('ai-scanner-modal').classList.remove('hidden');
+            // Reset modal state when opening
+            resetScannerModal();
         }
 
         function closeAIScanner() {
             document.getElementById('ai-scanner-modal').classList.add('hidden');
         }
 
+        function resetScannerModal() {
+            // Reset to initial state
+            document.getElementById('scan-status').textContent = 'Ready to scan';
+            document.getElementById('scan-progress').textContent = '0/12';
+            document.getElementById('scan-progress-bar').style.width = '0%';
+            document.getElementById('best-entry-result').classList.add('hidden');
+            document.getElementById('scan-button').classList.remove('hidden');
+            document.getElementById('bot-button').classList.remove('hidden');
+        }
+
         function startDeepScan() {
             const progressBar = document.getElementById('scan-progress-bar');
             const progressText = document.getElementById('scan-progress');
+            const statusText = document.getElementById('scan-status');
+            const scanButton = document.getElementById('scan-button');
+            const botButton = document.getElementById('bot-button');
+            const bestEntryResult = document.getElementById('best-entry-result');
+            
+            // Disable buttons during scan
+            scanButton.disabled = true;
+            scanButton.classList.add('opacity-50', 'cursor-not-allowed');
+            botButton.classList.add('hidden');
             
             // Animate progress bar
             let progress = 0;
@@ -519,12 +555,21 @@
                 progress += 10;
                 progressBar.style.width = progress + '%';
                 progressText.textContent = Math.floor((progress / 100) * 12) + '/12';
+                statusText.textContent = 'Scanning...';
                 
                 if (progress >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        alert('Deep scan complete! Best entry point found.');
-                        closeAIScanner();
+                        // Show scan complete
+                        statusText.textContent = 'Scan complete';
+                        
+                        // Show best entry result
+                        bestEntryResult.classList.remove('hidden');
+                        
+                        // Re-enable scan button
+                        scanButton.disabled = false;
+                        scanButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                        botButton.classList.remove('hidden');
                     }, 500);
                 }
             }, 200);
