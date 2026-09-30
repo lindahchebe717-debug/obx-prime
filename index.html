@@ -388,28 +388,30 @@
                                 <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#f59e0b]/60">x</span><input step="0.1" class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="2"></div>
                             </div>
                         </div>
-                        <!-- UPDATED: Trade buttons with STOP functionality -->
-                        <div class="flex gap-2" id="trade-buttons-container">
-                            <button id="even-btn" class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="handleAutoTrade('Even')">
+                        <div class="flex gap-2">
+                            <!-- UPDATED: Even button with ID for toggling -->
+                            <button id="even-btn" class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Even')">
                                 <div class="flex items-center justify-between w-full px-3">
                                     <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Even</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
                                     <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="even-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
                                 </div>
                             </button>
-                            <button id="odd-btn" class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="handleAutoTrade('Odd')">
+                            <!-- NEW: STOP button (hidden by default) -->
+                            <button id="stop-btn" class="hidden flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: rgba(245, 158, 11, 0.3) 0px 4px 12px;" onclick="stopAutoTrade()">
+                                <div class="flex items-center justify-center w-full px-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-2xl">●</span>
+                                        <span class="text-xl font-extrabold text-black leading-tight">STOP</span>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="placeTrade('Odd')">
                                 <div class="flex items-center justify-between w-full px-3">
                                     <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Odd</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
                                     <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="odd-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
                                 </div>
                             </button>
                         </div>
-                        <!-- STOP Button (Hidden by default) -->
-                        <button id="stop-btn" class="hidden w-full py-4 rounded-xl font-bold text-lg transition-all active:scale-[0.97] bg-gradient-to-r from-orange-400 to-orange-500 text-black shadow-lg shadow-orange-500/30" onclick="stopAutoTrading()">
-                            <span class="flex items-center justify-center gap-2">
-                                <span class="w-3 h-3 rounded-full bg-black"></span>
-                                STOP
-                            </span>
-                        </button>
                     </div>
                 </div>
 
@@ -559,7 +561,7 @@
         }
 
         // ==========================================
-        // NEW: ACCOUNT SWITCHING FUNCTIONS
+        // ACCOUNT SWITCHING FUNCTIONS
         // ==========================================
         let currentAccount = 'real';
         let realBalance = 1000.00;
@@ -614,7 +616,6 @@
             document.getElementById('account-dropdown-desktop')?.classList.add('hidden');
         }
 
-        // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('account-dropdown');
             const dropdownDesktop = document.getElementById('account-dropdown-desktop');
@@ -687,8 +688,6 @@
         // AUTO/MANUAL TOGGLE FUNCTION
         // ==========================================
         let currentTradingMode = 'auto';
-        let autoTradingInterval = null;
-        let isAutoTrading = false;
 
         function setTradingMode(mode) {
             currentTradingMode = mode;
@@ -719,52 +718,66 @@
         }
 
         // ==========================================
-        // NEW: AUTO TRADING FUNCTIONS
+        // NEW: AUTO TRADING & STOP BUTTON LOGIC
         // ==========================================
-        function handleAutoTrade(choice) {
-            if (currentTradingMode === 'auto' && !isAutoTrading) {
-                // Start auto trading
-                isAutoTrading = true;
-                showStopButton();
-                startAutoTrading(choice);
+        let autoTradeInterval = null;
+        let autoTradeChoice = null;
+        let isAutoTrading = false;
+
+        function startAutoTrade(choice) {
+            if (currentTradingMode !== 'auto') {
+                placeTrade(choice);
+                return;
             }
-        }
-
-        function startAutoTrading(choice) {
-            // Place first trade
-            placeTrade(choice);
             
-            // Set interval for continuous trading
-            autoTradingInterval = setInterval(() => {
-                if (isAutoTrading) {
-                    placeTrade(choice);
-                }
-            }, 2000); // Trade every 2 seconds
-        }
-
-        function showStopButton() {
-            const tradeButtonsContainer = document.getElementById('trade-buttons-container');
-            const stopBtn = document.getElementById('stop-btn');
+            isAutoTrading = true;
+            autoTradeChoice = choice;
             
-            if (tradeButtonsContainer) tradeButtonsContainer.classList.add('hidden');
-            if (stopBtn) stopBtn.classList.remove('hidden');
-        }
-
-        function hideStopButton() {
-            const tradeButtonsContainer = document.getElementById('trade-buttons-container');
-            const stopBtn = document.getElementById('stop-btn');
+            // Show STOP button, hide Even button
+            document.getElementById('even-btn').classList.add('hidden');
+            document.getElementById('stop-btn').classList.remove('hidden');
             
-            if (tradeButtonsContainer) tradeButtonsContainer.classList.remove('hidden');
-            if (stopBtn) stopBtn.classList.add('hidden');
+            // Place first trade immediately
+            executeAutoTrade();
+            
+            // Then repeat every 2 seconds
+            autoTradeInterval = setInterval(() => {
+                executeAutoTrade();
+            }, 2000);
         }
 
-        function stopAutoTrading() {
+        function executeAutoTrade() {
+            let stake = parseInt(document.getElementById('stake-input').value) || 10;
+            if(stake > balance) {
+                stopAutoTrade();
+                alert("Insufficient balance! Auto-trade stopped.");
+                return;
+            }
+            
+            let isEven = lastDigit % 2 === 0;
+            let won = (autoTradeChoice === 'Even' && isEven) || (autoTradeChoice === 'Odd' && !isEven);
+            
+            if(won) {
+                let profit = stake * 0.952;
+                balance += profit;
+            } else {
+                balance -= stake;
+            }
+            document.getElementById('header-balance').innerText = balance.toFixed(2);
+            if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+        }
+
+        function stopAutoTrade() {
             isAutoTrading = false;
-            if (autoTradingInterval) {
-                clearInterval(autoTradingInterval);
-                autoTradingInterval = null;
+            autoTradeChoice = null;
+            if (autoTradeInterval) {
+                clearInterval(autoTradeInterval);
+                autoTradeInterval = null;
             }
-            hideStopButton();
+            
+            // Hide STOP button, show Even button
+            document.getElementById('stop-btn').classList.add('hidden');
+            document.getElementById('even-btn').classList.remove('hidden');
         }
 
         // ==========================================
@@ -853,12 +866,15 @@
         }
 
         function placeTrade(choice) {
-            let stake = parseInt(document.getElementById('stake-input').value) || 10;
-            if(stake > balance) { 
-                if(!isAutoTrading) alert("Insufficient balance!"); 
-                stopAutoTrading();
-                return; 
+            // If in AUTO mode, start auto-trading instead of single trade
+            if (currentTradingMode === 'auto') {
+                startAutoTrade(choice);
+                return;
             }
+            
+            // Manual mode - single trade
+            let stake = parseInt(document.getElementById('stake-input').value) || 10;
+            if(stake > balance) { alert("Insufficient balance!"); return; }
             
             setTimeout(() => {
                 let isEven = lastDigit % 2 === 0;
@@ -867,10 +883,10 @@
                 if(won) {
                     let profit = stake * 0.952;
                     balance += profit;
-                    if(!isAutoTrading) alert(`WIN! Last digit: ${lastDigit}. Profit: $${profit.toFixed(2)}`);
+                    alert(`WIN! Last digit: ${lastDigit}. Profit: $${profit.toFixed(2)}`);
                 } else {
                     balance -= stake;
-                    if(!isAutoTrading) alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
+                    alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
                 }
                 document.getElementById('header-balance').innerText = balance.toFixed(2);
                 if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
