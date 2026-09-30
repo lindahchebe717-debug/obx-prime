@@ -265,17 +265,37 @@
                 <!-- Header -->
                 <header class="shrink-0 flex items-center justify-between px-3 py-2 bg-[#1F1936] border-b border-white/[0.07] z-40">
                     <div class="flex items-center gap-2">
-                        <!-- UPDATED: Menu button now opens the sidebar -->
                         <button onclick="openMenu()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button>
                         <div class="w-7 h-7 rounded-lg bg-[#7C3AED] flex items-center justify-center"><span class="text-white font-bold text-xs">O</span></div>
                     </div>
+                    
+                    <!-- UPDATED: Account Dropdown Trigger -->
                     <div class="relative">
-                        <button class="flex items-center gap-2 px-2 py-1 rounded-lg bg-[#282041]">
-                            <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white">R</div>
+                        <button id="mobile-account-trigger" onclick="toggleAccountDropdown(event)" class="flex items-center gap-2 px-2 py-1 rounded-lg bg-[#282041]">
+                            <div id="account-type-icon" class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white">R</div>
                             <span class="text-xs font-bold text-[#7C3AED]">$ <span id="header-balance">1000.00</span></span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m6 9 6 6 6-6"></path></svg>
                         </button>
+                        
+                        <!-- Account Dropdown Menu -->
+                        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1e1b4b] rounded-xl shadow-2xl border border-[#7C3AED]/30 overflow-hidden z-50">
+                            <button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-medium text-white">Real Account</span>
+                                </div>
+                                <span id="real-badge" class="text-[#7C3AED] text-xs font-semibold">Active</span>
+                            </button>
+                            <button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span class="text-sm font-medium text-white">Demo Account</span>
+                                </div>
+                                <span id="demo-badge" class="text-gray-500 text-xs font-semibold"></span>
+                            </button>
+                        </div>
                     </div>
+
                     <div class="flex items-center gap-2">
                         <button class="p-1.5 rounded-lg bg-[#282041] transition-colors" title="Mute Sounds"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></button>
                         <button class="px-3 py-1.5 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-lg text-xs font-semibold text-white shadow-lg shadow-[#7C3AED]/25">Deposit</button>
@@ -331,7 +351,6 @@
                 <!-- Controls Card -->
                 <div class="bg-[#141021]/95 backdrop-blur-xl border-t border-white/[0.07]">
                     <div class="px-3 pt-2.5 pb-2 space-y-2">
-                        <!-- UPDATED: Added IDs and onclick handlers for AUTO/MANUAL toggle -->
                         <div class="flex rounded-lg overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.07); background-color: rgba(255, 255, 255, 0.04);">
                             <button id="mobile-auto-btn" onclick="setTradingMode('auto')" class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: rgb(124, 58, 237); color: rgb(255, 255, 255);">auto</button>
                             <button id="mobile-manual-btn" onclick="setTradingMode('manual')" class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all" style="background-color: transparent; color: rgb(148, 163, 184);">manual</button>
@@ -389,7 +408,6 @@
                 <!-- Bottom Navigation -->
                 <nav class="shrink-0 grid grid-cols-3 bg-[#1F1936] border-t border-white/[0.07]">
                     <button class="flex flex-col items-center py-3 text-[#7C3AED]"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg><span class="text-xs mt-1">Trade</span></button>
-                    <!-- UPDATED: AI button now clickable -->
                     <button onclick="openAIScanner()" class="flex flex-col items-center py-3 relative group cursor-pointer"><span aria-hidden="true" class="absolute top-1.5 w-10 h-10 rounded-full animate-ping opacity-40 pointer-events-none" style="background: radial-gradient(circle, rgba(244, 114, 182, 0.55), rgba(251, 146, 60, 0) 70%);"></span><div class="relative w-9 h-9 -mt-0.5 rounded-xl flex items-center justify-center shadow-lg" style="background: linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(236, 72, 153) 55%, rgb(139, 92, 246) 100%); box-shadow: rgba(236, 72, 153, 0.55) 0px 6px 18px -6px, rgba(255, 255, 255, 0.12) 0px 0px 0px 1px inset;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] animate-pulse"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><span class="text-[11px] mt-0.5 font-bold tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(135deg, rgb(245, 158, 11), rgb(236, 72, 153), rgb(139, 92, 246));">AI</span></button>
                     <button class="flex flex-col items-center py-3 relative text-gray-500"><div class="relative"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><span class="text-xs mt-1">Positions</span></button>
                 </nav>
@@ -410,12 +428,33 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all active:scale-95" style="background: linear-gradient(135deg, rgb(124, 58, 237), rgb(139, 92, 246)); box-shadow: rgba(124, 58, 237, 0.35) 0px 2px 10px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg>AI</button>
+                    
+                    <!-- UPDATED: Desktop Account Dropdown Trigger -->
                     <div class="relative">
-                        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#282041] border border-white/[0.07] hover:bg-[#2E2447] transition-colors">
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30">O</div>
+                        <button id="desktop-account-trigger" onclick="toggleAccountDropdownDesktop(event)" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#282041] border border-white/[0.07] hover:bg-[#2E2447] transition-colors">
+                            <div id="desktop-account-type-icon" class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30">R</div>
                             <div class="flex items-center gap-2"><span class="text-sm font-bold text-[#7C3AED]">$ <span id="desktop-balance">1000.00</span></span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m6 9 6 6 6-6"></path></svg></div>
                         </button>
+                        
+                        <!-- Desktop Account Dropdown Menu -->
+                        <div id="account-dropdown-desktop" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1e1b4b] rounded-xl shadow-2xl border border-[#7C3AED]/30 overflow-hidden z-50">
+                            <button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-medium text-white">Real Account</span>
+                                </div>
+                                <span id="real-badge-desktop" class="text-[#7C3AED] text-xs font-semibold">Active</span>
+                            </button>
+                            <button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span class="text-sm font-medium text-white">Demo Account</span>
+                                </div>
+                                <span id="demo-badge-desktop" class="text-gray-500 text-xs font-semibold"></span>
+                            </button>
+                        </div>
                     </div>
+
                     <button class="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] rounded-lg text-sm font-semibold text-white transition-all shadow-lg shadow-[#7C3AED]/25">Deposit</button>
                 </div>
             </header>
@@ -445,7 +484,6 @@
                     <div class="flex-1 overflow-y-auto min-h-0">
                         <div class="px-3 pt-3">
                             <div class="flex items-center justify-between mb-1.5"><span class="text-[10px] font-bold uppercase tracking-wider" style="color: rgb(71, 85, 105);">Trading Mode</span></div>
-                            <!-- UPDATED: Added IDs and onclick handlers for AUTO/MANUAL toggle -->
                             <div class="flex rounded-lg overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.07); background-color: rgb(40, 32, 65);">
                                 <button id="desktop-auto-btn" onclick="setTradingMode('auto')" class="flex-1 py-2 text-[11px] font-bold uppercase tracking-wider transition-all" style="background-color: rgb(124, 58, 237); color: rgb(255, 255, 255);">auto</button>
                                 <button id="desktop-manual-btn" onclick="setTradingMode('manual')" class="flex-1 py-2 text-[11px] font-bold uppercase tracking-wider transition-all" style="background-color: transparent; color: rgb(148, 163, 184);">manual</button>
@@ -479,7 +517,7 @@
 
     <script>
         // ==========================================
-        // MENU FUNCTIONS (NEW)
+        // MENU FUNCTIONS
         // ==========================================
         function openMenu() {
             document.getElementById('menu-overlay').classList.remove('hidden');
@@ -499,7 +537,6 @@
             }, 300);
         }
 
-        // NEW: Toggle Account Settings Submenu
         function toggleAccountSettings() {
             const submenu = document.getElementById('account-settings-submenu');
             const arrow = document.getElementById('account-settings-arrow');
@@ -514,11 +551,78 @@
         }
 
         // ==========================================
-        // NEW: AI SCANNER MODAL FUNCTIONS
+        // NEW: ACCOUNT SWITCHING FUNCTIONS
+        // ==========================================
+        let currentAccount = 'real';
+        let realBalance = 1000.00;
+        let demoBalance = 10000.00;
+
+        function toggleAccountDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('account-dropdown');
+            dropdown.classList.toggle('hidden');
+            document.getElementById('account-dropdown-desktop')?.classList.add('hidden');
+        }
+
+        function toggleAccountDropdownDesktop(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('account-dropdown-desktop');
+            dropdown.classList.toggle('hidden');
+            document.getElementById('account-dropdown')?.classList.add('hidden');
+        }
+
+        function switchAccount(type) {
+            currentAccount = type;
+            const icon = document.getElementById('account-type-icon');
+            const desktopIcon = document.getElementById('desktop-account-type-icon');
+            const realBadge = document.getElementById('real-badge');
+            const demoBadge = document.getElementById('demo-badge');
+            const realBadgeDesktop = document.getElementById('real-badge-desktop');
+            const demoBadgeDesktop = document.getElementById('demo-badge-desktop');
+            const headerBalance = document.getElementById('header-balance');
+            const desktopBalance = document.getElementById('desktop-balance');
+
+            if (type === 'real') {
+                if(icon) { icon.textContent = 'R'; icon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white'; }
+                if(desktopIcon) { desktopIcon.textContent = 'R'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30'; }
+                if(realBadge) { realBadge.textContent = 'Active'; realBadge.className = 'text-[#7C3AED] text-xs font-semibold'; }
+                if(demoBadge) { demoBadge.textContent = ''; demoBadge.className = 'text-gray-500 text-xs font-semibold'; }
+                if(realBadgeDesktop) { realBadgeDesktop.textContent = 'Active'; realBadgeDesktop.className = 'text-[#7C3AED] text-xs font-semibold'; }
+                if(demoBadgeDesktop) { demoBadgeDesktop.textContent = ''; demoBadgeDesktop.className = 'text-gray-500 text-xs font-semibold'; }
+                if(headerBalance) headerBalance.textContent = realBalance.toFixed(2);
+                if(desktopBalance) desktopBalance.textContent = realBalance.toFixed(2);
+            } else {
+                if(icon) { icon.textContent = 'D'; icon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-red-500 text-white'; }
+                if(desktopIcon) { desktopIcon.textContent = 'D'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-red-500 text-white shadow-lg shadow-red-500/30'; }
+                if(realBadge) { realBadge.textContent = ''; realBadge.className = 'text-gray-500 text-xs font-semibold'; }
+                if(demoBadge) { demoBadge.textContent = 'Active'; demoBadge.className = 'text-[#7C3AED] text-xs font-semibold'; }
+                if(realBadgeDesktop) { realBadgeDesktop.textContent = ''; realBadgeDesktop.className = 'text-gray-500 text-xs font-semibold'; }
+                if(demoBadgeDesktop) { demoBadgeDesktop.textContent = 'Active'; demoBadgeDesktop.className = 'text-[#7C3AED] text-xs font-semibold'; }
+                if(headerBalance) headerBalance.textContent = demoBalance.toFixed(2);
+                if(desktopBalance) desktopBalance.textContent = demoBalance.toFixed(2);
+            }
+            
+            document.getElementById('account-dropdown')?.classList.add('hidden');
+            document.getElementById('account-dropdown-desktop')?.classList.add('hidden');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('account-dropdown');
+            const dropdownDesktop = document.getElementById('account-dropdown-desktop');
+            
+            const isClickInsideMobile = dropdown && (dropdown.contains(event.target) || event.target.closest('#mobile-account-trigger'));
+            const isClickInsideDesktop = dropdownDesktop && (dropdownDesktop.contains(event.target) || event.target.closest('#desktop-account-trigger'));
+            
+            if (!isClickInsideMobile && dropdown) dropdown.classList.add('hidden');
+            if (!isClickInsideDesktop && dropdownDesktop) dropdownDesktop.classList.add('hidden');
+        });
+
+        // ==========================================
+        // AI SCANNER MODAL FUNCTIONS
         // ==========================================
         function openAIScanner() {
             document.getElementById('ai-scanner-modal').classList.remove('hidden');
-            // Reset modal state when opening
             resetScannerModal();
         }
 
@@ -527,7 +631,6 @@
         }
 
         function resetScannerModal() {
-            // Reset to initial state
             document.getElementById('scan-status').textContent = 'Ready to scan';
             document.getElementById('scan-progress').textContent = '0/12';
             document.getElementById('scan-progress-bar').style.width = '0%';
@@ -544,12 +647,10 @@
             const botButton = document.getElementById('bot-button');
             const bestEntryResult = document.getElementById('best-entry-result');
             
-            // Disable buttons during scan
             scanButton.disabled = true;
             scanButton.classList.add('opacity-50', 'cursor-not-allowed');
             botButton.classList.add('hidden');
             
-            // Animate progress bar
             let progress = 0;
             const interval = setInterval(() => {
                 progress += 10;
@@ -560,13 +661,8 @@
                 if (progress >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        // Show scan complete
                         statusText.textContent = 'Scan complete';
-                        
-                        // Show best entry result
                         bestEntryResult.classList.remove('hidden');
-                        
-                        // Re-enable scan button
                         scanButton.disabled = false;
                         scanButton.classList.remove('opacity-50', 'cursor-not-allowed');
                         botButton.classList.remove('hidden');
@@ -580,50 +676,40 @@
         }
 
         // ==========================================
-        // NEW: AUTO/MANUAL TOGGLE FUNCTION
+        // AUTO/MANUAL TOGGLE FUNCTION
         // ==========================================
-        let currentTradingMode = 'auto'; // default mode
+        let currentTradingMode = 'auto';
 
         function setTradingMode(mode) {
             currentTradingMode = mode;
-            
-            // Mobile buttons
             const mobileAutoBtn = document.getElementById('mobile-auto-btn');
             const mobileManualBtn = document.getElementById('mobile-manual-btn');
+            const desktopAutoBtn = document.getElementById('desktop-auto-btn');
+            const desktopManualBtn = document.getElementById('desktop-manual-btn');
             
             if (mode === 'auto') {
                 mobileAutoBtn.style.backgroundColor = 'rgb(124, 58, 237)';
                 mobileAutoBtn.style.color = 'rgb(255, 255, 255)';
                 mobileManualBtn.style.backgroundColor = 'transparent';
                 mobileManualBtn.style.color = 'rgb(148, 163, 184)';
-            } else {
-                mobileManualBtn.style.backgroundColor = 'rgb(124, 58, 237)';
-                mobileManualBtn.style.color = 'rgb(255, 255, 255)';
-                mobileAutoBtn.style.backgroundColor = 'transparent';
-                mobileAutoBtn.style.color = 'rgb(148, 163, 184)';
-            }
-            
-            // Desktop buttons
-            const desktopAutoBtn = document.getElementById('desktop-auto-btn');
-            const desktopManualBtn = document.getElementById('desktop-manual-btn');
-            
-            if (mode === 'auto') {
                 desktopAutoBtn.style.backgroundColor = 'rgb(124, 58, 237)';
                 desktopAutoBtn.style.color = 'rgb(255, 255, 255)';
                 desktopManualBtn.style.backgroundColor = 'transparent';
                 desktopManualBtn.style.color = 'rgb(148, 163, 184)';
             } else {
+                mobileManualBtn.style.backgroundColor = 'rgb(124, 58, 237)';
+                mobileManualBtn.style.color = 'rgb(255, 255, 255)';
+                mobileAutoBtn.style.backgroundColor = 'transparent';
+                mobileAutoBtn.style.color = 'rgb(148, 163, 184)';
                 desktopManualBtn.style.backgroundColor = 'rgb(124, 58, 237)';
                 desktopManualBtn.style.color = 'rgb(255, 255, 255)';
                 desktopAutoBtn.style.backgroundColor = 'transparent';
                 desktopAutoBtn.style.color = 'rgb(148, 163, 184)';
             }
-            
-            console.log('Trading mode switched to:', mode);
         }
 
         // ==========================================
-        // OBX PRIME TRADING LOGIC
+        // TRADING LOGIC
         // ==========================================
         let balance = 1000.00;
         let price = 9501.21;
@@ -632,7 +718,6 @@
         let digitCounts = [0,0,0,0,0,0,0,0,0,0];
         let totalTicks = 0;
 
-        // Initialize Digit UI (0-9)
         function initDigits() {
             const container = document.getElementById('digits-container');
             if (!container) return;
@@ -657,16 +742,12 @@
         }
         initDigits();
 
-        // Chart Drawing Function
         function drawChart(canvasId) {
             const canvas = document.getElementById(canvasId);
             if (!canvas || priceHistory.length < 2) return;
             const ctx = canvas.getContext('2d');
-            
-            // Resize canvas to parent
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
-
             const min = Math.min(...priceHistory) - 5;
             const max = Math.max(...priceHistory) + 5;
             const range = max - min || 1;
@@ -685,7 +766,6 @@
             }
             ctx.stroke();
 
-            // Draw current price dot
             const lastX = canvas.width;
             const lastY = canvas.height - ((priceHistory[priceHistory.length-1] - min) / range) * canvas.height;
             ctx.beginPath();
@@ -694,7 +774,6 @@
             ctx.fill();
         }
 
-        // Stake Logic
         function adjustStake(amt) {
             let val = parseInt(document.getElementById('stake-input').value) + amt;
             if (val < 1) val = 1;
@@ -714,7 +793,6 @@
             if(document.getElementById('desktop-odd-payout')) document.getElementById('desktop-odd-payout').innerText = payout;
         }
 
-        // Trading Logic
         function placeTrade(choice) {
             let stake = parseInt(document.getElementById('stake-input').value) || 10;
             if(stake > balance) { alert("Insufficient balance!"); return; }
@@ -736,14 +814,12 @@
             }, 500);
         }
 
-        // Live Simulation Loop
         setInterval(() => {
             const change = (Math.random() - 0.5) * 3;
             price += change;
             const pStr = price.toFixed(2);
             lastDigit = parseInt(pStr.split('.')[1].slice(-1));
             
-            // Update UI Text
             document.getElementById('chart-price-display').innerText = pStr;
             if(document.getElementById('desktop-price')) document.getElementById('desktop-price').innerText = pStr;
             
@@ -757,32 +833,26 @@
                 document.getElementById('desktop-change').className = change >= 0 ? 'text-[10px] text-[#4bb4b3]' : 'text-[10px] text-[#ff444f]';
             }
 
-            // Update Chart
             priceHistory.push(price);
             if(priceHistory.length > 60) priceHistory.shift();
             drawChart('priceChart');
             drawChart('desktopChart');
 
-            // Update Digits
             digitCounts[lastDigit]++;
             totalTicks++;
             for(let i=0; i<=9; i++) {
                 const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100) : 0;
                 const pctStr = pct.toFixed(1) + '%';
                 document.getElementById(`digit-pct-${i}`).innerText = pctStr;
-                
-                // Update ring offset (98.96 is full circumference)
                 const offset = 98.96 - (98.96 * (pct / 100));
                 document.getElementById(`digit-ring-${i}`).setAttribute('stroke-dashoffset', offset);
-                
-                // Highlight active digit
                 const valEl = document.getElementById(`digit-val-${i}`);
                 const pctEl = document.getElementById(`digit-pct-${i}`);
                 const ringEl = document.getElementById(`digit-ring-${i}`);
                 
                 if(i === lastDigit) {
                     valEl.style.color = '#ffffff';
-                    pctEl.style.color = '#f59e0b'; // Orange for active
+                    pctEl.style.color = '#f59e0b';
                     ringEl.setAttribute('stroke', '#f59e0b');
                 } else {
                     valEl.style.color = '#ffffff';
@@ -792,7 +862,6 @@
             }
         }, 1000);
 
-        // Initial setup
         window.addEventListener('resize', () => {
             drawChart('priceChart');
             drawChart('desktopChart');
