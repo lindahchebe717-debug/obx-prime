@@ -306,9 +306,9 @@
                 <!-- Trade Types -->
                 <div class="bg-[#181329] px-2 py-2 border-b border-white/[0.07]">
                     <div class="flex gap-2 overflow-x-auto no-scrollbar">
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Matches/Differs</span></button>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 bg-[#1F1936] text-white border border-white/[0.07] shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg><span>Even/Odd</span></button>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"></path><path d="M17 20V4"></path><path d="m3 8 4-4 4 4"></path><path d="M7 4v16"></path></svg><span>Over/Under</span></button>
+                        <button onclick="setTradeType('matches')" id="trade-matches" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Matches/Differs</span></button>
+                        <button onclick="setTradeType('even')" id="trade-even" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 bg-[#1F1936] text-white border border-white/[0.07] shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg><span>Even/Odd</span></button>
+                        <button onclick="setTradeType('over')" id="trade-over" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"></path><path d="M17 20V4"></path><path d="m3 8 4-4 4 4"></path><path d="M7 4v16"></path></svg><span>Over/Under</span></button>
                     </div>
                 </div>
 
@@ -388,8 +388,9 @@
                                 <div class="flex items-center justify-center gap-0.5"><span class="text-[10px] text-[#f59e0b]/60">x</span><input step="0.1" class="w-full bg-transparent text-center text-xs font-bold outline-none text-white" min="0" placeholder="0" type="number" value="2"></div>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                            <!-- UPDATED: Even button with ID for toggling -->
+                        
+                        <!-- EVEN/ODD Buttons -->
+                        <div id="even-odd-buttons" class="flex gap-2">
                             <button id="even-btn" class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Even')">
                                 <div class="flex items-center justify-between w-full px-3">
                                     <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Even</span><span class="text-[10px] text-white/60 font-medium">95.2%</span></div>
@@ -411,6 +412,55 @@
                                     <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold" id="odd-payout">$19.52</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
                                 </div>
                             </button>
+                        </div>
+                        
+                        <!-- OVER/UNDER Buttons (Hidden by default) -->
+                        <div id="over-under-buttons" class="hidden flex gap-2">
+                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Over')">
+                                <div class="flex items-center justify-between w-full px-3">
+                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Over</span><span class="text-[10px] text-white/60 font-medium">100.00%</span></div>
+                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold">$20</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                </div>
+                            </button>
+                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="placeTrade('Under')">
+                                <div class="flex items-center justify-between w-full px-3">
+                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Under</span><span class="text-[10px] text-white/60 font-medium">0.00%</span></div>
+                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold">$9</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <!-- MATCHES/DIFFERS Buttons (Hidden by default) -->
+                        <div id="matches-differs-buttons" class="hidden flex gap-2">
+                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(34, 197, 94); box-shadow: rgba(34, 197, 94, 0.2) 0px 4px 12px;" onclick="placeTrade('Matches')">
+                                <div class="flex items-center justify-between w-full px-3">
+                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Matches</span><span class="text-[10px] text-white/60 font-medium">10.00%</span></div>
+                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold">$110</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                </div>
+                            </button>
+                            <button class="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl font-bold transition-all active:scale-[0.97]" style="background: rgb(255, 68, 79); box-shadow: rgba(255, 68, 79, 0.2) 0px 4px 12px;" onclick="placeTrade('Differs')">
+                                <div class="flex items-center justify-between w-full px-3">
+                                    <div class="flex flex-col items-start"><span class="text-base font-extrabold text-white leading-tight">Differs</span><span class="text-[10px] text-white/60 font-medium">90.00%</span></div>
+                                    <div class="flex flex-col items-end"><span class="text-[11px] text-white font-bold">$19</span><span class="text-[9px] text-white/50 font-medium">Payout</span></div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <!-- DIGIT Selector (Hidden by default) -->
+                        <div id="digit-selector" class="hidden mt-2 p-3 rounded-xl bg-[#1F1936] border border-white/[0.07]">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">DIGIT</div>
+                            <div class="grid grid-cols-10 gap-1">
+                                <button onclick="selectDigit(0)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">0</button>
+                                <button onclick="selectDigit(1)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">1</button>
+                                <button onclick="selectDigit(2)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">2</button>
+                                <button onclick="selectDigit(3)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">3</button>
+                                <button onclick="selectDigit(4)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">4</button>
+                                <button onclick="selectDigit(5)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">5</button>
+                                <button onclick="selectDigit(6)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">6</button>
+                                <button onclick="selectDigit(7)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">7</button>
+                                <button onclick="selectDigit(8)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">8</button>
+                                <button onclick="selectDigit(9)" class="digit-btn py-2 rounded-lg bg-[#282041] text-white text-xs font-bold hover:bg-[#7C3AED] transition-colors">9</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -628,6 +678,72 @@
         });
 
         // ==========================================
+        // TRADE TYPE SWITCHING
+        // ==========================================
+        let currentTradeType = 'even'; // 'even', 'over', 'matches'
+
+        function setTradeType(type) {
+            currentTradeType = type;
+            
+            // Reset all buttons
+            document.getElementById('trade-matches').classList.remove('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+            document.getElementById('trade-matches').classList.add('text-gray-500', 'hover:text-white');
+            document.getElementById('trade-matches').querySelector('svg').classList.remove('text-[#7C3AED]');
+            document.getElementById('trade-matches').querySelector('svg').classList.add('text-gray-500');
+            
+            document.getElementById('trade-even').classList.remove('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+            document.getElementById('trade-even').classList.add('text-gray-500', 'hover:text-white');
+            document.getElementById('trade-even').querySelector('svg').classList.remove('text-[#7C3AED]');
+            document.getElementById('trade-even').querySelector('svg').classList.add('text-gray-500');
+            
+            document.getElementById('trade-over').classList.remove('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+            document.getElementById('trade-over').classList.add('text-gray-500', 'hover:text-white');
+            document.getElementById('trade-over').querySelector('svg').classList.remove('text-[#7C3AED]');
+            document.getElementById('trade-over').querySelector('svg').classList.add('text-gray-500');
+            
+            // Hide all button sets
+            document.getElementById('even-odd-buttons').classList.add('hidden');
+            document.getElementById('over-under-buttons').classList.add('hidden');
+            document.getElementById('matches-differs-buttons').classList.add('hidden');
+            document.getElementById('digit-selector').classList.add('hidden');
+            
+            // Show appropriate buttons and highlight selected tab
+            if (type === 'even') {
+                document.getElementById('trade-even').classList.remove('text-gray-500', 'hover:text-white');
+                document.getElementById('trade-even').classList.add('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+                document.getElementById('trade-even').querySelector('svg').classList.remove('text-gray-500');
+                document.getElementById('trade-even').querySelector('svg').classList.add('text-[#7C3AED]');
+                document.getElementById('even-odd-buttons').classList.remove('hidden');
+            } else if (type === 'over') {
+                document.getElementById('trade-over').classList.remove('text-gray-500', 'hover:text-white');
+                document.getElementById('trade-over').classList.add('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+                document.getElementById('trade-over').querySelector('svg').classList.remove('text-gray-500');
+                document.getElementById('trade-over').querySelector('svg').classList.add('text-[#7C3AED]');
+                document.getElementById('over-under-buttons').classList.remove('hidden');
+                document.getElementById('digit-selector').classList.remove('hidden');
+            } else if (type === 'matches') {
+                document.getElementById('trade-matches').classList.remove('text-gray-500', 'hover:text-white');
+                document.getElementById('trade-matches').classList.add('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+                document.getElementById('trade-matches').querySelector('svg').classList.remove('text-gray-500');
+                document.getElementById('trade-matches').querySelector('svg').classList.add('text-[#7C3AED]');
+                document.getElementById('matches-differs-buttons').classList.remove('hidden');
+                document.getElementById('digit-selector').classList.remove('hidden');
+            }
+        }
+
+        function selectDigit(digit) {
+            // Remove active class from all digit buttons
+            document.querySelectorAll('.digit-btn').forEach(btn => {
+                btn.classList.remove('bg-[#7C3AED]');
+                btn.classList.add('bg-[#282041]');
+            });
+            
+            // Add active class to selected digit
+            event.target.classList.remove('bg-[#282041]');
+            event.target.classList.add('bg-[#7C3AED]');
+        }
+
+        // ==========================================
         // AI SCANNER MODAL FUNCTIONS
         // ==========================================
         function openAIScanner() {
@@ -770,7 +886,23 @@
             }
             
             let isEven = lastDigit % 2 === 0;
-            let won = (autoTradeChoice === 'Even' && isEven) || (autoTradeChoice === 'Odd' && !isEven);
+            let won = false;
+            
+            if (autoTradeChoice === 'Even') {
+                won = isEven;
+            } else if (autoTradeChoice === 'Odd') {
+                won = !isEven;
+            } else if (autoTradeChoice === 'Over') {
+                won = lastDigit > 5;
+            } else if (autoTradeChoice === 'Under') {
+                won = lastDigit < 5;
+            } else if (autoTradeChoice === 'Matches') {
+                // Would need a selected digit to compare
+                won = false;
+            } else if (autoTradeChoice === 'Differs') {
+                // Would need a selected digit to compare
+                won = true;
+            }
             
             if(won) {
                 let profit = stake * 0.952;
@@ -894,16 +1026,47 @@
             if(stake > balance) { alert("Insufficient balance!"); return; }
             
             setTimeout(() => {
-                let isEven = lastDigit % 2 === 0;
-                let won = (choice === 'Even' && isEven) || (choice === 'Odd' && !isEven);
+                let won = false;
+                let message = '';
                 
-                if(won) {
-                    let profit = stake * 0.952;
-                    balance += profit;
-                    alert(`WIN! Last digit: ${lastDigit}. Profit: $${profit.toFixed(2)}`);
+                if (choice === 'Even') {
+                    won = lastDigit % 2 === 0;
+                    message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.952).toFixed(2)}`;
+                } else if (choice === 'Odd') {
+                    won = lastDigit % 2 !== 0;
+                    message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.952).toFixed(2)}`;
+                } else if (choice === 'Over') {
+                    won = lastDigit > 5;
+                    message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 2).toFixed(2)}`;
+                } else if (choice === 'Under') {
+                    won = lastDigit < 5;
+                    message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.9).toFixed(2)}`;
+                } else if (choice === 'Matches') {
+                    // Would need selected digit
+                    won = false;
+                    message = `LOSS. Matches requires digit selection.`;
+                } else if (choice === 'Differs') {
+                    // Would need selected digit
+                    won = true;
+                    message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.1).toFixed(2)}`;
+                }
+                
+                if(won && choice !== 'Matches' && choice !== 'Differs') {
+                    if (choice === 'Even' || choice === 'Odd') {
+                        balance += stake * 0.952;
+                    } else if (choice === 'Over') {
+                        balance += stake * 2;
+                    } else if (choice === 'Under') {
+                        balance += stake * 0.9;
+                    }
+                    alert(message);
                 } else {
                     balance -= stake;
-                    alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
+                    if (choice !== 'Matches' && choice !== 'Differs') {
+                        alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
+                    } else {
+                        alert(message);
+                    }
                 }
                 document.getElementById('header-balance').innerText = balance.toFixed(2);
                 if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
