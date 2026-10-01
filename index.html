@@ -99,7 +99,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
                 </div>
 
-                <div class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                <div onclick="openWithdrawModal()" class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
                     <div class="flex items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg>
                         <span class="text-[15px]">Withdraw</span>
@@ -296,6 +296,76 @@
                         <div>
                             <div class="text-white font-bold text-base">Card</div>
                             <div class="text-gray-400 text-sm">Visa, Mastercard</div>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-white/10 bg-[#130f1c]/30">
+                <div class="flex items-center justify-center gap-4 text-xs text-gray-400">
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>Secure</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>Instant</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>24/7 Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdraw-modal" class="fixed inset-0 bg-black/80 z-[10001] hidden flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-[#1e1b4b] rounded-t-2xl md:rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-[#7C3AED]/30 max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9]">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Withdraw Funds</h2>
+                        <p class="text-sm text-white/70">Balance: $<span id="withdraw-balance">1000.00</span></p>
+                    </div>
+                </div>
+                <button onclick="closeWithdrawModal()" class="text-white/80 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-4 space-y-3">
+                <!-- M-Pesa -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectWithdrawMethod('mpesa')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-base">M-Pesa</div>
+                            <div class="text-gray-400 text-sm">Withdraw to mobile money</div>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+                </div>
+
+                <!-- USDT TRC20 -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectWithdrawMethod('usdt')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                            <div class="text-gray-400 text-sm">Withdraw to crypto wallet</div>
                         </div>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
@@ -693,6 +763,32 @@
             }
             alert(`${methodName} payment selected. Redirecting to payment gateway...`);
             closeDepositModal();
+        }
+
+        // ==========================================
+        // WITHDRAW MODAL FUNCTIONS
+        // ==========================================
+        function openWithdrawModal() {
+            document.getElementById('withdraw-balance').textContent = balance.toFixed(2);
+            document.getElementById('withdraw-modal').classList.remove('hidden');
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdraw-modal').classList.add('hidden');
+        }
+
+        function selectWithdrawMethod(method) {
+            let methodName = '';
+            switch(method) {
+                case 'mpesa':
+                    methodName = 'M-Pesa';
+                    break;
+                case 'usdt':
+                    methodName = 'USDT (TRC20)';
+                    break;
+            }
+            alert(`${methodName} withdrawal selected. Redirecting to withdrawal page...`);
+            closeWithdrawModal();
         }
 
         // ==========================================
