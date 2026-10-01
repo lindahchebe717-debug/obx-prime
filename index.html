@@ -143,6 +143,83 @@
             border: 1.5px solid #e5e7eb !important;
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
+
+        /* ===== NEW: Volatility Index Dropdown ===== */
+        .volatility-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: #1e1b4b;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            z-index: 100;
+            min-width: 280px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        .volatility-dropdown.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .volatility-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .volatility-item:last-child {
+            border-bottom: none;
+        }
+        .volatility-item:hover {
+            background: rgba(124, 58, 237, 0.15);
+        }
+        .volatility-item.active {
+            background: rgba(124, 58, 237, 0.25);
+            color: #A78BFA;
+        }
+        .volatility-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+        .volatility-item-price {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        body.light-theme .volatility-dropdown {
+            background: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        body.light-theme .volatility-item {
+            border-bottom-color: #f3f4f6;
+        }
+        body.light-theme .volatility-item:hover {
+            background: #f9fafb;
+        }
+        body.light-theme .volatility-item.active {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        body.light-theme .volatility-item-name {
+            color: #1f2937;
+        }
+        body.light-theme .volatility-item-price {
+            color: #6b7280;
+        }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -607,10 +684,10 @@
                 <div class="flex-1 relative overflow-hidden">
                     <div class="absolute top-1.5 left-1.5 z-20">
                         <div class="relative">
-                            <button class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1F1936] border border-white/[0.07] shadow-lg active:scale-[0.98] transition-transform">
+                            <button onclick="toggleVolatilityDropdown(event)" class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1F1936] border border-white/[0.07] shadow-lg active:scale-[0.98] transition-transform">
                                 <div class="w-5 h-5 rounded bg-[#282041] flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg></div>
                                 <div class="flex flex-col items-start">
-                                    <span class="text-[10px] font-medium text-white">Vol 10 (1s)</span>
+                                    <span class="text-[10px] font-medium text-white" id="selected-volatility">Vol 10 (1s)</span>
                                     <div class="flex items-center gap-1">
                                         <span class="text-[9px] text-gray-400" id="chart-price-display">9501.21</span>
                                         <span class="text-[8px] text-emerald-500" id="chart-change-display">+0.01%</span>
@@ -618,6 +695,46 @@
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                             </button>
+                            
+                            <!-- Volatility Dropdown Menu -->
+                            <div id="volatility-dropdown" class="volatility-dropdown">
+                                <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 10 (1s) Index</div>
+                                    <div class="volatility-item-price">9501.21 +0.01%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 10 Index', this)">
+                                    <div class="volatility-item-name">Volatility 10 Index</div>
+                                    <div class="volatility-item-price">9487.35 -0.15%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 15 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 15 (1s) Index</div>
+                                    <div class="volatility-item-price">8923.67 +0.23%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 25 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 25 (1s) Index</div>
+                                    <div class="volatility-item-price">7654.89 -0.08%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 25 Index', this)">
+                                    <div class="volatility-item-name">Volatility 25 Index</div>
+                                    <div class="volatility-item-price">7621.45 +0.12%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 30 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 30 (1s) Index</div>
+                                    <div class="volatility-item-price">6789.23 -0.05%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 50 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 50 (1s) Index</div>
+                                    <div class="volatility-item-price">5432.10 +0.18%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 50 Index', this)">
+                                    <div class="volatility-item-name">Volatility 50 Index</div>
+                                    <div class="volatility-item-price">5398.76 -0.22%</div>
+                                </div>
+                                <div class="volatility-item" onclick="selectVolatility('Volatility 75 (1s) Index', this)">
+                                    <div class="volatility-item-name">Volatility 75 (1s) Index</div>
+                                    <div class="volatility-item-price">4123.45 +0.31%</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="absolute inset-0 flex flex-col bg-[#151a25]">
@@ -924,6 +1041,62 @@
                 body.classList.add('light-theme');
             }
         }
+
+        // ==========================================
+        // VOLATILITY DROPDOWN FUNCTIONS
+        // ==========================================
+        function toggleVolatilityDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('volatility-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function selectVolatility(name, element) {
+            // Update selected volatility name
+            document.getElementById('selected-volatility').textContent = name.split(' ')[1] + ' ' + name.split(' ')[2];
+            
+            // Update active state
+            document.querySelectorAll('.volatility-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Close dropdown
+            document.getElementById('volatility-dropdown').classList.remove('show');
+            
+            // Update chart with new data (simulation)
+            updateChartForVolatility(name);
+        }
+
+        function updateChartForVolatility(volatilityName) {
+            // Simulate different price ranges for different volatilities
+            const basePrices = {
+                'Volatility 10 (1s) Index': 9501.21,
+                'Volatility 10 Index': 9487.35,
+                'Volatility 15 (1s) Index': 8923.67,
+                'Volatility 25 (1s) Index': 7654.89,
+                'Volatility 25 Index': 7621.45,
+                'Volatility 30 (1s) Index': 6789.23,
+                'Volatility 50 (1s) Index': 5432.10,
+                'Volatility 50 Index': 5398.76,
+                'Volatility 75 (1s) Index': 4123.45
+            };
+            
+            price = basePrices[volatilityName] || 9501.21;
+            priceHistory = [];
+            totalTicks = 0;
+            digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('volatility-dropdown');
+            const button = event.target.closest('button');
+            
+            if (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown')) {
+                dropdown.classList.remove('show');
+            }
+        });
 
         // ==========================================
         // DEPOSIT MODAL FUNCTIONS
