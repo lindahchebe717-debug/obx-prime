@@ -9,6 +9,74 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         body { background-color: #141021; }
+        
+        /* Light theme classes */
+        body.light-theme {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        body.light-theme .bg-\[\#130f1c\],
+        body.light-theme .bg-\[\#141021\],
+        body.light-theme .bg-\[\#181329\],
+        body.light-theme .bg-\[\#1F1936\],
+        body.light-theme .bg-\[\#151a25\],
+        body.light-theme .bg-\[\#1e1b4b\],
+        body.light-theme .bg-\[\#1e2535\],
+        body.light-theme .bg-\[\#252d3d\],
+        body.light-theme .bg-\[\#282041\],
+        body.light-theme .bg-\[\#2E2447\],
+        body.light-theme .bg-\[\#2a3548\] {
+            background-color: #ffffff !important;
+        }
+        body.light-theme .text-white {
+            color: #1f2937 !important;
+        }
+        body.light-theme .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        body.light-theme .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        body.light-theme .text-gray-300 {
+            color: #4b5563 !important;
+        }
+        body.light-theme .border-white\/10,
+        body.light-theme .border-white\/5,
+        body.light-theme .border-white\/\[0\.07\] {
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        body.light-theme .bg-white\/5,
+        body.light-theme .bg-white\/\[0\.04\],
+        body.light-theme .bg-white\/\[0\.06\],
+        body.light-theme .bg-white\/15 {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        body.light-theme .bg-\[\#7C3AED\]\/15 {
+            background-color: rgba(124, 58, 237, 0.1) !important;
+        }
+        body.light-theme .bg-\[\#7C3AED\]\/20 {
+            background-color: rgba(124, 58, 237, 0.15) !important;
+        }
+        body.light-theme .bg-\[\#10B981\]\/20 {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+        }
+        body.light-theme .bg-\[\#130f1c\]\/50,
+        body.light-theme .bg-\[\#130f1c\]\/30 {
+            background-color: rgba(243, 244, 246, 0.8) !important;
+        }
+        body.light-theme .bg-\[\#1e1b4b\]\/50 {
+            background-color: rgba(243, 244, 246, 0.5) !important;
+        }
+        body.light-theme .bg-\[\#141021\]\/95 {
+            background-color: rgba(249, 250, 251, 0.95) !important;
+        }
+        body.light-theme input,
+        body.light-theme select {
+            color: #1f2937 !important;
+        }
+        body.light-theme canvas {
+            background-color: #ffffff !important;
+        }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -745,29 +813,18 @@
         function toggleDarkTheme() {
             isDarkTheme = !isDarkTheme;
             const toggle = document.getElementById('dark-theme-toggle');
+            const body = document.body;
             
             if (isDarkTheme) {
                 // Dark theme ON
                 toggle.style.right = '4px';
                 toggle.style.backgroundColor = 'white';
-                document.body.style.backgroundColor = '#141021';
-                document.body.classList.add('text-white');
-                document.body.classList.remove('text-gray-900');
-                // Update all elements with dark background
-                document.querySelectorAll('.bg-\\[\\#130f1c\\]').forEach(el => {
-                    el.style.backgroundColor = '#130f1c';
-                });
+                body.classList.remove('light-theme');
             } else {
-                // Dark theme OFF (Light theme)
+                // Light theme ON
                 toggle.style.right = '20px';
                 toggle.style.backgroundColor = '#1f2937';
-                document.body.style.backgroundColor = '#f3f4f6';
-                document.body.classList.remove('text-white');
-                document.body.classList.add('text-gray-900');
-                // Update all elements with light background
-                document.querySelectorAll('.bg-\\[\\#130f1c\\]').forEach(el => {
-                    el.style.backgroundColor = '#ffffff';
-                });
+                body.classList.add('light-theme');
             }
         }
 
@@ -1224,7 +1281,7 @@
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-            ctx.strokeStyle = 'white';
+            ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937';
             ctx.lineWidth = 1.5; // Thinner line for sharper look
             ctx.lineJoin = 'miter'; // Sharp corners instead of smooth
             ctx.lineCap = 'butt';
@@ -1242,7 +1299,7 @@
             const lastY = canvas.height - ((priceHistory[priceHistory.length-1] - min) / range) * canvas.height;
             ctx.beginPath();
             ctx.arc(lastX - 2, lastY, 3, 0, Math.PI*2);
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = isDarkTheme ? 'white' : '#1f2937';
             ctx.fill();
         }
 
@@ -1361,13 +1418,13 @@
                 const ringEl = document.getElementById(`digit-ring-${i}`);
                 
                 if(i === lastDigit) {
-                    valEl.style.color = '#ffffff';
+                    valEl.style.color = isDarkTheme ? '#ffffff' : '#1f2937';
                     pctEl.style.color = '#f59e0b';
                     ringEl.setAttribute('stroke', '#f59e0b');
                 } else {
-                    valEl.style.color = '#ffffff';
-                    pctEl.style.color = '#9ca3af';
-                    ringEl.setAttribute('stroke', '#3a4459');
+                    valEl.style.color = isDarkTheme ? '#ffffff' : '#1f2937';
+                    pctEl.style.color = isDarkTheme ? '#9ca3af' : '#6b7280';
+                    ringEl.setAttribute('stroke', isDarkTheme ? '#3a4459' : '#d1d5db');
                 }
             }
         }, 1000);
