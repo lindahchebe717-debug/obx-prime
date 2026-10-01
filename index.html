@@ -238,6 +238,90 @@
         </div>
     </div>
 
+    <!-- Deposit Modal -->
+    <div id="deposit-modal" class="fixed inset-0 bg-black/80 z-[10001] hidden flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-[#1e1b4b] rounded-t-2xl md:rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-[#7C3AED]/30 max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9]">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Deposit Funds</h2>
+                        <p class="text-sm text-white/70">Choose your payment method</p>
+                    </div>
+                </div>
+                <button onclick="closeDepositModal()" class="text-white/80 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-4 space-y-3">
+                <!-- M-Pesa -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('mpesa')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-base">M-Pesa</div>
+                            <div class="text-gray-400 text-sm">Instant mobile money</div>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+                </div>
+
+                <!-- USDT TRC20 -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                            <div class="text-gray-400 text-sm">Cryptocurrency · auto-credited</div>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+                </div>
+
+                <!-- Card -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('card')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-base">Card</div>
+                            <div class="text-gray-400 text-sm">Visa, Mastercard</div>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-white/10 bg-[#130f1c]/30">
+                <div class="flex items-center justify-center gap-4 text-xs text-gray-400">
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>Secure</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>Instant</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>
+                        <span>24/7 Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="fixed inset-0 overflow-hidden bg-[#141021]">
         <!-- MOBILE LAYOUT -->
         <div class="block md:hidden h-full overflow-hidden">
@@ -298,7 +382,7 @@
 
                     <div class="flex items-center gap-1.5">
                         <button class="p-1 rounded-md bg-[#282041] transition-colors" title="Mute Sounds"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></button>
-                        <button class="px-2 py-1 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-md text-[10px] font-semibold text-white shadow-lg shadow-[#7C3AED]/25">Deposit</button>
+                        <button onclick="openDepositModal()" class="px-2 py-1 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-md text-[10px] font-semibold text-white shadow-lg shadow-[#7C3AED]/25">Deposit</button>
                         <div class="relative"><button class="relative p-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></button></div>
                     </div>
                 </header>
@@ -488,7 +572,7 @@
                     <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div></div>
                     <nav class="flex items-center gap-1">
                         <button class="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#282041] text-gray-400 hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span class="text-sm">Trader's Hub</span></button>
-                        <button class="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#282041] text-gray-400 hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="m8 12 4 4 4-4"></path></svg><span class="text-sm">Deposit</span></button>
+                        <button onclick="openDepositModal()" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#282041] text-gray-400 hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="m8 12 4 4 4-4"></path></svg><span class="text-sm">Deposit</span></button>
                         <button class="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#282041] text-gray-400 hover:text-white transition-colors" onclick="window.location.href='withdraw.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m16 12-4-4-4 4"></path><path d="M12 16V8"></path></svg><span class="text-sm">Withdraw</span></button>
                         <button class="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#282041] text-gray-400 hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg><span class="text-sm">History</span></button>
                     </nav>
@@ -522,7 +606,7 @@
                         </div>
                     </div>
 
-                    <button class="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] rounded-lg text-sm font-semibold text-white transition-all shadow-lg shadow-[#7C3AED]/25">Deposit</button>
+                    <button onclick="openDepositModal()" class="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] rounded-lg text-sm font-semibold text-white transition-all shadow-lg shadow-[#7C3AED]/25">Deposit</button>
                 </div>
             </header>
             <div class="flex-1 flex overflow-hidden">
@@ -583,6 +667,34 @@
     </div>
 
     <script>
+        // ==========================================
+        // DEPOSIT MODAL FUNCTIONS
+        // ==========================================
+        function openDepositModal() {
+            document.getElementById('deposit-modal').classList.remove('hidden');
+        }
+
+        function closeDepositModal() {
+            document.getElementById('deposit-modal').classList.add('hidden');
+        }
+
+        function selectPayment(method) {
+            let methodName = '';
+            switch(method) {
+                case 'mpesa':
+                    methodName = 'M-Pesa';
+                    break;
+                case 'usdt':
+                    methodName = 'USDT (TRC20)';
+                    break;
+                case 'card':
+                    methodName = 'Card';
+                    break;
+            }
+            alert(`${methodName} payment selected. Redirecting to payment gateway...`);
+            closeDepositModal();
+        }
+
         // ==========================================
         // MENU FUNCTIONS
         // ==========================================
