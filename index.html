@@ -77,6 +77,31 @@
         body.light-theme canvas {
             background-color: #ffffff !important;
         }
+        /* Digit circles visibility in light mode */
+        body.light-theme #digit-val-0,
+        body.light-theme #digit-val-1,
+        body.light-theme #digit-val-2,
+        body.light-theme #digit-val-3,
+        body.light-theme #digit-val-4,
+        body.light-theme #digit-val-5,
+        body.light-theme #digit-val-6,
+        body.light-theme #digit-val-7,
+        body.light-theme #digit-val-8,
+        body.light-theme #digit-val-9 {
+            color: #1f2937 !important;
+        }
+        body.light-theme #digit-pct-0,
+        body.light-theme #digit-pct-1,
+        body.light-theme #digit-pct-2,
+        body.light-theme #digit-pct-3,
+        body.light-theme #digit-pct-4,
+        body.light-theme #digit-pct-5,
+        body.light-theme #digit-pct-6,
+        body.light-theme #digit-pct-7,
+        body.light-theme #digit-pct-8,
+        body.light-theme #digit-pct-9 {
+            color: #6b7280 !important;
+        }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -519,7 +544,10 @@
                     </div>
 
                     <div class="flex items-center gap-1.5">
-                        <button class="p-1 rounded-md bg-[#282041] transition-colors" title="Mute Sounds"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></button>
+                        <button onclick="toggleSound()" id="sound-toggle" class="p-1 rounded-md bg-[#282041] transition-colors" title="Mute Sounds">
+                            <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>
+                            <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 hidden"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>
+                        </button>
                         <button onclick="openDepositModal()" class="px-2 py-1 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-md text-[10px] font-semibold text-white shadow-lg shadow-[#7C3AED]/25">Deposit</button>
                         <div class="relative"><button class="relative p-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></button></div>
                     </div>
@@ -805,6 +833,25 @@
     </div>
 
     <script>
+        // ==========================================
+        // SOUND TOGGLE FUNCTION
+        // ==========================================
+        let isSoundOn = true;
+        
+        function toggleSound() {
+            isSoundOn = !isSoundOn;
+            const iconOn = document.getElementById('sound-icon-on');
+            const iconOff = document.getElementById('sound-icon-off');
+            
+            if (isSoundOn) {
+                iconOn.classList.remove('hidden');
+                iconOff.classList.add('hidden');
+            } else {
+                iconOn.classList.add('hidden');
+                iconOff.classList.remove('hidden');
+            }
+        }
+
         // ==========================================
         // DARK THEME TOGGLE FUNCTION
         // ==========================================
@@ -1280,10 +1327,47 @@
             const range = max - min || 1;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid lines
+            const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDarkTheme ? '#9ca3af' : '#6b7280';
+            
+            // Horizontal grid lines
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([3, 3]);
+            
+            for (let i = 1; i < 5; i++) {
+                const y = (canvas.height / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+                
+                // Add price labels on the right
+                const priceValue = max - ((range / 5) * i);
+                ctx.fillStyle = textColor;
+                ctx.font = '10px sans-serif';
+                ctx.fillText(priceValue.toFixed(2), canvas.width - 45, y + 3);
+            }
+            
+            // Vertical grid lines (time)
+            const timeSteps = 5;
+            for (let i = 1; i < timeSteps; i++) {
+                const x = (canvas.width / timeSteps) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+            
+            // Draw price line
             ctx.beginPath();
             ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937';
-            ctx.lineWidth = 1.5; // Thinner line for sharper look
-            ctx.lineJoin = 'miter'; // Sharp corners instead of smooth
+            ctx.lineWidth = 1.5;
+            ctx.lineJoin = 'miter';
             ctx.lineCap = 'butt';
 
             for(let i=0; i<priceHistory.length; i++) {
@@ -1294,7 +1378,7 @@
             }
             ctx.stroke();
 
-            // Draw current price dot (smaller for sharper look)
+            // Draw current price dot
             const lastX = canvas.width;
             const lastY = canvas.height - ((priceHistory[priceHistory.length-1] - min) / range) * canvas.height;
             ctx.beginPath();
