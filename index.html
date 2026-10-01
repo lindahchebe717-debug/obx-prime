@@ -223,6 +223,521 @@
         body.light-theme .volatility-item-price {
             color: #6b7280;
         }
+
+        /* ============================================ */
+        /* ===== NEW: LIVE CHAT SYSTEM STYLES ===== */
+        /* ============================================ */
+        
+        /* Floating Chat Button */
+        .chat-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9997;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .chat-fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 32px rgba(124, 58, 237, 0.6);
+        }
+        .chat-fab:active {
+            transform: scale(0.95);
+        }
+        .chat-fab-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 11px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #141021;
+        }
+        .chat-fab-pulse {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            animation: chatPulse 2s infinite;
+            z-index: -1;
+        }
+        @keyframes chatPulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Chat Panel - Slide-in from right */
+        .chat-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 100%;
+            max-width: 400px;
+            background: #130f1c;
+            z-index: 10002;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+        }
+        .chat-panel.open {
+            transform: translateX(0);
+        }
+        .chat-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .chat-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .chat-agent-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .chat-status-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10B981;
+            border: 2px solid #6D28D9;
+        }
+        .chat-status-dot.offline {
+            background: #9ca3af;
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #141021;
+        }
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-track { background: transparent; }
+        .chat-messages::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.3); border-radius: 2px; }
+
+        .chat-msg {
+            max-width: 80%;
+            display: flex;
+            flex-direction: column;
+            animation: msgFadeIn 0.3s ease-out;
+        }
+        @keyframes msgFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-msg.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+        .chat-msg.bot {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .chat-msg.user .chat-bubble {
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-msg.bot .chat-bubble {
+            background: #1F1936;
+            color: white;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .chat-bubble img {
+            max-width: 100%;
+            border-radius: 12px;
+            display: block;
+            cursor: pointer;
+        }
+        .chat-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+        .chat-read-receipt {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .chat-read-receipt.read {
+            color: #7C3AED;
+        }
+
+        /* Typing Indicator */
+        .chat-typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #1F1936;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .chat-typing span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #9ca3af;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .chat-typing span:nth-child(1) { animation-delay: -0.32s; }
+        .chat-typing span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Quick Replies */
+        .chat-quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0 16px 8px;
+            background: #141021;
+        }
+        .quick-reply-btn {
+            padding: 6px 12px;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            color: #A78BFA;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .quick-reply-btn:hover {
+            background: rgba(124, 58, 237, 0.25);
+            border-color: rgba(124, 58, 237, 0.5);
+        }
+
+        /* Chat Input Area */
+        .chat-input-area {
+            background: #1F1936;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 10px 12px;
+            flex-shrink: 0;
+        }
+        .chat-image-preview {
+            display: none;
+            padding: 8px;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .chat-image-preview.show {
+            display: block;
+        }
+        .chat-image-preview img {
+            max-height: 80px;
+            border-radius: 6px;
+        }
+        .chat-image-preview .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .chat-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-input-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+        .chat-input-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            color: #A78BFA;
+        }
+        .chat-text-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 8px 14px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+        .chat-text-input:focus {
+            border-color: rgba(124, 58, 237, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .chat-send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+        .chat-send-btn:hover {
+            transform: scale(1.08);
+        }
+        .chat-send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Attachment Menu Popup */
+        .chat-attach-menu {
+            position: absolute;
+            bottom: 60px;
+            left: 12px;
+            background: #1F1936;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            min-width: 180px;
+        }
+        .chat-attach-menu.show {
+            display: flex;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .attach-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            color: white;
+            font-size: 13px;
+        }
+        .attach-option:hover {
+            background: rgba(124, 58, 237, 0.15);
+        }
+        .attach-option-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
+            bottom: 60px;
+            left: 56px;
+            right: 56px;
+            background: #1F1936;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            display: none;
+            max-height: 240px;
+            overflow-y: auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+        .emoji-picker.show {
+            display: block;
+            animation: slideUp 0.2s ease-out;
+        }
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+        }
+        .emoji-item {
+            padding: 6px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 20px;
+            transition: background 0.1s ease;
+        }
+        .emoji-item:hover {
+            background: rgba(124, 58, 237, 0.2);
+        }
+
+        /* Image Viewer Modal */
+        .img-viewer {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10003;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .img-viewer.show {
+            display: flex;
+        }
+        .img-viewer img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+        }
+        .img-viewer-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Light theme adjustments for chat */
+        body.light-theme .chat-panel {
+            background: #ffffff;
+        }
+        body.light-theme .chat-messages {
+            background: #f9fafb;
+        }
+        body.light-theme .chat-msg.bot .chat-bubble {
+            background: #ffffff;
+            color: #1f2937;
+            border-color: #e5e7eb;
+        }
+        body.light-theme .chat-input-area {
+            background: #ffffff;
+            border-top-color: #e5e7eb;
+        }
+        body.light-theme .chat-text-input {
+            background: #f3f4f6;
+            color: #1f2937;
+            border-color: #e5e7eb;
+        }
+        body.light-theme .chat-text-input:focus {
+            border-color: #7C3AED;
+        }
+        body.light-theme .chat-input-btn {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        body.light-theme .chat-attach-menu,
+        body.light-theme .emoji-picker {
+            background: #ffffff;
+            border-color: #e5e7eb;
+        }
+        body.light-theme .attach-option {
+            color: #1f2937;
+        }
+        body.light-theme .chat-quick-replies {
+            background: #f9fafb;
+        }
+        body.light-theme .chat-fab-badge {
+            border-color: #ffffff;
+        }
+
+        /* Hide default Tawk.to widget (we use our own UI) */
+        #tawkchat-container {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="antialiased text-white">
@@ -357,9 +872,16 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
                 </div>
 
-                <div class="flex items-center gap-3 px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <span class="text-[15px]">Live Chat</span>
+                <!-- UPDATED: Live Chat menu item - now clickable -->
+                <div onclick="openLiveChat(); closeMenu();" class="flex items-center justify-between px-4 py-3.5 text-white hover:bg-white/5 cursor-pointer transition-colors">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span class="text-[15px]">Live Chat</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="chat-status-indicator" class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -604,6 +1126,105 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ===== NEW: LIVE CHAT SYSTEM HTML ===== -->
+    <!-- ============================================ -->
+    
+    <!-- Floating Chat Button -->
+    <button id="chat-fab" class="chat-fab" onclick="openLiveChat()" aria-label="Open Live Chat">
+        <div class="chat-fab-pulse"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span id="chat-fab-badge" class="chat-fab-badge" style="display: none;">0</span>
+    </button>
+
+    <!-- Chat Overlay -->
+    <div id="chat-overlay" class="chat-overlay" onclick="closeLiveChat()"></div>
+
+    <!-- Chat Panel (Slide-in from right) -->
+    <div id="chat-panel" class="chat-panel">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-agent-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <div id="chat-status-dot" class="chat-status-dot"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-white font-bold text-sm">OBX Support</div>
+                <div id="chat-status-text" class="text-white/80 text-xs flex items-center gap-1">
+                    <span>●</span> <span>Online · Typically replies in 1 min</span>
+                </div>
+            </div>
+            <button onclick="closeLiveChat()" class="text-white/80 hover:text-white p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="chat-messages"></div>
+
+        <!-- Quick Replies -->
+        <div id="chat-quick-replies" class="chat-quick-replies">
+            <button class="quick-reply-btn" onclick="sendQuickReply('Deposit issue')">💰 Deposit issue</button>
+            <button class="quick-reply-btn" onclick="sendQuickReply('Withdrawal issue')">💸 Withdrawal issue</button>
+            <button class="quick-reply-btn" onclick="sendQuickReply('Trading help')">📈 Trading help</button>
+            <button class="quick-reply-btn" onclick="sendQuickReply('Account verification')">✅ Verification</button>
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area" style="position: relative;">
+            <!-- Image Preview -->
+            <div id="chat-image-preview" class="chat-image-preview">
+                <img id="chat-preview-img" src="" alt="Preview">
+                <button class="remove-img" onclick="removeChatImage()">×</button>
+            </div>
+
+            <!-- Attachment Menu -->
+            <div id="chat-attach-menu" class="chat-attach-menu">
+                <label class="attach-option">
+                    <div class="attach-option-icon" style="background: rgba(124, 58, 237, 0.2);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+                    </div>
+                    <span>Gallery / Photo</span>
+                    <input type="file" accept="image/*" id="chat-gallery-input" style="display: none;" onchange="handleChatImage(event, false)">
+                </label>
+                <label class="attach-option">
+                    <div class="attach-option-icon" style="background: rgba(16, 185, 129, 0.2);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                    </div>
+                    <span>Camera</span>
+                    <input type="file" accept="image/*" capture="environment" id="chat-camera-input" style="display: none;" onchange="handleChatImage(event, true)">
+                </label>
+            </div>
+
+            <!-- Emoji Picker -->
+            <div id="emoji-picker" class="emoji-picker">
+                <div class="emoji-grid" id="emoji-grid"></div>
+            </div>
+
+            <!-- Input Row -->
+            <div class="chat-input-row">
+                <button class="chat-input-btn" onclick="toggleEmojiPicker(event)" title="Emoji">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" x2="9.01" y1="9" y2="9"></line><line x1="15" x2="15.01" y1="9" y2="9"></line></svg>
+                </button>
+                <button class="chat-input-btn" onclick="toggleAttachMenu(event)" title="Attach">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                </button>
+                <input id="chat-text-input" type="text" class="chat-text-input" placeholder="Type a message..." onkeypress="handleChatKeypress(event)" oninput="onChatInput()">
+                <button id="chat-send-btn" class="chat-send-btn" onclick="sendChatMessage()" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="img-viewer" class="img-viewer" onclick="closeImageViewer()">
+        <button class="img-viewer-close" onclick="closeImageViewer()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+        <img id="img-viewer-img" src="" alt="Full image">
     </div>
 
     <div class="fixed inset-0 overflow-hidden bg-[#141021]">
@@ -1706,6 +2327,7 @@
             const pStr = price.toFixed(2);
             lastDigit = parseInt(pStr.split('.')[1].slice(-1));
             
+            document.getElementById('chat-price-display')?.innerText; // no-op
             document.getElementById('chart-price-display').innerText = pStr;
             if(document.getElementById('desktop-price')) document.getElementById('desktop-price').innerText = pStr;
             
@@ -1757,6 +2379,560 @@
             drawChart('desktopChart');
         }, 100);
         updatePayouts();
+
+        // ==========================================
+        // ==========================================
+        // ===== NEW: LIVE CHAT SYSTEM LOGIC =====
+        // ==========================================
+        // ==========================================
+
+        // ====== Chat State ======
+        let chatMessages = [];
+        let chatPendingImage = null;
+        let chatUnreadCount = 0;
+        let chatIsOnline = true; // Simulated online status
+        let chatHistoryLoaded = false;
+
+        // ====== Emoji List ======
+        const EMOJI_LIST = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣',
+            '😊','😇','🙂','🙃','😉','😌','😍','🥰',
+            '😘','😗','😙','😚','😋','😛','😝','😜',
+            '🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳',
+            '😏','😒','😞','😔','😟','😕','🙁','☹️',
+            '😣','😖','😫','😩','🥺','😢','😭','😤',
+            '😠','😡','🤬','🤯','😳','🥵','🥶','😱',
+            '😨','😰','😥','😓','🤗','🤔','🤭','🤫',
+            '👍','👎','👌','✌️','🤞','🤟','🤘','👋',
+            '🙏','💪','❤️','🧡','💛','💚','💙','💜',
+            '💯','✅','❌','⚠️','🔥','⭐','💰','📈'
+        ];
+
+        // ====== Auto-Responder Bot ======
+        // Keywords → responses. Falls back to "connecting to agent" if no match.
+        const AUTO_RESPONSES = [
+            {
+                keywords: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening'],
+                responses: [
+                    "Hello! 👋 Welcome to OBX PRIME support. How can I help you today?",
+                    "Hi there! I'm here to help. What do you need assistance with?",
+                    "Hey! 👋 Thanks for reaching out. What can I do for you?"
+                ]
+            },
+            {
+                keywords: ['deposit', 'fund', 'add money', 'mpesa', 'usdt', 'card'],
+                responses: [
+                    "💰 For deposits, we support M-Pesa, USDT (TRC20), and Cards. Go to the Deposit section from the menu or header. Which method would you like to use?",
+                    "I can help with deposits! We accept M-Pesa (instant), USDT TRC20, and Visa/Mastercard. Which one are you having trouble with?"
+                ]
+            },
+            {
+                keywords: ['withdraw', 'withdrawal', 'cash out', 'payout'],
+                responses: [
+                    "💸 Withdrawals are processed via M-Pesa or USDT TRC20. Typical processing time is 1-24 hours. Could you share your withdrawal ID or issue details?",
+                    "I understand you need help with a withdrawal. Please share: (1) the method used, (2) amount, and (3) any error you saw."
+                ]
+            },
+            {
+                keywords: ['verify', 'verification', 'kyc', 'identity', 'id'],
+                responses: [
+                    "✅ For account verification, please go to Menu → Account settings → Verify Identity. You'll need a valid ID and a selfie. Processing takes up to 24 hours.",
+                    "Verification is required for full account access. Head to Account settings → Verify Identity and upload your documents."
+                ]
+            },
+            {
+                keywords: ['trade', 'trading', 'even', 'odd', 'over', 'under', 'matches', 'differs'],
+                responses: [
+                    "📈 OBX PRIME offers synthetic indices with Even/Odd, Over/Under, and Matches/Differs trades. Try the AI Entry Scanner (bottom nav) to find the best entry points!",
+                    "For trading help: select your trade type from the tabs above the chart, set your stake, and tap Even/Odd/Over/Under. Need specific strategy help?"
+                ]
+            },
+            {
+                keywords: ['password', 'login', 'account', 'locked', 'can\'t access'],
+                responses: [
+                    "🔐 For account access issues, please go to Menu → Account settings → Change Password. If you're locked out, I'll connect you with a human agent."
+                ]
+            },
+            {
+                keywords: ['thanks', 'thank you', 'thx', 'appreciate'],
+                responses: [
+                    "You're welcome! 😊 Is there anything else I can help you with?",
+                    "Happy to help! Let me know if you need anything else."
+                ]
+            },
+            {
+                keywords: ['bye', 'goodbye', 'that\'s all', 'done'],
+                responses: [
+                    "Thanks for chatting with us! 🙏 Have a great day trading. Feel free to reach out anytime.",
+                    "Goodbye! 👋 Don't hesitate to come back if you need anything."
+                ]
+            }
+        ];
+
+        // ====== Initialize Chat ======
+        function initChat() {
+            loadChatHistory();
+            buildEmojiGrid();
+            renderChatMessages();
+            updateChatFabBadge();
+            
+            // If no messages yet, show welcome message
+            if (chatMessages.length === 0) {
+                addBotMessage("Hello! 👋 Welcome to OBX PRIME Support. I'm here to help with deposits, withdrawals, trading, and account questions. How can I assist you today?");
+            }
+
+            // Simulate online/offline status toggle (for demo)
+            setInterval(() => {
+                // Keep online 95% of the time
+                chatIsOnline = Math.random() > 0.05;
+                updateChatStatus();
+            }, 30000);
+        }
+
+        function buildEmojiGrid() {
+            const grid = document.getElementById('emoji-grid');
+            grid.innerHTML = EMOJI_LIST.map(e => 
+                `<div class="emoji-item" onclick="insertEmoji('${e}')">${e}</div>`
+            ).join('');
+        }
+
+        function updateChatStatus() {
+            const dot = document.getElementById('chat-status-dot');
+            const text = document.getElementById('chat-status-text');
+            const indicator = document.getElementById('chat-status-indicator');
+            
+            if (chatIsOnline) {
+                dot.classList.remove('offline');
+                text.innerHTML = '<span>●</span> <span>Online · Typically replies in 1 min</span>';
+                if (indicator) indicator.className = 'w-2 h-2 rounded-full bg-[#10B981]';
+            } else {
+                dot.classList.add('offline');
+                text.innerHTML = '<span>●</span> <span>Offline · We\'ll reply soon</span>';
+                if (indicator) indicator.className = 'w-2 h-2 rounded-full bg-gray-500';
+            }
+        }
+
+        // ====== Open / Close Chat ======
+        function openLiveChat() {
+            document.getElementById('chat-panel').classList.add('open');
+            document.getElementById('chat-overlay').classList.add('open');
+            document.getElementById('chat-fab').style.display = 'none';
+            
+            // Clear unread badge
+            chatUnreadCount = 0;
+            updateChatFabBadge();
+            
+            // Scroll to bottom
+            setTimeout(scrollChatToBottom, 100);
+            
+            // Focus input
+            setTimeout(() => {
+                document.getElementById('chat-text-input').focus();
+            }, 400);
+        }
+
+        function closeLiveChat() {
+            document.getElementById('chat-panel').classList.remove('open');
+            document.getElementById('chat-overlay').classList.remove('open');
+            document.getElementById('chat-fab').style.display = 'flex';
+            
+            // Close any open popups
+            document.getElementById('emoji-picker').classList.remove('show');
+            document.getElementById('chat-attach-menu').classList.remove('show');
+        }
+
+        // ====== Send Messages ======
+        function sendChatMessage() {
+            const input = document.getElementById('chat-text-input');
+            const text = input.value.trim();
+            
+            if (!text && !chatPendingImage) return;
+            
+            // Build message
+            const msg = {
+                id: Date.now(),
+                type: 'user',
+                text: text || null,
+                image: chatPendingImage,
+                timestamp: new Date().toISOString(),
+                status: 'sent' // sent → delivered → read
+            };
+            
+            chatMessages.push(msg);
+            saveChatHistory();
+            renderChatMessages();
+            scrollChatToBottom();
+            playSound('send');
+            
+            // Clear input
+            input.value = '';
+            chatPendingImage = null;
+            document.getElementById('chat-image-preview').classList.remove('show');
+            document.getElementById('chat-send-btn').disabled = true;
+            
+            // Simulate read receipt after 1s
+            setTimeout(() => {
+                msg.status = 'delivered';
+                renderChatMessages();
+                saveChatHistory();
+            }, 1000);
+            
+            setTimeout(() => {
+                msg.status = 'read';
+                renderChatMessages();
+                saveChatHistory();
+            }, 2500);
+            
+            // Trigger bot response
+            setTimeout(() => {
+                triggerBotResponse(text);
+            }, 800);
+        }
+
+        function sendQuickReply(text) {
+            document.getElementById('chat-text-input').value = text;
+            sendChatMessage();
+        }
+
+        function triggerBotResponse(userText) {
+            if (!userText) return;
+            
+            const lower = userText.toLowerCase();
+            let response = null;
+            
+            // Find matching auto-response
+            for (const group of AUTO_RESPONSES) {
+                if (group.keywords.some(kw => lower.includes(kw))) {
+                    response = group.responses[Math.floor(Math.random() * group.responses.length)];
+                    break;
+                }
+            }
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // If no match, connect to real agent (Tawk.to)
+            if (!response) {
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addBotMessage("Let me connect you with a human agent who can help better. 🧑‍💼 Opening live support...");
+                    
+                    // Trigger Tawk.to widget
+                    setTimeout(() => {
+                        if (typeof Tawk_API !== 'undefined' && typeof Tawk_API.maximize === 'function') {
+                            Tawk_API.maximize();
+                        } else {
+                            addBotMessage("Our support team has been notified. They'll respond within a few minutes. In the meantime, feel free to ask anything else!");
+                        }
+                    }, 1500);
+                }, 1800);
+                return;
+            }
+            
+            // Send auto-response after "typing" delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotMessage(response);
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addBotMessage(text, image = null) {
+            const msg = {
+                id: Date.now(),
+                type: 'bot',
+                text: text,
+                image: image,
+                timestamp: new Date().toISOString()
+            };
+            chatMessages.push(msg);
+            saveChatHistory();
+            renderChatMessages();
+            scrollChatToBottom();
+            playSound('receive');
+            
+            // If chat is closed, increment unread badge
+            if (!document.getElementById('chat-panel').classList.contains('open')) {
+                chatUnreadCount++;
+                updateChatFabBadge();
+            }
+        }
+
+        function showTypingIndicator() {
+            const messages = document.getElementById('chat-messages');
+            // Remove existing
+            const existing = document.getElementById('chat-typing-wrapper');
+            if (existing) existing.remove();
+            
+            const wrapper = document.createElement('div');
+            wrapper.id = 'chat-typing-wrapper';
+            wrapper.className = 'chat-msg bot';
+            wrapper.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+            messages.appendChild(wrapper);
+            scrollChatToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const el = document.getElementById('chat-typing-wrapper');
+            if (el) el.remove();
+        }
+
+        // ====== Render Messages ======
+        function renderChatMessages() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = chatMessages.map(msg => {
+                const time = formatTime(msg.timestamp);
+                const statusIcon = msg.type === 'user' ? getStatusIcon(msg.status) : '';
+                
+                let content = '';
+                if (msg.image) {
+                    content += `<img src="${msg.image}" alt="Shared image" onclick="openImageViewer('${msg.image}')" style="margin-bottom: ${msg.text ? '6px' : '0'};">`;
+                }
+                if (msg.text) {
+                    content += escapeHtml(msg.text);
+                }
+                
+                return `
+                    <div class="chat-msg ${msg.type}">
+                        <div class="chat-bubble">${content}</div>
+                        <div class="chat-meta">
+                            <span>${time}</span>
+                            ${msg.type === 'user' ? `<span class="chat-read-receipt ${msg.status === 'read' ? 'read' : ''}">${statusIcon}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getStatusIcon(status) {
+            if (status === 'sent') return '✓';
+            if (status === 'delivered') return '✓✓';
+            if (status === 'read') return '✓✓';
+            return '';
+        }
+
+        function formatTime(iso) {
+            const d = new Date(iso);
+            let h = d.getHours();
+            const m = d.getMinutes().toString().padStart(2, '0');
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${m} ${ampm}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function scrollChatToBottom() {
+            const container = document.getElementById('chat-messages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ====== Image Handling ======
+        function toggleAttachMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('chat-attach-menu');
+            const emoji = document.getElementById('emoji-picker');
+            emoji.classList.remove('show');
+            menu.classList.toggle('show');
+        }
+
+        function handleChatImage(event, isCamera) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image must be under 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                chatPendingImage = e.target.result;
+                document.getElementById('chat-preview-img').src = chatPendingImage;
+                document.getElementById('chat-image-preview').classList.add('show');
+                document.getElementById('chat-send-btn').disabled = false;
+                document.getElementById('chat-attach-menu').classList.remove('show');
+                
+                // Reset file input
+                event.target.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeChatImage() {
+            chatPendingImage = null;
+            document.getElementById('chat-image-preview').classList.remove('show');
+            const input = document.getElementById('chat-text-input');
+            document.getElementById('chat-send-btn').disabled = !input.value.trim();
+        }
+
+        // ====== Emoji Picker ======
+        function toggleEmojiPicker(event) {
+            event.stopPropagation();
+            const picker = document.getElementById('emoji-picker');
+            const menu = document.getElementById('chat-attach-menu');
+            menu.classList.remove('show');
+            picker.classList.toggle('show');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('chat-text-input');
+            input.value += emoji;
+            input.focus();
+            document.getElementById('chat-send-btn').disabled = false;
+        }
+
+        // ====== Image Viewer ======
+        function openImageViewer(src) {
+            document.getElementById('img-viewer-img').src = src;
+            document.getElementById('img-viewer').classList.add('show');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('img-viewer').classList.remove('show');
+        }
+
+        // ====== Input Handling ======
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function onChatInput() {
+            const input = document.getElementById('chat-text-input');
+            const sendBtn = document.getElementById('chat-send-btn');
+            sendBtn.disabled = !input.value.trim() && !chatPendingImage;
+        }
+
+        // ====== Sound Notifications ======
+        function playSound(type) {
+            if (!isSoundOn) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                if (type === 'send') {
+                    osc.frequency.value = 800;
+                } else {
+                    osc.frequency.value = 520;
+                }
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {
+                // Silent fail
+            }
+        }
+
+        // ====== Chat History (localStorage) ======
+        function saveChatHistory() {
+            try {
+                // Keep only last 100 messages to avoid storage bloat
+                const toSave = chatMessages.slice(-100);
+                localStorage.setItem('obx_chat_history', JSON.stringify(toSave));
+            } catch (e) {}
+        }
+
+        function loadChatHistory() {
+            try {
+                const saved = localStorage.getItem('obx_chat_history');
+                if (saved) {
+                    chatMessages = JSON.parse(saved);
+                    chatHistoryLoaded = true;
+                }
+            } catch (e) {
+                chatMessages = [];
+            }
+        }
+
+        // ====== FAB Badge ======
+        function updateChatFabBadge() {
+            const badge = document.getElementById('chat-fab-badge');
+            if (chatUnreadCount > 0) {
+                badge.textContent = chatUnreadCount > 9 ? '9+' : chatUnreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // ====== Close popups on outside click ======
+        document.addEventListener('click', function(event) {
+            const attachMenu = document.getElementById('chat-attach-menu');
+            const emojiPicker = document.getElementById('emoji-picker');
+            
+            if (attachMenu && !event.target.closest('.chat-input-btn') && !event.target.closest('.chat-attach-menu')) {
+                attachMenu.classList.remove('show');
+            }
+            if (emojiPicker && !event.target.closest('.chat-input-btn') && !event.target.closest('.emoji-picker')) {
+                emojiPicker.classList.remove('show');
+            }
+        });
+
+        // ====== Initialize on load ======
+        document.addEventListener('DOMContentLoaded', initChat);
+
+        // ==========================================
+        // ===== TAWK.TO LIVE CHAT INTEGRATION =====
+        // ==========================================
+        // Replace with your actual Tawk.to Property ID and Widget ID
+        var Tawk_API = Tawk_API || {};
+        var Tawk_LoadStart = new Date();
+        
+        // Tawk API event handlers
+        Tawk_API.onLoad = function() {
+            // Hide the default Tawk bubble (we use our own)
+            if (typeof Tawk_API.hideWidget === 'function') {
+                // We keep it loaded but hidden; our UI triggers it
+            }
+            console.log('Tawk.to loaded successfully');
+        };
+        
+        Tawk_API.onMessage = function(message) {
+            // When a real agent sends a message, show it in our UI
+            if (message && message.msg) {
+                addBotMessage(message.msg);
+            }
+        };
+        
+        Tawk_API.onChatStarted = function() {
+            addBotMessage("👨‍💼 You're now connected with a live support agent. They'll assist you shortly.");
+        };
+        
+        Tawk_API.onChatEnded = function() {
+            addBotMessage("Chat session ended. Thanks for contacting OBX PRIME Support! 🙏");
+        };
+        
+        // Load Tawk.to script
+        // ⚠️ REPLACE the IDs below with your actual Tawk.to Property ID and Widget ID
+        (function() {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            if (s0 && s0.parentNode) {
+                s0.parentNode.insertBefore(s1, s0);
+            } else {
+                document.head.appendChild(s1);
+            }
+        })();
     </script>
 </body>
 </html>
