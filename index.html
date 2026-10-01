@@ -144,19 +144,19 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
 
-        /* ===== NEW: Volatility Index Dropdown ===== */
+        /* ===== NEW: Volatility Index Dropdown (COMPACT) ===== */
         .volatility-dropdown {
             position: absolute;
             top: 100%;
             left: 0;
-            margin-top: 8px;
+            margin-top: 6px;
             background: #1e1b4b;
             border: 1px solid rgba(124, 58, 237, 0.3);
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
             z-index: 100;
-            min-width: 280px;
-            max-height: 400px;
+            min-width: 200px;
+            max-height: 240px;
             overflow-y: auto;
             display: none;
         }
@@ -167,7 +167,7 @@
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-8px);
             }
             to {
                 opacity: 1;
@@ -175,7 +175,7 @@
             }
         }
         .volatility-item {
-            padding: 12px 16px;
+            padding: 8px 12px;
             cursor: pointer;
             transition: all 0.15s ease;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -191,19 +191,22 @@
             color: #A78BFA;
         }
         .volatility-item-name {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             color: white;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .volatility-item-price {
-            font-size: 11px;
+            font-size: 9px;
             color: #9ca3af;
         }
         body.light-theme .volatility-dropdown {
             background: #ffffff;
             border-color: #e5e7eb;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         body.light-theme .volatility-item {
             border-bottom-color: #f3f4f6;
