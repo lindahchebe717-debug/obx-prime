@@ -4,134 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Withdraw Funds</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0f0a1a; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { background-color: #141021; }
         
-        /* Header */
-        .top-header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-        .logo { font-size: 1.2rem; font-weight: 900; color: white; text-decoration: none; }
-        .balance-box { background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        /* Light theme classes */
+        body.light-theme {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        body.light-theme .bg-\[\#130f1c\],
+        body.light-theme .bg-\[\#141021\],
+        body.light-theme .bg-\[\#181329\],
+        body.light-theme .bg-\[\#1F1936\],
+        body.light-theme .bg-\[\#151a25\],
+        body.light-theme .bg-\[\#1e1b4b\],
+        body.light-theme .bg-\[\#1e2535\],
+        body.light-theme .bg-\[\#252d3d\],
+        body.light-theme .bg-\[\#282041\],
+        body.light-theme .bg-\[\#2E2447\],
+        body.light-theme .bg-\[\#2a3548\] {
+            background-color: #ffffff !important;
+        }
+        body.light-theme .text-white { color: #1f2937 !important; }
+        body.light-theme .text-gray-400 { color: #6b7280 !important; }
+        body.light-theme .text-gray-500 { color: #6b7280 !important; }
+        body.light-theme .border-white\/10,
+        body.light-theme .border-white\/5,
+        body.light-theme .border-white\/\[0\.07\] {
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
         
-        /* Sidebar Menu */
-        #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9998; display: none; }
-        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #130f1c; z-index: 9999; display: none; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a1f3d; }
-        .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .menu-item { padding: 16px 20px; color: white; border-bottom: 1px solid #2a1f3d; display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .menu-item:active { background: #2a1f3d; }
-
-        /* Withdraw Page Styles */
-        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-        .withdraw-card { background: #1a1025; border-radius: 16px; border: 1px solid #2a1f3d; padding: 25px 20px; margin-top: 20px; }
-        .withdraw-header { text-align: center; margin-bottom: 25px; }
-        .withdraw-header h2 { color: #a855f7; font-size: 1.5rem; margin-bottom: 8px; }
-        .withdraw-header p { color: #6b7280; font-size: 0.9rem; }
-        
-        .available-balance { background: rgba(168, 85, 247, 0.1); border: 1px solid #a855f7; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px; }
-        .available-balance span { display: block; color: #d8b4fe; font-size: 0.85rem; margin-bottom: 5px; }
-        .available-balance strong { font-size: 1.8rem; color: white; }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; color: #9ca3af; font-size: 0.9rem; font-weight: 600; }
-        .max-btn { background: rgba(168, 85, 247, 0.2); color: #a855f7; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
-        
-        .form-input, .form-select { width: 100%; background: #0f0a1a; border: 1px solid #2a1f3d; color: white; padding: 14px; border-radius: 10px; font-size: 1rem; outline: none; }
-        .form-input:focus, .form-select:focus { border-color: #a855f7; }
-        
-        .submit-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-        .submit-btn:active { transform: scale(0.98); }
-
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1025; border-top: 1px solid #2a1f3d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; text-decoration: none; font-size: 0.8rem; }
-        .nav-item.active { color: #a855f7; }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
+        /* Payment Card Styles */
+        .payment-card {
+            background-color: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        .payment-card:hover {
+            background-color: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.4);
+        }
+        body.light-theme .payment-card {
+            background-color: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        body.light-theme .payment-card:hover {
+            border-color: #7C3AED;
+        }
     </style>
 </head>
-<body>
-
-    <!-- Sidebar Overlay & Menu -->
-    <div id="sidebar-overlay" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';"></div>
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <span style="font-weight:bold; font-size:1.2rem;">Menu</span>
-            <button class="close-btn" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('sidebar-overlay').style.display='none';">×</button>
-        </div>
-        <!-- Notice these are now normal links! -->
-        <a href="index.html" class="menu-item"> OBX Prime Home</a>
-        <a href="deposit.html" class="menu-item">⬇️ Deposit</a>
-        <a href="withdraw.html" class="menu-item">️ Withdraw</a>
-        <a href="history.html" class="menu-item">🕐 History</a>
-    </div>
+<body class="antialiased text-white min-h-screen flex flex-col">
 
     <!-- Header -->
-    <div class="top-header">
-        <div class="header-left">
-            <button class="menu-btn" onclick="document.getElementById('sidebar').style.display='block'; document.getElementById('sidebar-overlay').style.display='block';">☰</button>
-            <a href="index.html" class="logo">OBX PRIME</a>
+    <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10">
+        <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+            <span class="font-bold">Back to Trade</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSound()" id="sound-toggle" class="p-2 rounded-md bg-[#282041] transition-colors" title="Toggle Sound">
+                <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>
+                <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 hidden"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>
+            </button>
+            <button onclick="toggleDarkTheme()" class="p-2 rounded-md bg-[#282041] transition-colors" title="Toggle Theme">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+            </button>
         </div>
-        <div class="balance-box">$ <span id="user-balance">1000.00</span></div>
-    </div>
+    </header>
 
-    <!-- Withdraw Content -->
-    <div class="container">
-        <div class="withdraw-card">
-            <div class="withdraw-header">
-                <h2>Withdraw Funds</h2>
-                <p>Process time: 1-24 hours</p>
+    <!-- Main Content -->
+    <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
+        <div class="mb-6 text-center">
+            <h1 class="text-2xl font-bold text-white mb-2">Withdraw Funds</h1>
+            <p class="text-gray-400 text-sm">Withdraw your earnings securely to your preferred account.</p>
+            
+            <!-- Available Balance Card -->
+            <div class="mt-6 p-5 rounded-2xl bg-[#1e1b4b] border border-[#7C3AED]/30 inline-block w-full max-w-sm">
+                <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Available Balance</p>
+                <p class="text-3xl font-extrabold text-white">$1,000.00</p>
             </div>
+        </div>
 
-            <div class="available-balance">
-                <span>Available Balance</span>
-                <strong>$ <span id="avail-bal">1000.00</span></strong>
-            </div>
-
-            <div class="form-group">
-                <div class="form-label">
-                    <span>Amount ($)</span>
-                    <button class="max-btn" onclick="document.getElementById('amount').value = document.getElementById('avail-bal').innerText">MAX</button>
+        <div class="space-y-5">
+            <!-- Amount Input -->
+            <div>
+                <label class="block text-sm font-semibold text-white mb-2">Withdrawal Amount</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">$</span>
+                    <input type="number" id="withdraw-amount" placeholder="0.00" class="w-full bg-[#130f1c] border border-white/10 rounded-xl pl-10 pr-4 py-3.5 text-white text-lg font-semibold focus:outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition-all">
                 </div>
-                <input type="number" id="amount" class="form-input" placeholder="0.00">
+                <p class="text-xs text-gray-500 mt-2">Minimum withdrawal amount is $10.00</p>
             </div>
 
-            <div class="form-group">
-                <div class="form-label"><span>Payment Method</span></div>
-                <select class="form-select">
-                    <option>USDT (TRC20)</option>
-                    <option>Bitcoin (BTC)</option>
-                    <option>Bank Transfer</option>
-                </select>
+            <!-- Payment Method Selection -->
+            <div>
+                <label class="block text-sm font-semibold text-white mb-2">Select Withdrawal Method</label>
+                <div class="space-y-3">
+                    <!-- M-Pesa -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'mpesa')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-base">M-Pesa</div>
+                                <div class="text-gray-400 text-sm">Withdraw to mobile money</div>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+
+                    <!-- USDT TRC20 -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'usdt')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                                <div class="text-gray-400 text-sm">Withdraw to crypto wallet</div>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <div class="form-label"><span>Wallet Address / Bank Details</span></div>
-                <input type="text" class="form-input" placeholder="Enter your details here">
-            </div>
-
-            <button class="submit-btn" onclick="alert('Withdrawal request submitted!'); window.location.href='history.html'">Request Withdrawal</button>
+            <!-- Withdraw Button -->
+            <button onclick="processWithdrawal()" class="w-full mt-8 py-4 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-xl text-white font-bold text-lg shadow-lg shadow-[#7C3AED]/25 hover:shadow-[#7C3AED]/40 transition-all active:scale-[0.98]">
+                Confirm Withdrawal
+            </button>
         </div>
-    </div>
+    </main>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-            Trade
-        </a>
-        <a href="history.html" class="nav-item">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            History
-        </a>
-    </div>
+    <!-- Footer -->
+    <footer class="p-4 text-center text-xs text-gray-500 border-t border-white/5 bg-[#130f1c]">
+        <p>&copy; 2026 OBX PRIME. All rights reserved.</p>
+    </footer>
 
     <script>
-        // Simple script to just show the balance
-        document.getElementById('user-balance').innerText = "1000.00";
-        document.getElementById('avail-bal').innerText = "1000.00";
+        // Theme Toggle
+        let isDarkTheme = true;
+        function toggleDarkTheme() {
+            isDarkTheme = !isDarkTheme;
+            const body = document.body;
+            if (isDarkTheme) {
+                body.classList.remove('light-theme');
+            } else {
+                body.classList.add('light-theme');
+            }
+        }
+
+        // Sound Toggle
+        let isSoundOn = true;
+        function toggleSound() {
+            isSoundOn = !isSoundOn;
+            const iconOn = document.getElementById('sound-icon-on');
+            const iconOff = document.getElementById('sound-icon-off');
+            if (isSoundOn) {
+                iconOn.classList.remove('hidden');
+                iconOff.classList.add('hidden');
+            } else {
+                iconOn.classList.add('hidden');
+                iconOff.classList.remove('hidden');
+            }
+        }
+
+        // Visual selection feedback
+        function selectWithdrawMethod(element, method) {
+            document.querySelectorAll('.payment-card').forEach(card => {
+                card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                card.style.backgroundColor = '';
+            });
+            element.style.borderColor = 'rgba(124, 58, 237, 0.8)';
+            element.style.backgroundColor = 'rgba(124, 58, 237, 0.1)';
+        }
+
+        // Mock Withdrawal Process
+        function processWithdrawal() {
+            const amount = document.getElementById('withdraw-amount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid withdrawal amount.');
+                return;
+            }
+            if (amount < 10) {
+                alert('Minimum withdrawal amount is $10.00.');
+                return;
+            }
+            
+            // In a real app, this would send a request to your backend
+            alert(`Withdrawal request for $${amount} submitted successfully!\n\nIt will be processed shortly and you will receive a confirmation.`);
+            document.getElementById('withdraw-amount').value = '';
+            
+            // Reset selection
+            document.querySelectorAll('.payment-card').forEach(card => {
+                card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                card.style.backgroundColor = '';
+            });
+        }
     </script>
 </body>
 </html>
