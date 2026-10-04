@@ -2937,5 +2937,19 @@ if (localStorage.getItem('open_chat_on_load') === 'true') {
         openLiveChat();
     }, 500);
 }
+<script>
+// Make Help Centre button open the help.html page
+document.addEventListener('DOMContentLoaded', function() {
+    const allDivs = document.querySelectorAll('div');
+    for (let div of allDivs) {
+        if (div.textContent.trim() === 'Help Centre' && div.classList.contains('cursor-pointer')) {
+            div.onclick = function() {
+                window.location.href = 'help.html';
+            };
+            break; 
+        }
+    }
+});
+</script>
 </body>
 </html>
