@@ -2681,5 +2681,26 @@ document.head.appendChild(s1);
 }
 })();
 </script>
+<!-- MAGIC NAVIGATION FIX FOR ACCOUNT SETTINGS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Make the main "Account settings" button open the new page
+    const accountSettingsBtn = document.querySelector('[onclick="toggleAccountSettings()"]');
+    if (accountSettingsBtn) {
+        accountSettingsBtn.onclick = function() {
+            window.location.href = 'account-settings.html';
+        };
+    }
+
+    // 2. Make the sub-items (Change Name, Password, 2FA, Verify) open the new page
+    const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
+    submenuItems.forEach(item => {
+        item.onclick = function() {
+            window.location.href = 'account-settings.html';
+        };
+        item.style.cursor = 'pointer'; 
+    });
+});
+</script>
 </body>
 </html>
