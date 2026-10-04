@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Help Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Light theme classes */
+        body.light-theme { background-color: #f9fafb; color: #1f2937; }
+        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#1F1936\], body.light-theme .bg-\[\#1e1b4b\] { background-color: #ffffff !important; }
+        body.light-theme .border-white\/10 { border-color: rgba(0, 0, 0, 0.1) !important; }
+        body.light-theme .text-gray-400 { color: #6b7280 !important; }
+        body.light-theme .text-white { color: #1f2937 !important; }
+        body.light-theme .text-gray-500 { color: #6b7280 !important; }
+        body.light-theme input { background-color: #f3f4f6 !important; color: #1f2937 !important; border-color: #e5e7eb !important; }
+
+        /* Accordion Styles */
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: sweep .3s ease-in-out; }
+        @keyframes sweep {
+            0%    {opacity: 0; transform: translateY(-10px)}
+            100%  {opacity: 1; transform: translateY(0)}
+        }
+        details[open] .chevron { transform: rotate(180deg); }
+        .chevron { transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10 sticky top-0 z-40">
+        <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+            <span class="font-bold">Back</span>
+        </a>
+        <h1 class="text-lg font-bold text-white">Help Centre</h1>
+        <button onclick="toggleTheme()" class="p-2 rounded-md bg-[#282041] hover:bg-[#3b3263] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 max-w-2xl mx-auto w-full space-y-6 pb-20">
+        
+        <!-- Search Bar -->
+        <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            <input type="text" id="search-input" placeholder="Search for answers..." class="w-full bg-[#130f1c] border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#7C3AED] transition-colors" onkeyup="filterFAQ()">
+        </div>
+
+        <!-- Quick Categories -->
+        <div>
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Browse by Category</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-[#1F1936] border border-white/10 rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-[#7C3AED]/50 transition-colors cursor-pointer" onclick="scrollToSection('account')">
+                    <div class="w-10 h-10 rounded-full bg-[#7C3AED]/20 flex items-center justify-center text-[#A78BFA]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <span class="text-sm font-semibold">Account</span>
+                </div>
+                <div class="bg-[#1F1936] border border-white/10 rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-[#7C3AED]/50 transition-colors cursor-pointer" onclick="scrollToSection('payments')">
+                    <div class="w-10 h-10 rounded-full bg-[#10B981]/20 flex items-center justify-center text-[#10B981]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                    </div>
+                    <span class="text-sm font-semibold">Payments</span>
+                </div>
+                <div class="bg-[#1F1936] border border-white/10 rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-[#7C3AED]/50 transition-colors cursor-pointer" onclick="scrollToSection('trading')">
+                    <div class="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center text-[#F59E0B]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                    </div>
+                    <span class="text-sm font-semibold">Trading</span>
+                </div>
+                <div class="bg-[#1F1936] border border-white/10 rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-[#7C3AED]/50 transition-colors cursor-pointer" onclick="scrollToSection('security')">
+                    <div class="w-10 h-10 rounded-full bg-[#EF4444]/20 flex items-center justify-center text-[#EF4444]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                    </div>
+                    <span class="text-sm font-semibold">Security</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Sections -->
+        <div class="space-y-6">
+            
+            <!-- Account Section -->
+            <div id="account" class="faq-section">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Account & Profile
+                </h2>
+                <div class="space-y-2">
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            How do I verify my identity (KYC)?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Go to Menu > Account Settings > Verify Identity. You will need to upload a clear photo of your National ID, Passport, or Driver's License (front and back), along with a live selfie. Verification usually takes up to 24 hours.
+                        </div>
+                    </details>
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            Can I change my registered email address?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            For security reasons, email addresses cannot be changed directly from the app. Please contact our Live Support team with your account details, and they will assist you with the update.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Payments Section -->
+            <div id="payments" class="faq-section">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                    Deposits & Withdrawals
+                </h2>
+                <div class="space-y-2">
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            What payment methods are supported?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            We currently support M-Pesa (instant mobile money), USDT (TRC20 network), and major Credit/Debit cards (Visa, Mastercard).
+                        </div>
+                    </details>
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            How long do withdrawals take?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            M-Pesa withdrawals are typically processed within 1-2 hours. USDT (TRC20) withdrawals depend on blockchain network congestion but usually take 10-30 minutes. Card withdrawals may take 1-3 business days.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Trading Section -->
+            <div id="trading" class="faq-section">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                    Trading & Indices
+                </h2>
+                <div class="space-y-2">
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            What are Synthetic Indices?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Synthetic indices simulate real-world market volatility but are generated by a cryptographically secure random number generator. They are available 24/7, unaffected by real-world market closures or news events.
+                        </div>
+                    </details>
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            How does the "Refer & Earn" commission work?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            You earn 10% of your referral's net trading losses daily. Commissions are calculated at midnight and added to your pending balance. Once your pending balance reaches $1.00, it becomes available for withdrawal.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Security Section -->
+            <div id="security" class="faq-section">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                    Security
+                </h2>
+                <div class="space-y-2">
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            How do I enable Two-Factor Authentication (2FA)?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Go to Menu > Account Settings > Two-Factor Auth (2FA). Download an authenticator app (like Google Authenticator), scan the QR code provided, and enter the 6-digit code to activate. This is highly recommended to protect your funds.
+                        </div>
+                    </details>
+                    <details class="bg-[#1F1936] border border-white/10 rounded-xl overflow-hidden group">
+                        <summary class="flex items-center justify-between p-4 font-semibold text-sm hover:bg-white/5 transition-colors">
+                            I forgot my password. What should I do?
+                            <svg class="chevron w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            On the login screen, tap "Forgot Password". Enter your registered email address, and we will send you a secure link to reset your password. Check your spam folder if you don't see it within 5 minutes.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Still Need Help Card -->
+        <div class="bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-2xl p-6 text-center mt-8">
+            <h3 class="text-xl font-bold text-white mb-2">Still need help?</h3>
+            <p class="text-white/80 text-sm mb-4">Our support team is available 24/7 to assist you with any issues.</p>
+            <button onclick="openLiveChatAndRedirect()" class="w-full bg-white text-[#7C3AED] font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/90 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Contact Live Support
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('obx_theme', isLight ? 'light' : 'dark');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('obx_theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        // Scroll to section smoothly
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Simple FAQ Search Filter
+        function filterFAQ() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const sections = document.querySelectorAll('.faq-section');
+            
+            sections.forEach(section => {
+                const details = section.querySelectorAll('details');
+                let hasMatch = false;
+                
+                details.forEach(detail => {
+                    const text = detail.innerText.toLowerCase();
+                    if (text.includes(input)) {
+                        detail.style.display = 'block';
+                        hasMatch = true;
+                    } else {
+                        detail.style.display = 'none';
+                    }
+                });
+                
+                // Hide the whole section header if no matches in it
+                section.style.display = hasMatch ? 'block' : 'none';
+            });
+        }
+
+        // Open Live Chat and redirect back to main page (since chat is on index.html)
+        function openLiveChatAndRedirect() {
+            // Set a flag in localStorage so index.html knows to open the chat
+            localStorage.setItem('open_chat_on_load', 'true');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
