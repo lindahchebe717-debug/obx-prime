@@ -2966,5 +2966,454 @@ window.addEventListener('load', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== OBX PRIME V2 CHAT SYSTEM (NEW) ===== -->
+<!-- ============================================ -->
+<style>
+/* Hide old chat elements to prevent conflicts */
+#chat-panel, #chat-fab, #chat-overlay, #img-viewer { display: none !important; }
+
+/* V2 Chat Layout - Fixes the keyboard/input issue */
+.obx-v2-chat-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10001; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.obx-v2-chat-overlay.show { opacity: 1; pointer-events: auto; }
+.obx-v2-chat-container { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 420px; background: #130f1c; z-index: 10002; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.5); }
+.obx-v2-chat-container.show { transform: translateX(0); }
+
+/* Header */
+.obx-v2-header { background: linear-gradient(135deg, #7C3AED, #6D28D9); padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.obx-v2-header h3 { color: white; font-size: 16px; font-weight: 700; margin: 0; flex: 1; }
+.obx-v2-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+/* Messages Area - Uses 100dvh logic to stay above keyboard */
+.obx-v2-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #141021; min-height: 0; }
+.obx-v2-msg { max-width: 80%; display: flex; flex-direction: column; animation: v2FadeIn 0.3s ease; }
+@keyframes v2FadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.obx-v2-msg.user { align-self: flex-end; align-items: flex-end; }
+.obx-v2-msg.bot { align-self: flex-start; align-items: flex-start; }
+.obx-v2-bubble { padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.4; word-wrap: break-word; position: relative; }
+.obx-v2-msg.user .obx-v2-bubble { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: white; border-bottom-right-radius: 4px; }
+.obx-v2-msg.bot .obx-v2-bubble { background: #1F1936; color: white; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.07); }
+.obx-v2-bubble img { max-width: 100%; border-radius: 12px; display: block; margin-bottom: 4px; }
+.obx-v2-bubble .view-once-badge { font-size: 10px; color: #A78BFA; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.obx-v2-voice-note { display: flex; align-items: center; gap: 8px; min-width: 150px; }
+.obx-v2-voice-play { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.obx-v2-voice-wave { flex: 1; height: 20px; display: flex; align-items: center; gap: 2px; }
+.obx-v2-voice-wave span { width: 3px; background: currentColor; border-radius: 2px; opacity: 0.6; }
+.obx-v2-meta { font-size: 10px; color: #9ca3af; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
+/* Quick Replies */
+.obx-v2-quick-replies { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px; background: #141021; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.05); }
+.obx-v2-qr-btn { padding: 6px 12px; background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); color: #A78BFA; border-radius: 14px; font-size: 12px; cursor: pointer; }
+
+/* Preview Area (Hidden by default) */
+.obx-v2-preview { display: none; flex-direction: column; background: #1F1936; padding: 12px; border-top: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+.obx-v2-preview.show { display: flex; }
+.obx-v2-preview-img-container { position: relative; width: 100%; max-height: 200px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #000; }
+.obx-v2-preview-img-container img { width: 100%; height: 100%; object-fit: contain; }
+.obx-v2-preview-controls { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.obx-v2-view-once { display: flex; align-items: center; gap: 8px; color: #A78BFA; font-size: 12px; font-weight: 600; cursor: pointer; }
+.obx-v2-view-once input { accent-color: #7C3AED; width: 16px; height: 16px; }
+.obx-v2-preview-actions { display: flex; gap: 8px; }
+.obx-v2-btn-cancel { padding: 8px 16px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.obx-v2-btn-send { padding: 8px 16px; background: #7C3AED; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+/* Input Area */
+.obx-v2-input-area { background: #1F1936; border-top: 1px solid rgba(255,255,255,0.07); padding: 10px 12px; flex-shrink: 0; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+.obx-v2-input-row { display: flex; align-items: flex-end; gap: 8px; width: 100%; }
+.obx-v2-textarea { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 10px 14px; color: white; font-size: 14px; outline: none; resize: none; max-height: 100px; min-height: 40px; font-family: inherit; }
+.obx-v2-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.06); border: none; color: #9ca3af; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+.obx-v2-icon-btn:hover { background: rgba(124, 58, 237, 0.2); color: #A78BFA; }
+.obx-v2-send-btn { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: white; }
+.obx-v2-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.obx-v2-mic-btn.recording { background: #ef4444; color: white; animation: v2Pulse 1.5s infinite; }
+@keyframes v2Pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+/* Popups (Attach & Emoji) */
+.obx-v2-popup { position: absolute; bottom: 70px; left: 12px; background: #1F1936; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 6px; display: none; flex-direction: column; gap: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 10; min-width: 200px; }
+.obx-v2-popup.show { display: flex; animation: v2SlideUp 0.2s ease; }
+.obx-v2-popup.emoji-popup { left: 56px; right: 12px; min-width: auto; max-height: 250px; overflow-y: auto; }
+.obx-v2-popup.emoji-popup .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+.obx-v2-popup.emoji-popup .emoji-item { font-size: 22px; text-align: center; cursor: pointer; padding: 4px; border-radius: 6px; }
+.obx-v2-popup.emoji-popup .emoji-item:hover { background: rgba(124, 58, 237, 0.2); }
+@keyframes v2SlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.obx-v2-attach-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; color: white; font-size: 13px; transition: background 0.15s; }
+.obx-v2-attach-item:hover { background: rgba(124, 58, 237, 0.15); }
+.obx-v2-attach-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* Recording Overlay */
+.obx-v2-recording-overlay { display: none; position: absolute; inset: 0; background: rgba(19, 15, 28, 0.95); z-index: 20; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.obx-v2-recording-overlay.show { display: flex; }
+.obx-v2-rec-timer { font-size: 32px; font-weight: 700; color: #ef4444; font-variant-numeric: tabular-nums; }
+.obx-v2-rec-cancel { padding: 10px 24px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; }
+</style>
+
+<!-- New Floating Chat Button -->
+<button id="obx-v2-fab" onclick="openV2Chat()" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#7C3AED,#EC4899); box-shadow:0 8px 24px rgba(124,58,237,0.5); border:none; cursor:pointer; z-index:9997; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    <span id="obx-v2-badge" style="position:absolute; top:-4px; right:-4px; min-width:22px; height:22px; padding:0 6px; background:#ef4444; color:white; border-radius:11px; font-size:11px; font-weight:700; display:none; align-items:center; justify-content:center; border:2px solid #141021;">0</span>
+</button>
+
+<!-- New Chat Overlay & Panel -->
+<div id="obx-v2-overlay" class="obx-v2-chat-overlay" onclick="closeV2Chat()"></div>
+<div id="obx-v2-panel" class="obx-v2-chat-container">
+    <!-- Header -->
+    <div class="obx-v2-header">
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; position:relative;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <div style="position:absolute; bottom:0; right:0; width:12px; height:12px; border-radius:50%; background:#10B981; border:2px solid #6D28D9;"></div>
+        </div>
+        <div style="flex:1;">
+            <h3>OBX Support</h3>
+            <div style="font-size:11px; color:rgba(255,255,255,0.8);">● Online · Replies in 1 min</div>
+        </div>
+        <button class="obx-v2-close" onclick="closeV2Chat()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="obx-v2-messages" class="obx-v2-messages"></div>
+
+    <!-- Quick Replies -->
+    <div class="obx-v2-quick-replies">
+        <button class="obx-v2-qr-btn" onclick="sendV2QuickReply('Deposit issue')">💰 Deposit</button>
+        <button class="obx-v2-qr-btn" onclick="sendV2QuickReply('Withdrawal issue')">💸 Withdraw</button>
+        <button class="obx-v2-qr-btn" onclick="sendV2QuickReply('Trading help')">📈 Trading</button>
+        <button class="obx-v2-qr-btn" onclick="sendV2QuickReply('Connect to live agent')">👨‍💼 Live Agent</button>
+    </div>
+
+    <!-- Image Preview Area -->
+    <div id="obx-v2-preview" class="obx-v2-preview">
+        <div class="obx-v2-preview-img-container">
+            <img id="obx-v2-preview-img" src="" alt="Preview">
+        </div>
+        <div class="obx-v2-preview-controls">
+            <label class="obx-v2-view-once">
+                <input type="checkbox" id="obx-v2-view-once-check">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                View Once
+            </label>
+            <div class="obx-v2-preview-actions">
+                <button class="obx-v2-btn-cancel" onclick="cancelV2Preview()">Cancel</button>
+                <button class="obx-v2-btn-send" onclick="sendV2Preview()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="obx-v2-input-area" style="position:relative;">
+        <div class="obx-v2-input-row">
+            <button class="obx-v2-icon-btn" onclick="toggleV2Emoji()" title="Emoji">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" x2="9.01" y1="9" y2="9"></line><line x1="15" x2="15.01" y1="9" y2="9"></line></svg>
+            </button>
+            <button class="obx-v2-icon-btn" onclick="toggleV2Attach()" title="Attach">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+            </button>
+            <textarea id="obx-v2-input" class="obx-v2-textarea" placeholder="Type a message..." rows="1" oninput="autoResizeV2(this); checkV2Send()"></textarea>
+            <button id="obx-v2-mic" class="obx-v2-icon-btn obx-v2-mic-btn" onclick="toggleV2Voice()" title="Voice Note">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg>
+            </button>
+            <button id="obx-v2-send" class="obx-v2-icon-btn obx-v2-send-btn" onclick="sendV2Text()" disabled title="Send">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+            </button>
+        </div>
+
+        <!-- Attach Menu -->
+        <div id="obx-v2-attach-menu" class="obx-v2-popup">
+            <label class="obx-v2-attach-item">
+                <div class="obx-v2-attach-icon" style="background:rgba(124,58,237,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+                </div>
+                <span>Gallery / Photo</span>
+                <input type="file" accept="image/*" style="display:none;" onchange="handleV2File(event, false)">
+            </label>
+            <label class="obx-v2-attach-item">
+                <div class="obx-v2-attach-icon" style="background:rgba(16,185,129,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                </div>
+                <span>Camera</span>
+                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleV2File(event, true)">
+            </label>
+            <div class="obx-v2-attach-item" onclick="connectV2LiveAgent()" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:4px; padding-top:8px;">
+                <div class="obx-v2-attach-icon" style="background:rgba(34,197,94,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <span>👨‍💼 Connect to Live Agent</span>
+            </div>
+        </div>
+
+        <!-- Emoji Picker -->
+        <div id="obx-v2-emoji-picker" class="obx-v2-popup emoji-popup">
+            <div class="emoji-grid" id="obx-v2-emoji-grid"></div>
+        </div>
+
+        <!-- Recording Overlay -->
+        <div id="obx-v2-recording" class="obx-v2-recording-overlay">
+            <div style="font-size:48px;">🎙️</div>
+            <div class="obx-v2-rec-timer" id="obx-v2-rec-timer">0:00</div>
+            <div style="color:#9ca3af; font-size:12px;">Recording voice note...</div>
+            <button class="obx-v2-rec-cancel" onclick="cancelV2Voice()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// V2 CHAT SYSTEM LOGIC
+// ==========================================
+let v2Messages = [];
+let v2PendingImage = null;
+let v2IsRecording = false;
+let v2RecTimer = null;
+let v2RecSeconds = 0;
+const V2_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','','😗','😙','😚','','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','','😞','😔','😟','','🙁','☹️','','😖','😫','😩','','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','👍','👎','','✌️','🤞','','🤘','👋','','💪','❤️','🧡','💛','💚','💙','💜','💯','✅','❌','️','🔥','⭐','💰','📈'];
+
+function initV2Chat() {
+    // Build Emoji Grid
+    const grid = document.getElementById('obx-v2-emoji-grid');
+    grid.innerHTML = V2_EMOJIS.map(e => `<div class="emoji-item" onclick="insertV2Emoji('${e}')">${e}</div>`).join('');
+    
+    // Add welcome message
+    if(v2Messages.length === 0) {
+        addV2BotMessage("Hello! 👋 Welcome to OBX PRIME Support. How can I help you today?");
+    }
+}
+
+function openV2Chat() {
+    document.getElementById('obx-v2-panel').classList.add('show');
+    document.getElementById('obx-v2-overlay').classList.add('show');
+    document.getElementById('obx-v2-fab').style.display = 'none';
+    document.getElementById('obx-v2-badge').style.display = 'none';
+    setTimeout(() => {
+        document.getElementById('obx-v2-messages').scrollTop = document.getElementById('obx-v2-messages').scrollHeight;
+        document.getElementById('obx-v2-input').focus();
+    }, 300);
+}
+
+function closeV2Chat() {
+    document.getElementById('obx-v2-panel').classList.remove('show');
+    document.getElementById('obx-v2-overlay').classList.remove('show');
+    document.getElementById('obx-v2-fab').style.display = 'flex';
+    closeV2Popups();
+}
+
+function closeV2Popups() {
+    document.getElementById('obx-v2-attach-menu').classList.remove('show');
+    document.getElementById('obx-v2-emoji-picker').classList.remove('show');
+}
+
+function autoResizeV2(el) {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
+}
+
+function checkV2Send() {
+    const input = document.getElementById('obx-v2-input');
+    document.getElementById('obx-v2-send').disabled = !input.value.trim() && !v2PendingImage;
+}
+
+function toggleV2Attach() {
+    closeV2Popups();
+    document.getElementById('obx-v2-attach-menu').classList.toggle('show');
+}
+
+function toggleV2Emoji() {
+    closeV2Popups();
+    document.getElementById('obx-v2-emoji-picker').classList.toggle('show');
+}
+
+function insertV2Emoji(emoji) {
+    const input = document.getElementById('obx-v2-input');
+    input.value += emoji;
+    input.focus();
+    checkV2Send();
+}
+
+function handleV2File(event, isCamera) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Please select an image.'); return; }
+    if (file.size > 5 * 1024 * 1024) { alert('Image must be under 5MB.'); return; }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        v2PendingImage = e.target.result;
+        document.getElementById('obx-v2-preview-img').src = v2PendingImage;
+        document.getElementById('obx-v2-preview').classList.add('show');
+        document.getElementById('obx-v2-view-once-check').checked = false;
+        closeV2Popups();
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+function cancelV2Preview() {
+    v2PendingImage = null;
+    document.getElementById('obx-v2-preview').classList.remove('show');
+    checkV2Send();
+}
+
+function sendV2Preview() {
+    const isViewOnce = document.getElementById('obx-v2-view-once-check').checked;
+    const msg = { type: 'user', image: v2PendingImage, viewOnce: isViewOnce, timestamp: new Date().toISOString() };
+    v2Messages.push(msg);
+    renderV2Messages();
+    v2PendingImage = null;
+    document.getElementById('obx-v2-preview').classList.remove('show');
+    scrollV2ToBottom();
+    
+    setTimeout(() => triggerV2BotResponse("I sent an image"), 1000);
+}
+
+function sendV2Text() {
+    const input = document.getElementById('obx-v2-input');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const msg = { type: 'user', text: text, timestamp: new Date().toISOString() };
+    v2Messages.push(msg);
+    renderV2Messages();
+    
+    input.value = '';
+    input.style.height = 'auto';
+    checkV2Send();
+    scrollV2ToBottom();
+    
+    setTimeout(() => triggerV2BotResponse(text), 800);
+}
+
+function sendV2QuickReply(text) {
+    document.getElementById('obx-v2-input').value = text;
+    sendV2Text();
+}
+
+function connectV2LiveAgent() {
+    closeV2Popups();
+    addV2BotMessage("🔄 Connecting you to a live agent... Please wait a moment.");
+    setTimeout(() => {
+        addV2BotMessage("✅ You're now connected with a live support agent. They'll respond shortly!");
+    }, 2000);
+}
+
+// Voice Note Logic
+function toggleV2Voice() {
+    if (v2IsRecording) {
+        stopV2Voice();
+    } else {
+        startV2Voice();
+    }
+}
+
+function startV2Voice() {
+    v2IsRecording = true;
+    v2RecSeconds = 0;
+    document.getElementById('obx-v2-mic').classList.add('recording');
+    document.getElementById('obx-v2-recording').classList.add('show');
+    updateV2RecTimer();
+    v2RecTimer = setInterval(updateV2RecTimer, 1000);
+}
+
+function updateV2RecTimer() {
+    v2RecSeconds++;
+    const mins = Math.floor(v2RecSeconds / 60);
+    const secs = v2RecSeconds % 60;
+    document.getElementById('obx-v2-rec-timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function stopV2Voice() {
+    v2IsRecording = false;
+    clearInterval(v2RecTimer);
+    document.getElementById('obx-v2-mic').classList.remove('recording');
+    document.getElementById('obx-v2-recording').classList.remove('show');
+    
+    // Add simulated voice note
+    const msg = { type: 'user', voiceNote: true, duration: v2RecSeconds, timestamp: new Date().toISOString() };
+    v2Messages.push(msg);
+    renderV2Messages();
+    scrollV2ToBottom();
+    
+    setTimeout(() => addV2BotMessage(" I received your voice note. Our team will listen and reply shortly."), 1500);
+}
+
+function cancelV2Voice() {
+    v2IsRecording = false;
+    clearInterval(v2RecTimer);
+    document.getElementById('obx-v2-mic').classList.remove('recording');
+    document.getElementById('obx-v2-recording').classList.remove('show');
+}
+
+// Bot Response Logic
+function triggerV2BotResponse(userText) {
+    const lower = userText.toLowerCase();
+    let response = null;
+    const responses = {
+        'hi': "Hello! 👋 How can I help?",
+        'deposit': " We support M-Pesa, USDT, and Cards. Go to the Deposit section in the menu.",
+        'withdraw': "💸 Withdrawals take 1-24 hours via M-Pesa or USDT.",
+        'live agent': "👨‍💼 Connecting you to a human agent now...",
+        'default': "Thanks for your message! A support agent will be with you shortly."
+    };
+    
+    for (let key in responses) {
+        if (key !== 'default' && lower.includes(key)) { response = responses[key]; break; }
+    }
+    if (!response) response = responses['default'];
+    
+    setTimeout(() => addV2BotMessage(response), 1000);
+}
+
+function addV2BotMessage(text) {
+    const msg = { type: 'bot', text: text, timestamp: new Date().toISOString() };
+    v2Messages.push(msg);
+    renderV2Messages();
+    scrollV2ToBottom();
+}
+
+function renderV2Messages() {
+    const container = document.getElementById('obx-v2-messages');
+    container.innerHTML = v2Messages.map(msg => {
+        const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        let content = '';
+        
+        if (msg.image) {
+            content += `<img src="${msg.image}" alt="Image">`;
+            if (msg.viewOnce) {
+                content += `<div class="view-once-badge"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> View Once</div>`;
+            }
+        } else if (msg.voiceNote) {
+            const mins = Math.floor(msg.duration / 60);
+            const secs = msg.duration % 60;
+            content += `<div class="obx-v2-voice-note"><div class="obx-v2-voice-play"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div><div class="obx-v2-voice-wave"><span style="height:40%"></span><span style="height:80%"></span><span style="height:60%"></span><span style="height:100%"></span><span style="height:50%"></span><span style="height:70%"></span><span style="height:30%"></span></div><span style="font-size:11px; opacity:0.8;">${mins}:${secs.toString().padStart(2,'0')}</span></div>`;
+        } else {
+            content += msg.text;
+        }
+        
+        return `<div class="obx-v2-msg ${msg.type}"><div class="obx-v2-bubble">${content}</div><div class="obx-v2-meta">${time} ${msg.type === 'user' ? '✓✓' : ''}</div></div>`;
+    }).join('');
+}
+
+function scrollV2ToBottom() {
+    const container = document.getElementById('obx-v2-messages');
+    container.scrollTop = container.scrollHeight;
+}
+
+// Close popups when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.obx-v2-icon-btn') && !e.target.closest('.obx-v2-popup')) {
+        closeV2Popups();
+    }
+});
+
+// Override old chat buttons to open new chat
+document.addEventListener('DOMContentLoaded', function() {
+    initV2Chat();
+    
+    // Make menu "Live Chat" button open new chat
+    const menuChatBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Live Chat' && el.onclick && el.onclick.toString().includes('openLiveChat'));
+    if (menuChatBtn) {
+        menuChatBtn.onclick = function() { openV2Chat(); closeMenu(); };
+    }
+});
+</script>
 </body>
 </html>
