@@ -2930,5 +2930,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (referBtn) { referBtn.onclick = function() { openReferModal(); closeMenu(); }; }
 });
 </script>
+// Auto-open chat if redirected from Help Centre
+if (localStorage.getItem('open_chat_on_load') === 'true') {
+    localStorage.removeItem('open_chat_on_load');
+    setTimeout(() => {
+        openLiveChat();
+    }, 500);
+}
 </body>
 </html>
