@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Deposit Funds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base Styles matching your main site */
+        body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Light theme classes */
+        body.light-theme { background-color: #f9fafb; color: #1f2937; }
+        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#1e1b4b\] { background-color: #ffffff !important; }
+        body.light-theme .border-white\/10 { border-color: rgba(0, 0, 0, 0.1) !important; }
+        body.light-theme .text-gray-400 { color: #6b7280 !important; }
+        body.light-theme .text-white { color: #1f2937 !important; }
+        
+        /* Payment Card Styles */
+        .payment-card {
+            background-color: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            transition: all 0.2s ease;
+        }
+        .payment-card:hover {
+            background-color: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.6);
+            transform: translateY(-2px);
+        }
+        body.light-theme .payment-card {
+            background-color: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        body.light-theme .payment-card:hover {
+            border-color: #7C3AED;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10 z-40">
+        <div class="flex items-center gap-3">
+            <!-- Back Button -->
+            <a href="index.html" class="p-2 rounded-md hover:bg-white/10 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+            </a>
+            <h1 class="text-lg font-bold text-white">Deposit Funds</h1>
+        </div>
+        
+        <!-- Theme Toggle (Small) -->
+        <button onclick="toggleTheme()" class="p-2 rounded-md bg-[#282041] hover:bg-[#3b3263] transition-colors" title="Toggle Theme">
+            <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
+        <div class="mb-6">
+            <h2 class="text-xl font-bold mb-1">Choose Payment Method</h2>
+            <p class="text-gray-400 text-sm">Select your preferred method to fund your OBX PRIME account.</p>
+        </div>
+
+        <div class="space-y-3">
+            <!-- M-Pesa Option -->
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('M-Pesa')">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">M-Pesa</div>
+                        <div class="text-gray-400 text-sm">Instant mobile money</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+            </div>
+
+            <!-- USDT TRC20 Option -->
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('USDT (TRC20)')">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                        <div class="text-gray-400 text-sm">Cryptocurrency · auto-credited</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+            </div>
+
+            <!-- Card Option -->
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('Card')">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">Card</div>
+                        <div class="text-gray-400 text-sm">Visa, Mastercard</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-8 p-4 rounded-xl bg-[#130f1c] border border-white/5">
+            <div class="flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                <div>
+                    <h3 class="text-white font-semibold text-sm mb-1">Secure Transactions</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">All deposits are processed securely. M-Pesa and Card deposits are instant. Crypto deposits may take up to 10 minutes for network confirmations.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-4 text-center text-xs text-gray-500 border-t border-white/5 bg-[#130f1c]">
+        <p>&copy; 2026 OBX PRIME. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Simple Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('obx_theme', isLight ? 'light' : 'dark');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('obx_theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        // Handle Payment Selection
+        function selectMethod(method) {
+            // In a real app, this would navigate to a specific payment form
+            alert(`You selected ${method}. Redirecting to payment gateway...`);
+        }
+    </script>
+</body>
+</html>
