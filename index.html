@@ -3650,5 +3650,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Auto-open chat if redirected from Help Centre or Responsible Trading
+window.addEventListener('load', function() {
+    if (localStorage.getItem('open_chat_on_load') === 'true') {
+        localStorage.removeItem('open_chat_on_load'); // Clear the flag so it doesn't open on every refresh
+        
+        // Wait a tiny bit for the chat UI to fully initialize
+        setTimeout(function() {
+            if (typeof openV2Chat === 'function') {
+                openV2Chat();
+            } else if (typeof openLiveChat === 'function') {
+                openLiveChat();
+            }
+        }, 800);
+    }
+});
+</script>
 </body>
 </html>
