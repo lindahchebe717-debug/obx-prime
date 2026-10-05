@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Responsible Trading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0e14; color: white; font-family: system-ui, -apple-system, sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Light theme */
+        body.light-theme { background-color: #f9fafb; color: #1f2937; }
+        body.light-theme .card-bg { background-color: #ffffff !important; border-color: #e5e7eb !important; }
+        body.light-theme .text-white { color: #1f2937 !important; }
+        body.light-theme .text-gray-400 { color: #6b7280 !important; }
+        body.light-theme .warning-item { background-color: #f3f4f6 !important; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-10">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-[#151923] border-b border-white/5">
+        <div class="flex items-center justify-between px-4 py-4">
+            <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+            </a>
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-[#14b8a6]/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                </div>
+                <h1 class="text-lg font-bold text-white">Responsible Trading</h1>
+            </div>
+            <div class="w-6"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-4 max-w-2xl mx-auto space-y-4">
+
+        <!-- Hero Card: Trade Responsibly -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6 text-center">
+            <div class="w-20 h-20 rounded-full bg-[#14b8a6] flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3">Trade Responsibly</h2>
+            <p class="text-gray-400 text-base leading-relaxed">
+                At OBX PRIME, we care about your well-being. Trading should be enjoyable and within your means. Here are some guidelines to help you trade responsibly.
+            </p>
+        </div>
+
+        <!-- Set a Budget -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <div class="w-14 h-14 rounded-2xl bg-[#14b8a6]/15 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Set a Budget</h3>
+            <p class="text-gray-400 text-base leading-relaxed">Only trade with money you can afford to lose. Never use funds needed for essential expenses.</p>
+        </div>
+
+        <!-- Take Breaks -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <div class="w-14 h-14 rounded-2xl bg-[#a78bfa]/15 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Take Breaks</h3>
+            <p class="text-gray-400 text-base leading-relaxed">Set time limits for your trading sessions. Regular breaks help maintain focus and clear thinking.</p>
+        </div>
+
+        <!-- Know the Risks -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <div class="w-14 h-14 rounded-2xl bg-[#f59e0b]/15 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Know the Risks</h3>
+            <p class="text-gray-400 text-base leading-relaxed">Understand that trading involves risk. Past performance does not guarantee future results.</p>
+        </div>
+
+        <!-- Emotional Control -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <div class="w-14 h-14 rounded-2xl bg-[#f43f5e]/15 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Emotional Control</h3>
+            <p class="text-gray-400 text-base leading-relaxed">Don't trade when upset, tired, or under the influence. Emotional trading leads to poor decisions.</p>
+        </div>
+
+        <!-- Trading Guidelines (Do / Don't) -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <h3 class="text-xl font-bold text-white mb-5">Trading Guidelines</h3>
+            
+            <!-- Do Section -->
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span class="text-lg font-bold text-white">Do</span>
+                </div>
+                <ul class="space-y-2.5 pl-2">
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Set daily and weekly trading limits</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Keep records of your trades</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Learn and understand the markets</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Use demo accounts to practice</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Take regular breaks from trading</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#10b981] mt-2 shrink-0"></span>
+                        <span>Seek help if trading becomes a problem</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Don't Section -->
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
+                    <span class="text-lg font-bold text-white">Don't</span>
+                </div>
+                <ul class="space-y-2.5 pl-2">
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Chase losses with bigger trades</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Trade with borrowed money</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Let trading affect your relationships</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Trade under emotional distress</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Ignore warning signs of addiction</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-[#ef4444] mt-2 shrink-0"></span>
+                        <span>Risk more than you can afford</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Warning Signs -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-[#14b8a6]/15 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white">Warning Signs</h3>
+            </div>
+            <p class="text-gray-400 mb-5">If you recognize any of these behaviors, consider taking a break or seeking support:</p>
+            
+            <div class="space-y-2.5">
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Trading more than you planned</span>
+                </div>
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Feeling anxious when not trading</span>
+                </div>
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Hiding trading activity from others</span>
+                </div>
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Neglecting work or relationships</span>
+                </div>
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Borrowing money to trade</span>
+                </div>
+                <div class="warning-item bg-[#2a2a2a] rounded-xl p-4 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <span class="text-gray-200">Unable to stop despite losses</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Need Help? -->
+        <div class="card-bg bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
+            <h3 class="text-xl font-bold text-white mb-3">Need Help?</h3>
+            <p class="text-gray-400 mb-5">If you're concerned about your trading habits, please reach out:</p>
+            
+            <div class="space-y-3">
+                <button onclick="openSupportChat()" class="w-full bg-[#14b8a6] hover:bg-[#0d9488] text-white font-bold py-3.5 rounded-xl transition-all active:scale-[0.98]">
+                    Contact Support
+                </button>
+                <a href="https://www.begambleaware.org" target="_blank" class="block w-full text-center border border-white/10 hover:bg-white/5 text-white font-bold py-3.5 rounded-xl transition-all">
+                    BeGambleAware.org
+                </a>
+            </div>
+        </div>
+
+        <!-- Disclaimer Footer -->
+        <div class="text-center px-4 pt-4 pb-2">
+            <p class="text-gray-500 text-sm leading-relaxed">
+                Trading involves significant risk of loss and is not suitable for all investors. Please trade responsibly and within your means.
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+
+        // Contact Support - opens live chat on index.html
+        function openSupportChat() {
+            localStorage.setItem('open_chat_on_load', 'true');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
