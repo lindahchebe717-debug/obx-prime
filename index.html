@@ -3793,5 +3793,147 @@ window.addEventListener('load', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== INSUFFICIENT BALANCE MODAL ===== -->
+<!-- ============================================ -->
+<style>
+/* Modal Animation */
+#insufficient-modal { transition: opacity 0.3s ease; }
+#insufficient-modal.hidden { opacity: 0; pointer-events: none; }
+#insufficient-modal:not(.hidden) { opacity: 1; pointer-events: auto; }
+#insufficient-content { transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+#insufficient-modal.show #insufficient-content { transform: translateY(0); }
+
+/* Specific Colors from Screenshot */
+.insuff-bg { background-color: #1a1630; }
+.insuff-card { background-color: #25213a; border: 1px solid rgba(255,255,255,0.05); }
+.insuff-card:hover { border-color: rgba(124, 58, 237, 0.4); }
+</style>
+
+<!-- The Modal HTML -->
+<div id="insufficient-modal" class="fixed inset-0 z-[10005] hidden flex items-end justify-center bg-black/60 backdrop-blur-sm">
+    <div id="insufficient-content" class="insuff-bg w-full max-w-md rounded-t-3xl overflow-hidden shadow-2xl border-t border-white/10">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-white/5 relative">
+            <h2 class="text-[#ff444f] text-xl font-bold">Insufficient Balance</h2>
+            <p class="text-gray-400 text-sm mt-1">Top up now to continue trading</p>
+            <button onclick="closeInsufficientModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Warning Banner -->
+        <div class="mx-5 mt-4 p-3.5 rounded-xl bg-[#ff444f]/10 border border-[#ff444f]/30 flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+            <span class="text-[#ff444f] font-bold text-sm">Insufficient balance. Top up now!</span>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="p-5 space-y-3">
+            <!-- M-Pesa -->
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">M-Pesa</div>
+                        <div class="text-gray-400 text-xs">Instant mobile money</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+            </div>
+
+            <!-- USDT -->
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
+                        <span class="text-[#10B981] font-black text-xl">T</span>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                        <div class="text-gray-400 text-xs">Cryptocurrency · auto-credited</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+            </div>
+
+            <!-- Card -->
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-base">Card</div>
+                        <div class="text-gray-400 text-xs">Visa, Mastercard</div>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="pb-6 pt-2 flex items-center justify-center gap-6 text-xs text-gray-400">
+            <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>Secure</div>
+            <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>Instant</div>
+            <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>24/7 Support</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// INSUFFICIENT BALANCE LOGIC
+// ==========================================
+
+// 1. Open/Close Functions
+function openInsufficientModal() {
+    const modal = document.getElementById('insufficient-modal');
+    modal.classList.remove('hidden');
+    // Small delay to allow CSS to apply the slide-up animation
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+function closeInsufficientModal() {
+    const modal = document.getElementById('insufficient-modal');
+    modal.classList.remove('show');
+    // Wait for animation to finish before hiding
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+// 2. Smart Override for Trade Button
+// This intercepts the trade click ONLY if on Real Account and balance is too low
+if (typeof placeTrade === 'function') {
+    const originalPlaceTrade = placeTrade;
+    
+    placeTrade = function(choice) {
+        let stake = parseInt(document.getElementById('stake-input').value) || 10;
+        
+        // Check if Real account and insufficient funds
+        if (currentAccount === 'real' && stake > balance) {
+            openInsufficientModal();
+            return; // Stop here, don't place the trade
+        }
+        
+        // Otherwise, proceed with the normal trade logic
+        originalPlaceTrade(choice);
+    };
+}
+
+// Also handle Auto-Trade start if balance is 0 on Real Account
+if (typeof startAutoTrade === 'function') {
+    const originalStartAuto = startAutoTrade;
+    startAutoTrade = function(choice) {
+        let stake = parseInt(document.getElementById('stake-input').value) || 10;
+        if (currentAccount === 'real' && stake > balance) {
+            openInsufficientModal();
+            return;
+        }
+        originalStartAuto(choice);
+    };
+}
+</script>
 </body>
 </html>
