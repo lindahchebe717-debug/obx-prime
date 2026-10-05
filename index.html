@@ -4442,5 +4442,112 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FIX BROKEN DROPDOWN & ADD RESET ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. The perfect HTML for the dropdown
+    const correctDropdownHTML = `
+        <button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                <span class="text-sm font-medium text-white">Real Account</span>
+            </div>
+            <span id="real-badge" class="text-[#7C3AED] text-xs font-semibold">Active</span>
+        </button>
+        <button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                <span class="text-sm font-medium text-white">Demo Account</span>
+            </div>
+            <span id="demo-badge" class="text-gray-500 text-xs font-semibold"></span>
+        </button>
+        <button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            <span class="text-sm font-medium">Reset Demo Balance</span>
+        </button>
+    `;
+
+    // 2. Inject this HTML into both dropdowns to fix the broken text
+    const mobileDrop = document.getElementById('account-dropdown');
+    const desktopDrop = document.getElementById('account-dropdown-desktop');
+    
+    if (mobileDrop) mobileDrop.innerHTML = correctDropdownHTML;
+    
+    if (desktopDrop) {
+        // Desktop needs slightly different IDs for the badges
+        let desktopHTML = correctDropdownHTML.replace('id="real-badge"', 'id="real-badge-desktop"');
+        desktopHTML = desktopHTML.replace('id="demo-badge"', 'id="demo-badge-desktop"');
+        desktopDrop.innerHTML = desktopHTML;
+    }
+
+    // 3. Define the Reset Function
+    window.resetDemoBalance = function() {
+        if (currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = balance.toFixed(2);
+            document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+            alert('✅ Demo balance reset to $10,000.00');
+        } else {
+            alert('You can only reset the Demo balance.');
+        }
+    };
+
+    // 4. Fix the Switch Account Function to update colors correctly
+    window.switchAccount = function(type) {
+        currentAccount = type;
+        
+        // Update Balance Variable
+        balance = type === 'demo' ? 10000.00 : 0.00;
+        
+        // Update Balance Display & Color
+        const headerBal = document.getElementById('header-balance');
+        const desktopBal = document.getElementById('desktop-balance');
+        const headerIcon = document.getElementById('account-type-icon');
+        const desktopIcon = document.getElementById('desktop-account-type-icon');
+
+        if (type === 'demo') {
+            if(headerBal) { headerBal.innerText = balance.toFixed(2); headerBal.className = 'text-xs font-bold text-red-500'; }
+            if(desktopBal) { desktopBal.innerText = balance.toFixed(2); desktopBal.className = 'text-sm font-bold text-red-500'; }
+            if(headerIcon) { headerIcon.innerText = 'D'; headerIcon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-red-500 text-white'; }
+            if(desktopIcon) { desktopIcon.innerText = 'D'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-red-500 text-white shadow-lg shadow-red-500/30'; }
+            
+            // Update Badges
+            document.getElementById('real-badge').innerText = '';
+            document.getElementById('demo-badge').innerText = 'Active';
+            document.getElementById('demo-badge').className = 'text-red-500 text-xs font-semibold';
+            
+            if(document.getElementById('real-badge-desktop')) document.getElementById('real-badge-desktop').innerText = '';
+            if(document.getElementById('demo-badge-desktop')) {
+                document.getElementById('demo-badge-desktop').innerText = 'Active';
+                document.getElementById('demo-badge-desktop').className = 'text-red-500 text-xs font-semibold';
+            }
+
+        } else {
+            if(headerBal) { headerBal.innerText = balance.toFixed(2); headerBal.className = 'text-xs font-bold text-[#7C3AED]'; }
+            if(desktopBal) { desktopBal.innerText = balance.toFixed(2); desktopBal.className = 'text-sm font-bold text-[#7C3AED]'; }
+            if(headerIcon) { headerIcon.innerText = 'R'; headerIcon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white'; }
+            if(desktopIcon) { desktopIcon.innerText = 'R'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30'; }
+            
+            // Update Badges
+            document.getElementById('real-badge').innerText = 'Active';
+            document.getElementById('real-badge').className = 'text-[#7C3AED] text-xs font-semibold';
+            document.getElementById('demo-badge').innerText = '';
+            
+            if(document.getElementById('real-badge-desktop')) {
+                document.getElementById('real-badge-desktop').innerText = 'Active';
+                document.getElementById('real-badge-desktop').className = 'text-[#7C3AED] text-xs font-semibold';
+            }
+            if(document.getElementById('demo-badge-desktop')) document.getElementById('demo-badge-desktop').innerText = '';
+        }
+
+        // Close dropdowns
+        if(mobileDrop) mobileDrop.classList.add('hidden');
+        if(desktopDrop) desktopDrop.classList.add('hidden');
+    };
+});
+</script>
 </body>
 </html>
