@@ -4549,5 +4549,79 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FINAL FIX: DROPDOWN TEXT & RESET ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. Safely add the "Reset Demo Balance" button without deleting existing text
+    const resetBtn = `
+    <button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span class="text-sm font-medium">Reset Demo Balance</span>
+    </button>`;
+    
+    const mob = document.getElementById('account-dropdown');
+    const desk = document.getElementById('account-dropdown-desktop');
+    
+    // Only add if it doesn't exist yet
+    if(mob && !mob.querySelector('[onclick="resetDemoBalance()"]')) mob.insertAdjacentHTML('beforeend', resetBtn);
+    if(desk && !desk.querySelector('[onclick="resetDemoBalance()"]')) desk.insertAdjacentHTML('beforeend', resetBtn);
+
+    // 2. Reset Function
+    window.resetDemoBalance = function() {
+        if(currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = '10000.00';
+            document.getElementById('desktop-balance').innerText = '10000.00';
+            alert('✅ Demo balance reset to $10,000.00');
+        } else {
+            alert('You can only reset the Demo balance.');
+        }
+    };
+
+    // 3. Fix Switch Account to show text and colors correctly
+    window.switchAccount = function(type) {
+        currentAccount = type;
+        balance = type === 'demo' ? 10000.00 : 0.00;
+        const isDemo = type === 'demo';
+        const mainColor = isDemo ? '#ef4444' : '#7C3AED'; // Red for Demo, Purple for Real
+        
+        // Update Header Balance & Icon Colors
+        const hBal = document.getElementById('header-balance');
+        const dBal = document.getElementById('desktop-balance');
+        const hIcon = document.getElementById('account-type-icon');
+        const dIcon = document.getElementById('desktop-account-type-icon');
+        
+        if(hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
+        if(dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
+        if(hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
+        if(dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
+
+        // Update Dropdown "Active" Text
+        const rBadge = document.getElementById('real-badge');
+        const dBadge = document.getElementById('demo-badge');
+        const rBadgeD = document.getElementById('real-badge-desktop');
+        const dBadgeD = document.getElementById('demo-badge-desktop');
+
+        if(isDemo) {
+            if(rBadge) rBadge.innerText = '';
+            if(dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
+            if(rBadgeD) rBadgeD.innerText = '';
+            if(dBadgeD) { dBadgeD.innerText = 'Active'; dBadgeD.style.color = '#ef4444'; }
+        } else {
+            if(rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; }
+            if(dBadge) dBadge.innerText = '';
+            if(rBadgeD) { rBadgeD.innerText = 'Active'; rBadgeD.style.color = '#7C3AED'; }
+            if(dBadgeD) dBadgeD.innerText = '';
+        }
+
+        // Close dropdowns after clicking
+        if(mob) mob.classList.add('hidden');
+        if(desk) desk.classList.add('hidden');
+    };
+});
+</script>
 </body>
 </html>
