@@ -3621,5 +3621,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mouseup', stopRecording);
 });
 </script>
+<script>
+// Auto-open chat if redirected from Help Centre
+window.addEventListener('load', function() {
+    if (window.location.href.includes('openchat=true')) {
+        setTimeout(function() {
+            // This checks which chat system is active and opens it
+            if (typeof openV2Chat === 'function') {
+                openV2Chat();
+            } else if (typeof openLiveChat === 'function') {
+                openLiveChat();
+            }
+        }, 800); // Waits 0.8 seconds for the page to fully load
+    }
+});
+</script>
 </body>
 </html>
