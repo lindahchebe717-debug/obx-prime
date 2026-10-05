@@ -4292,5 +4292,155 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FIX ACCOUNT DROPDOWN DISPLAY ===== -->
+<!-- ============================================ -->
+<style>
+/* Ensure dropdown text is always visible */
+#account-dropdown button, #account-dropdown-desktop button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    text-align: left !important;
+}
+#account-dropdown button span, #account-dropdown-desktop button span {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Active row highlight */
+.dropdown-row-active {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+.dropdown-row-active-real {
+    background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+/* Reset button style */
+.reset-demo-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    color: #9ca3af !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-top: 1px solid rgba(255,255,255,0.05) !important;
+    margin-top: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+.reset-demo-btn:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+    color: white !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. Add Reset Demo Balance button to both dropdowns (if not already there)
+    const resetBtnHTML = `
+    <button onclick="resetDemoBalance()" class="reset-demo-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span>Reset Demo Balance</span>
+    </button>`;
+    
+    const mobileDropdown = document.getElementById('account-dropdown');
+    const desktopDropdown = document.getElementById('account-dropdown-desktop');
+    
+    if (mobileDropdown && !mobileDropdown.querySelector('.reset-demo-btn')) {
+        mobileDropdown.insertAdjacentHTML('beforeend', resetBtnHTML);
+    }
+    if (desktopDropdown && !desktopDropdown.querySelector('.reset-demo-btn')) {
+        desktopDropdown.insertAdjacentHTML('beforeend', resetBtnHTML);
+    }
+
+    // 2. Reset Demo Balance function
+    window.resetDemoBalance = function() {
+        if (currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = balance.toFixed(2);
+            document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+            
+            // Update the display text color
+            const headerBal = document.getElementById('header-balance');
+            const desktopBal = document.getElementById('desktop-balance');
+            if (headerBal) headerBal.className = 'text-xs font-bold demo-active-text';
+            if (desktopBal) desktopBal.className = 'text-sm font-bold demo-active-text';
+            
+            alert('✅ Demo balance reset to $10,000.00');
+        }
+    };
+
+    // 3. Override switchAccount to update UI properly
+    const originalSwitchAccount = window.switchAccount;
+    window.switchAccount = function(type) {
+        // Call original function first
+        if (originalSwitchAccount) originalSwitchAccount(type);
+        
+        // Update balance variable
+        balance = type === 'demo' ? 10000.00 : 0.00;
+        
+        // Update balance display
+        const headerBal = document.getElementById('header-balance');
+        const desktopBal = document.getElementById('desktop-balance');
+        if (headerBal) {
+            headerBal.innerText = balance.toFixed(2);
+            headerBal.className = type === 'demo' ? 'text-xs font-bold demo-active-text' : 'text-xs font-bold text-[#7C3AED]';
+        }
+        if (desktopBal) {
+            desktopBal.innerText = balance.toFixed(2);
+            desktopBal.className = type === 'demo' ? 'text-sm font-bold demo-active-text' : 'text-sm font-bold text-[#7C3AED]';
+        }
+        
+        // Update dropdown row highlighting
+        updateDropdownHighlight(type);
+    };
+
+    function updateDropdownHighlight(type) {
+        const dropdowns = [
+            document.getElementById('account-dropdown'),
+            document.getElementById('account-dropdown-desktop')
+        ];
+        
+        dropdowns.forEach(dropdown => {
+            if (!dropdown) return;
+            const buttons = dropdown.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('dropdown-row-active', 'dropdown-row-active-real');
+                const lastSpan = btn.querySelector('span:last-child');
+                if (lastSpan) {
+                    lastSpan.innerText = '';
+                    lastSpan.className = 'text-xs font-semibold';
+                }
+            });
+            
+            if (type === 'demo' && buttons[1]) {
+                buttons[1].classList.add('dropdown-row-active');
+                const lastSpan = buttons[1].querySelector('span:last-child');
+                if (lastSpan) {
+                    lastSpan.innerText = 'Active';
+                    lastSpan.className = 'demo-active-text text-xs font-semibold';
+                }
+            } else if (type === 'real' && buttons[0]) {
+                buttons[0].classList.add('dropdown-row-active-real');
+                const lastSpan = buttons[0].querySelector('span:last-child');
+                if (lastSpan) {
+                    lastSpan.innerText = 'Active';
+                    lastSpan.className = 'text-[#7C3AED] text-xs font-semibold';
+                }
+            }
+        });
+    }
+
+    // Initialize on load
+    setTimeout(() => {
+        updateDropdownHighlight(currentAccount || 'real');
+    }, 100);
+});
+</script>
 </body>
 </html>
