@@ -3953,5 +3953,213 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== ACCOUNT DROPDOWN & CHART UPGRADE ===== -->
+<!-- ============================================ -->
+<style>
+/* Red styles for Demo Account */
+.demo-active-text { color: #ef4444 !important; }
+.demo-active-bg { background-color: #ef4444 !important; }
+.demo-active-border { border-color: rgba(239, 68, 68, 0.3) !important; }
+.demo-row-active { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+/* Digit Arrow Indicator */
+.digit-arrow-indicator {
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #f59e0b;
+    margin: 2px auto 0 auto;
+    display: none;
+}
+.digit-arrow-indicator.show { display: block; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ==========================================
+    // 1. INJECT "RESET DEMO BALANCE" BUTTON
+    // ==========================================
+    const resetBtnHTML = `
+    <button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span class="text-sm font-medium">Reset Demo Balance</span>
+    </button>`;
+    
+    const mobileDropdown = document.getElementById('account-dropdown');
+    const desktopDropdown = document.getElementById('account-dropdown-desktop');
+    if (mobileDropdown && !mobileDropdown.querySelector('button[onclick="resetDemoBalance()"]')) mobileDropdown.insertAdjacentHTML('beforeend', resetBtnHTML);
+    if (desktopDropdown && !desktopDropdown.querySelector('button[onclick="resetDemoBalance()"]')) desktopDropdown.insertAdjacentHTML('beforeend', resetBtnHTML);
+
+    // ==========================================
+    // 2. OVERRIDE SWITCH ACCOUNT (Red vs Purple)
+    // ==========================================
+    window.switchAccount = function(type) {
+        currentAccount = type;
+        const isDemo = type === 'demo';
+        
+        // Update Balance Variable
+        balance = isDemo ? 10000.00 : 0.00; // Real starts at 0, Demo at 10000
+        
+        // Helper to update UI elements
+        const updateUI = (iconId, balanceId, badgeRealId, badgeDemoId, dropdownId) => {
+            const icon = document.getElementById(iconId);
+            const bal = document.getElementById(balanceId);
+            const bReal = document.getElementById(badgeRealId);
+            const bDemo = document.getElementById(badgeDemoId);
+            const drop = document.getElementById(dropdownId);
+
+            if (icon) {
+                icon.textContent = isDemo ? 'D' : 'R';
+                icon.className = isDemo 
+                    ? 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all demo-active-bg text-white' 
+                    : 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white';
+            }
+            if (bal) {
+                bal.innerText = balance.toFixed(2);
+                bal.className = isDemo ? 'text-xs font-bold demo-active-text' : 'text-xs font-bold text-[#7C3AED]';
+                // Fix for desktop which uses text-sm
+                if(bal.id.includes('desktop')) bal.className = isDemo ? 'text-sm font-bold demo-active-text' : 'text-sm font-bold text-[#7C3AED]';
+            }
+
+            // Update Dropdown Rows Styling
+            if (drop) {
+                const rows = drop.querySelectorAll('button');
+                rows.forEach(row => {
+                    row.classList.remove('demo-row-active', 'bg-[#7C3AED]/10');
+                    const isActiveText = row.querySelector('span:last-child');
+                    if (isActiveText) isActiveText.innerText = '';
+                });
+
+                if (isDemo) {
+                    if(rows[1]) { rows[1].classList.add('demo-row-active'); if(rows[1].querySelector('span:last-child')) rows[1].querySelector('span:last-child').innerText = 'Active'; rows[1].querySelector('span:last-child').className = 'demo-active-text text-xs font-semibold'; }
+                } else {
+                    if(rows[0]) { rows[0].classList.add('bg-[#7C3AED]/10'); if(rows[0].querySelector('span:last-child')) rows[0].querySelector('span:last-child').innerText = 'Active'; rows[0].querySelector('span:last-child').className = 'text-[#7C3AED] text-xs font-semibold'; }
+                }
+            }
+        };
+
+        updateUI('account-type-icon', 'header-balance', 'real-badge', 'demo-badge', 'account-dropdown');
+        updateUI('desktop-account-type-icon', 'desktop-balance', 'real-badge-desktop', 'demo-badge-desktop', 'account-dropdown-desktop');
+        
+        // Close dropdowns
+        if(mobileDropdown) mobileDropdown.classList.add('hidden');
+        if(desktopDropdown) desktopDropdown.classList.add('hidden');
+    };
+
+    // ==========================================
+    // 3. RESET DEMO BALANCE FUNCTION
+    // ==========================================
+    window.resetDemoBalance = function() {
+        if (currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = balance.toFixed(2);
+            document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+            alert('Demo balance reset to $10,000.00');
+        }
+    };
+
+    // Initialize correct state on load
+    switchAccount('real'); 
+
+    // ==========================================
+    // 4. CHART UPGRADE (Time Axis & Price Box)
+    // ==========================================
+    if (typeof drawChart === 'function') {
+        const originalDrawChart = drawChart;
+        window.drawChart = function(canvasId) {
+            originalDrawChart(canvasId); // Draw the original line first
+            
+            const canvas = document.getElementById(canvasId);
+            if (!canvas || priceHistory.length < 2) return;
+            const ctx = canvas.getContext('2d');
+            const min = Math.min(...priceHistory) - 5;
+            const max = Math.max(...priceHistory) + 5;
+            const range = max - min || 1;
+
+            // A. Draw Time Axis at the bottom
+            ctx.fillStyle = isDarkTheme ? '#6b7280' : '#9ca3af';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            const now = new Date();
+            const totalSeconds = priceHistory.length;
+            
+            // Draw 5 time labels
+            for (let i = 0; i < 5; i++) {
+                const x = (canvas.width / 4) * i;
+                const secondsAgo = totalSeconds - 1 - (i * (totalSeconds / 4));
+                const time = new Date(now.getTime() - secondsAgo * 1000);
+                const timeStr = time.toTimeString().split(' ')[0].substring(0, 8); // HH:MM:SS
+                ctx.fillText(timeStr, x, canvas.height - 5);
+            }
+
+            // B. Draw Price Label Box at the end of the line
+            const lastPrice = priceHistory[priceHistory.length - 1];
+            const lastX = canvas.width;
+            const lastY = canvas.height - ((lastPrice - min) / range) * canvas.height;
+            
+            const boxWidth = 65;
+            const boxHeight = 22;
+            const boxX = lastX - boxWidth - 2;
+            const boxY = lastY - boxHeight / 2;
+
+            // Box background and border
+            ctx.fillStyle = '#1e2535';
+            ctx.strokeStyle = '#4bb4b3';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            // Price text inside box
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'left';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(lastPrice.toFixed(2), boxX + 6, boxY + 15);
+
+            // White dot at the very end
+            ctx.beginPath();
+            ctx.arc(lastX - 2, lastY, 4, 0, Math.PI*2);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        };
+    }
+
+    // ==========================================
+    // 5. FIX DIGIT ARROW INDICATOR
+    // ==========================================
+    // Ensure the arrow is appended correctly to digit wrappers
+    const digitWrappers = document.querySelectorAll('[id^="digit-wrapper-"]');
+    digitWrappers.forEach((wrapper, index) => {
+        if (!wrapper.querySelector('.digit-arrow-indicator')) {
+            const arrow = document.createElement('div');
+            arrow.className = 'digit-arrow-indicator';
+            arrow.id = `digit-arrow-${index}`;
+            wrapper.parentElement.appendChild(arrow); // Append to the flex container
+        }
+    });
+
+    // Update the digit loop to show the arrow
+    if (typeof setInterval !== 'undefined') {
+        // We hook into the existing interval by overriding the logic slightly
+        // Since we can't easily hook the interval, we add a small observer or just rely on the existing loop.
+        // The existing loop updates colors. We will add a small script to update the arrow.
+        const origInterval = window.setInterval;
+        // Actually, let's just add a separate fast interval to sync the arrow with the lastDigit variable
+        setInterval(() => {
+            for(let i=0; i<=9; i++) {
+                const arrow = document.getElementById(`digit-arrow-${i}`);
+                if (arrow) {
+                    if (i === lastDigit) arrow.classList.add('show');
+                    else arrow.classList.remove('show');
+                }
+            }
+        }, 1000);
+    }
+});
+</script>
 </body>
 </html>
