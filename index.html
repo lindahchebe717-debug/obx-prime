@@ -3667,5 +3667,131 @@ window.addEventListener('load', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== OBX PRIME FINAL FIXES (4-IN-1) ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. Hide the chat FAB that was covering Positions */
+#chat-fab, #obx-v2-fab { display: none !important; }
+
+/* Make sure Positions nav item is fully visible */
+nav button:last-child { opacity: 1 !important; visibility: visible !important; }
+</style>
+
+<!-- Background Music Audio Element -->
+<audio id="obx-bg-music" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ==========================================
+// 4-IN-1 FIX: Chat, Balance, Sound, Download
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ========== FIX 1: Hide Chat FAB (already done via CSS above) ==========
+    // The CSS rule above hides it. No extra JS needed.
+
+    // ========== FIX 2: Real Mode = $0.00 Balance ==========
+    // Override the balance variables so Real mode starts at $0
+    if (typeof realBalance !== 'undefined') {
+        realBalance = 0.00;
+    }
+    // If currently on real account, update display
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        const headerBal = document.getElementById('header-balance');
+        const desktopBal = document.getElementById('desktop-balance');
+        const withdrawBal = document.getElementById('withdraw-balance');
+        if (headerBal) headerBal.innerText = '0.00';
+        if (desktopBal) desktopBal.innerText = '0.00';
+        if (withdrawBal) withdrawBal.innerText = '0.00';
+        if (typeof balance !== 'undefined') balance = 0.00;
+    }
+
+    // ========== FIX 3: Background Sound with Mute/Unmute ==========
+    const bgMusic = document.getElementById('obx-bg-music');
+    const soundBtn = document.getElementById('sound-toggle');
+    let isMusicPlaying = false;
+
+    // Try to start music on first user interaction (browsers require this)
+    function tryStartMusic() {
+        if (!bgMusic) return;
+        bgMusic.volume = 0.3; // 30% volume so it's not too loud
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            // Make sure the icon shows "on" state
+            const iconOn = document.getElementById('sound-icon-on');
+            const iconOff = document.getElementById('sound-icon-off');
+            if (iconOn) iconOn.classList.remove('hidden');
+            if (iconOff) iconOff.classList.add('hidden');
+        }).catch(e => {
+            // Browser blocked autoplay - will start on first click
+            console.log('Music will start on first tap');
+        });
+        document.removeEventListener('click', tryStartMusic);
+        document.removeEventListener('touchstart', tryStartMusic);
+    }
+    document.addEventListener('click', tryStartMusic);
+    document.addEventListener('touchstart', tryStartMusic);
+
+    // Override the existing toggleSound function to also control music
+    const originalToggleSound = window.toggleSound;
+    window.toggleSound = function() {
+        if (originalToggleSound) originalToggleSound();
+        
+        if (bgMusic) {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+            } else {
+                bgMusic.play().catch(e => {});
+                isMusicPlaying = true;
+            }
+        }
+    };
+
+    // ========== FIX 4: Make Download Banner Clickable ==========
+    const downloadBanner = document.querySelector('div[style*="linear-gradient(135deg, rgb(91, 33, 182)"]') || 
+                           Array.from(document.querySelectorAll('div')).find(el => 
+                               el.textContent.includes('Get the OBX PRIME App') && 
+                               el.textContent.includes('Download')
+                           );
+    
+    if (downloadBanner) {
+        downloadBanner.style.cursor = 'pointer';
+        downloadBanner.onclick = function(e) {
+            // Don't trigger if they clicked the X close button
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+            window.location.href = 'download.html';
+        };
+    }
+
+    // Also make the Download button itself clickable
+    const downloadBtn = Array.from(document.querySelectorAll('a, button')).find(el => 
+        el.textContent.trim() === 'Download'
+    );
+    if (downloadBtn) {
+        downloadBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = 'download.html';
+        };
+    }
+});
+
+// Auto-open chat if redirected from Help/Responsible pages
+window.addEventListener('load', function() {
+    if (localStorage.getItem('open_chat_on_load') === 'true') {
+        localStorage.removeItem('open_chat_on_load');
+        setTimeout(function() {
+            if (typeof openV2Chat === 'function') {
+                openV2Chat();
+            } else if (typeof openLiveChat === 'function') {
+                openLiveChat();
+            }
+        }, 800);
+    }
+});
+</script>
 </body>
 </html>
