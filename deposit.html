@@ -6,7 +6,6 @@
     <title>OBX PRIME | Deposit Funds</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Base Styles matching your main site */
         body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -17,6 +16,7 @@
         body.light-theme .border-white\/10 { border-color: rgba(0, 0, 0, 0.1) !important; }
         body.light-theme .text-gray-400 { color: #6b7280 !important; }
         body.light-theme .text-white { color: #1f2937 !important; }
+        body.light-theme input { background-color: #f3f4f6 !important; color: #1f2937 !important; border-color: #e5e7eb !important; }
         
         /* Payment Card Styles */
         .payment-card {
@@ -24,36 +24,42 @@
             border: 1px solid rgba(124, 58, 237, 0.3);
             transition: all 0.2s ease;
         }
-        .payment-card:hover {
-            background-color: rgba(124, 58, 237, 0.1);
-            border-color: rgba(124, 58, 237, 0.6);
-            transform: translateY(-2px);
+        .payment-card:hover, .payment-card.active {
+            background-color: rgba(124, 58, 237, 0.15);
+            border-color: rgba(124, 58, 237, 0.8);
         }
         body.light-theme .payment-card {
             background-color: #ffffff;
             border-color: #e5e7eb;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        body.light-theme .payment-card:hover {
+        body.light-theme .payment-card:hover, body.light-theme .payment-card.active {
             border-color: #7C3AED;
         }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
 
     <!-- Header -->
     <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10 z-40">
-        <div class="flex items-center gap-3">
-            <!-- Back Button -->
-            <a href="index.html" class="p-2 rounded-md hover:bg-white/10 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
-            </a>
-            <h1 class="text-lg font-bold text-white">Deposit Funds</h1>
-        </div>
-        
-        <!-- Theme Toggle (Small) -->
+        <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+            <span class="font-bold">Back</span>
+        </a>
+        <h1 class="text-lg font-bold text-white">Deposit Funds</h1>
         <button onclick="toggleTheme()" class="p-2 rounded-md bg-[#282041] hover:bg-[#3b3263] transition-colors" title="Toggle Theme">
-            <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
         </button>
     </header>
 
@@ -64,23 +70,24 @@
             <p class="text-gray-400 text-sm">Select your preferred method to fund your OBX PRIME account.</p>
         </div>
 
-        <div class="space-y-3">
+        <!-- Payment Methods Grid -->
+        <div class="space-y-3 mb-6">
             <!-- M-Pesa Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('M-Pesa')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('mpesa')">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                    <div class="w-12 h-12 rounded-lg bg-[#4CAF50]/20 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
                     </div>
                     <div>
                         <div class="text-white font-bold text-base">M-Pesa</div>
-                        <div class="text-gray-400 text-sm">Instant mobile money</div>
+                        <div class="text-gray-400 text-sm">Instant STK Push to your phone</div>
                     </div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
             </div>
 
             <!-- USDT TRC20 Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('USDT (TRC20)')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('usdt')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
@@ -94,7 +101,7 @@
             </div>
 
             <!-- Card Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('Card')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('card')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
@@ -108,13 +115,41 @@
             </div>
         </div>
 
+        <!-- M-Pesa STK Push Form (Hidden by default) -->
+        <div id="mpesa-form" class="hidden bg-[#1F1936] border border-[#4CAF50]/30 rounded-2xl p-5 space-y-4 animate-fade-in">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-full bg-[#4CAF50]/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold">M-Pesa Express</h3>
+                    <p class="text-gray-400 text-xs">Enter your details to receive a prompt on your phone.</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-400 mb-1">M-Pesa Phone Number</label>
+                <input type="tel" id="mpesa-phone" placeholder="e.g., 0712345678" class="w-full bg-[#130f1c] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#4CAF50] transition-colors">
+                <p class="text-[10px] text-gray-500 mt-1">Format: 07XX XXX XXX or 01XX XXX XXX</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-400 mb-1">Amount (KES)</label>
+                <input type="number" id="mpesa-amount" placeholder="e.g., 500" min="10" class="w-full bg-[#130f1c] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#4CAF50] transition-colors">
+            </div>
+
+            <button id="mpesa-pay-btn" onclick="processMpesaPayment()" class="w-full bg-[#4CAF50] hover:bg-[#45a049] text-white font-bold py-3.5 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                <span>Request M-Pesa Prompt</span>
+            </button>
+        </div>
+
         <!-- Info Section -->
         <div class="mt-8 p-4 rounded-xl bg-[#130f1c] border border-white/5">
             <div class="flex items-start gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
                 <div>
                     <h3 class="text-white font-semibold text-sm mb-1">Secure Transactions</h3>
-                    <p class="text-gray-400 text-xs leading-relaxed">All deposits are processed securely. M-Pesa and Card deposits are instant. Crypto deposits may take up to 10 minutes for network confirmations.</p>
+                    <p class="text-gray-400 text-xs leading-relaxed">All deposits are processed securely. M-Pesa STK pushes are instant. Crypto deposits may take up to 10 minutes for network confirmations.</p>
                 </div>
             </div>
         </div>
@@ -140,8 +175,66 @@
 
         // Handle Payment Selection
         function selectMethod(method) {
-            // In a real app, this would navigate to a specific payment form
-            alert(`You selected ${method}. Redirecting to payment gateway...`);
+            // Remove active class from all
+            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('active'));
+            
+            // Hide all forms first
+            document.getElementById('mpesa-form').classList.add('hidden');
+
+            if (method === 'mpesa') {
+                // Highlight M-Pesa card
+                event.currentTarget.classList.add('active');
+                // Show M-Pesa form
+                document.getElementById('mpesa-form').classList.remove('hidden');
+            } else if (method === 'usdt') {
+                event.currentTarget.classList.add('active');
+                alert('USDT (TRC20) deposit interface will open here. (Requires wallet address generation)');
+            } else if (method === 'card') {
+                event.currentTarget.classList.add('active');
+                alert('Card payment interface will open here. (Requires Stripe/Paystack integration)');
+            }
+        }
+
+        // Simulate M-Pesa STK Push
+        function processMpesaPayment() {
+            const phone = document.getElementById('mpesa-phone').value.trim();
+            const amount = document.getElementById('mpesa-amount').value.trim();
+            const btn = document.getElementById('mpesa-pay-btn');
+
+            // Basic Validation
+            if (!phone || phone.length < 10) {
+                alert('Please enter a valid M-Pesa phone number (e.g., 0712345678).');
+                return;
+            }
+            if (!amount || amount < 10) {
+                alert('Please enter a valid amount (Minimum KES 10).');
+                return;
+            }
+
+            // Show Loading State
+            const originalBtnText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> <span>Sending prompt to phone...</span>';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            // Simulate API delay (In real life, this is where you call your backend)
+            setTimeout(() => {
+                btn.innerHTML = '<span>✓ Prompt Sent!</span>';
+                btn.classList.remove('bg-[#4CAF50]', 'hover:bg-[#45a049]');
+                btn.classList.add('bg-blue-600');
+                
+                alert(`✅ SUCCESS!\n\nAn M-Pesa prompt has been sent to ${phone} for KES ${amount}.\n\nPlease check your phone and enter your M-Pesa PIN to complete the deposit.`);
+                
+                // Reset button after a few seconds
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnText;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-blue-600');
+                    btn.classList.add('bg-[#4CAF50]', 'hover:bg-[#45a049]');
+                    document.getElementById('mpesa-phone').value = '';
+                    document.getElementById('mpesa-amount').value = '';
+                }, 3000);
+            }, 2500);
         }
     </script>
 </body>
