@@ -3935,5 +3935,23 @@ if (typeof startAutoTrade === 'function') {
     };
 }
 </script>
+<script>
+// Fix Demo Account Balance Bug
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof switchAccount === 'function') {
+        const originalSwitch = switchAccount;
+        switchAccount = function(type) {
+            originalSwitch(type); // Run the original UI update
+            
+            // Fix the hidden math variable so trading works correctly
+            if (type === 'demo') {
+                balance = 10000.00; // Demo account gets $10,000
+            } else {
+                balance = 0.00; // Real account starts at $0.00
+            }
+        };
+    }
+});
+</script>
 </body>
 </html>
