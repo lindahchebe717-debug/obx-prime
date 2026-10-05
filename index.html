@@ -3636,5 +3636,19 @@ window.addEventListener('load', function() {
     }
 });
 </script>
+<script>
+// Make Responsible Trading button open the new page
+document.addEventListener('DOMContentLoaded', function() {
+    const allDivs = document.querySelectorAll('div');
+    for (let div of allDivs) {
+        if (div.textContent.trim() === 'Responsible Trading' && div.classList.contains('cursor-pointer')) {
+            div.onclick = function() {
+                window.location.href = 'responsible.html';
+            };
+            break;
+        }
+    }
+});
+</script>
 </body>
 </html>
