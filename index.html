@@ -3371,5 +3371,57 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<!-- ============================================ -->
+<!-- ===== FINAL FIX: CHAT SEND & DIGIT SIZE ===== -->
+<!-- ============================================ -->
+<style>
+/* Shrink digit circles so 0-9 all fit on screen */
+#digits-container > div {
+    transform: scale(0.82) !important;
+    margin: 0 -2px !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ========== 1. FIX CHAT SEND BUTTON ==========
+    const chatInput = document.getElementById('obx-v2-input');
+    const chatSendBtn = document.getElementById('obx-v2-send');
+    
+    if (chatInput && chatSendBtn) {
+        // Force the button to enable when you type
+        chatInput.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                chatSendBtn.disabled = false;
+                chatSendBtn.style.opacity = '1';
+                chatSendBtn.style.cursor = 'pointer';
+            } else {
+                chatSendBtn.disabled = true;
+                chatSendBtn.style.opacity = '0.4';
+                chatSendBtn.style.cursor = 'not-allowed';
+            }
+        });
+        
+        // Ensure the click works perfectly
+        chatSendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!chatSendBtn.disabled) {
+                if (typeof sendV2Text === 'function') {
+                    sendV2Text();
+                }
+            }
+        });
+    }
+
+    // ========== 2. ENSURE DIGITS ARE SMALL ==========
+    const digitWrappers = document.querySelectorAll('[id^="digit-wrapper-"]');
+    digitWrappers.forEach(wrapper => {
+        wrapper.style.transform = 'scale(0.82)';
+    });
+});
+</script>
+</body>
+</html>
 </body>
 </html>
