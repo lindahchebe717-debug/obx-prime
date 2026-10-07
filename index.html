@@ -3458,5 +3458,37 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<!-- ============================================ -->
+<!-- ===== FIX: STOP BANNER FROM HIJACKING CLICKS ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Find the purple download banner
+    const banner = document.querySelector('div[style*="linear-gradient(135deg, rgb(91, 33, 182)"]');
+    
+    if (banner) {
+        // 2. Remove the click event from the whole banner so it doesn't hijack your scrolling/taps
+        banner.onclick = null;
+        banner.style.cursor = 'default';
+
+        // 3. Make sure the small "Download" button still works
+        const downloadLink = banner.querySelector('a');
+        if (downloadLink) {
+            downloadLink.href = 'download.html';
+        }
+
+        // 4. Make the "X" button actually close/hide the banner
+        const closeBtn = banner.querySelector('button');
+        if (closeBtn) {
+            closeBtn.onclick = function(e) {
+                e.stopPropagation(); // Stop it from triggering anything else
+                banner.style.display = 'none'; // Hide the banner
+            };
+        }
+    }
+});
+</script>
+</body>
+</html>
 </body>
 </html>
