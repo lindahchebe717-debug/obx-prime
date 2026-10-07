@@ -3195,5 +3195,181 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<!-- ============================================ -->
+<!-- ===== MASTER MANAGER FIX (PASTE AT BOTTOM) ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. Hide old chat elements */
+#chat-fab, #chat-panel, #chat-overlay, #img-viewer { display: none !important; }
+nav button:last-child { opacity: 1 !important; visibility: visible !important; }
+
+/* 2. Dropdown Fixes */
+.demo-active-text { color: #ef4444 !important; }
+.demo-active-bg { background-color: #ef4444 !important; }
+.digit-arrow-indicator { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #f59e0b; margin: 2px auto 0 auto; display: none; }
+.digit-arrow-indicator.show { display: block; }
+
+/* 3. Modal Animations */
+#insufficient-modal { transition: opacity 0.3s ease; }
+#insufficient-modal.hidden { opacity: 0; pointer-events: none; }
+#insufficient-modal:not(.hidden) { opacity: 1; pointer-events: auto; }
+#insufficient-content { transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+#insufficient-modal.show #insufficient-content { transform: translateY(0); }
+.insuff-bg { background-color: #1a1630; }
+.insuff-card { background-color: #25213a; border: 1px solid rgba(255,255,255,0.05); }
+.insuff-card:hover { border-color: rgba(124, 58, 237, 0.4); }
+</style>
+
+<!-- Inject Modals ONLY if they don't exist yet -->
+<div id="insufficient-modal" class="fixed inset-0 z-[10005] hidden flex items-end justify-center bg-black/60 backdrop-blur-sm">
+    <div id="insufficient-content" class="insuff-bg w-full max-w-md rounded-t-3xl overflow-hidden shadow-2xl border-t border-white/10">
+        <div class="p-5 border-b border-white/5 relative"><h2 class="text-[#ff444f] text-xl font-bold">Insufficient Balance</h2><p class="text-gray-400 text-sm mt-1">Top up now to continue trading</p><button onclick="closeInsufficientModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+        <div class="mx-5 mt-4 p-3.5 rounded-xl bg-[#ff444f]/10 border border-[#ff444f]/30 flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span class="text-[#ff444f] font-bold text-sm">Insufficient balance. Top up now!</span></div>
+        <div class="p-5 space-y-3">
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl cursor-pointer"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg></div><div><div class="text-white font-bold text-base">M-Pesa</div><div class="text-gray-400 text-xs">Instant mobile money</div></div></div><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></div>
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl cursor-pointer"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-lg bg-[#10B981]/20 flex items-center justify-center"><span class="text-[#10B981] font-black text-xl">T</span></div><div><div class="text-white font-bold text-base">USDT (TRC20)</div><div class="text-gray-400 text-xs">Cryptocurrency · auto-credited</div></div></div><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></div>
+            <div onclick="window.location.href='deposit.html'" class="insuff-card flex items-center justify-between p-4 rounded-xl cursor-pointer"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></div><div><div class="text-white font-bold text-base">Card</div><div class="text-gray-400 text-xs">Visa, Mastercard</div></div></div><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></div>
+        </div>
+        <div class="pb-6 pt-2 flex items-center justify-center gap-6 text-xs text-gray-400"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>Secure</div><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>Instant</div><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#7C3AED]"></div>24/7 Support</div></div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ========== 1. FIX ACCOUNT DROPDOWN (Restores Text if Missing) ==========
+    const mobDrop = document.getElementById('account-dropdown');
+    const deskDrop = document.getElementById('account-dropdown-desktop');
+    
+    // If the text "Real Account" is missing (because old code wiped it), rebuild it safely
+    if (mobDrop && !mobDrop.innerHTML.includes('Real Account')) {
+        mobDrop.innerHTML = `
+        <button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
+            <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-blue-500"></div><span class="text-sm font-medium text-white">Real Account</span></div>
+            <span id="real-badge" class="text-[#7C3AED] text-xs font-semibold">Active</span>
+        </button>
+        <button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
+            <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-red-500"></div><span class="text-sm font-medium text-white">Demo Account</span></div>
+            <span id="demo-badge" class="text-gray-500 text-xs font-semibold"></span>
+        </button>
+        <button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            <span class="text-sm font-medium">Reset Demo Balance</span>
+        </button>`;
+    } else if (mobDrop && !mobDrop.querySelector('.reset-demo-btn')) {
+        // If text is there but reset button is missing, add it
+        mobDrop.insertAdjacentHTML('beforeend', `<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><span class="text-sm font-medium">Reset Demo Balance</span></button>`);
+    }
+
+    // Do the same for Desktop
+    if (deskDrop && !deskDrop.innerHTML.includes('Real Account')) {
+        let deskHTML = mobDrop.innerHTML.replace('id="real-badge"', 'id="real-badge-desktop"').replace('id="demo-badge"', 'id="demo-badge-desktop"');
+        deskDrop.innerHTML = deskHTML;
+    }
+
+    // ========== 2. OVERRIDE SWITCH ACCOUNT & RESET ==========
+    window.resetDemoBalance = function() {
+        if (currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = '10000.00';
+            document.getElementById('desktop-balance').innerText = '10000.00';
+            alert('✅ Demo balance reset to $10,000.00');
+        } else { alert('You can only reset the Demo balance.'); }
+    };
+
+    window.switchAccount = function(type) {
+        currentAccount = type;
+        balance = type === 'demo' ? 10000.00 : 0.00;
+        const isDemo = type === 'demo';
+        const mainColor = isDemo ? '#ef4444' : '#7C3AED';
+
+        const hBal = document.getElementById('header-balance');
+        const dBal = document.getElementById('desktop-balance');
+        const hIcon = document.getElementById('account-type-icon');
+        const dIcon = document.getElementById('desktop-account-type-icon');
+
+        if (hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
+        if (dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
+        if (hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
+        if (dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
+
+        const rBadge = document.getElementById('real-badge');
+        const dBadge = document.getElementById('demo-badge');
+        const rBadgeD = document.getElementById('real-badge-desktop');
+        const dBadgeD = document.getElementById('demo-badge-desktop');
+
+        if (isDemo) {
+            if (rBadge) rBadge.innerText = ''; if (dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
+            if (rBadgeD) rBadgeD.innerText = ''; if (dBadgeD) { dBadgeD.innerText = 'Active'; dBadgeD.style.color = '#ef4444'; }
+        } else {
+            if (rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; } if (dBadge) dBadge.innerText = '';
+            if (rBadgeD) { rBadgeD.innerText = 'Active'; rBadgeD.style.color = '#7C3AED'; } if (dBadgeD) dBadgeD.innerText = '';
+        }
+        if (mobDrop) mobDrop.classList.add('hidden'); if (deskDrop) deskDrop.classList.add('hidden');
+    };
+
+    // ========== 3. HIGH DPI CHART + TIME AXIS + PRICE BOX ==========
+    window.drawChart = function(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || priceHistory.length < 2) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        const width = rect.width; const height = rect.height;
+        const min = Math.min(...priceHistory) - 5; const max = Math.max(...priceHistory) + 5; const range = max - min || 1;
+        ctx.clearRect(0, 0, width, height);
+        const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+        const textColor = isDarkTheme ? '#9ca3af' : '#6b7280';
+        ctx.strokeStyle = gridColor; ctx.lineWidth = 0.5; ctx.setLineDash([3, 3]);
+        for (let i = 1; i < 5; i++) {
+            const y = (height / 5) * i; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+            const priceValue = max - ((range / 5) * i); ctx.fillStyle = textColor; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText(priceValue.toFixed(2), width - 5, y + 4);
+        }
+        const timeSteps = 5; for (let i = 1; i < timeSteps; i++) { const x = (width / timeSteps) * i; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+        ctx.setLineDash([]); ctx.beginPath(); ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937'; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        for(let i=0; i<priceHistory.length; i++) { const x = (i / (priceHistory.length - 1)) * width; const y = height - ((priceHistory[i] - min) / range) * height; if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+        ctx.stroke();
+        ctx.fillStyle = textColor; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; const now = new Date(); const totalSeconds = priceHistory.length;
+        for (let i = 0; i < 5; i++) { const x = (width / 4) * i; const secondsAgo = totalSeconds - 1 - (i * (totalSeconds / 4)); const time = new Date(now.getTime() - secondsAgo * 1000); const timeStr = time.toTimeString().split(' ')[0].substring(0, 8); ctx.fillText(timeStr, x, height - 8); }
+        const lastPrice = priceHistory[priceHistory.length - 1]; const lastX = width; const lastY = height - ((lastPrice - min) / range) * height;
+        const boxWidth = 70; const boxHeight = 24; const boxX = lastX - boxWidth - 2; const boxY = lastY - boxHeight / 2;
+        ctx.fillStyle = '#1e2535'; ctx.strokeStyle = '#4bb4b3'; ctx.lineWidth = 1; ctx.beginPath(); if (ctx.roundRect) { ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4); } else { ctx.rect(boxX, boxY, boxWidth, boxHeight); } ctx.fill(); ctx.stroke();
+        ctx.fillStyle = 'white'; ctx.textAlign = 'left'; ctx.font = 'bold 12px sans-serif'; ctx.fillText(lastPrice.toFixed(2), boxX + 8, boxY + 16);
+        ctx.beginPath(); ctx.arc(lastX - 2, lastY, 4, 0, Math.PI*2); ctx.fillStyle = 'white'; ctx.fill();
+    };
+    drawChart('priceChart'); drawChart('desktopChart');
+
+    // ========== 4. DIGIT ARROW & SMALLER CIRCLES ==========
+    const digitWrappers = document.querySelectorAll('[id^="digit-wrapper-"]');
+    digitWrappers.forEach((wrapper, index) => { 
+        if (!wrapper.querySelector('.digit-arrow-indicator')) { 
+            const arrow = document.createElement('div'); arrow.className = 'digit-arrow-indicator'; arrow.id = `digit-arrow-${index}`; 
+            wrapper.parentElement.appendChild(arrow); 
+        } 
+    });
+    setInterval(() => { for(let i=0; i<=9; i++) { const arrow = document.getElementById(`digit-arrow-${i}`); if (arrow) { if (i === lastDigit) arrow.classList.add('show'); else arrow.classList.remove('show'); } } }, 1000);
+
+    // ========== 5. INSUFFICIENT BALANCE MODAL LOGIC ==========
+    window.openInsufficientModal = function() { const modal = document.getElementById('insufficient-modal'); modal.classList.remove('hidden'); setTimeout(() => modal.classList.add('show'), 10); };
+    window.closeInsufficientModal = function() { const modal = document.getElementById('insufficient-modal'); modal.classList.remove('show'); setTimeout(() => modal.classList.add('hidden'), 300); };
+    if (typeof placeTrade === 'function') {
+        const originalPlaceTrade = placeTrade;
+        placeTrade = function(choice) { let stake = parseInt(document.getElementById('stake-input').value) || 10; if (currentAccount === 'real' && stake > balance) { openInsufficientModal(); return; } originalPlaceTrade(choice); };
+    }
+
+    // ========== 6. MENU LINKS & CHAT AUTO-OPEN ==========
+    const helpBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Help Centre' && el.classList.contains('cursor-pointer'));
+    if (helpBtn) helpBtn.onclick = function() { window.location.href = 'help.html'; };
+    const responsibleBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Responsible Trading' && el.classList.contains('cursor-pointer'));
+    if (responsibleBtn) responsibleBtn.onclick = function() { window.location.href = 'responsible.html'; };
+    
+    if (localStorage.getItem('open_chat_on_load') === 'true') { localStorage.removeItem('open_chat_on_load'); setTimeout(function() { if (typeof openV2Chat === 'function') openV2Chat(); }, 800); }
+});
+</script>
+</body>
+</html>
 </body>
 </html>
