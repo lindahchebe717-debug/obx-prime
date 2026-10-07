@@ -5119,7 +5119,77 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-</body>
-</html>
+<!-- ============================================ -->
+<!-- ===== FIX: COMPACT VOLATILITY DROPDOWN ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. Make the dropdown a compact single line */
+#volatility-dropdown {
+    min-width: 220px !important; /* Slim width */
+    max-height: none !important; /* Let it grow naturally */
+    background: #1e1b4b !important; /* Deep purple/blue background */
+    border: 1px solid rgba(124, 58, 237, 0.4) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
+    margin-top: 8px !important;
+}
+
+/* 2. Style each item to be a clean single line */
+.volatility-item {
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    border-bottom: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    transition: all 0.2s ease !important;
+}
+
+.volatility-item:hover {
+    background: rgba(124, 58, 237, 0.2) !important;
+}
+
+.volatility-item.active {
+    background: rgba(124, 58, 237, 0.3) !important;
+    border: 1px solid rgba(124, 58, 237, 0.5) !important;
+}
+
+/* 3. Fix text colors to match the screenshot */
+.volatility-item-name {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    margin-bottom: 0 !important;
+}
+
+.volatility-item-price {
+    font-size: 11px !important;
+    color: #9ca3af !important;
+    font-weight: 500 !important;
+}
+
+/* 4. Light theme support */
+body.light-theme .volatility-dropdown {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+body.light-theme .volatility-item-name { color: #1f2937 !important; }
+body.light-theme .volatility-item-price { color: #6b7280 !important; }
+body.light-theme .volatility-item.active { background: rgba(124, 58, 237, 0.1) !important; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure the dropdown closes when clicking outside
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('volatility-dropdown');
+        const button = event.target.closest('button');
+        if (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown')) {
+            if (dropdown) dropdown.classList.remove('show');
+        }
+    });
+});
+</script>
 </body>
 </html>
