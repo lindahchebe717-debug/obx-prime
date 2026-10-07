@@ -4947,5 +4947,179 @@ document.addEventListener('click', function(event) {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FINAL FIX: Digits, Chart & Volatility ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ========== 1. FIX DIGIT CIRCLES (Proper Size & Colors) ==========
+    // We rebuild the digits container with smaller SVGs so they fit perfectly
+    const container = document.getElementById('digits-container');
+    if (container) {
+        container.innerHTML = ''; // Clear existing messy digits
+        
+        for(let i=0; i<=9; i++) {
+            const div = document.createElement('div');
+            div.className = 'flex flex-col items-center';
+            // Using width="36" height="36" makes them small enough to fit 0-9 without CSS scaling
+            div.innerHTML = `
+            <div class="relative" id="digit-wrapper-${i}">
+                <svg width="36" height="36" class="transform -rotate-90">
+                    <circle class="digit-circle-bg" cx="18" cy="18" r="15" fill="#1F1936" stroke="rgba(255,255,255,0.07)" stroke-width="2"></circle>
+                    <circle class="digit-circle-ring" id="digit-ring-${i}" cx="18" cy="18" r="15" fill="transparent" stroke="#3a4459" stroke-width="2.5" stroke-dasharray="94.2" stroke-dashoffset="94.2" stroke-linecap="round" style="transition: stroke 0.15s ease-out;"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="digit-val text-[11px] font-bold" id="digit-val-${i}" style="color: rgb(255, 255, 255);">${i}</span>
+                    <span class="digit-pct text-[7px] leading-none font-medium" id="digit-pct-${i}" style="color: rgb(156, 163, 175);">0.0%</span>
+                </div>
+            </div>
+            <div class="digit-arrow-indicator" id="digit-arrow-${i}"></div>
+            `;
+            container.appendChild(div);
+        }
+    }
+
+    // Re-initialize the tick loop to update these new digits correctly
+    setInterval(() => {
+        for(let i=0; i<=9; i++) {
+            const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100) : 0;
+            const pctStr = pct.toFixed(1) + '%';
+            const ringEl = document.getElementById(`digit-ring-${i}`);
+            const valEl = document.getElementById(`digit-val-${i}`);
+            const pctEl = document.getElementById(`digit-pct-${i}`);
+            const arrowEl = document.getElementById(`digit-arrow-${i}`);
+            
+            if(ringEl) {
+                const offset = 94.2 - (94.2 * (pct / 100));
+                ringEl.setAttribute('stroke-dashoffset', offset);
+            }
+            if(pctEl) pctEl.innerText = pctStr;
+            
+            if(i === lastDigit) {
+                if(valEl) valEl.style.color = isDarkTheme ? '#ffffff' : '#111827';
+                if(pctEl) pctEl.style.color = '#f59e0b';
+                if(ringEl) ringEl.setAttribute('stroke', '#f59e0b');
+                if(arrowEl) arrowEl.classList.add('show');
+            } else {
+                if(valEl) valEl.style.color = isDarkTheme ? '#ffffff' : '#111827';
+                if(pctEl) pctEl.style.color = isDarkTheme ? '#9ca3af' : '#6b7280';
+                if(ringEl) ringEl.setAttribute('stroke', isDarkTheme ? '#3a4459' : '#d1d5db');
+                if(arrowEl) arrowEl.classList.remove('show');
+            }
+        }
+    }, 1000);
+
+    // ========== 2. FIX CHART (High DPI + Time Axis + Price Box) ==========
+    window.drawChart = function(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || priceHistory.length < 2) return;
+        
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        
+        // High DPI Fix
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        const width = rect.width;
+        const height = rect.height;
+        const min = Math.min(...priceHistory) - 5;
+        const max = Math.max(...priceHistory) + 5;
+        const range = max - min || 1;
+        
+        ctx.clearRect(0, 0, width, height);
+        
+        const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+        const textColor = isDarkTheme ? '#9ca3af' : '#6b7280';
+        
+        // Horizontal Grid & Y-Axis Prices
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 0.5;
+        ctx.setLineDash([3, 3]);
+        for (let i = 1; i < 5; i++) {
+            const y = (height / 5) * i;
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+            const priceValue = max - ((range / 5) * i);
+            ctx.fillStyle = textColor; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText(priceValue.toFixed(2), width - 5, y + 4);
+        }
+        
+        // Vertical Grid (Time)
+        const timeSteps = 5;
+        for (let i = 1; i < timeSteps; i++) {
+            const x = (width / timeSteps) * i;
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        }
+        ctx.setLineDash([]);
+        
+        // Draw Price Line
+        ctx.beginPath();
+        ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937';
+        ctx.lineWidth = 1.5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        for(let i=0; i<priceHistory.length; i++) {
+            const x = (i / (priceHistory.length - 1)) * width;
+            const y = height - ((priceHistory[i] - min) / range) * height;
+            if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        
+        // Draw Time Axis at Bottom
+        ctx.fillStyle = textColor;
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        const now = new Date();
+        const totalSeconds = priceHistory.length;
+        for (let i = 0; i < 5; i++) {
+            const x = (width / 4) * i;
+            const secondsAgo = totalSeconds - 1 - (i * (totalSeconds / 4));
+            const time = new Date(now.getTime() - secondsAgo * 1000);
+            const timeStr = time.toTimeString().split(' ')[0].substring(0, 8);
+            ctx.fillText(timeStr, x, height - 8);
+        }
+        
+        // Draw Price Label Box at End of Line
+        const lastPrice = priceHistory[priceHistory.length - 1];
+        const lastX = width;
+        const lastY = height - ((lastPrice - min) / range) * height;
+        const boxWidth = 70; const boxHeight = 24;
+        const boxX = lastX - boxWidth - 2; const boxY = lastY - boxHeight / 2;
+        
+        ctx.fillStyle = '#1e2535'; ctx.strokeStyle = '#4bb4b3'; ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
+        else ctx.rect(boxX, boxY, boxWidth, boxHeight);
+        ctx.fill(); ctx.stroke();
+        
+        ctx.fillStyle = 'white'; ctx.textAlign = 'left'; ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(lastPrice.toFixed(2), boxX + 8, boxY + 16);
+        
+        ctx.beginPath(); ctx.arc(lastX - 2, lastY, 4, 0, Math.PI*2);
+        ctx.fillStyle = 'white'; ctx.fill();
+    };
+    
+    // Force redraw immediately
+    drawChart('priceChart');
+    drawChart('desktopChart');
+
+    // ========== 3. FIX VOLATILITY DROPDOWN VISIBILITY ==========
+    // Ensure the dropdown has high z-index and proper styling
+    const volDropdown = document.getElementById('volatility-dropdown');
+    if (volDropdown) {
+        volDropdown.style.zIndex = '9999';
+        volDropdown.style.maxHeight = '350px';
+        volDropdown.style.overflowY = 'auto';
+        volDropdown.style.background = '#1e1b4b';
+        volDropdown.style.borderRadius = '12px';
+        volDropdown.style.boxShadow = '0 10px 30px rgba(0,0,0,0.6)';
+    }
+});
+</script>
+</body>
+</html>
 </body>
 </html>
