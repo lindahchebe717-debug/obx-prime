@@ -3423,5 +3423,40 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<!-- ============================================ -->
+<!-- ===== FIX: SHRINK DIGITS SO 0-9 FIT ===== -->
+<!-- ============================================ -->
+<style>
+/* Make digit circles smaller so all 10 fit on screen */
+#digits-container {
+    justify-content: space-between !important;
+    padding: 0 2px !important;
+}
+#digits-container > div {
+    transform: scale(0.72) !important;
+    margin: 0 -3px !important;
+    flex-shrink: 0 !important;
+}
+#digits-container > div > div {
+    transform: scale(0.85) !important;
+}
+/* Make the SVG inside smaller */
+#digits-container svg {
+    width: 34px !important;
+    height: 34px !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Force all digit wrappers to be smaller
+    const wrappers = document.querySelectorAll('[id^="digit-wrapper-"]');
+    wrappers.forEach(w => {
+        w.style.transform = 'scale(0.72)';
+    });
+});
+</script>
+</body>
+</html>
 </body>
 </html>
