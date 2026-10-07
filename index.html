@@ -4831,5 +4831,32 @@ window.addEventListener('load', function() {
     };
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FIX: MAKE ALL 10 DIGITS (0-9) FIT ===== -->
+<!-- ============================================ -->
+<style>
+/* Force the container to hold 10 items perfectly */
+#digits-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 0 2px !important;
+    box-sizing: border-box !important;
+}
+
+/* Make each digit take up exactly 1/10th of the space */
+#digits-container > div {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* Shrink the actual circle SVG so they don't overflow */
+#digits-container > div > div {
+    transform: scale(0.68) !important;
+    transform-origin: center center !important;
+}
+</style>
 </body>
 </html>
