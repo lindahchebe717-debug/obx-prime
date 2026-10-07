@@ -3544,5 +3544,101 @@ window.addEventListener('load', function() {
     });
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== THE "BOSS SCRIPT" (FIXES EVERYTHING) ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. Force digit circles to be small enough so 0-9 all fit */
+#digits-container > div {
+    transform: scale(0.72) !important;
+    margin: 0 -3px !important;
+}
+
+/* 2. Stop the purple download banner from hijacking your clicks on Target Profit/Stop Loss */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] {
+    pointer-events: none !important;
+}
+/* But allow the Download button and Close (X) button to still work */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a,
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button {
+    pointer-events: auto !important;
+}
+</style>
+
+<script>
+// This script waits for the page to finish loading, then forces everything to be correct
+window.addEventListener('load', function() {
+
+    // ========== FIX 1: FORCE REAL BALANCE TO $0.00 ==========
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        balance = 0.00;
+        if (typeof realBalance !== 'undefined') realBalance = 0.00;
+        const hBal = document.getElementById('header-balance');
+        const dBal = document.getElementById('desktop-balance');
+        if (hBal) hBal.innerText = '0.00';
+        if (dBal) dBal.innerText = '0.00';
+    }
+
+    // ========== FIX 2: MAKE CHAT SEND BUTTON WORK ==========
+    const chatInput = document.getElementById('obx-v2-input');
+    const chatSendBtn = document.getElementById('obx-v2-send');
+    if (chatInput && chatSendBtn) {
+        // Force button to enable when typing
+        chatInput.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                chatSendBtn.disabled = false;
+                chatSendBtn.style.opacity = '1';
+                chatSendBtn.style.pointerEvents = 'auto';
+            } else {
+                chatSendBtn.disabled = true;
+                chatSendBtn.style.opacity = '0.4';
+                chatSendBtn.style.pointerEvents = 'none';
+            }
+        });
+        // Force the click to actually send
+        chatSendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!chatSendBtn.disabled && typeof sendV2Text === 'function') {
+                sendV2Text();
+            }
+        });
+    }
+
+    // ========== FIX 3: DOWNLOAD BANNER FIX ==========
+    const banners = document.querySelectorAll('div[style*="linear-gradient(135deg, rgb(91, 33, 182)"]');
+    banners.forEach(banner => {
+        banner.onclick = null; // Remove the hijacking click
+        const closeBtn = banner.querySelector('button');
+        if (closeBtn) {
+            closeBtn.onclick = function(e) {
+                e.stopPropagation();
+                banner.style.display = 'none'; // Make X button actually hide it
+            };
+        }
+        const link = banner.querySelector('a');
+        if (link) link.href = 'download.html';
+    });
+
+    // ========== FIX 4: REMOVE MPESA AND CARD DEPOSIT OPTIONS ==========
+    // Remove from Insufficient Balance Modal
+    const insuffCards = document.querySelectorAll('.insuff-card');
+    insuffCards.forEach(card => {
+        if (card.innerText.includes('M-Pesa') || card.innerText.includes('Card')) {
+            card.style.display = 'none';
+        }
+    });
+    // Remove from Main Deposit Modal
+    const depositModal = document.getElementById('deposit-modal');
+    if (depositModal) {
+        const rows = depositModal.querySelectorAll('div[onclick*="selectPayment"]');
+        rows.forEach(row => {
+            if (row.innerText.includes('M-Pesa') || row.innerText.includes('Card')) {
+                row.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
 </body>
 </html>
