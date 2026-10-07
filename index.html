@@ -4751,5 +4751,85 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FINAL DROPDOWN TEXT FIX ===== -->
+<!-- ============================================ -->
+<style>
+/* Force the dropdown text to always be visible and never hidden by old scripts */
+#account-dropdown button, #account-dropdown-desktop button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    text-align: left !important;
+}
+#account-dropdown button div span, #account-dropdown-desktop button div span,
+#account-dropdown button > span, #account-dropdown-desktop button > span {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: inherit !important;
+}
+</style>
+
+<script>
+// This runs AFTER all other scripts to ensure it has the final say
+window.addEventListener('load', function() {
+
+    // 1. The EXACT HTML you want for the dropdown (with Real, Demo, and Reset text)
+    const correctDropdownHTML = `
+    <button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+            <span class="text-sm font-medium text-white">Real Account</span>
+        </div>
+        <span id="real-badge" class="text-[#7C3AED] text-xs font-semibold">Active</span>
+    </button>
+    <button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+            <span class="text-sm font-medium text-white">Demo Account</span>
+        </div>
+        <span id="demo-badge" class="text-gray-500 text-xs font-semibold"></span>
+    </button>
+    <button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span class="text-sm font-medium">Reset Demo Balance</span>
+    </button>`;
+
+    // 2. Inject this HTML into the Mobile Dropdown
+    const mobDrop = document.getElementById('account-dropdown');
+    if (mobDrop) {
+        mobDrop.innerHTML = correctDropdownHTML;
+    }
+
+    // 3. Inject this HTML into the Desktop Dropdown (with slightly different IDs for badges)
+    const deskDrop = document.getElementById('account-dropdown-desktop');
+    if (deskDrop) {
+        let deskHTML = correctDropdownHTML.replace('id="real-badge"', 'id="real-badge-desktop"');
+        deskHTML = deskHTML.replace('id="demo-badge"', 'id="demo-badge-desktop"');
+        deskDrop.innerHTML = deskHTML;
+    }
+
+    // 4. Protect the text from being deleted when you click Real or Demo
+    const originalSwitch = window.switchAccount;
+    window.switchAccount = function(type) {
+        // Run the original color/balance logic
+        if (originalSwitch) originalSwitch(type);
+        
+        // Manually ensure the "Active" text is only placed in the badge, not deleting the main text
+        const rBadge = document.getElementById('real-badge') || document.getElementById('real-badge-desktop');
+        const dBadge = document.getElementById('demo-badge') || document.getElementById('demo-badge-desktop');
+        
+        if (type === 'real') {
+            if(rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; }
+            if(dBadge) { dBadge.innerText = ''; }
+        } else {
+            if(rBadge) { rBadge.innerText = ''; }
+            if(dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
+        }
+    };
+});
+</script>
 </body>
 </html>
