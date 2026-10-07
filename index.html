@@ -5191,5 +5191,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FIX: MAKE VOLATILITY DROPDOWN TINY & SCROLLABLE ===== -->
+<!-- ============================================ -->
+<style>
+/* Force the dropdown to be small and compact */
+#volatility-dropdown {
+    max-height: 280px !important; /* Limits height so it doesn't cover everything */
+    overflow-y: auto !important; /* Enables smooth scrolling */
+    background: #1e1b4b !important;
+    border-radius: 12px !important;
+    padding: 6px !important;
+    border: 1px solid rgba(124, 58, 237, 0.4) !important;
+}
+
+/* Make each item tiny like the screenshot */
+.volatility-item {
+    padding: 8px 12px !important; /* Reduced padding */
+    margin-bottom: 2px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* Fix text sizes to be small */
+.volatility-item-name {
+    font-size: 12px !important; /* Smaller font */
+    font-weight: 600 !important;
+    color: white !important;
+    margin-bottom: 0 !important;
+}
+
+.volatility-item-price {
+    font-size: 10px !important; /* Smaller price font */
+    color: #9ca3af !important;
+    margin-top: 2px !important;
+}
+
+/* Active state styling */
+.volatility-item.active {
+    background: rgba(124, 58, 237, 0.25) !important;
+    border: 1px solid rgba(124, 58, 237, 0.5) !important;
+}
+
+.volatility-item:hover {
+    background: rgba(124, 58, 237, 0.15) !important;
+}
+
+/* Custom scrollbar for the dropdown */
+#volatility-dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+#volatility-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+#volatility-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 4px;
+}
+</style>
 </body>
 </html>
