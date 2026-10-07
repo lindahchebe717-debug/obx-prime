@@ -4858,5 +4858,94 @@ window.addEventListener('load', function() {
     transform-origin: center center !important;
 }
 </style>
+<!-- ============================================ -->
+<!-- ===== FIX VOLATILITY DROPDOWN VISIBILITY ===== -->
+<!-- ============================================ -->
+<style>
+/* Make sure the dropdown appears ABOVE the chart and is scrollable */
+#volatility-dropdown {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    margin-top: 8px !important;
+    background: #1e1b4b !important;
+    border: 1px solid rgba(124, 58, 237, 0.3) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+    z-index: 9999 !important; /* Highest priority so it floats above chart */
+    min-width: 240px !important;
+    max-height: 350px !important; /* Allow scrolling if list is long */
+    overflow-y: auto !important; /* Enable vertical scrolling */
+    display: none !important;
+}
+
+/* Show the dropdown when active */
+#volatility-dropdown.show {
+    display: block !important;
+    animation: slideDown 0.2s ease-out;
+}
+
+/* Style each item in the list */
+.volatility-item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+.volatility-item:last-child {
+    border-bottom: none !important;
+}
+
+.volatility-item:hover {
+    background: rgba(124, 58, 237, 0.2) !important;
+}
+
+.volatility-item.active {
+    background: rgba(124, 58, 237, 0.3) !important;
+    border-left: 3px solid #A78BFA !important;
+}
+
+.volatility-item-name {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: white !important;
+}
+
+.volatility-item-price {
+    font-size: 11px !important;
+    color: #9ca3af !important;
+}
+
+/* Custom scrollbar for the dropdown */
+#volatility-dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+#volatility-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+#volatility-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.5);
+    border-radius: 2px;
+}
+</style>
+
+<script>
+// Ensure dropdown closes when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('volatility-dropdown');
+    const button = event.target.closest('button');
+    
+    // If click is NOT on the volatility button AND NOT inside the dropdown
+    if (dropdown && (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown'))) {
+        if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    }
+});
+</script>
 </body>
 </html>
