@@ -4623,5 +4623,62 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== CRYPTO DEPOSIT REPLACER ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // The new Crypto-only options HTML
+    const cryptoOptionsHTML = `
+        <!-- USDT TRC20 -->
+        <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt-trc20')">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center"><span class="text-[#10B981] font-black text-xl">T</span></div>
+                <div><div class="text-white font-bold text-base">USDT (TRC20)</div><div class="text-gray-400 text-sm">Tron Network · Fast & Low Fee</div></div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+        </div>
+        <!-- USDT ERC20 -->
+        <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt-erc20')">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center"><span class="text-[#627EEA] font-black text-xl">E</span></div>
+                <div><div class="text-white font-bold text-base">USDT (ERC20)</div><div class="text-gray-400 text-sm">Ethereum Network · Secure</div></div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+        </div>
+        <!-- BTC -->
+        <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('btc')">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-[#F7931A]/20 flex items-center justify-center"><span class="text-[#F7931A] font-black text-xl">₿</span></div>
+                <div><div class="text-white font-bold text-base">BTC (Bitcoin)</div><div class="text-gray-400 text-sm">Bitcoin Network · Global</div></div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+        </div>
+        <!-- ETH -->
+        <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('eth')">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center"><span class="text-[#627EEA] font-black text-xl">Ξ</span></div>
+                <div><div class="text-white font-bold text-base">ETH (Ethereum)</div><div class="text-gray-400 text-sm">Ethereum Network · Smart Contracts</div></div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+        </div>
+    `;
+
+    // 1. Update the Main Deposit Modal
+    const depositModal = document.getElementById('deposit-modal');
+    if (depositModal) {
+        const container = depositModal.querySelector('.p-4.space-y-3');
+        if (container) container.innerHTML = cryptoOptionsHTML;
+    }
+
+    // 2. Update the Insufficient Balance Modal (so it also only shows crypto)
+    const insuffModal = document.getElementById('insufficient-modal');
+    if (insuffModal) {
+        const container = insuffModal.querySelector('.p-5.space-y-3');
+        if (container) container.innerHTML = cryptoOptionsHTML;
+    }
+});
+</script>
 </body>
 </html>
