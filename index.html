@@ -951,47 +951,55 @@ Load Deep Scanner Bot
 </div>
 <!-- Modal Content -->
 <div class="p-4 space-y-3">
-<!-- M-Pesa -->
-<div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('mpesa')">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+    <!-- USDT TRC20 -->
+    <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt-trc20')">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center"><span class="text-[#10B981] font-black text-xl">T</span></div>
+            <div>
+                <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                <div class="text-gray-400 text-sm">Tron Network · Fast & Low Fee</div>
+            </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+    </div>
+
+    <!-- USDT ERC20 -->
+    <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt-erc20')">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center"><span class="text-[#627EEA] font-black text-xl">E</span></div>
+            <div>
+                <div class="text-white font-bold text-base">USDT (ERC20)</div>
+                <div class="text-gray-400 text-sm">Ethereum Network · Secure</div>
+            </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+    </div>
+
+    <!-- BTC -->
+    <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('btc')">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[#F7931A]/20 flex items-center justify-center"><span class="text-[#F7931A] font-black text-xl">₿</span></div>
+            <div>
+                <div class="text-white font-bold text-base">BTC (Bitcoin)</div>
+                <div class="text-gray-400 text-sm">Bitcoin Network · Global</div>
+            </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+    </div>
+
+    <!-- ETH -->
+    <div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('eth')">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center"><span class="text-[#627EEA] font-black text-xl">Ξ</span></div>
+            <div>
+                <div class="text-white font-bold text-base">ETH (Ethereum)</div>
+                <div class="text-gray-400 text-sm">Ethereum Network · Smart Contracts</div>
+            </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
+    </div>
 </div>
-<div>
-<div class="text-white font-bold text-base">M-Pesa</div>
-<div class="text-gray-400 text-sm">Instant mobile money</div>
-</div>
-</div>
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
-</div>
-<!-- USDT TRC20 -->
-<div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('usdt')">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
-</div>
-<div>
-<div class="text-white font-bold text-base">USDT (TRC20)</div>
-<div class="text-gray-400 text-sm">Cryptocurrency · auto-credited</div>
-</div>
-</div>
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
-</div>
-<!-- Card -->
-<div class="flex items-center justify-between p-4 rounded-xl bg-[#130f1c]/50 border border-white/5 hover:border-[#7C3AED]/30 transition-colors cursor-pointer" onclick="selectPayment('card')">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
-</div>
-<div>
-<div class="text-white font-bold text-base">Card</div>
-<div class="text-gray-400 text-sm">Visa, Mastercard</div>
-</div>
-</div>
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
-</div>
-</div>
-<!-- Footer -->
+    <!-- Footer -->
 <div class="px-6 py-4 border-t border-white/10 bg-[#130f1c]/30">
 <div class="flex items-center justify-center gap-4 text-xs text-gray-400">
 <div class="flex items-center gap-1.5">
