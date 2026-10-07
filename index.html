@@ -2908,5 +2908,55 @@ window.addEventListener('load', function() {
     if (localStorage.getItem('open_chat_on_load') === 'true') { localStorage.removeItem('open_chat_on_load'); setTimeout(function() { if (typeof openV2Chat === 'function') openV2Chat(); }, 800); }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FINAL CLEAN FIX FOR ACCOUNT SETTINGS ===== -->
+<!-- ============================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Remove duplicate Refer Modal to stop JS errors
+    const referModals = document.querySelectorAll('#refer-modal');
+    if (referModals.length > 1) {
+        for (let i = 1; i < referModals.length; i++) {
+            referModals[i].remove();
+        }
+    }
+
+    // 2. Fix Account Settings toggle (makes it expand properly)
+    const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
+    accountBtns.forEach(btn => {
+        btn.onclick = function() {
+            const submenu = document.getElementById('account-settings-submenu');
+            const arrow = document.getElementById('account-settings-arrow');
+            if (submenu && arrow) {
+                if (submenu.classList.contains('hidden')) {
+                    submenu.classList.remove('hidden');
+                    arrow.style.transform = 'rotate(180deg)';
+                } else {
+                    submenu.classList.add('hidden');
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        };
+    });
+
+    // 3. Make 2FA and other submenu items open the page
+    const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
+    submenuItems.forEach(item => {
+        item.onclick = function() {
+            window.location.href = 'account-settings.html';
+        };
+        item.style.cursor = 'pointer';
+    });
+
+    // 4. Safely handle chat auto-open
+    if (localStorage.getItem('open_chat_on_load') === 'true') {
+        localStorage.removeItem('open_chat_on_load');
+        setTimeout(function() {
+            if (typeof openV2Chat === 'function') openV2Chat();
+            else if (typeof openLiveChat === 'function') openLiveChat();
+        }, 800);
+    }
+});
+</script>
 </body>
 </html>
