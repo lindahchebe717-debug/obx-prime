@@ -3490,5 +3490,61 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+<!-- ============================================ -->
+<!-- ===== FINAL LOAD FIX: BALANCE & BANNER ===== -->
+<!-- ============================================ -->
+<style>
+/* Stop the download banner from blocking clicks on the page */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] {
+    pointer-events: none !important;
+}
+/* But allow the Download button and Close (X) button to still be clicked */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a,
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button {
+    pointer-events: auto !important;
+}
+</style>
+
+<script>
+window.addEventListener('load', function() {
+    
+    // 1. FORCE REAL BALANCE TO $0.00 ON PAGE LOAD
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        balance = 0.00;
+        if (typeof realBalance !== 'undefined') realBalance = 0.00;
+        
+        const hBal = document.getElementById('header-balance');
+        const dBal = document.getElementById('desktop-balance');
+        
+        if (hBal) hBal.innerText = '0.00';
+        if (dBal) dBal.innerText = '0.00';
+    }
+
+    // 2. FIX DOWNLOAD BANNER HIJACKING CLICKS
+    const banners = document.querySelectorAll('div[style*="linear-gradient(135deg, rgb(91, 33, 182)"]');
+    banners.forEach(banner => {
+        // Remove all old click events from the banner
+        banner.onclick = null; 
+        
+        // Make sure the Download link goes to the right page
+        const link = banner.querySelector('a');
+        if (link) {
+            link.href = 'download.html';
+            link.onclick = function(e) { e.stopPropagation(); };
+        }
+        
+        // Make sure the Close (X) button actually hides the banner
+        const closeBtn = banner.querySelector('button');
+        if (closeBtn) {
+            closeBtn.onclick = function(e) {
+                e.stopPropagation(); // Stop it from opening the download page
+                banner.style.display = 'none'; // Hide the banner
+            };
+        }
+    });
+});
+</script>
+</body>
+</html>
 </body>
 </html>
