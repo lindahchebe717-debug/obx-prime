@@ -2050,5 +2050,125 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== FINAL POLISH SCRIPT (SAFE OVERRIDE) ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. FORCE HIDE CHAT ICON SO POSITIONS IS CLEAR */
+#obx-v2-fab { display: none !important; }
+nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
+
+/* 2. SHRINK DIGITS SO ALL 10 FIT ON SCREEN */
+#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
+#digits-container svg { width: 36px !important; height: 36px !important; }
+
+/* 3. STOP DOWNLOAD BANNER FROM HIJACKING CLICKS */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a, 
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ========== FIX 1: ACCOUNT SETTINGS NAVIGATION ==========
+    // Make main "Account settings" button go to page
+    const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
+    accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
+    
+    // Make submenu items (Change Name, 2FA, etc.) go to page
+    const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
+    submenuItems.forEach(item => { 
+        item.onclick = function() { window.location.href = 'account-settings.html'; }; 
+        item.style.cursor = 'pointer'; 
+    });
+
+    // ========== FIX 2: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        balance = 0.00;
+        if (typeof realBalance !== 'undefined') realBalance = 0.00;
+        const hBal = document.getElementById('header-balance');
+        const dBal = document.getElementById('desktop-balance');
+        if (hBal) hBal.innerText = '0.00';
+        if (dBal) dBal.innerText = '0.00';
+    }
+
+    // ========== FIX 3: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
+    if (typeof updateChartForVolatility === 'function') {
+        const originalUpdate = updateChartForVolatility;
+        updateChartForVolatility = function(name) {
+            const basePrices = {
+                'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 
+                'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 
+                'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23,
+                'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 
+                'Volatility 75 (1s) Index': 4123.45
+            };
+            price = basePrices[name] || 9501.21;
+            priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        };
+    }
+
+    // ========== FIX 4: CHAT SEND BUTTON RELIABILITY ==========
+    const v2Input = document.getElementById('obx-v2-input');
+    const v2Send = document.getElementById('obx-v2-send');
+    if (v2Input && v2Send) {
+        v2Input.addEventListener('input', function() {
+            v2Send.disabled = !this.value.trim();
+            v2Send.style.opacity = this.value.trim() ? '1' : '0.4';
+        });
+        v2Send.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text();
+        });
+    }
+
+    // ========== FIX 5: ADD RESET DEMO BALANCE IF MISSING ==========
+    const mobDrop = document.getElementById('account-dropdown');
+    const deskDrop = document.getElementById('account-dropdown-desktop');
+    const resetHTML = `<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><span class="text-sm font-medium">Reset Demo Balance</span></button>`;
+    
+    if (mobDrop && !mobDrop.innerHTML.includes('Reset Demo Balance')) mobDrop.insertAdjacentHTML('beforeend', resetHTML);
+    if (deskDrop && !deskDrop.innerHTML.includes('Reset Demo Balance')) deskDrop.insertAdjacentHTML('beforeend', resetHTML);
+
+    window.resetDemoBalance = function() {
+        if (currentAccount === 'demo') {
+            balance = 10000.00;
+            document.getElementById('header-balance').innerText = '10000.00';
+            document.getElementById('desktop-balance').innerText = '10000.00';
+            alert('✅ Demo balance reset to $10,000.00');
+        } else { alert('You can only reset the Demo balance.'); }
+    };
+
+    // ========== FIX 6: DROPDOWN COLORS & TEXT ==========
+    window.switchAccount = function(type) {
+        currentAccount = type;
+        balance = type === 'demo' ? 10000.00 : 0.00;
+        const isDemo = type === 'demo';
+        const mainColor = isDemo ? '#ef4444' : '#7C3AED';
+        
+        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
+        const hIcon = document.getElementById('account-type-icon'); const dIcon = document.getElementById('desktop-account-type-icon');
+        if (hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
+        if (dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
+        if (hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
+        if (dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
+
+        const rBadge = document.getElementById('real-badge'); const dBadge = document.getElementById('demo-badge');
+        const rBadgeD = document.getElementById('real-badge-desktop'); const dBadgeD = document.getElementById('demo-badge-desktop');
+        if (isDemo) {
+            if (rBadge) rBadge.innerText = ''; if (dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
+            if (rBadgeD) rBadgeD.innerText = ''; if (dBadgeD) { dBadgeD.innerText = 'Active'; dBadgeD.style.color = '#ef4444'; }
+        } else {
+            if (rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; } if (dBadge) dBadge.innerText = '';
+            if (rBadgeD) { rBadgeD.innerText = 'Active'; rBadgeD.style.color = '#7C3AED'; } if (dBadgeD) dBadgeD.innerText = '';
+        }
+        if (mobDrop) mobDrop.classList.add('hidden'); if (deskDrop) deskDrop.classList.add('hidden');
+    };
+
+    // Initialize correct state on load
+    switchAccount('real');
+});
+</script>
 </body>
 </html>
