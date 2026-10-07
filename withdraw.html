@@ -80,12 +80,12 @@
     <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
         <div class="mb-6 text-center">
             <h1 class="text-2xl font-bold text-white mb-2">Withdraw Funds</h1>
-            <p class="text-gray-400 text-sm">Withdraw your earnings securely to your preferred account.</p>
+            <p class="text-gray-400 text-sm">Withdraw your earnings securely to your preferred crypto wallet.</p>
             
             <!-- Available Balance Card -->
             <div class="mt-6 p-5 rounded-2xl bg-[#1e1b4b] border border-[#7C3AED]/30 inline-block w-full max-w-sm">
                 <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Available Balance</p>
-                <p class="text-3xl font-extrabold text-white">$1,000.00</p>
+                <p class="text-3xl font-extrabold text-white" id="withdraw-balance-display">$0.00</p>
             </div>
         </div>
 
@@ -95,38 +95,66 @@
                 <label class="block text-sm font-semibold text-white mb-2">Withdrawal Amount</label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">$</span>
-                    <input type="number" id="withdraw-amount" placeholder="0.00" class="w-full bg-[#130f1c] border border-white/10 rounded-xl pl-10 pr-4 py-3.5 text-white text-lg font-semibold focus:outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition-all">
+                    <input type="number" id="withdraw-amount" placeholder="0.00" step="0.01" class="w-full bg-[#130f1c] border border-white/10 rounded-xl pl-10 pr-4 py-3.5 text-white text-lg font-semibold focus:outline-none focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] transition-all">
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Minimum withdrawal amount is $10.00</p>
+                <p class="text-xs text-gray-500 mt-2">Minimum withdrawal amount is $1.00</p>
             </div>
 
             <!-- Payment Method Selection -->
             <div>
                 <label class="block text-sm font-semibold text-white mb-2">Select Withdrawal Method</label>
                 <div class="space-y-3">
-                    <!-- M-Pesa -->
-                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'mpesa')">
+                    <!-- USDT TRC20 -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'usdt-trc20')">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                            <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
+                                <span class="text-[#10B981] font-black text-xl">T</span>
                             </div>
                             <div>
-                                <div class="text-white font-bold text-base">M-Pesa</div>
-                                <div class="text-gray-400 text-sm">Withdraw to mobile money</div>
+                                <div class="text-white font-bold text-base">USDT (TRC20)</div>
+                                <div class="text-gray-400 text-sm">Tron Network · Low Fees</div>
                             </div>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
                     </div>
 
-                    <!-- USDT TRC20 -->
-                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'usdt')">
+                    <!-- USDT ERC20 -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'usdt-erc20')">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
+                            <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center shrink-0">
+                                <span class="text-[#627EEA] font-black text-xl">E</span>
                             </div>
                             <div>
-                                <div class="text-white font-bold text-base">USDT (TRC20)</div>
-                                <div class="text-gray-400 text-sm">Withdraw to crypto wallet</div>
+                                <div class="text-white font-bold text-base">USDT (ERC20)</div>
+                                <div class="text-gray-400 text-sm">Ethereum Network · Secure</div>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+
+                    <!-- ETH -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'eth')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center shrink-0">
+                                <span class="text-[#627EEA] font-black text-xl">Ξ</span>
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-base">ETH (Ethereum)</div>
+                                <div class="text-gray-400 text-sm">Ethereum Network · Smart Contracts</div>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+
+                    <!-- BTC -->
+                    <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectWithdrawMethod(this, 'btc')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-[#F7931A]/20 flex items-center justify-center shrink-0">
+                                <span class="text-[#F7931A] font-black text-xl"></span>
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-base">BTC (Bitcoin)</div>
+                                <div class="text-gray-400 text-sm">Bitcoin Network · Global</div>
                             </div>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="m9 18 6-6-6-6"></path></svg>
@@ -147,6 +175,15 @@
     </footer>
 
     <script>
+        let selectedMethod = null;
+
+        // Load Real Balance from LocalStorage
+        function loadBalance() {
+            const storedBalance = localStorage.getItem('obx_real_balance');
+            const displayBalance = storedBalance ? parseFloat(storedBalance).toFixed(2) : '0.00';
+            document.getElementById('withdraw-balance-display').innerText = '$' + displayBalance;
+        }
+
         // Theme Toggle
         let isDarkTheme = true;
         function toggleDarkTheme() {
@@ -182,22 +219,33 @@
             });
             element.style.borderColor = 'rgba(124, 58, 237, 0.8)';
             element.style.backgroundColor = 'rgba(124, 58, 237, 0.1)';
+            selectedMethod = method;
         }
 
         // Mock Withdrawal Process
         function processWithdrawal() {
-            const amount = document.getElementById('withdraw-amount').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            const currentBal = parseFloat(document.getElementById('withdraw-balance-display').innerText.replace('$', ''));
+            
+            if (!selectedMethod) {
+                alert('Please select a withdrawal method.');
+                return;
+            }
             if (!amount || amount <= 0) {
                 alert('Please enter a valid withdrawal amount.');
                 return;
             }
-            if (amount < 10) {
-                alert('Minimum withdrawal amount is $10.00.');
+            if (amount < 1) {
+                alert('Minimum withdrawal amount is $1.00.');
+                return;
+            }
+            if (amount > currentBal) {
+                alert('Insufficient balance for this withdrawal.');
                 return;
             }
             
             // In a real app, this would send a request to your backend
-            alert(`Withdrawal request for $${amount} submitted successfully!\n\nIt will be processed shortly and you will receive a confirmation.`);
+            alert(`Withdrawal request for $${amount.toFixed(2)} via ${selectedMethod.toUpperCase()} submitted successfully!\n\nIt will be processed shortly.`);
             document.getElementById('withdraw-amount').value = '';
             
             // Reset selection
@@ -205,7 +253,11 @@
                 card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                 card.style.backgroundColor = '';
             });
+            selectedMethod = null;
         }
+
+        // Initialize on load
+        window.addEventListener('load', loadBalance);
     </script>
 </body>
 </html>
