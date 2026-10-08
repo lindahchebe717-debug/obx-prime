@@ -2210,5 +2210,61 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+<style>
+/* Notification Dropdown Animation */
+@keyframes slideDownNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: slideDownNotif 0.2s ease-out; }
+
+/* Notification Item Styles */
+.notif-item { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; cursor: pointer; }
+.notif-item:hover { background: rgba(124, 58, 237, 0.1); }
+.notif-item.unread { background: rgba(124, 58, 237, 0.05); }
+.notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { color: white; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.notif-desc { color: #9ca3af; font-size: 11px; line-height: 1.4; }
+.notif-time { color: #6b7280; font-size: 10px; margin-top: 4px; }
+.notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #7C3AED; flex-shrink: 0; align-self: center; }
+</style>
+
+<script>
+// ===== NOTIFICATIONS SYSTEM =====
+function toggleNotifications(e) {
+    e.stopPropagation();
+    document.getElementById('notifications-dropdown').classList.toggle('hidden');
+}
+
+function markAsRead(item) {
+    const dot = item.querySelector('.notif-unread-dot');
+    if(dot) dot.style.display = 'none';
+    item.classList.remove('unread');
+    updateBadge();
+}
+
+function markAllAsRead() {
+    document.querySelectorAll('.notif-unread-dot').forEach(d => d.style.display = 'none');
+    document.querySelectorAll('.notif-item').forEach(i => i.classList.remove('unread'));
+    updateBadge();
+}
+
+function updateBadge() {
+    const unread = document.querySelectorAll('.notif-unread-dot:not([style*="display: none"])').length;
+    const badge = document.getElementById('notif-badge');
+    if(unread > 0) { 
+        badge.innerText = unread > 9 ? '9+' : unread; 
+        badge.style.display = 'flex'; 
+    } else { 
+        badge.style.display = 'none'; 
+    }
+}
+
+// Close notifications when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('notifications-dropdown');
+    if(dropdown && !dropdown.contains(e.target) && !e.target.closest('button[onclick*="toggleNotifications"]')) {
+        dropdown.classList.add('hidden');
+    }
+});
+</script>
 </body>
 </html>
