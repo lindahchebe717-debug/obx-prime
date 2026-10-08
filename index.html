@@ -2051,18 +2051,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <!-- ============================================ -->
-<!-- ===== FINAL POLISH SCRIPT (SAFE OVERRIDE) ===== -->
+<!-- ============================================ -->
+<!-- ===== CLEAN BOTTOM NAV & POSITIONS FIX ===== -->
 <!-- ============================================ -->
 <style>
-/* 1. FORCE HIDE CHAT ICON SO POSITIONS IS CLEAR */
+/* Hide old chat FAB so it doesn't cover Positions */
 #obx-v2-fab { display: none !important; }
 nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
 
-/* 2. SHRINK DIGITS SO ALL 10 FIT ON SCREEN */
+/* Force Digits 0-9 to fit perfectly */
 #digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
 #digits-container svg { width: 36px !important; height: 36px !important; }
 
-/* 3. STOP DOWNLOAD BANNER FROM HIJACKING CLICKS */
+/* Stop Download Banner from hijacking clicks */
 div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
 div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a, 
 div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
@@ -2071,89 +2072,82 @@ div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ========== FIX 1: ACCOUNT SETTINGS NAVIGATION ==========
-    // Make main "Account settings" button go to page
+    // ========== FIX 1: MAKE POSITIONS TAB CLICKABLE & REMOVE DUPLICATE ==========
+    // Find ALL elements that say "Positions" in the bottom nav
+    const allPositionsBtns = Array.from(document.querySelectorAll('nav button, nav a')).filter(el => 
+        el.textContent.trim().includes('Positions')
+    );
+    
+    // Remove duplicates (keep only the first one)
+    if (allPositionsBtns.length > 1) {
+        for (let i = 1; i < allPositionsBtns.length; i++) {
+            allPositionsBtns[i].remove();
+        }
+    }
+    
+    // Make the remaining Positions button/link go to positions.html
+    const positionsBtn = allPositionsBtns[0];
+    if (positionsBtn) {
+        // If it's a <button>, replace it with an <a> tag
+        if (positionsBtn.tagName === 'BUTTON') {
+            const link = document.createElement('a');
+            link.href = 'positions.html';
+            link.className = positionsBtn.className;
+            link.innerHTML = positionsBtn.innerHTML;
+            positionsBtn.parentNode.replaceChild(link, positionsBtn);
+        } else {
+            // If it's already an <a>, just update the href
+            positionsBtn.href = 'positions.html';
+        }
+    }
+
+    // ========== FIX 2: ACCOUNT SETTINGS NAVIGATION ==========
     const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
     accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
-    
-    // Make submenu items (Change Name, 2FA, etc.) go to page
     const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
-    submenuItems.forEach(item => { 
-        item.onclick = function() { window.location.href = 'account-settings.html'; }; 
-        item.style.cursor = 'pointer'; 
-    });
+    submenuItems.forEach(item => { item.onclick = function() { window.location.href = 'account-settings.html'; }; item.style.cursor = 'pointer'; });
 
-    // ========== FIX 2: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
+    // ========== FIX 3: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
     if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
         balance = 0.00;
         if (typeof realBalance !== 'undefined') realBalance = 0.00;
-        const hBal = document.getElementById('header-balance');
-        const dBal = document.getElementById('desktop-balance');
-        if (hBal) hBal.innerText = '0.00';
-        if (dBal) dBal.innerText = '0.00';
-    }
-
-    // ========== FIX 3: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
-    if (typeof updateChartForVolatility === 'function') {
-        const originalUpdate = updateChartForVolatility;
-        updateChartForVolatility = function(name) {
-            const basePrices = {
-                'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 
-                'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 
-                'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23,
-                'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 
-                'Volatility 75 (1s) Index': 4123.45
-            };
-            price = basePrices[name] || 9501.21;
-            priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
-        };
+        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
+        if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
     }
 
     // ========== FIX 4: CHAT SEND BUTTON RELIABILITY ==========
-    const v2Input = document.getElementById('obx-v2-input');
-    const v2Send = document.getElementById('obx-v2-send');
+    const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
     if (v2Input && v2Send) {
-        v2Input.addEventListener('input', function() {
-            v2Send.disabled = !this.value.trim();
-            v2Send.style.opacity = this.value.trim() ? '1' : '0.4';
-        });
-        v2Send.addEventListener('click', function(e) {
-            e.preventDefault(); e.stopPropagation();
-            if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text();
-        });
+        v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
+        v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
     }
 
-    // ========== FIX 5: ADD RESET DEMO BALANCE IF MISSING ==========
-    const mobDrop = document.getElementById('account-dropdown');
-    const deskDrop = document.getElementById('account-dropdown-desktop');
+    // ========== FIX 5: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
+    if (typeof updateChartForVolatility === 'function') {
+        const originalUpdate = updateChartForVolatility;
+        updateChartForVolatility = function(name) {
+            const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
+            price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        };
+    }
+
+    // ========== FIX 6: ADD RESET DEMO BALANCE IF MISSING ==========
+    const mobDrop = document.getElementById('account-dropdown'); const deskDrop = document.getElementById('account-dropdown-desktop');
     const resetHTML = `<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><span class="text-sm font-medium">Reset Demo Balance</span></button>`;
-    
     if (mobDrop && !mobDrop.innerHTML.includes('Reset Demo Balance')) mobDrop.insertAdjacentHTML('beforeend', resetHTML);
     if (deskDrop && !deskDrop.innerHTML.includes('Reset Demo Balance')) deskDrop.insertAdjacentHTML('beforeend', resetHTML);
+    window.resetDemoBalance = function() { if (currentAccount === 'demo') { balance = 10000.00; document.getElementById('header-balance').innerText = '10000.00'; document.getElementById('desktop-balance').innerText = '10000.00'; alert('✅ Demo balance reset to $10,000.00'); } else { alert('You can only reset the Demo balance.'); } };
 
-    window.resetDemoBalance = function() {
-        if (currentAccount === 'demo') {
-            balance = 10000.00;
-            document.getElementById('header-balance').innerText = '10000.00';
-            document.getElementById('desktop-balance').innerText = '10000.00';
-            alert('✅ Demo balance reset to $10,000.00');
-        } else { alert('You can only reset the Demo balance.'); }
-    };
-
-    // ========== FIX 6: DROPDOWN COLORS & TEXT ==========
+    // ========== FIX 7: DROPDOWN COLORS & TEXT ==========
     window.switchAccount = function(type) {
-        currentAccount = type;
-        balance = type === 'demo' ? 10000.00 : 0.00;
-        const isDemo = type === 'demo';
-        const mainColor = isDemo ? '#ef4444' : '#7C3AED';
-        
+        currentAccount = type; balance = type === 'demo' ? 10000.00 : 0.00;
+        const isDemo = type === 'demo'; const mainColor = isDemo ? '#ef4444' : '#7C3AED';
         const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
         const hIcon = document.getElementById('account-type-icon'); const dIcon = document.getElementById('desktop-account-type-icon');
         if (hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
         if (dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
         if (hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
         if (dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
-
         const rBadge = document.getElementById('real-badge'); const dBadge = document.getElementById('demo-badge');
         const rBadgeD = document.getElementById('real-badge-desktop'); const dBadgeD = document.getElementById('demo-badge-desktop');
         if (isDemo) {
@@ -2165,137 +2159,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (mobDrop) mobDrop.classList.add('hidden'); if (deskDrop) deskDrop.classList.add('hidden');
     };
-
-    // Initialize correct state on load
-    switchAccount('real');
-});
-</script>
-<!-- ============================================ -->
-<!-- ===== FINAL ALL-IN-ONE FIX (PASTE AT BOTTOM) ===== -->
-<!-- ============================================ -->
-<style>
-/* 1. HIDE CHAT ICON SO POSITIONS IS CLEAR */
-#obx-v2-fab { display: none !important; }
-nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
-
-/* 2. FORCE DIGITS 0-9 TO FIT PERFECTLY */
-#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
-#digits-container svg { width: 36px !important; height: 36px !important; }
-
-/* 3. STOP DOWNLOAD BANNER FROM HIJACKING CLICKS */
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a, 
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
-
-/* 4. NOTIFICATION DROPDOWN STYLES */
-.notif-dropdown { 
-    position: absolute; right: 0; top: 100%; margin-top: 8px; 
-    background: #1e1b4b; border: 1px solid rgba(124, 58, 237, 0.3); 
-    border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
-    z-index: 10000; min-width: 280px; overflow: hidden; 
-    animation: slideDownNotif 0.2s ease-out;
-}
-@keyframes slideDownNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.notif-header { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-.notif-item { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.2s; cursor: pointer; }
-.notif-item:hover { background: rgba(124, 58, 237, 0.1); }
-.notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.notif-title { color: white; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.notif-desc { color: #9ca3af; font-size: 11px; line-height: 1.4; }
-.notif-time { color: #6b7280; font-size: 10px; margin-top: 4px; }
-.notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #7C3AED; flex-shrink: 0; align-self: center; }
-.notif-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; background: #ef4444; color: white; border-radius: 9px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #1F1936; }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-
-    // ========== 1. ADD NOTIFICATION BELL & DROPDOWN ==========
-    const headerRight = document.querySelector('.flex.items-center.gap-1\\.5') || Array.from(document.querySelectorAll('div')).find(el => el.innerHTML.includes('sound-toggle'));
-    if (headerRight && !document.getElementById('notif-bell-wrapper')) {
-        const notifHTML = `
-        <div id="notif-bell-wrapper" class="relative ml-1">
-            <button onclick="toggleNotifications(event)" class="relative p-1 rounded hover:bg-white/5 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
-                <span id="notif-badge" class="notif-badge">2</span>
-            </button>
-            <div id="notifications-dropdown" class="hidden notif-dropdown">
-                <div class="notif-header"><h3 class="text-white font-bold text-sm">Notifications</h3><span class="text-[10px] text-gray-400">2 recent</span></div>
-                <div id="notifications-list" class="max-h-80 overflow-y-auto no-scrollbar">
-                    <div class="notif-item" onclick="markAsRead(this)">
-                        <div class="notif-icon" style="background:rgba(124,58,237,0.2)">👋</div>
-                        <div class="notif-content"><div class="notif-title">Welcome to OBX PRIME!</div><div class="notif-desc">Start trading with demo or real money</div></div>
-                        <div class="notif-unread-dot"></div>
-                    </div>
-                    <div class="notif-item" onclick="markAsRead(this)">
-                        <div class="notif-icon" style="background:rgba(59,130,246,0.2)">🤖</div>
-                        <div class="notif-content"><div class="notif-title">Auto-Trading Available!</div><div class="notif-desc">Let the bot trade for you automatically</div></div>
-                        <div class="notif-unread-dot"></div>
-                    </div>
-                    <div class="notif-item" onclick="markAsRead(this)">
-                        <div class="notif-icon" style="background:rgba(245,158,11,0.2)">💰</div>
-                        <div class="notif-content"><div class="notif-title">Deposit Received</div><div class="notif-desc">+$10.00</div><div class="notif-time">2d ago</div></div>
-                    </div>
-                </div>
-                <div class="p-3 border-t border-white/10 bg-[#1a1630]"><button onclick="markAllAsRead()" class="w-full py-2 text-xs font-medium text-[#A78BFA] hover:text-white transition-colors">Mark all as read</button></div>
-            </div>
-        </div>`;
-        headerRight.insertAdjacentHTML('afterend', notifHTML);
-    }
-
-    // Notification Logic
-    window.toggleNotifications = function(e) {
-        e.stopPropagation();
-        document.getElementById('notifications-dropdown').classList.toggle('hidden');
-    };
-    window.markAsRead = function(item) {
-        const dot = item.querySelector('.notif-unread-dot');
-        if(dot) dot.style.display = 'none';
-        updateBadge();
-    };
-    window.markAllAsRead = function() {
-        document.querySelectorAll('.notif-unread-dot').forEach(d => d.style.display = 'none');
-        updateBadge();
-    };
-    function updateBadge() {
-        const unread = document.querySelectorAll('.notif-unread-dot:not([style*="display: none"])').length;
-        const badge = document.getElementById('notif-badge');
-        if(unread > 0) { badge.innerText = unread; badge.style.display = 'flex'; } else { badge.style.display = 'none'; }
-    }
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('notifications-dropdown');
-        if(dropdown && !dropdown.contains(e.target) && !e.target.closest('#notif-bell-wrapper')) dropdown.classList.add('hidden');
-    });
-
-    // ========== 2. FIX ACCOUNT SETTINGS NAVIGATION ==========
-    const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
-    accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
-    const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
-    submenuItems.forEach(item => { item.onclick = function() { window.location.href = 'account-settings.html'; }; item.style.cursor = 'pointer'; });
-
-    // ========== 3. FORCE REAL BALANCE TO $0.00 ON LOAD ==========
-    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
-        balance = 0.00;
-        if (typeof realBalance !== 'undefined') realBalance = 0.00;
-        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
-        if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
-    }
-
-    // ========== 4. FIX CHAT SEND BUTTON ==========
-    const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
-    if (v2Input && v2Send) {
-        v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
-        v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
-    }
-
-    // ========== 5. ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
-    if (typeof updateChartForVolatility === 'function') {
-        const originalUpdate = updateChartForVolatility;
-        updateChartForVolatility = function(name) {
-            const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
-            price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
-        };
-    }
 });
 </script>
 </body>
