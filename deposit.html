@@ -29,7 +29,7 @@
 
         /* Address Modal Styles */
         .address-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10002;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10002;
             display: none; align-items: center; justify-content: center; padding: 16px; overflow-y: auto;
         }
         .address-modal.show { display: flex; animation: fadeIn 0.2s ease-out; }
@@ -50,6 +50,37 @@
         }
         .copy-toast.show { opacity: 1; }
 
+        /* Spinning Loader Animation */
+        .spinner-circle {
+            width: 48px; height: 48px;
+            border: 4px solid rgba(124, 58, 237, 0.2);
+            border-top: 4px solid #7C3AED;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Processing Overlay */
+        .processing-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10004;
+            display: none; align-items: center; justify-content: center; flex-direction: column;
+            gap: 16px;
+        }
+        .processing-overlay.show { display: flex; animation: fadeIn 0.3s ease-out; }
+        
+        .processing-text {
+            color: white; font-size: 18px; font-weight: 700;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         /* Guide Accordion */
         .guide-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
         .guide-header { 
@@ -60,12 +91,6 @@
             display: none; padding-bottom: 12px; font-size: 12px; color: #9ca3af; line-height: 1.5; 
         }
         .guide-content.show { display: block; }
-        .guide-step { display: flex; gap: 8px; margin-bottom: 8px; }
-        .guide-step-num { 
-            width: 20px; height: 20px; border-radius: 50%; background: rgba(124,58,237,0.2); 
-            color: #A78BFA; display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: bold; flex-shrink: 0;
-        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -216,60 +241,58 @@
                         How to Deposit
                     </h4>
                     <div class="bg-[#130f1c] rounded-xl border border-white/5 overflow-hidden">
-                        <!-- Step 1 -->
                         <div class="guide-item">
                             <div class="guide-header" onclick="toggleGuide(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                                 <span>1. Copy the address above</span>
                             </div>
-                            <div class="guide-content px-3">
-                                Tap the copy icon next to the address to save it to your clipboard. Make sure you're copying the correct address for the selected network.
-                            </div>
+                            <div class="guide-content px-3">Tap the copy icon next to the address to save it to your clipboard.</div>
                         </div>
-                        <!-- Step 2 -->
                         <div class="guide-item">
                             <div class="guide-header" onclick="toggleGuide(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                                 <span>2. Open your wallet (Binance, Bybit, Trust Wallet, etc.)</span>
                             </div>
-                            <div class="guide-content px-3">
-                                Go to your exchange or wallet app where you hold the crypto you want to deposit.
-                            </div>
+                            <div class="guide-content px-3">Go to your exchange or wallet app where you hold the crypto you want to deposit.</div>
                         </div>
-                        <!-- Step 3 -->
                         <div class="guide-item">
                             <div class="guide-header" onclick="toggleGuide(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                                 <span>3. Select "Withdraw" or "Send"</span>
                             </div>
-                            <div class="guide-content px-3">
-                                Find the asset you want to send (USDT, BTC, ETH) and tap Withdraw/Send.
-                            </div>
+                            <div class="guide-content px-3">Find the asset you want to send (USDT, BTC, ETH) and tap Withdraw/Send.</div>
                         </div>
-                        <!-- Step 4 -->
                         <div class="guide-item">
                             <div class="guide-header" onclick="toggleGuide(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                                 <span>4. Paste the address & enter amount</span>
                             </div>
-                            <div class="guide-content px-3">
-                                Paste the copied address into the recipient field. Enter the amount you want to send. <strong>Make sure the network matches!</strong> (e.g., TRC20 → TRC20).
-                            </div>
+                            <div class="guide-content px-3">Paste the copied address into the recipient field. Enter the amount you want to send. <strong>Make sure the network matches!</strong></div>
                         </div>
-                        <!-- Step 5 -->
                         <div class="guide-item">
                             <div class="guide-header" onclick="toggleGuide(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
                                 <span>5. Confirm & wait for credit</span>
                             </div>
-                            <div class="guide-content px-3">
-                                Confirm the transaction. Your OBX PRIME balance will be automatically credited once the blockchain confirms the transfer (usually 1-10 minutes).
-                            </div>
+                            <div class="guide-content px-3">Confirm the transaction. Your OBX PRIME balance will be automatically credited once the blockchain confirms the transfer.</div>
                         </div>
                     </div>
                 </div>
+
+                <!-- I HAVE SENT PAYMENT BUTTON -->
+                <button onclick="confirmPaymentSent()" id="sent-payment-btn" class="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:opacity-90 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#10B981]/25 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    I HAVE SENT PAYMENT
+                </button>
             </div>
         </div>
+    </div>
+
+    <!-- PROCESSING PAYMENT OVERLAY WITH SPINNING CIRCLE -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="spinner-circle"></div>
+        <div class="processing-text">Processing Payment...</div>
+        <p class="text-gray-400 text-sm text-center max-w-xs">Please wait while we verify your transaction on the blockchain.</p>
     </div>
 
     <!-- Copy Toast Notification -->
@@ -368,6 +391,32 @@
                 content.classList.add('show');
                 arrow.style.transform = 'rotate(180deg)';
             }
+        }
+
+        // ===== CONFIRM PAYMENT SENT WITH SPINNING LOADER =====
+        function confirmPaymentSent() {
+            const amount = document.getElementById('deposit-amount').value.trim();
+            
+            if (!amount || parseFloat(amount) < 10) {
+                alert('Please enter a valid deposit amount (minimum $10.00).');
+                return;
+            }
+
+            // Show processing overlay with spinning circle
+            const overlay = document.getElementById('processing-overlay');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Simulate processing (in real app, this would check blockchain)
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+                
+                // Show success message
+                alert(`✅ Payment of $${parseFloat(amount).toFixed(2)} has been submitted!\n\nYour deposit is being verified on the blockchain. Funds will be credited to your account within 1-10 minutes after confirmation.\n\nThank you for your patience!`);
+                
+                closeAddressModal();
+            }, 5000); // 5 seconds simulation
         }
     </script>
 </body>
