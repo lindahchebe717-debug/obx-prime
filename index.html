@@ -2266,5 +2266,125 @@ document.addEventListener('click', function(e) {
     }
 });
 </script>
+<!-- ============================================ -->
+<!-- ===== SIMPLE SESSION STATS & CHART FIX ===== -->
+<!-- ============================================ -->
+<style>
+/* 1. Shrink Chart to match PalOption screenshot */
+.chart-area-container { flex: 0 0 35vh !important; min-height: 200px !important; max-height: 300px !important; }
+
+/* 2. Session Stats Bar Styles */
+.session-stats-bar { 
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4); 
+    border-top: 1px solid rgba(255, 255, 255, 0.05); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+}
+.stats-left { font-size: 12px; color: #6b7280; font-weight: 500; letter-spacing: 0.5px; }
+.stats-right { font-size: 14px; font-weight: 700; color: #10B981; }
+.stats-right.loss { color: #ff444f; }
+
+/* 3. Hide Chat FAB so Positions is clear */
+#obx-v2-fab { display: none !important; }
+nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
+
+/* 4. Force Digits 0-9 to fit */
+#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
+#digits-container svg { width: 36px !important; height: 36px !important; }
+
+/* 5. Stop Download Banner Hijacking */
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a, 
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ========== FIX 1: ADD SESSION STATS BAR ==========
+    const controlsCard = document.querySelector('.bg-[\\#141021]\\/95');
+    if (controlsCard && !document.getElementById('session-stats-bar')) {
+        const statsBar = document.createElement('div');
+        statsBar.id = 'session-stats-bar';
+        statsBar.className = 'session-stats-bar';
+        statsBar.innerHTML = `
+            <div class="stats-left">LAST <span id="stat-total-trades">0</span>T · <span id="stat-wins">0</span>W · <span id="stat-losses">0</span>L</div>
+            <div class="stats-right" id="stat-pl-display">+$0.00</div>
+        `;
+        // Insert after the trade buttons but before closing div
+        const evenOddBtns = document.getElementById('even-odd-buttons');
+        if(evenOddBtns) evenOddBtns.parentNode.insertBefore(statsBar, evenOddBtns.nextSibling);
+    }
+
+    // Session Stats Logic
+    let sessionStats = { totalTrades: 0, wins: 0, losses: 0, pl: 0.00 };
+    window.updateSessionStats = function(profitAmount, isWin) {
+        sessionStats.totalTrades++;
+        sessionStats.pl += profitAmount;
+        if (isWin) sessionStats.wins++; else sessionStats.losses++;
+        
+        document.getElementById('stat-total-trades').innerText = sessionStats.totalTrades;
+        document.getElementById('stat-wins').innerText = sessionStats.wins;
+        document.getElementById('stat-losses').innerText = sessionStats.losses;
+        
+        const plDisplay = document.getElementById('stat-pl-display');
+        const sign = sessionStats.pl >= 0 ? '+' : '';
+        plDisplay.innerText = `${sign}$${sessionStats.pl.toFixed(2)}`;
+        plDisplay.className = sessionStats.pl >= 0 ? 'stats-right' : 'stats-right loss';
+    };
+
+    // Hook into existing placeTrade function
+    if (typeof placeTrade === 'function') {
+        const originalPlaceTrade = placeTrade;
+        placeTrade = function(choice) {
+            let stake = parseInt(document.getElementById('stake-input').value) || 10;
+            if (currentAccount === 'real' && stake > balance) { openInsufficientModal(); return; }
+            
+            setTimeout(() => {
+                let won = false;
+                if (choice === 'Even') won = lastDigit % 2 === 0;
+                else if (choice === 'Odd') won = lastDigit % 2 !== 0;
+                else if (choice === 'Over') won = lastDigit > 5;
+                else if (choice === 'Under') won = lastDigit < 5;
+                else if (choice === 'Differs') won = true;
+                
+                if(won && choice !== 'Matches') updateSessionStats(stake * 0.952, true);
+                else updateSessionStats(-stake, false);
+            }, 500);
+            originalPlaceTrade(choice);
+        };
+    }
+
+    // ========== FIX 2: ACCOUNT SETTINGS NAVIGATION ==========
+    const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
+    accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
+    const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
+    submenuItems.forEach(item => { item.onclick = function() { window.location.href = 'account-settings.html'; }; item.style.cursor = 'pointer'; });
+
+    // ========== FIX 3: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        balance = 0.00;
+        if (typeof realBalance !== 'undefined') realBalance = 0.00;
+        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
+        if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
+    }
+
+    // ========== FIX 4: CHAT SEND BUTTON RELIABILITY ==========
+    const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
+    if (v2Input && v2Send) {
+        v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
+        v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
+    }
+
+    // ========== FIX 5: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
+    if (typeof updateChartForVolatility === 'function') {
+        const originalUpdate = updateChartForVolatility;
+        updateChartForVolatility = function(name) {
+            const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
+            price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        };
+    }
+});
+</script>
 </body>
 </html>
