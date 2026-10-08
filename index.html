@@ -794,8 +794,57 @@ body.light-theme .volatility-item-price { color: #6b7280; }
                         <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 hidden"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>
                     </button>
                     <button onclick="window.location.href='deposit.html'" class="px-2 py-1 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-md text-[10px] font-semibold text-white shadow-lg shadow-[#7C3AED]/25">Deposit</button>
-                    <div class="relative"><button class="relative p-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></button></div>
+                    <!-- NOTIFICATION BELL WITH DROPDOWN -->
+<div class="relative">
+    <button onclick="toggleNotifications(event)" class="relative p-1 rounded hover:bg-white/5 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+        </svg>
+        <!-- Red Badge Count -->
+        <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center border border-[#1F1936]">2</span>
+    </button>
+    
+    <!-- Notifications Dropdown Menu -->
+    <div id="notifications-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-[#1e1b4b] rounded-xl shadow-2xl border border-[#7C3AED]/30 overflow-hidden z-[100] animate-fade-in">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#1a1630]">
+            <h3 class="text-white font-bold text-sm">Notifications</h3>
+            <span class="text-[10px] text-gray-400">2 recent</span>
+        </div>
+        <div class="max-h-80 overflow-y-auto no-scrollbar" id="notifications-list">
+            <!-- Welcome Notification -->
+            <div class="notif-item unread" onclick="markAsRead(this)">
+                <div class="notif-icon" style="background:rgba(124,58,237,0.2)"></div>
+                <div class="notif-content">
+                    <div class="notif-title">Welcome to OBX PRIME!</div>
+                    <div class="notif-desc">Start trading with demo or real money</div>
                 </div>
+                <div class="notif-unread-dot"></div>
+            </div>
+            <!-- Auto-Trading Notification -->
+            <div class="notif-item unread" onclick="markAsRead(this)">
+                <div class="notif-icon" style="background:rgba(59,130,246,0.2)">🤖</div>
+                <div class="notif-content">
+                    <div class="notif-title">Auto-Trading Available!</div>
+                    <div class="notif-desc">Let the bot trade for you automatically</div>
+                </div>
+                <div class="notif-unread-dot"></div>
+            </div>
+            <!-- Deposit Notification -->
+            <div class="notif-item" onclick="markAsRead(this)">
+                <div class="notif-icon" style="background:rgba(245,158,11,0.2)">💰</div>
+                <div class="notif-content">
+                    <div class="notif-title">Deposit Received</div>
+                    <div class="notif-desc">+$10.00</div>
+                    <div class="notif-time">2d ago</div>
+                </div>
+            </div>
+        </div>
+        <div class="p-3 border-t border-white/10 bg-[#1a1630]">
+            <button onclick="markAllAsRead()" class="w-full py-2 text-xs font-medium text-[#A78BFA] hover:text-white transition-colors">Mark all as read</button>
+        </div>
+    </div>
+</div>
             </header>
             <!-- Trade Types - COMPACT -->
             <div class="bg-[#181329] px-1.5 py-1.5 border-b border-white/[0.07]">
