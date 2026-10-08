@@ -9,16 +9,13 @@
         body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Light theme classes */
         body.light-theme { background-color: #f9fafb; color: #1f2937; }
-        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#1e1b4b\] { background-color: #ffffff !important; }
+        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#1F1936\] { background-color: #ffffff !important; }
         body.light-theme .border-white\/10 { border-color: rgba(0, 0, 0, 0.1) !important; }
         body.light-theme .text-gray-400 { color: #6b7280 !important; }
         body.light-theme .text-white { color: #1f2937 !important; }
-        body.light-theme input { background-color: #f3f4f6 !important; color: #1f2937 !important; border-color: #e5e7eb !important; }
+        body.light-theme input { background-color: #f3f4f6 !important; color: #1f2937 !important; }
         
-        /* Payment Card Styles */
         .payment-card {
             background-color: rgba(30, 27, 75, 0.5);
             border: 1px solid rgba(124, 58, 237, 0.3);
@@ -28,28 +25,23 @@
             background-color: rgba(124, 58, 237, 0.15);
             border-color: rgba(124, 58, 237, 0.8);
         }
-        body.light-theme .payment-card {
-            background-color: #ffffff;
-            border-color: #e5e7eb;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        body.light-theme .payment-card:hover, body.light-theme .payment-card.active {
-            border-color: #7C3AED;
-        }
+        body.light-theme .payment-card { background-color: #ffffff; border-color: #e5e7eb; }
 
         /* Address Modal Styles */
         .address-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10002;
-            display: none; align-items: center; justify-content: center; padding: 16px;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10002;
+            display: none; align-items: center; justify-content: center; padding: 16px; overflow-y: auto;
         }
         .address-modal.show { display: flex; animation: fadeIn 0.2s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .qr-placeholder {
+        .qr-container {
             width: 180px; height: 180px; background: white; margin: 0 auto 16px;
             border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            border: 4px solid rgba(124, 58, 237, 0.3);
+            border: 4px solid rgba(124, 58, 237, 0.3); overflow: hidden;
         }
+        .qr-container img { width: 100%; height: 100%; object-fit: contain; }
+        
         .copy-toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
             background: #10B981; color: white; padding: 10px 20px; border-radius: 20px;
@@ -57,6 +49,23 @@
             transition: opacity 0.3s; z-index: 10003; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
         .copy-toast.show { opacity: 1; }
+
+        /* Guide Accordion */
+        .guide-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .guide-header { 
+            padding: 12px 0; cursor: pointer; display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 600; color: #A78BFA;
+        }
+        .guide-content { 
+            display: none; padding-bottom: 12px; font-size: 12px; color: #9ca3af; line-height: 1.5; 
+        }
+        .guide-content.show { display: block; }
+        .guide-step { display: flex; gap: 8px; margin-bottom: 8px; }
+        .guide-step-num { 
+            width: 20px; height: 20px; border-radius: 50%; background: rgba(124,58,237,0.2); 
+            color: #A78BFA; display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: bold; flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -156,19 +165,32 @@
         <p>&copy; 2026 OBX PRIME. All rights reserved.</p>
     </footer>
 
-    <!-- DEPOSIT ADDRESS MODAL -->
+    <!-- DEPOSIT ADDRESS MODAL WITH AMOUNT INPUT & GUIDE -->
     <div id="address-modal" class="address-modal" onclick="if(event.target===this)closeAddressModal()">
-        <div class="bg-[#1e1b4b] rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl border border-[#7C3AED]/30 animate-fade-in">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+        <div class="bg-[#1e1b4b] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-[#7C3AED]/30 animate-fade-in max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 sticky top-0 bg-[#1e1b4b] z-10">
                 <h3 class="text-white font-bold text-lg" id="modal-title">Deposit Address</h3>
                 <button onclick="closeAddressModal()" class="text-gray-400 hover:text-white transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
-            <div class="p-5 space-y-4">
-                <!-- QR Code Placeholder -->
-                <div class="qr-placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            
+            <div class="p-5 space-y-5">
+                <!-- Amount Input -->
+                <div>
+                    <label class="block text-sm font-semibold text-white mb-2">Enter Deposit Amount (USD)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">$</span>
+                        <input type="number" id="deposit-amount" placeholder="e.g., 100" min="10" step="0.01" 
+                            class="w-full bg-[#130f1c] border border-white/10 rounded-xl pl-10 pr-4 py-3.5 text-white text-lg font-bold placeholder-gray-600 focus:outline-none focus:border-[#7C3AED] transition-colors">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 ml-1">Minimum deposit: $10.00 equivalent</p>
+                </div>
+
+                <!-- QR Code -->
+                <div class="qr-container">
+                    <img id="modal-qr" src="" alt="QR Code">
                 </div>
                 
                 <!-- Network Badge -->
@@ -177,15 +199,75 @@
                 </div>
 
                 <!-- Address Box -->
-                <div class="bg-[#130f1c] rounded-xl p-3 border border-white/10 relative group">
-                    <p id="modal-address" class="text-white text-sm font-mono break-all pr-10 leading-relaxed">Loading...</p>
-                    <button onclick="copyAddress()" class="absolute top-2 right-2 p-1.5 rounded-lg bg-[#7C3AED]/20 hover:bg-[#7C3AED]/40 text-[#A78BFA] transition-colors" title="Copy Address">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
-                    </button>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Your Deposit Address</label>
+                    <div class="bg-[#130f1c] rounded-xl p-3 border border-white/10 relative group">
+                        <p id="modal-address" class="text-white text-sm font-mono break-all pr-10 leading-relaxed">Loading...</p>
+                        <button onclick="copyAddress()" class="absolute top-2 right-2 p-1.5 rounded-lg bg-[#7C3AED]/20 hover:bg-[#7C3AED]/40 text-[#A78BFA] transition-colors" title="Copy Address">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Min Deposit Note -->
-                <p class="text-center text-gray-400 text-xs">Minimum deposit: $10.00 equivalent</p>
+                <!-- How to Deposit Guide -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+                        How to Deposit
+                    </h4>
+                    <div class="bg-[#130f1c] rounded-xl border border-white/5 overflow-hidden">
+                        <!-- Step 1 -->
+                        <div class="guide-item">
+                            <div class="guide-header" onclick="toggleGuide(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                <span>1. Copy the address above</span>
+                            </div>
+                            <div class="guide-content px-3">
+                                Tap the copy icon next to the address to save it to your clipboard. Make sure you're copying the correct address for the selected network.
+                            </div>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="guide-item">
+                            <div class="guide-header" onclick="toggleGuide(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                <span>2. Open your wallet (Binance, Bybit, Trust Wallet, etc.)</span>
+                            </div>
+                            <div class="guide-content px-3">
+                                Go to your exchange or wallet app where you hold the crypto you want to deposit.
+                            </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="guide-item">
+                            <div class="guide-header" onclick="toggleGuide(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                <span>3. Select "Withdraw" or "Send"</span>
+                            </div>
+                            <div class="guide-content px-3">
+                                Find the asset you want to send (USDT, BTC, ETH) and tap Withdraw/Send.
+                            </div>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="guide-item">
+                            <div class="guide-header" onclick="toggleGuide(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                <span>4. Paste the address & enter amount</span>
+                            </div>
+                            <div class="guide-content px-3">
+                                Paste the copied address into the recipient field. Enter the amount you want to send. <strong>Make sure the network matches!</strong> (e.g., TRC20 → TRC20).
+                            </div>
+                        </div>
+                        <!-- Step 5 -->
+                        <div class="guide-item">
+                            <div class="guide-header" onclick="toggleGuide(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform"><path d="m6 9 6 6 6-6"></path></svg>
+                                <span>5. Confirm & wait for credit</span>
+                            </div>
+                            <div class="guide-content px-3">
+                                Confirm the transaction. Your OBX PRIME balance will be automatically credited once the blockchain confirms the transfer (usually 1-10 minutes).
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -233,11 +315,25 @@
             document.getElementById('modal-network').style.color = data.color;
             document.getElementById('modal-network').style.backgroundColor = data.color + '20';
             document.getElementById('modal-address').innerText = data.address;
+            
+            // Generate QR Code using free API
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.address)}`;
+            document.getElementById('modal-qr').src = qrUrl;
+            
+            // Reset amount field
+            document.getElementById('deposit-amount').value = '';
+            
+            // Reset guide accordions
+            document.querySelectorAll('.guide-content').forEach(c => c.classList.remove('show'));
+            document.querySelectorAll('.guide-header svg').forEach(s => s.style.transform = 'rotate(0deg)');
+            
             document.getElementById('address-modal').classList.add('show');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeAddressModal() {
             document.getElementById('address-modal').classList.remove('show');
+            document.body.style.overflow = '';
         }
 
         function copyAddress() {
@@ -247,7 +343,6 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }).catch(() => {
-                // Fallback for older browsers
                 const textarea = document.createElement('textarea');
                 textarea.value = address;
                 document.body.appendChild(textarea);
@@ -258,6 +353,21 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             });
+        }
+
+        function toggleGuide(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('svg');
+            const isOpen = content.classList.contains('show');
+            
+            // Close all others
+            document.querySelectorAll('.guide-content').forEach(c => c.classList.remove('show'));
+            document.querySelectorAll('.guide-header svg').forEach(s => s.style.transform = 'rotate(0deg)');
+            
+            if (!isOpen) {
+                content.classList.add('show');
+                arrow.style.transform = 'rotate(180deg)';
+            }
         }
     </script>
 </body>
