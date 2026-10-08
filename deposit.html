@@ -36,6 +36,27 @@
         body.light-theme .payment-card:hover, body.light-theme .payment-card.active {
             border-color: #7C3AED;
         }
+
+        /* Address Modal Styles */
+        .address-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10002;
+            display: none; align-items: center; justify-content: center; padding: 16px;
+        }
+        .address-modal.show { display: flex; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .qr-placeholder {
+            width: 180px; height: 180px; background: white; margin: 0 auto 16px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            border: 4px solid rgba(124, 58, 237, 0.3);
+        }
+        .copy-toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: #10B981; color: white; padding: 10px 20px; border-radius: 20px;
+            font-size: 14px; font-weight: 600; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s; z-index: 10003; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .copy-toast.show { opacity: 1; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -62,7 +83,7 @@
         <!-- Payment Methods Grid -->
         <div class="space-y-3 mb-6">
             <!-- USDT TRC20 Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('usdt-trc20')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="openAddressModal('usdt-trc20')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#10B981]/20 flex items-center justify-center shrink-0">
                         <span class="text-[#10B981] font-black text-xl">T</span>
@@ -76,7 +97,7 @@
             </div>
 
             <!-- USDT ERC20 Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('usdt-erc20')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="openAddressModal('usdt-erc20')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center shrink-0">
                         <span class="text-[#627EEA] font-black text-xl">E</span>
@@ -90,7 +111,7 @@
             </div>
 
             <!-- BTC Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('btc')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="openAddressModal('btc')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#F7931A]/20 flex items-center justify-center shrink-0">
                         <span class="text-[#F7931A] font-black text-xl">₿</span>
@@ -104,7 +125,7 @@
             </div>
 
             <!-- ETH Option -->
-            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="selectMethod('eth')">
+            <div class="payment-card flex items-center justify-between p-4 rounded-xl cursor-pointer" onclick="openAddressModal('eth')">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-[#627EEA]/20 flex items-center justify-center shrink-0">
                         <span class="text-[#627EEA] font-black text-xl">Ξ</span>
@@ -135,37 +156,108 @@
         <p>&copy; 2026 OBX PRIME. All rights reserved.</p>
     </footer>
 
+    <!-- DEPOSIT ADDRESS MODAL -->
+    <div id="address-modal" class="address-modal" onclick="if(event.target===this)closeAddressModal()">
+        <div class="bg-[#1e1b4b] rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl border border-[#7C3AED]/30 animate-fade-in">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                <h3 class="text-white font-bold text-lg" id="modal-title">Deposit Address</h3>
+                <button onclick="closeAddressModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-5 space-y-4">
+                <!-- QR Code Placeholder -->
+                <div class="qr-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                </div>
+                
+                <!-- Network Badge -->
+                <div class="text-center">
+                    <span id="modal-network" class="inline-block px-3 py-1 rounded-full bg-[#7C3AED]/20 text-[#A78BFA] text-xs font-bold uppercase tracking-wider">TRON NETWORK</span>
+                </div>
+
+                <!-- Address Box -->
+                <div class="bg-[#130f1c] rounded-xl p-3 border border-white/10 relative group">
+                    <p id="modal-address" class="text-white text-sm font-mono break-all pr-10 leading-relaxed">Loading...</p>
+                    <button onclick="copyAddress()" class="absolute top-2 right-2 p-1.5 rounded-lg bg-[#7C3AED]/20 hover:bg-[#7C3AED]/40 text-[#A78BFA] transition-colors" title="Copy Address">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Min Deposit Note -->
+                <p class="text-center text-gray-400 text-xs">Minimum deposit: $10.00 equivalent</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Toast Notification -->
+    <div id="copy-toast" class="copy-toast">✅ Address copied to clipboard!</div>
+
     <script>
-        // Simple Theme Toggle
+        // ===== YOUR REAL WALLET ADDRESSES =====
+        const WALLET_ADDRESSES = {
+            'usdt-trc20': { 
+                address: 'TQ9nfbHaPAe6LpgFrzzbHRTdYwEptJMqaM', 
+                network: 'TRON (TRC20)',
+                color: '#10B981'
+            },
+            'usdt-erc20': { 
+                address: '0xcAA1824758E3afdf2b0E2d042E90B34bd35F70FF', 
+                network: 'ETHEREUM (ERC20)',
+                color: '#627EEA'
+            },
+            'btc': { 
+                address: 'bc1qz8e5veyss7w9es3t09f53auawexn9xtn686ywc', 
+                network: 'BITCOIN',
+                color: '#F7931A'
+            },
+            'eth': { 
+                address: '0xcAA1824758E3afdf2b0E2d042E90B34bd35F70FF', 
+                network: 'ETHEREUM',
+                color: '#627EEA'
+            }
+        };
+
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('obx_theme', isLight ? 'light' : 'dark');
+            localStorage.setItem('obx_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
         }
+        if (localStorage.getItem('obx_theme') === 'light') document.body.classList.add('light-theme');
 
-        // Load saved theme
-        if (localStorage.getItem('obx_theme') === 'light') {
-            document.body.classList.add('light-theme');
-        }
-
-        // Handle Payment Selection
-        function selectMethod(method) {
-            // Remove active class from all
-            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('active'));
+        function openAddressModal(method) {
+            const data = WALLET_ADDRESSES[method];
+            if (!data) return;
             
-            // Highlight selected card
-            event.currentTarget.classList.add('active');
+            document.getElementById('modal-title').innerText = method.toUpperCase().replace('-', ' ');
+            document.getElementById('modal-network').innerText = data.network;
+            document.getElementById('modal-network').style.color = data.color;
+            document.getElementById('modal-network').style.backgroundColor = data.color + '20';
+            document.getElementById('modal-address').innerText = data.address;
+            document.getElementById('address-modal').classList.add('show');
+        }
 
-            // Show alert for each crypto method (This is where your wallet address modal will open later)
-            if (method === 'usdt-trc20') {
-                alert('USDT (TRC20) deposit interface will open here. (Requires wallet address generation)');
-            } else if (method === 'usdt-erc20') {
-                alert('USDT (ERC20) deposit interface will open here. (Requires wallet address generation)');
-            } else if (method === 'btc') {
-                alert('BTC deposit interface will open here. (Requires wallet address generation)');
-            } else if (method === 'eth') {
-                alert('ETH deposit interface will open here. (Requires wallet address generation)');
-            }
+        function closeAddressModal() {
+            document.getElementById('address-modal').classList.remove('show');
+        }
+
+        function copyAddress() {
+            const address = document.getElementById('modal-address').innerText;
+            navigator.clipboard.writeText(address).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = address;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
         }
     </script>
 </body>
