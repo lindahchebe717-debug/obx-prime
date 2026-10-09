@@ -1153,6 +1153,15 @@ body.light-theme .volatility-item-price { color: #6b7280; }
 <!-- JAVASCRIPT LOGIC -->
 <script>
 // ==========================================
+// AUTHENTICATION CHECK (ADD THIS FIRST)
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    if(localStorage.getItem('isLoggedIn') !== 'true') {
+        // Not logged in - redirect to sign in page
+        window.location.href = 'signin.html';
+    }
+});// ==========================================
 // SOUND TOGGLE FUNCTION
 // ==========================================
 let isSoundOn = true;
