@@ -7,110 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        body { 
-            background-color: #0f0d1a; 
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-            overflow-x: hidden;
-        }
-        
-        /* Gradient Text */
-        .gradient-text { 
-            background: linear-gradient(to right, #a855f7, #ec4899); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
-        
-        /* Glass Cards */
-        .glass-card { 
-            background: rgba(30, 27, 75, 0.4); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 24px;
-        }
-
-        /* Scrolling Ticker Animation */
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background: rgba(15, 13, 26, 0.8);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 12px 0;
-            white-space: nowrap;
-            position: relative;
-        }
-        .ticker-wrap::before, .ticker-wrap::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0;
-            width: 60px;
-            z-index: 2;
-            pointer-events: none;
-        }
+        body { background-color: #0f0d1a; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .gradient-text { background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card { background: rgba(30, 27, 75, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; }
+        .ticker-wrap { width: 100%; overflow: hidden; background: rgba(15, 13, 26, 0.8); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 0; white-space: nowrap; position: relative; }
+        .ticker-wrap::before, .ticker-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
         .ticker-wrap::before { left: 0; background: linear-gradient(to right, #0f0d1a, transparent); }
         .ticker-wrap::after { right: 0; background: linear-gradient(to left, #0f0d1a, transparent); }
-        
-        .ticker {
-            display: inline-flex;
-            animation: marquee 40s linear infinite;
-        }
-        .ticker-item {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 48px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #e2e8f0;
-        }
-        .ticker-icon {
-            width: 24px; height: 24px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            margin-right: 10px; font-size: 11px; font-weight: bold; color: white;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Custom Scrollbar for Testimonials */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Gradient Backgrounds for CTA */
+        .ticker { display: inline-flex; animation: marquee 40s linear infinite; }
+        .ticker-item { display: inline-flex; align-items: center; margin-right: 48px; font-size: 14px; font-weight: 500; color: #e2e8f0; }
+        .ticker-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 11px; font-weight: bold; color: white; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .cta-gradient-1 { background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); }
         .cta-gradient-2 { background: linear-gradient(135deg, #6d28d9 0%, #be185d 100%); }
-
-        /* Moving Chart Animation */
-        .chart-line {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: drawChart 8s ease-in-out infinite alternate;
-        }
-        .chart-area {
-            opacity: 0.1;
-            animation: pulseArea 4s ease-in-out infinite alternate;
-        }
-        @keyframes drawChart {
-            0% { stroke-dashoffset: 1000; }
-            100% { stroke-dashoffset: 0; }
-        }
-        @keyframes pulseArea {
-            0% { opacity: 0.05; }
-            100% { opacity: 0.2; }
-        }
-
-        /* Live Trades Pop Animation */
+        .chart-line { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawChart 8s ease-in-out infinite alternate; }
+        .chart-area { opacity: 0.1; animation: pulseArea 4s ease-in-out infinite alternate; }
+        @keyframes drawChart { 0% { stroke-dashoffset: 1000; } 100% { stroke-dashoffset: 0; } }
+        @keyframes pulseArea { 0% { opacity: 0.05; } 100% { opacity: 0.2; } }
         .trade-row { transition: all 0.3s ease; }
         .trade-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn {
-            0% { transform: translateY(20px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes popIn { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="antialiased">
-
     <!-- Navbar -->
     <nav class="fixed w-full z-50 top-0 start-0 border-b border-white/10 bg-[#0f0d1a]/90 backdrop-blur-md">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -128,7 +47,6 @@
     <!-- LIVE CRYPTO TICKER -->
     <div class="ticker-wrap mt-20">
         <div class="ticker">
-            <!-- Set 1 -->
             <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-emerald-400 ml-2">$43,256 (+2.4%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-blue-500">E</div> ETH <span class="text-red-400 ml-2">$2,284 (-0.5%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-purple-500">S</div> SOL <span class="text-emerald-400 ml-2">$98.40 (+5.1%)</span></div>
@@ -137,7 +55,6 @@
             <div class="ticker-item"><div class="ticker-icon bg-yellow-500">B</div> BNB <span class="text-red-400 ml-2">$310.20 (-0.8%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-indigo-500">A</div> ADA <span class="text-emerald-400 ml-2">$0.55 (+3.4%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-red-500">D</div> DOGE <span class="text-emerald-400 ml-2">$0.08 (+1.1%)</span></div>
-            
             <!-- Duplicate Set for Seamless Loop -->
             <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-emerald-400 ml-2">$43,256 (+2.4%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-blue-500">E</div> ETH <span class="text-red-400 ml-2">$2,284 (-0.5%)</span></div>
@@ -150,7 +67,7 @@
         </div>
     </div>
 
-    <!-- Hero Section (REDUCED FONT SIZE) -->
+    <!-- Hero Section -->
     <section class="relative pt-10 pb-16 lg:pt-16 lg:pb-20 text-center px-4">
         <h1 class="mb-5 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.2] text-white">
             Master the Markets, <br><span class="gradient-text">On Your Terms</span>
@@ -172,7 +89,6 @@
     <!-- Live Chart & Trades Preview -->
     <section class="max-w-5xl mx-auto px-4 mb-24">
         <div class="glass-card p-6 md:p-8">
-            <!-- Mock Chart Header -->
             <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 font-bold">B</div>
@@ -186,23 +102,17 @@
                     <div class="text-xs text-red-400">-0.13%</div>
                 </div>
             </div>
-            
-            <!-- MOVING CHART AREA -->
             <div class="h-48 w-full bg-gradient-to-b from-red-500/5 to-transparent rounded-xl mb-8 relative overflow-hidden border border-white/5">
                 <svg class="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
                     <path class="chart-area" d="M0,80 Q10,75 20,60 T40,50 T60,70 T80,40 T100,60 V100 H0 Z" fill="#ef4444" />
                     <path class="chart-line" d="M0,80 Q10,75 20,60 T40,50 T60,70 T80,40 T100,60" fill="none" stroke="#ef4444" stroke-width="2" />
                 </svg>
             </div>
-
-            <!-- Live Trades List (POPPING NAMES) -->
             <div class="space-y-3" id="live-trades-container">
                 <div class="flex items-center justify-between text-sm font-bold text-gray-400 uppercase tracking-wider px-2">
                     <span>Live Trades</span>
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 </div>
-                
-                <!-- Initial Trades -->
                 <div class="trade-row flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition trade-pop">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">↑</div>
@@ -210,7 +120,6 @@
                     </div>
                     <div class="text-right"><div class="font-bold text-emerald-400">$20</div><div class="text-xs text-gray-500">Higher</div></div>
                 </div>
-                
                 <div class="trade-row flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition trade-pop">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">↑</div>
@@ -218,7 +127,6 @@
                     </div>
                     <div class="text-right"><div class="font-bold text-emerald-400">$10</div><div class="text-xs text-gray-500">Higher</div></div>
                 </div>
-
                 <div class="trade-row flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition trade-pop">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs">↓</div>
@@ -227,7 +135,6 @@
                     <div class="text-right"><div class="font-bold text-red-400">$5</div><div class="text-xs text-gray-500">Lower</div></div>
                 </div>
             </div>
-            
             <a href="dashboard.html" class="block w-full mt-6 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold text-center rounded-xl transition shadow-lg shadow-purple-600/20">Start Trading</a>
         </div>
     </section>
@@ -245,12 +152,12 @@
                     <p class="text-gray-400 text-center">Orders fill in under a second — no lag, no requotes, no missed moments.</p>
                 </div>
                 <div class="glass-card p-6 rounded-xl hover:border-emerald-500/50 transition duration-300 cursor-pointer">
-                    <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 mx-auto">🛡️</div>
+                    <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 mx-auto">️</div>
                     <h3 class="mb-2 text-xl font-bold text-white text-center">Safe & Secure</h3>
                     <p class="text-gray-400 text-center">Bank-grade encryption and segregated accounts keep your funds protected.</p>
                 </div>
                 <div class="glass-card p-6 rounded-xl hover:border-purple-500/50 transition duration-300 cursor-pointer">
-                    <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 mx-auto">🌍</div>
+                    <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 mx-auto"></div>
                     <h3 class="mb-2 text-xl font-bold text-white text-center">100+ Markets</h3>
                     <p class="text-gray-400 text-center">Forex, crypto, stocks, indices and commodities — all under one roof.</p>
                 </div>
@@ -391,7 +298,7 @@
                     <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-2"></div>
                     <div class="text-[10px] text-white/70 font-bold">OBX PRIME</div>
                 </div>
-                <div class="absolute -bottom-3 -right-3 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">⬇️</div>
+                <div class="absolute -bottom-3 -right-3 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">️</div>
             </div>
 
             <div class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-bold text-white mb-6 backdrop-blur-sm">⚡ Android App Available</div>
