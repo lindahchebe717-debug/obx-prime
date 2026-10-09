@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Sign In</title>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
@@ -40,7 +42,7 @@
             <!-- Email -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email Address</label>
-                <input type="email" required placeholder="name@example.com" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
+                <input type="email" id="signin-email" required placeholder="name@example.com" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
             </div>
 
             <!-- Password -->
@@ -88,25 +90,55 @@
     </div>
 
     <script>
+        // ==========================================
+        // SUPABASE CONFIGURATION
+        // ==========================================
+        const SUPABASE_URL = 'https://twwwpywcmjdrocsfhyia.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         function togglePass(id) {
             const input = document.getElementById(id);
             input.type = input.type === 'password' ? 'text' : 'password';
         }
         
-        function handleSignin(e) {
+        async function handleSignin(e) {
             e.preventDefault();
             const btn = document.getElementById('signin-btn');
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-pass').value;
             
             // Show loading state
             btn.disabled = true;
             btn.innerHTML = '<div class="spinner"></div>';
             
-            // Simulate login delay
-            setTimeout(() => {
+            try {
+                // Authenticate with Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Extract name from Supabase metadata or fallback to email prefix
+                const userName = data.user.user_metadata?.full_name || email.split('@')[0];
+                
+                // Save to localStorage for static pages to read
                 localStorage.setItem('isLoggedIn', 'true');
-                // Redirect to the NEW dashboard file
+                localStorage.setItem('userName', userName);
+                localStorage.setItem('userEmail', data.user.email);
+                
+                // Redirect to dashboard
                 window.location.href = 'dashboard.html';
-            }, 1500);
+                
+            } catch (err) {
+                alert('❌ ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<span>Sign In</span>';
+            }
         }
     </script>
 </body>
