@@ -6,12 +6,38 @@
 <title>OBX PRIME | Synthetic Trading</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-/* PASTE YOUR COMPLETE TRADING CSS HERE FROM THE OLD FILE */
-/* Include: Global Styles, Theme Classes, Chat Styles, Modal Styles, Digit Styles, etc. */
+/* ========================================= GLOBAL & THEME STYLES ========================================== */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 body { background-color: #141021; color: white; font-family: system-ui, sans-serif; }
-/* ... rest of your existing CSS ... */
+
+/* Light theme classes */
+body.light-theme { background-color: #f9fafb; color: #1f2937; }
+body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#181329\],
+body.light-theme .bg-\[\#1F1936\], body.light-theme .bg-\[\#151a25\], body.light-theme .bg-\[\#1e1b4b\],
+body.light-theme .bg-\[\#1e2535\], body.light-theme .bg-\[\#252d3d\], body.light-theme .bg-\[\#282041\],
+body.light-theme .bg-\[\#2E2447\], body.light-theme .bg-\[\#2a3548\] { background-color: #ffffff !important; }
+body.light-theme .text-white { color: #1f2937 !important; }
+body.light-theme .text-gray-400, body.light-theme .text-gray-500 { color: #6b7280 !important; }
+body.light-theme .border-white\/10, body.light-theme .border-white\/5 { border-color: rgba(0, 0, 0, 0.1) !important; }
+
+/* Essential Fixes */
+#obx-v2-fab { display: none !important; }
+nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
+#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
+#digits-container svg { width: 36px !important; height: 36px !important; }
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a, 
+div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
+
+/* Session Stats Bar */
+.session-stats-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; }
+.stats-left { font-size: 12px; color: #6b7280; font-weight: 500; letter-spacing: 0.5px; }
+.stats-right { font-size: 14px; font-weight: 700; color: #10B981; }
+.stats-right.loss { color: #ff444f; }
+
+/* PASTE YOUR COMPLETE TRADING CSS HERE FROM THE OLD FILE */
+/* Include: Global Styles, Theme Classes, Chat Styles, Modal Styles, Digit Styles, etc. */
 </style>
 </head>
 <body class="antialiased text-white">
