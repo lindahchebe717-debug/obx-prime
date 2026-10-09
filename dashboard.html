@@ -2386,5 +2386,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Simple logout function for dashboard
+function logoutUser() {
+    if(confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'signin.html';
+    }
+}
+</script>
 </body>
 </html>
