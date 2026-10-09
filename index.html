@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBX PRIME | Next Gen Synthetic Trading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f0d1a; color: white; font-family: system-ui, sans-serif; }
+        .gradient-text { 
+            background: linear-gradient(to right, #7C3AED, #EC4899); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .hero-glow { 
+            position: absolute; width: 600px; height: 600px; 
+            background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(0,0,0,0) 70%); 
+            top: -100px; left: 50%; transform: translateX(-50%); z-index: -1; pointer-events: none; 
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 start-0 border-b border-white/10 bg-[#0f0d1a]/80 backdrop-blur-md">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center font-bold text-white">O</div>
+                <span class="self-center text-xl font-semibold whitespace-nowrap text-white">OBX PRIME</span>
+            </a>
+            <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                <a href="signin.html" class="text-white hover:text-[#7C3AED] font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 transition">Log In</a>
+                <a href="signup.html" class="text-white bg-[#7C3AED] hover:bg-[#6D28D9] focus:ring-4 focus:outline-none focus:ring-purple-900 font-medium rounded-lg text-sm px-4 py-2 text-center transition shadow-lg shadow-purple-900/50">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28">
+        <div class="hero-glow"></div>
+        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+            <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
+                Trade the Future with <br><span class="gradient-text">Precision & Speed</span>
+            </h1>
+            <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 lg:px-48">
+                Access 24/7 synthetic indices, volatility markets, and AI-powered trading tools. Join over 50,000 traders maximizing their potential on OBX PRIME.
+            </p>
+            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+                <a href="signup.html" class="inline-flex justify-center items-center py-3 px-6 text-base font-medium text-center text-white rounded-lg bg-[#7C3AED] hover:bg-[#6D28D9] focus:ring-4 focus:ring-purple-900 shadow-lg shadow-purple-900/40 transition transform hover:-translate-y-1">
+                    Start Trading Now
+                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
+                </a>
+                <a href="#features" class="inline-flex justify-center items-center py-3 px-6 text-base font-medium text-center text-white rounded-lg border border-white/20 hover:bg-white/5 focus:ring-4 focus:ring-gray-700 transition ml-4">
+                    View Features
+                </a>
+            </div>
+            
+            <!-- Mockup Image Placeholder -->
+            <div class="mt-16 relative mx-auto border-gray-800 bg-gray-900 border-[8px] rounded-t-xl h-[300px] max-w-[800px] overflow-hidden shadow-2xl shadow-purple-900/20">
+                <div class="border-b border-gray-800 bg-gray-800 h-[30px] flex items-center px-4 space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="p-4 flex items-center justify-center h-full bg-[#141021]">
+                    <p class="text-gray-500">Interactive Trading Dashboard Preview</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="bg-[#0f0d1a] py-20 border-t border-white/5">
+        <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+            <div class="max-w-screen-md mb-8 lg:mb-16">
+                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-white">Designed for Serious Traders</h2>
+                <p class="text-gray-400 sm:text-xl">We provide the infrastructure, you provide the strategy.</p>
+            </div>
+            <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+                <!-- Feature 1 -->
+                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
+                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#7C3AED]/20 text-[#7C3AED]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold text-white">Real-Time Analytics</h3>
+                    <p class="text-gray-400">Advanced charting tools with tick-level precision and instant execution.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
+                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#10B981]/20 text-[#10B981]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold text-white">AI Entry Scanner</h3>
+                    <p class="text-gray-400">Our proprietary algorithm scans volatility indices to suggest high-probability entries.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
+                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#F59E0B]/20 text-[#F59E0B]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold text-white">Instant Payouts</h3>
+                    <p class="text-gray-400">Withdraw your profits instantly via M-Pesa, USDT, or Bank Transfer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="p-4 bg-[#0f0d1a] md:p-8 lg:p-10 border-t border-white/5">
+        <div class="mx-auto max-w-screen-xl text-center">
+            <a href="#" class="flex justify-center items-center text-2xl font-semibold text-white">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center font-bold text-white mr-2">O</div>
+                OBX PRIME
+            </a>
+            <p class="my-6 text-gray-500">Synthetic trading involves risk. Please trade responsibly.</p>
+            <ul class="flex flex-wrap justify-center items-center mb-6 text-white">
+                <li><a href="#" class="mr-4 hover:underline md:mr-6 ">About</a></li>
+                <li><a href="#" class="mr-4 hover:underline md:mr-6">Premium</a></li>
+                <li><a href="#" class="mr-4 hover:underline md:mr-6 ">Campaigns</a></li>
+                <li><a href="#" class="hover:underline">Contact</a></li>
+            </ul>
+            <span class="text-sm text-gray-500 sm:text-center">© 2026 <a href="#" class="hover:underline">OBX PRIME™</a>. All Rights Reserved.</span>
+        </div>
+    </footer>
+</body>
+</html>
