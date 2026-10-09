@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Sign Up</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
@@ -88,21 +89,29 @@
     </div>
 
     <script>
+        // ==========================================
+        // SUPABASE CONFIGURATION
+        // ==========================================
+        const SUPABASE_URL = 'https://twwwpywcmjdrocsfhyia.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         function togglePass(id) {
             const input = document.getElementById(id);
             input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        function handleSignup(e) {
+        async function handleSignup(e) {
             e.preventDefault();
             
-            const pass = document.getElementById('signup-pass').value;
-            const confirmPass = document.getElementById('signup-confirm-pass').value;
             const btn = document.getElementById('signup-btn');
-            const originalText = btn.innerHTML;
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-pass').value;
+            const confirmPass = document.getElementById('signup-confirm-pass').value;
 
             // Validate passwords match
-            if (pass !== confirmPass) {
+            if (password !== confirmPass) {
                 alert('❌ Passwords do not match! Please try again.');
                 return;
             }
@@ -111,16 +120,28 @@
             btn.disabled = true;
             btn.innerHTML = '<div class="spinner"></div>';
 
-            // Simulate API call delay
-            setTimeout(() => {
-                // Save ALL user data locally for the dashboard to read
+            // Create user in Supabase
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { full_name: name } // Saves name to Supabase metadata
+                }
+            });
+
+            if (error) {
+                alert('❌ ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<span>Create Account</span>';
+            } else {
+                // Save to localStorage for static pages to read
                 localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', document.getElementById('signup-name').value);
-                localStorage.setItem('userEmail', document.getElementById('signup-email').value);
+                localStorage.setItem('userName', name);
+                localStorage.setItem('userEmail', email);
                 
                 // Redirect to dashboard
                 window.location.href = 'dashboard.html';
-            }, 1500);
+            }
         }
     </script>
 </body>
