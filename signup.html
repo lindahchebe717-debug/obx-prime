@@ -16,6 +16,16 @@
         }
         /* Custom checkbox */
         .custom-checkbox:checked { background-color: #7C3AED; border-color: #7C3AED; }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -33,20 +43,20 @@
             <!-- Full Name -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
-                <input type="text" required placeholder="e.g., Citra Slamet" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
+                <input type="text" id="signup-name" required placeholder="e.g., Citra Slamet" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
             </div>
 
             <!-- Email -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email Address</label>
-                <input type="email" required placeholder="name@example.com" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
+                <input type="email" id="signup-email" required placeholder="name@example.com" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
             </div>
 
             <!-- Password -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
                 <div class="relative">
-                    <input type="password" id="signup-pass" required placeholder="••••••••" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600 pr-12">
+                    <input type="password" id="signup-pass" required placeholder="••••••••" minlength="6" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600 pr-12">
                     <button type="button" onclick="togglePass('signup-pass')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
@@ -56,18 +66,18 @@
             <!-- Confirm Password -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Confirm Password</label>
-                <input type="password" required placeholder="••••••••" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
+                <input type="password" id="signup-confirm-pass" required placeholder="••••••••" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
             </div>
 
             <!-- Terms Checkbox -->
             <div class="flex items-start gap-3 pt-2">
-                <input type="checkbox" required class="custom-checkbox mt-1 w-4 h-4 rounded border-gray-600 bg-transparent text-[#7C3AED] focus:ring-[#7C3AED]">
+                <input type="checkbox" id="terms-check" required class="custom-checkbox mt-1 w-4 h-4 rounded border-gray-600 bg-transparent text-[#7C3AED] focus:ring-[#7C3AED]">
                 <p class="text-xs text-gray-400 leading-relaxed">I agree to the <a href="#" class="text-[#7C3AED] hover:underline">Terms of Service</a> and <a href="#" class="text-[#7C3AED] hover:underline">Privacy Policy</a>.</p>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:opacity-90 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#7C3AED]/25 mt-6">
-                Create Account
+            <button type="submit" id="signup-btn" class="w-full bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:opacity-90 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#7C3AED]/25 mt-6 flex items-center justify-center gap-2">
+                <span>Create Account</span>
             </button>
         </form>
 
@@ -82,10 +92,34 @@
             const input = document.getElementById(id);
             input.type = input.type === 'password' ? 'text' : 'password';
         }
+
         function handleSignup(e) {
             e.preventDefault();
-            alert('✅ Account created successfully! Redirecting to sign in...');
-            window.location.href = 'signin.html';
+            
+            const pass = document.getElementById('signup-pass').value;
+            const confirmPass = document.getElementById('signup-confirm-pass').value;
+            const btn = document.getElementById('signup-btn');
+            const originalText = btn.innerHTML;
+
+            // Validate passwords match
+            if (pass !== confirmPass) {
+                alert('❌ Passwords do not match! Please try again.');
+                return;
+            }
+
+            // Show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div>';
+
+            // Simulate API call delay
+            setTimeout(() => {
+                // Save user data locally for demo purposes
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userName', document.getElementById('signup-name').value);
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }, 1500);
         }
     </script>
 </body>
