@@ -3,56 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | Next Gen Crypto Trading</title>
+    <title>OBX PRIME | Master the Markets</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f0d1a; color: white; font-family: 'Inter', sans-serif; }
-        .gradient-text { background: linear-gradient(to right, #7C3AED, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
-        /* SCROLLING TICKER STYLES */
+        body { 
+            background-color: #0f0d1a; 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+        }
+        
+        /* Gradient Text */
+        .gradient-text { 
+            background: linear-gradient(to right, #a855f7, #ec4899); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        /* Glass Cards */
+        .glass-card { 
+            background: rgba(30, 27, 75, 0.4); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 24px;
+        }
+
+        /* Scrolling Ticker Animation */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
-            background-color: rgba(15, 13, 26, 0.8);
+            background: rgba(15, 13, 26, 0.8);
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 10px 0;
+            padding: 12px 0;
             white-space: nowrap;
+            position: relative;
         }
+        .ticker-wrap::before, .ticker-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 60px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .ticker-wrap::before { left: 0; background: linear-gradient(to right, #0f0d1a, transparent); }
+        .ticker-wrap::after { right: 0; background: linear-gradient(to left, #0f0d1a, transparent); }
+        
         .ticker {
-            display: inline-block;
-            animation: marquee 30s linear infinite;
+            display: inline-flex;
+            animation: marquee 40s linear infinite;
         }
         .ticker-item {
             display: inline-flex;
             align-items: center;
-            margin-right: 40px;
+            margin-right: 48px;
             font-size: 14px;
             font-weight: 500;
+            color: #e2e8f0;
         }
         .ticker-icon {
             width: 24px; height: 24px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
-            margin-right: 8px; font-size: 12px; font-weight: bold;
+            margin-right: 10px; font-size: 11px; font-weight: bold; color: white;
         }
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+
+        /* Custom Scrollbar for Testimonials */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Gradient Backgrounds for CTA */
+        .cta-gradient-1 { background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); }
+        .cta-gradient-2 { background: linear-gradient(135deg, #6d28d9 0%, #be185d 100%); }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased">
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 top-0 start-0 border-b border-white/10 bg-[#0f0d1a]/90 backdrop-blur-md">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <div class="w-8 h-8 rounded bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center font-bold text-white">O</div>
-                <span class="self-center text-xl font-semibold whitespace-nowrap text-white">OBX PRIME</span>
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                </div>
+                <span class="self-center text-xl font-bold whitespace-nowrap text-white tracking-tight">OBX PRIME</span>
             </a>
             <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                <a href="signin.html" class="text-white hover:text-[#7C3AED] font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 transition">Log In</a>
-                <a href="signup.html" class="text-white bg-[#7C3AED] hover:bg-[#6D28D9] focus:ring-4 focus:outline-none focus:ring-purple-900 font-medium rounded-lg text-sm px-4 py-2 text-center transition shadow-lg shadow-purple-900/50">Get Started</a>
+                <a href="signin.html" class="text-gray-300 hover:text-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 transition">Log in</a>
+                <a href="signup.html" class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-900 font-semibold rounded-xl text-sm px-5 py-2.5 text-center transition shadow-lg shadow-purple-600/30">Get Started</a>
             </div>
         </div>
     </nav>
@@ -60,78 +103,345 @@
     <!-- LIVE CRYPTO TICKER (Replaces "Trusted By" Badge) -->
     <div class="ticker-wrap mt-20">
         <div class="ticker">
-            <!-- First Set of Assets -->
-            <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-green-400 ml-2">$43,256 (+2.4%)</span></div>
+            <!-- Set 1 -->
+            <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-emerald-400 ml-2">$43,256 (+2.4%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-blue-500">E</div> ETH <span class="text-red-400 ml-2">$2,284 (-0.5%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-purple-500">S</div> SOL <span class="text-green-400 ml-2">$98.40 (+5.1%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-purple-500">S</div> SOL <span class="text-emerald-400 ml-2">$98.40 (+5.1%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-green-500">U</div> USDT <span class="text-gray-400 ml-2">$1.00 (0.0%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-cyan-500">X</div> XRP <span class="text-green-400 ml-2">$0.62 (+1.2%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-cyan-500">X</div> XRP <span class="text-emerald-400 ml-2">$0.62 (+1.2%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-yellow-500">B</div> BNB <span class="text-red-400 ml-2">$310.20 (-0.8%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-indigo-500">A</div> ADA <span class="text-green-400 ml-2">$0.55 (+3.4%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-indigo-500">A</div> ADA <span class="text-emerald-400 ml-2">$0.55 (+3.4%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-red-500">D</div> DOGE <span class="text-emerald-400 ml-2">$0.08 (+1.1%)</span></div>
             
             <!-- Duplicate Set for Seamless Loop -->
-            <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-green-400 ml-2">$43,256 (+2.4%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-orange-500">B</div> BTC <span class="text-emerald-400 ml-2">$43,256 (+2.4%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-blue-500">E</div> ETH <span class="text-red-400 ml-2">$2,284 (-0.5%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-purple-500">S</div> SOL <span class="text-green-400 ml-2">$98.40 (+5.1%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-purple-500">S</div> SOL <span class="text-emerald-400 ml-2">$98.40 (+5.1%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-green-500">U</div> USDT <span class="text-gray-400 ml-2">$1.00 (0.0%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-cyan-500">X</div> XRP <span class="text-green-400 ml-2">$0.62 (+1.2%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-cyan-500">X</div> XRP <span class="text-emerald-400 ml-2">$0.62 (+1.2%)</span></div>
             <div class="ticker-item"><div class="ticker-icon bg-yellow-500">B</div> BNB <span class="text-red-400 ml-2">$310.20 (-0.8%)</span></div>
-            <div class="ticker-item"><div class="ticker-icon bg-indigo-500">A</div> ADA <span class="text-green-400 ml-2">$0.55 (+3.4%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-indigo-500">A</div> ADA <span class="text-emerald-400 ml-2">$0.55 (+3.4%)</span></div>
+            <div class="ticker-item"><div class="ticker-icon bg-red-500">D</div> DOGE <span class="text-emerald-400 ml-2">$0.08 (+1.1%)</span></div>
         </div>
     </div>
 
     <!-- Hero Section -->
-    <section class="relative pt-10 pb-20 lg:pt-20 lg:pb-28">
-        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
-            <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-                Master the Markets, <br><span class="gradient-text">On Your Terms</span>
-            </h1>
-            <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 lg:px-48">
-                Tap into 100+ global crypto markets with instant execution and payouts up to 95%. Fund with USDT, BTC, or ETH and start from just $10.
-            </p>
-            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-                <a href="signup.html" class="inline-flex justify-center items-center py-3 px-6 text-base font-medium text-center text-white rounded-lg bg-[#7C3AED] hover:bg-[#6D28D9] focus:ring-4 focus:ring-purple-900 shadow-lg shadow-purple-900/40 transition transform hover:-translate-y-1">
-                    Get Started — It's Free
-                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                </a>
-                <a href="#" class="inline-flex justify-center items-center py-3 px-6 text-base font-medium text-center text-white rounded-lg border border-white/20 hover:bg-white/5 focus:ring-4 focus:ring-gray-700 transition ml-4">
-                    Try Demo
-                </a>
+    <section class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 text-center px-4">
+        <h1 class="mb-6 text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] text-white">
+            Master the Markets, <br><span class="gradient-text">On Your Terms</span>
+        </h1>
+        <p class="mb-10 text-lg md:text-xl font-normal text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Tap into 100+ global crypto markets with instant execution and payouts up to 95%. Fund with USDT, BTC, or ETH and start from just $10.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+            <a href="signup.html" class="inline-flex justify-center items-center py-4 px-8 text-base font-bold text-center text-white rounded-2xl bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-900 shadow-xl shadow-purple-600/40 transition transform hover:-translate-y-1">
+                Get Started — It's Free
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
+            </a>
+            <a href="#" class="inline-flex justify-center items-center py-4 px-8 text-base font-bold text-center text-white rounded-2xl border border-white/10 hover:bg-white/5 focus:ring-4 focus:ring-gray-800 transition backdrop-blur-sm">
+                Try Demo
+            </a>
+        </div>
+    </section>
+
+    <!-- Live Chart & Trades Preview (From Screenshot 2) -->
+    <section class="max-w-5xl mx-auto px-4 mb-24">
+        <div class="glass-card p-6 md:p-8">
+            <!-- Mock Chart Header -->
+            <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 font-bold">B</div>
+                    <div>
+                        <div class="font-bold text-lg flex items-center gap-2">BTC/USD <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span></div>
+                        <div class="text-xs text-gray-400">Bitcoin / US Dollar</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-red-400">$43,199.69</div>
+                    <div class="text-xs text-red-400">-0.13%</div>
+                </div>
+            </div>
+            
+            <!-- Mock Chart Area -->
+            <div class="h-48 w-full bg-gradient-to-b from-red-500/5 to-transparent rounded-xl mb-8 relative overflow-hidden border border-white/5">
+                <svg class="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                    <path d="M0,80 Q10,75 20,60 T40,50 T60,70 T80,40 T100,60 V100 H0 Z" fill="rgba(239, 68, 68, 0.1)" />
+                    <path d="M0,80 Q10,75 20,60 T40,50 T60,70 T80,40 T100,60" fill="none" stroke="#ef4444" stroke-width="2" />
+                </svg>
+            </div>
+
+            <!-- Live Trades List -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-sm font-bold text-gray-400 uppercase tracking-wider px-2">
+                    <span>Live Trades</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">↑</div>
+                        <div><div class="font-bold text-white">Emma</div><div class="text-xs text-gray-500">just now</div></div>
+                    </div>
+                    <div class="text-right"><div class="font-bold text-emerald-400">$20</div><div class="text-xs text-gray-500">Higher</div></div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">↑</div>
+                        <div><div class="font-bold text-white">Chris</div><div class="text-xs text-gray-500">just now</div></div>
+                    </div>
+                    <div class="text-right"><div class="font-bold text-emerald-400">$10</div><div class="text-xs text-gray-500">Higher</div></div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs">↓</div>
+                        <div><div class="font-bold text-white">Nina</div><div class="text-xs text-gray-500">just now</div></div>
+                    </div>
+                    <div class="text-right"><div class="font-bold text-red-400">$5</div><div class="text-xs text-gray-500">Lower</div></div>
+                </div>
+            </div>
+            
+            <a href="signup.html" class="block w-full mt-6 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold text-center rounded-xl transition shadow-lg shadow-purple-600/20">Start Trading</a>
+        </div>
+    </section>
+
+    <!-- Features Section (From Screenshots 3 & 4) -->
+    <section class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-3">WHY OBX PRIME</h2>
+            <h3 class="text-4xl md:text-5xl font-extrabold text-white">Everything you need<br>to trade with confidence</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="glass-card p-8 hover:border-purple-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">Instant Execution</h4>
+                <p class="text-gray-400 leading-relaxed">Orders fill in under a second — no lag, no requotes, no missed moments.</p>
+            </div>
+            
+            <div class="glass-card p-8 hover:border-emerald-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">Safe & Secure</h4>
+                <p class="text-gray-400 leading-relaxed">Bank-grade encryption and segregated accounts keep your funds protected.</p>
+            </div>
+            
+            <div class="glass-card p-8 hover:border-purple-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">100+ Markets</h4>
+                <p class="text-gray-400 leading-relaxed">Forex, crypto, stocks, indices and commodities — all under one roof.</p>
+            </div>
+            
+            <div class="glass-card p-8 hover:border-red-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">Zero Hidden Fees</h4>
+                <p class="text-gray-400 leading-relaxed">No charges on deposits or withdrawals. What you see is what you keep.</p>
+            </div>
+            
+            <div class="glass-card p-8 hover:border-cyan-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">Built for Mobile</h4>
+                <p class="text-gray-400 leading-relaxed">A fast, native-feeling app that fits any screen and any pocket.</p>
+            </div>
+            
+            <div class="glass-card p-8 hover:border-purple-500/30 transition duration-300">
+                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <h4 class="text-xl font-bold text-white mb-3">Always-On Support</h4>
+                <p class="text-gray-400 leading-relaxed">Real people, round the clock, on live chat and email whenever you need.</p>
             </div>
         </div>
     </section>
 
-    <!-- Features Grid -->
-    <section id="features" class="bg-[#0f0d1a] py-20 border-t border-white/5">
-        <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-            <div class="max-w-screen-md mb-8 lg:mb-16 text-center mx-auto">
-                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-white">Everything you need to trade with confidence</h2>
+    <!-- 3 Steps Section (From Screenshots 5 & 6) -->
+    <section class="py-20 px-4 max-w-4xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-3">SIMPLE BY DESIGN</h2>
+            <h3 class="text-4xl md:text-5xl font-extrabold text-white">From sign-up to profit<br>in 3 steps</h3>
+        </div>
+        
+        <div class="relative">
+            <!-- Connecting Line -->
+            <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-600 to-pink-600 -translate-x-1/2 hidden md:block opacity-30"></div>
+            
+            <!-- Step 1 -->
+            <div class="relative flex flex-col md:flex-row items-center mb-16">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-2xl font-bold text-white shadow-xl shadow-purple-600/30 z-10 mb-4 md:mb-0">1</div>
+                <div class="glass-card p-8 w-full md:w-[calc(100%-6rem)] md:ml-8 text-center md:text-left">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 mx-auto md:mx-0 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-white mb-2">Create Account</h4>
+                    <p class="text-gray-400">Sign up free in under a minute — no paperwork to get going.</p>
+                </div>
             </div>
-            <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
-                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
-                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#7C3AED]/20 text-[#7C3AED] mx-auto"></div>
-                    <h3 class="mb-2 text-xl font-bold text-white text-center">Instant Execution</h3>
-                    <p class="text-gray-400 text-center">Orders fill in under a second — no lag, no requotes, no missed moments.</p>
+            
+            <!-- Step 2 -->
+            <div class="relative flex flex-col md:flex-row items-center mb-16">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-2xl font-bold text-white shadow-xl shadow-purple-600/30 z-10 mb-4 md:mb-0">2</div>
+                <div class="glass-card p-8 w-full md:w-[calc(100%-6rem)] md:ml-8 text-center md:text-left">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 mx-auto md:mx-0 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-white mb-2">Add Funds</h4>
+                    <p class="text-gray-400">Top up instantly with crypto or card, from as little as $10.</p>
                 </div>
-                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
-                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#10B981]/20 text-[#10B981] mx-auto">🛡️</div>
-                    <h3 class="mb-2 text-xl font-bold text-white text-center">Safe & Secure</h3>
-                    <p class="text-gray-400 text-center">Bank-grade encryption and segregated accounts keep your funds protected.</p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="relative flex flex-col md:flex-row items-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-2xl font-bold text-white shadow-xl shadow-purple-600/30 z-10 mb-4 md:mb-0">3</div>
+                <div class="glass-card p-8 w-full md:w-[calc(100%-6rem)] md:ml-8 text-center md:text-left">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 mx-auto md:mx-0 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-white mb-2">Trade & Win</h4>
+                    <p class="text-gray-400">Pick an asset, call the direction, and cash in up to 95% profit.</p>
                 </div>
-                <div class="glass-card p-6 rounded-xl hover:border-[#7C3AED]/50 transition duration-300">
-                    <div class="flex justify-center items-center mb-4 w-10 h-10 rounded bg-[#F59E0B]/20 text-[#F59E0B] mx-auto"></div>
-                    <h3 class="mb-2 text-xl font-bold text-white text-center">100+ Markets</h3>
-                    <p class="text-gray-400 text-center">Forex, crypto, stocks, indices and commodities — all under one roof.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar (From Screenshot 7) -->
+    <section class="border-y border-white/5 bg-[#130f1c]/50 py-12">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">1M+</div>
+                <div class="text-gray-400 font-medium">Active traders</div>
+            </div>
+            <div>
+                <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">$2B+</div>
+                <div class="text-gray-400 font-medium">Total traded</div>
+            </div>
+            <div>
+                <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">150+</div>
+                <div class="text-gray-400 font-medium">Countries</div>
+            </div>
+            <div>
+                <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">4.9/5</div>
+                <div class="text-gray-400 font-medium">User rating</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials (From Screenshots 8 & 9) -->
+    <section class="py-24 px-4 max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-3">TRADER STORIES</h2>
+            <h3 class="text-4xl md:text-5xl font-extrabold text-white">Loved by traders<br>everywhere</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card p-8">
+                <div class="flex text-yellow-400 mb-4 text-lg">★★★★★</div>
+                <p class="text-gray-300 text-lg mb-6 leading-relaxed">"Crypto deposits land instantly and payouts hit my wallet in seconds. OBX PRIME just works."</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">BO</div>
+                    <div><div class="font-bold text-white">Brian O.</div><div class="text-xs text-gray-500">Nairobi</div></div>
                 </div>
+            </div>
+            
+            <div class="glass-card p-8">
+                <div class="flex text-yellow-400 mb-4 text-lg">★★★★★</div>
+                <p class="text-gray-300 text-lg mb-6 leading-relaxed">"Clean, fast, no clutter. I place a trade in two taps and the charts never lag."</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">PN</div>
+                    <div><div class="font-bold text-white">Priya N.</div><div class="text-xs text-gray-500">Dubai</div></div>
+                </div>
+            </div>
+            
+            <div class="glass-card p-8">
+                <div class="flex text-yellow-400 mb-4 text-lg">★★★★★</div>
+                <p class="text-gray-300 text-lg mb-6 leading-relaxed">"Tried a dozen platforms over the years — this one finally feels built for real traders."</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">ML</div>
+                    <div><div class="font-bold text-white">Marcus L.</div><div class="text-xs text-gray-500">Toronto</div></div>
+                </div>
+            </div>
+            
+            <div class="glass-card p-8">
+                <div class="flex text-yellow-400 mb-4 text-lg">★★★★★</div>
+                <p class="text-gray-300 text-lg mb-6 leading-relaxed">"Started on the demo, moved to live in a week. Withdrawals have never let me down."</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">AS</div>
+                    <div><div class="font-bold text-white">Amina S.</div><div class="text-xs text-gray-500">Lagos</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Block 1 (From Screenshot 10) -->
+    <section class="px-4 mb-8">
+        <div class="max-w-5xl mx-auto cta-gradient-1 rounded-[32px] p-10 md:p-16 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 relative z-10">Your next trade<br>starts here</h2>
+            <p class="text-purple-100 text-lg mb-10 max-w-2xl mx-auto relative z-10">Join over a million traders on OBX PRIME. Open your free account in under a minute.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+                <a href="signup.html" class="bg-white text-purple-700 font-bold py-4 px-8 rounded-2xl hover:bg-gray-100 transition shadow-xl">Create Free Account →</a>
+                <a href="#" class="border border-white/30 text-white font-bold py-4 px-8 rounded-2xl hover:bg-white/10 transition">Try Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Block 2 / App Download (From Screenshot 11) -->
+    <section class="px-4 mb-24">
+        <div class="max-w-5xl mx-auto cta-gradient-2 rounded-[32px] p-10 md:p-16 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
+            
+            <!-- Phone Mockup Placeholder -->
+            <div class="w-32 h-56 border-4 border-white/20 rounded-[2rem] mx-auto mb-8 relative flex items-center justify-center bg-black/20 backdrop-blur-sm">
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                    </div>
+                    <div class="text-[10px] text-white/70 font-bold">OBX PRIME</div>
+                </div>
+                <div class="absolute -bottom-3 -right-3 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </div>
+            </div>
+
+            <div class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-bold text-white mb-6 backdrop-blur-sm">⚡ Android App Available</div>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 relative z-10">Your market, in your<br>pocket</h2>
+            <p class="text-purple-100 text-lg mb-10 max-w-2xl mx-auto relative z-10">Get the OBX PRIME app for a faster, smoother trading experience wherever you go.</p>
+            <a href="#" class="inline-flex items-center justify-center bg-white text-purple-700 font-bold py-4 px-10 rounded-2xl hover:bg-gray-100 transition shadow-xl relative z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download App →
+            </a>
+            <div class="flex justify-center gap-6 mt-8 text-sm text-purple-200/60 relative z-10">
+                <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Secure</span>
+                <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Lightweight</span>
+                <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Push Alerts</span>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="p-4 bg-[#0f0d1a] md:p-8 lg:p-10 border-t border-white/5">
-        <div class="mx-auto max-w-screen-xl text-center">
-            <span class="text-sm text-gray-500 sm:text-center">© 2026 OBX PRIME™. All Rights Reserved.</span>
+    <footer class="border-t border-white/5 bg-[#0f0d1a] py-12 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center font-bold text-white">O</div>
+                <span class="text-xl font-bold text-white">OBX PRIME</span>
+            </div>
+            <div class="flex gap-8 text-sm text-gray-400">
+                <a href="#" class="hover:text-white transition">Privacy</a>
+                <a href="#" class="hover:text-white transition">Terms</a>
+                <a href="#" class="hover:text-white transition">Support</a>
+            </div>
+            <div class="text-sm text-gray-500">© 2026 OBX PRIME. All rights reserved.</div>
         </div>
     </footer>
+
 </body>
 </html>
