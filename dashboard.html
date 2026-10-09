@@ -247,11 +247,11 @@ body.light-theme .volatility-item-price { color: #6b7280; }
     <!-- Sidebar Scrollable Content -->
     <div class="flex-1 overflow-y-auto no-scrollbar py-2">
         <!-- User Profile -->
-        <div class="flex items-center gap-3 px-4 py-4 border-b border-white/10">
-            <div class="w-12 h-12 rounded-full bg-[#7C3AED] flex items-center justify-center text-white font-bold text-xl shrink-0">C</div>
+        <div onclick="window.location.href='profile.html'" class="flex items-center gap-3 px-4 py-4 border-b border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
+            <div id="menu-avatar" class="w-12 h-12 rounded-full bg-[#7C3AED] flex items-center justify-center text-white font-bold text-xl shrink-0">U</div>
             <div class="min-w-0">
-                <div class="text-white font-bold text-base truncate">Citra Slamet</div>
-                <div class="text-gray-400 text-sm truncate">ci***t7@gmail.com</div>
+                <div id="menu-username" class="text-white font-bold text-base truncate">User</div>
+                <div id="menu-useremail" class="text-gray-400 text-sm truncate">user@email.com</div>
             </div>
         </div>
         <!-- Menu Items -->
@@ -359,6 +359,11 @@ body.light-theme .volatility-item-price { color: #6b7280; }
             </div>
         </div>
     </div>
+   <!-- LOG OUT BUTTON -->
+<div onclick="logoutUser()" class="flex items-center gap-3 px-4 py-3.5 text-red-400 hover:bg-red-500/10 cursor-pointer transition-colors mt-2 border-t border-white/5 pt-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    <span class="text-[15px] font-medium">Log Out</span>
+</div>
     <!-- Sidebar Footer -->
     <div class="px-4 py-3 border-t border-white/10 text-center text-gray-500 text-xs flex items-center justify-center gap-2 bg-[#130f1c]">
         <span id="menu-datetime">2026-09-24 14:20:51 GMT</span>
@@ -2397,6 +2402,43 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script>
 // Simple logout function for dashboard
+function logoutUser() {
+    if(confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'signin.html';
+    }
+}
+</script>
+<script>
+// ==========================================
+// LOAD USER PROFILE & HANDLE LOGOUT
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Load User Data from LocalStorage
+    const savedName = localStorage.getItem('userName') || 'Trader';
+    const savedEmail = localStorage.getItem('userEmail') || 'guest@obxprime.com';
+    
+    // 2. Update Menu Elements
+    const avatarEl = document.getElementById('menu-avatar');
+    const nameEl = document.getElementById('menu-username');
+    const emailEl = document.getElementById('menu-useremail');
+    
+    if(nameEl) nameEl.innerText = savedName;
+    if(emailEl) emailEl.innerText = savedEmail;
+    if(avatarEl) {
+        // Set avatar to first letter of name
+        avatarEl.innerText = savedName.charAt(0).toUpperCase();
+    }
+
+    // 3. Check if logged in, if not redirect to signin
+    if(localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'signin.html';
+    }
+});
+
+// Logout Function
 function logoutUser() {
     if(confirm('Are you sure you want to log out?')) {
         localStorage.removeItem('isLoggedIn');
