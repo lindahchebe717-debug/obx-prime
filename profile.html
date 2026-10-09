@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBX PRIME | My Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { background-color: #141021; color: white; font-family: system-ui; }</style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-md mx-auto mt-10 bg-[#1F1936] rounded-2xl p-6 border border-white/10">
+        <div class="text-center mb-6">
+            <div id="profile-avatar" class="w-20 h-20 rounded-full bg-[#7C3AED] mx-auto flex items-center justify-center text-3xl font-bold mb-3">U</div>
+            <h1 id="profile-name" class="text-2xl font-bold">User Name</h1>
+            <p id="profile-email" class="text-gray-400">email@example.com</p>
+        </div>
+        
+        <div class="space-y-3">
+            <button onclick="window.location.href='dashboard.html'" class="w-full py-3 bg-[#7C3AED] rounded-xl font-semibold">Back to Trading</button>
+            <button onclick="logoutUser()" class="w-full py-3 border border-red-500/50 text-red-400 rounded-xl font-semibold hover:bg-red-500/10">Log Out</button>
+        </div>
+    </div>
+
+    <script>
+        // Load profile data
+        document.addEventListener('DOMContentLoaded', () => {
+            const name = localStorage.getItem('userName') || 'Guest';
+            const email = localStorage.getItem('userEmail') || 'N/A';
+            
+            document.getElementById('profile-name').innerText = name;
+            document.getElementById('profile-email').innerText = email;
+            document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+            
+            if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'signin.html';
+        });
+
+        function logoutUser() {
+            localStorage.clear();
+            window.location.href = 'signin.html';
+        }
+    </script>
+</body>
+</html>
