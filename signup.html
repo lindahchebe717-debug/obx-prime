@@ -43,7 +43,7 @@
             <!-- Full Name -->
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
-                <input type="text" id="signup-name" required placeholder="e.g., Citra Slamet" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
+                <input type="text" id="signup-name" required placeholder="e.g., John Doe" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
             </div>
 
             <!-- Email -->
@@ -113,9 +113,10 @@
 
             // Simulate API call delay
             setTimeout(() => {
-                // Save user data locally for demo purposes
+                // Save ALL user data locally for the dashboard to read
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userName', document.getElementById('signup-name').value);
+                localStorage.setItem('userEmail', document.getElementById('signup-email').value);
                 
                 // Redirect to dashboard
                 window.location.href = 'dashboard.html';
