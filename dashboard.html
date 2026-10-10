@@ -9,7 +9,7 @@
 /* ========================================= GLOBAL & THEME STYLES ========================================== */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-body { background-color: #141021; color: white; font-family: system-ui, sans-serif; }
+body { background-color: #141021; color: white; font-family: system-ui, sans-serif; overflow: hidden; }
 
 /* Light theme classes */
 body.light-theme { background-color: #f9fafb; color: #1f2937; }
@@ -36,8 +36,37 @@ div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: 
 .stats-right { font-size: 14px; font-weight: 700; color: #10B981; }
 .stats-right.loss { color: #ff444f; }
 
-/* PASTE YOUR COMPLETE TRADING CSS HERE FROM THE OLD FILE */
-/* Include: Global Styles, Theme Classes, Chat Styles, Modal Styles, Digit Styles, etc. */
+/* Volatility Dropdown */
+.volatility-dropdown { position: absolute; top: 100%; left: 0; margin-top: 6px; background: #1e1b4b; border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); z-index: 100; min-width: 200px; max-height: 320px; overflow-y: auto; display: none; }
+.volatility-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.volatility-item { padding: 8px 12px; cursor: pointer; transition: all 0.15s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.volatility-item:last-child { border-bottom: none; }
+.volatility-item:hover { background: rgba(124, 58, 237, 0.15); }
+.volatility-item.active { background: rgba(124, 58, 237, 0.25); color: #A78BFA; }
+.volatility-item-name { font-size: 11px; font-weight: 600; color: white; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.volatility-item-price { font-size: 9px; color: #9ca3af; }
+
+/* Quick Stake Buttons */
+.quick-stake-btn { background-color: rgba(255, 255, 255, 0.06); color: rgb(148, 163, 184); border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 6px 0; font-weight: 700; transition: all 0.15s ease; }
+.quick-stake-btn:hover { background-color: rgba(124, 58, 237, 0.15); border-color: rgba(124, 58, 237, 0.4); color: rgb(167, 139, 250); }
+.quick-stake-btn.active { background-color: rgba(124, 58, 237, 0.2); border-color: rgba(124, 58, 237, 0.5); color: rgb(167, 139, 250); }
+
+/* TSM Boxes */
+.tsm-box { background-color: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 10px; }
+
+/* Notification Animation */
+@keyframes slideDownNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: slideDownNotif 0.2s ease-out; }
+.notif-item { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; cursor: pointer; }
+.notif-item:hover { background: rgba(124, 58, 237, 0.1); }
+.notif-item.unread { background: rgba(124, 58, 237, 0.05); }
+.notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { color: white; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.notif-desc { color: #9ca3af; font-size: 11px; line-height: 1.4; }
+.notif-time { color: #6b7280; font-size: 10px; margin-top: 4px; }
+.notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #7C3AED; flex-shrink: 0; align-self: center; }
 </style>
 </head>
 <body class="antialiased text-white">
@@ -483,9 +512,6 @@ div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: 
     </div>
 </div>
 
-<!-- PASTE YOUR EXISTING MODALS HERE (AI Scanner, Deposit, Withdraw, Refer & Earn, Insufficient Balance, V2 Chat) -->
-<!-- They should remain exactly as they were in your old file -->
-
 <!-- BACKGROUND MUSIC -->
 <audio id="obx-bg-music" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
@@ -493,13 +519,327 @@ div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: 
 
 <!-- JAVASCRIPT LOGIC -->
 <script>
-// PASTE YOUR COMPLETE TRADING JS HERE FROM THE OLD FILE
-// Include: Sound Toggle, Dark Theme, Volatility Dropdown, Modals, 
-// Account Switching, Trade Type Switching, AI Scanner, Auto/Manual Toggle,
-// Auto Trading Logic, Highlight Stake Button, Trading Logic, Chart Drawing,
-// Adjust/Set Stake, Update Payouts, Place Trade, Price Interval, Resize Listener,
-// V2 Chat System, WhatsApp Voice Note Logic, Refer & Earn Logic, 
-// Insufficient Balance Logic, Initialization & Navigation Fixes
+// ==========================================
+// CORE TRADING LOGIC & SIMULATION
+// ==========================================
+let balance = 0.00;
+let price = 9501.21;
+let lastDigit = 2;
+let priceHistory = [];
+let digitCounts = [0,0,0,0,0,0,0,0,0,0];
+let totalTicks = 0;
+let currentAccount = 'real';
+let isDarkTheme = true;
+let currentTradeType = 'even';
+let currentTradingMode = 'auto';
+let autoTradeInterval = null;
+let autoTradeChoice = null;
+let isAutoTrading = false;
+let isShowingAlert = false;
+
+function initDigits() {
+    const container = document.getElementById('digits-container');
+    if (!container) return;
+    container.innerHTML = '';
+    for(let i=0; i<=9; i++) {
+        const div = document.createElement('div');
+        div.className = 'flex flex-col items-center';
+        div.innerHTML = `
+        <div class="relative" id="digit-wrapper-${i}" style="transform: scale(1); transition: transform 0.15s ease-out;">
+            <svg width="42" height="42" class="transform -rotate-90">
+                <circle class="digit-circle-bg" cx="21" cy="21" r="18" fill="#1F1936" stroke="rgba(255,255,255,0.07)" stroke-width="2"></circle>
+                <circle class="digit-circle-ring" id="digit-ring-${i}" cx="21" cy="21" r="18" fill="transparent" stroke="#3a4459" stroke-width="2.5" stroke-dasharray="113.1" stroke-dashoffset="113.1" stroke-linecap="round" style="transition: stroke 0.15s ease-out;"></circle>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="digit-val text-sm font-bold" id="digit-val-${i}" style="color: rgb(255, 255, 255);">${i}</span>
+                <span class="digit-pct text-[8px] leading-none font-medium" id="digit-pct-${i}" style="color: rgb(156, 163, 175);">0.0%</span>
+            </div>
+        </div>`;
+        container.appendChild(div);
+    }
+}
+initDigits();
+
+function drawChart(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || priceHistory.length < 2) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    const width = rect.width;
+    const height = rect.height;
+    const min = Math.min(...priceHistory) - 5;
+    const max = Math.max(...priceHistory) + 5;
+    const range = max - min || 1;
+    ctx.clearRect(0, 0, width, height);
+    const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+    const textColor = isDarkTheme ? '#9ca3af' : '#6b7280';
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([3, 3]);
+    for (let i = 1; i < 5; i++) {
+        const y = (height / 5) * i;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+        const priceValue = max - ((range / 5) * i);
+        ctx.fillStyle = textColor; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(priceValue.toFixed(2), width - 5, y + 4);
+    }
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937';
+    ctx.lineWidth = 1.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    for(let i=0; i<priceHistory.length; i++) {
+        const x = (i / (priceHistory.length - 1)) * width;
+        const y = height - ((priceHistory[i] - min) / range) * height;
+        if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+}
+
+function adjustStake(amt) {
+    let val = parseInt(document.getElementById('stake-input').value) + amt;
+    if (val < 1) val = 1;
+    setStake(val);
+}
+function setStake(amt) {
+    document.getElementById('stake-input').value = amt;
+    if(document.getElementById('desktop-stake')) document.getElementById('desktop-stake').value = amt;
+    updatePayouts();
+}
+function updatePayouts() {
+    const stake = parseInt(document.getElementById('stake-input').value) || 10;
+    const payout = (stake * 1.952).toFixed(2);
+    document.getElementById('even-payout').innerText = '$' + payout;
+    document.getElementById('odd-payout').innerText = '$' + payout;
+    if(document.getElementById('desktop-even-payout')) document.getElementById('desktop-even-payout').innerText = payout;
+    if(document.getElementById('desktop-odd-payout')) document.getElementById('desktop-odd-payout').innerText = payout;
+}
+
+function placeTrade(choice) {
+    if (currentTradingMode === 'auto') { startAutoTrade(choice); return; }
+    let stake = parseInt(document.getElementById('stake-input').value) || 10;
+    if(stake > balance) {
+        if(currentAccount === 'real') alert("Insufficient balance!"); // Simplified for demo
+        else alert("Insufficient balance!");
+        return;
+    }
+    setTimeout(() => {
+        let won = false;
+        if (choice === 'Even') won = lastDigit % 2 === 0;
+        else if (choice === 'Odd') won = lastDigit % 2 !== 0;
+        else if (choice === 'Over') won = lastDigit > 5;
+        else if (choice === 'Under') won = lastDigit < 5;
+        else if (choice === 'Differs') won = true;
+        
+        if(won && choice !== 'Matches') {
+            balance += stake * 0.952;
+            if(window.updateSessionStats) window.updateSessionStats(stake * 0.952, true);
+        } else {
+            balance -= stake;
+            if(window.updateSessionStats) window.updateSessionStats(-stake, false);
+        }
+        document.getElementById('header-balance').innerText = balance.toFixed(2);
+        if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+    }, 500);
+}
+
+function startAutoTrade(choice) {
+    if (autoTradeInterval) { clearInterval(autoTradeInterval); autoTradeInterval = null; }
+    isAutoTrading = true;
+    autoTradeChoice = choice;
+    document.getElementById('even-btn').classList.add('hidden');
+    document.getElementById('stop-btn').classList.remove('hidden');
+    executeAutoTrade();
+    autoTradeInterval = setInterval(() => { executeAutoTrade(); }, 2000);
+}
+
+function executeAutoTrade() {
+    let stake = parseInt(document.getElementById('stake-input').value) || 10;
+    if(stake > balance) { stopAutoTrade(); return; }
+    let won = false;
+    if (autoTradeChoice === 'Even') won = lastDigit % 2 === 0;
+    else if (autoTradeChoice === 'Odd') won = lastDigit % 2 !== 0;
+    if(won) balance += stake * 0.952;
+    else balance -= stake;
+    document.getElementById('header-balance').innerText = balance.toFixed(2);
+    if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
+}
+
+function stopAutoTrade() {
+    isAutoTrading = false;
+    if (autoTradeInterval) { clearInterval(autoTradeInterval); autoTradeInterval = null; }
+    document.getElementById('stop-btn').classList.add('hidden');
+    document.getElementById('even-btn').classList.remove('hidden');
+}
+
+function setTradeType(type) {
+    currentTradeType = type;
+    ['trade-matches', 'trade-even', 'trade-over'].forEach(id => {
+        const btn = document.getElementById(id);
+        btn.classList.remove('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+        btn.classList.add('text-gray-500', 'hover:text-white');
+    });
+    document.getElementById('even-odd-buttons').classList.add('hidden');
+    document.getElementById('over-under-buttons').classList.add('hidden');
+    document.getElementById('matches-differs-buttons').classList.add('hidden');
+    document.getElementById('digit-selector').classList.add('hidden');
+    
+    const activeBtn = document.getElementById(`trade-${type}`);
+    activeBtn.classList.remove('text-gray-500', 'hover:text-white');
+    activeBtn.classList.add('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
+    
+    if (type === 'even') document.getElementById('even-odd-buttons').classList.remove('hidden');
+    else if (type === 'over') {
+        document.getElementById('over-under-buttons').classList.remove('hidden');
+        document.getElementById('digit-selector').classList.remove('hidden');
+    } else if (type === 'matches') {
+        document.getElementById('matches-differs-buttons').classList.remove('hidden');
+        document.getElementById('digit-selector').classList.remove('hidden');
+    }
+}
+
+function selectDigit(digit) {
+    document.querySelectorAll('.digit-btn').forEach(btn => {
+        btn.classList.remove('bg-[#7C3AED]');
+        btn.classList.add('bg-[#282041]');
+    });
+    event.target.classList.remove('bg-[#282041]');
+    event.target.classList.add('bg-[#7C3AED]');
+}
+
+function highlightStakeBtn(btn) {
+    document.querySelectorAll('.quick-stake-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function setTradingMode(mode) {
+    currentTradingMode = mode;
+    const mobileAutoBtn = document.getElementById('mobile-auto-btn');
+    const mobileManualBtn = document.getElementById('mobile-manual-btn');
+    if (mode === 'auto') {
+        mobileAutoBtn.style.backgroundColor = 'rgb(124, 58, 237)'; mobileAutoBtn.style.color = 'rgb(255, 255, 255)';
+        mobileManualBtn.style.backgroundColor = 'transparent'; mobileManualBtn.style.color = 'rgb(148, 163, 184)';
+    } else {
+        mobileManualBtn.style.backgroundColor = 'rgb(124, 58, 237)'; mobileManualBtn.style.color = 'rgb(255, 255, 255)';
+        mobileAutoBtn.style.backgroundColor = 'transparent'; mobileAutoBtn.style.color = 'rgb(148, 163, 184)';
+    }
+}
+
+function toggleVolatilityDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('volatility-dropdown').classList.toggle('show');
+}
+
+function selectVolatility(name, element) {
+    document.getElementById('selected-volatility').textContent = name.split(' ')[1] + ' ' + name.split(' ')[2];
+    document.querySelectorAll('.volatility-item').forEach(item => item.classList.remove('active'));
+    element.classList.add('active');
+    document.getElementById('volatility-dropdown').classList.remove('show');
+    
+    const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67 };
+    price = basePrices[name] || 9501.21;
+    priceHistory = [];
+}
+
+function toggleSound() {
+    const iconOn = document.getElementById('sound-icon-on');
+    const iconOff = document.getElementById('sound-icon-off');
+    const audio = document.getElementById('obx-bg-music');
+    if (iconOn.classList.contains('hidden')) {
+        iconOn.classList.remove('hidden');
+        iconOff.classList.add('hidden');
+        audio.play().catch(e => {});
+    } else {
+        iconOn.classList.add('hidden');
+        iconOff.classList.remove('hidden');
+        audio.pause();
+    }
+}
+
+function openMenu() {
+    document.getElementById('menu-overlay').classList.remove('hidden');
+    const sidebar = document.getElementById('menu-sidebar');
+    sidebar.classList.remove('hidden');
+    setTimeout(() => { sidebar.style.transform = 'translateX(0)'; }, 10);
+}
+function closeMenu() {
+    const sidebar = document.getElementById('menu-sidebar');
+    sidebar.style.transform = 'translateX(-100%)';
+    setTimeout(() => {
+        sidebar.classList.add('hidden');
+        document.getElementById('menu-overlay').classList.add('hidden');
+    }, 300);
+}
+
+function toggleAccountDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('account-dropdown').classList.toggle('hidden');
+}
+function toggleAccountDropdownDesktop(event) {
+    event.stopPropagation();
+    document.getElementById('account-dropdown-desktop').classList.toggle('hidden');
+}
+
+function toggleNotifications(e) {
+    e.stopPropagation();
+    document.getElementById('notifications-dropdown').classList.toggle('hidden');
+}
+function markAsRead(item) {
+    const dot = item.querySelector('.notif-unread-dot');
+    if(dot) dot.style.display = 'none';
+    item.classList.remove('unread');
+}
+function markAllAsRead() {
+    document.querySelectorAll('.notif-unread-dot').forEach(d => d.style.display = 'none');
+    document.querySelectorAll('.notif-item').forEach(i => i.classList.remove('unread'));
+}
+
+function openAIScanner() {
+    alert("AI Scanner Modal would open here.");
+}
+
+// Price Simulation Loop
+setInterval(() => {
+    const change = (Math.random() - 0.5) * 3;
+    price += change;
+    const pStr = price.toFixed(2);
+    lastDigit = parseInt(pStr.split('.')[1].slice(-1));
+    document.getElementById('chart-price-display').innerText = pStr;
+    if(document.getElementById('desktop-price')) document.getElementById('desktop-price').innerText = pStr;
+    
+    priceHistory.push(price);
+    if(priceHistory.length > 60) priceHistory.shift();
+    drawChart('priceChart');
+    drawChart('desktopChart');
+    
+    digitCounts[lastDigit]++;
+    totalTicks++;
+    for(let i=0; i<=9; i++) {
+        const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100) : 0;
+        document.getElementById(`digit-pct-${i}`).innerText = pct.toFixed(1) + '%';
+        const offset = 113.1 - (113.1 * (pct / 100));
+        document.getElementById(`digit-ring-${i}`).setAttribute('stroke-dashoffset', offset);
+        
+        const valEl = document.getElementById(`digit-val-${i}`);
+        const ringEl = document.getElementById(`digit-ring-${i}`);
+        if(i === lastDigit) {
+            valEl.style.color = '#ffffff';
+            ringEl.setAttribute('stroke', '#f59e0b');
+        } else {
+            valEl.style.color = '#ffffff';
+            ringEl.setAttribute('stroke', '#3a4459');
+        }
+    }
+}, 1000);
+
+window.addEventListener('resize', () => { drawChart('priceChart'); drawChart('desktopChart'); });
+setTimeout(() => { drawChart('priceChart'); drawChart('desktopChart'); }, 100);
+updatePayouts();
 </script>
 
 <!-- UNIFIED CLEAN SCRIPT FOR PROFILE, LOGOUT, AND FIXES -->
@@ -593,20 +933,6 @@ document.addEventListener('DOMContentLoaded', function() {
         balance = 0.00; if (typeof realBalance !== 'undefined') realBalance = 0.00;
         const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
         if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
-    }
-
-    const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
-    if (v2Input && v2Send) {
-        v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
-        v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
-    }
-
-    if (typeof updateChartForVolatility === 'function') {
-        const originalUpdate = updateChartForVolatility;
-        updateChartForVolatility = function(name) {
-            const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
-            price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
-        };
     }
 
     const mobDrop = document.getElementById('account-dropdown'); const deskDrop = document.getElementById('account-dropdown-desktop');
