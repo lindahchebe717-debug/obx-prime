@@ -1126,1208 +1126,145 @@ View Once
 </div>
 <!-- BACKGROUND MUSIC -->
 <audio id="obx-bg-music" loop preload="auto">
-<source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
 </audio>
-<!-- JAVASCRIPT LOGIC -->
-<script>
-// ==========================================
-// AUTHENTICATION CHECK (ADD THIS FIRST)
-// ==========================================
-document.addEventListener('DOMContentLoaded', function() {
-// Check if user is logged in
-if(localStorage.getItem('isLoggedIn') !== 'true') {
-// Not logged in - redirect to sign in page
-window.location.href = 'signin.html';
-}
-});
-// ==========================================
-// SOUND TOGGLE FUNCTION
-// ==========================================
-let isSoundOn = true;
-function toggleSound() {
-isSoundOn = !isSoundOn;
-const iconOn = document.getElementById('sound-icon-on');
-const iconOff = document.getElementById('sound-icon-off');
-if (isSoundOn) {
-iconOn.classList.remove('hidden');
-iconOff.classList.add('hidden');
-} else {
-iconOn.classList.add('hidden');
-iconOff.classList.remove('hidden');
-}
-}
-// ==========================================
-// DARK THEME TOGGLE FUNCTION
-// ==========================================
-let isDarkTheme = true;
-function toggleDarkTheme() {
-isDarkTheme = !isDarkTheme;
-const toggle = document.getElementById('dark-theme-toggle');
-const body = document.body;
-if (isDarkTheme) {
-toggle.style.right = '4px';
-toggle.style.backgroundColor = 'white';
-body.classList.remove('light-theme');
-} else {
-toggle.style.right = '20px';
-toggle.style.backgroundColor = '#1f2937';
-body.classList.add('light-theme');
-}
-}
-// ==========================================
-// VOLATILITY DROPDOWN FUNCTIONS
-// ==========================================
-function toggleVolatilityDropdown(event) {
-event.stopPropagation();
-const dropdown = document.getElementById('volatility-dropdown');
-dropdown.classList.toggle('show');
-}
-function selectVolatility(name, element) {
-document.getElementById('selected-volatility').textContent = name.split(' ')[1] + ' ' + name.split(' ')[2];
-document.querySelectorAll('.volatility-item').forEach(item => { item.classList.remove('active'); });
-element.classList.add('active');
-document.getElementById('volatility-dropdown').classList.remove('show');
-updateChartForVolatility(name);
-}
-function updateChartForVolatility(volatilityName) {
-const basePrices = {
-'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67,
-'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23,
-'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45
-};
-price = basePrices[volatilityName] || 9501.21;
-priceHistory = [];
-totalTicks = 0;
-digitCounts = [0,0,0,0,0,0,0,0,0,0];
-}
-document.addEventListener('click', function(event) {
-const dropdown = document.getElementById('volatility-dropdown');
-const button = event.target.closest('button');
-if (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown')) {
-dropdown.classList.remove('show');
-}
-});
-// ==========================================
-// DEPOSIT/WITHDRAW MODAL FUNCTIONS
-// ==========================================
-function openDepositModal() { document.getElementById('deposit-modal').classList.remove('hidden'); }
-function closeDepositModal() { document.getElementById('deposit-modal').classList.add('hidden'); }
-function selectPayment(method) {
-let methodName = method === 'mpesa' ? 'M-Pesa' : method === 'usdt' ? 'USDT (TRC20)' : 'Card';
-alert(`${methodName} payment selected. Redirecting to payment gateway...`);
-closeDepositModal();
-}
-function openWithdrawModal() {
-document.getElementById('withdraw-balance').textContent = balance.toFixed(2);
-document.getElementById('withdraw-modal').classList.remove('hidden');
-}
-function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.add('hidden'); }
-function selectWithdrawMethod(method) {
-let methodName = method === 'mpesa' ? 'M-Pesa' : 'USDT (TRC20)';
-alert(`${methodName} withdrawal selected. Redirecting to withdrawal page...`);
-closeWithdrawModal();
-}
-// ==========================================
-// MENU FUNCTIONS
-// ==========================================
-function openMenu() {
-document.getElementById('menu-overlay').classList.remove('hidden');
-const sidebar = document.getElementById('menu-sidebar');
-sidebar.classList.remove('hidden');
-setTimeout(() => { sidebar.style.transform = 'translateX(0)'; }, 10);
-}
-function closeMenu() {
-const sidebar = document.getElementById('menu-sidebar');
-sidebar.style.transform = 'translateX(-100%)';
-setTimeout(() => {
-sidebar.classList.add('hidden');
-document.getElementById('menu-overlay').classList.add('hidden');
-}, 300);
-}
-function toggleAccountSettings() {
-const submenu = document.getElementById('account-settings-submenu');
-const arrow = document.getElementById('account-settings-arrow');
-if (submenu.classList.contains('hidden')) {
-submenu.classList.remove('hidden');
-arrow.style.transform = 'rotate(180deg)';
-} else {
-submenu.classList.add('hidden');
-arrow.style.transform = 'rotate(0deg)';
-}
-}
-// ==========================================
-// ACCOUNT SWITCHING FUNCTIONS
-// ==========================================
-let currentAccount = 'real';
-let realBalance = 0.00; // Real starts at 0
-let demoBalance = 10000.00;
-function toggleAccountDropdown(event) {
-event.stopPropagation();
-const dropdown = document.getElementById('account-dropdown');
-dropdown.classList.toggle('hidden');
-document.getElementById('account-dropdown-desktop')?.classList.add('hidden');
-}
-function toggleAccountDropdownDesktop(event) {
-event.stopPropagation();
-const dropdown = document.getElementById('account-dropdown-desktop');
-dropdown.classList.toggle('hidden');
-document.getElementById('account-dropdown')?.classList.add('hidden');
-}
-// This function is overridden later in the script to handle UI updates properly
-function switchAccount(type) {
-currentAccount = type;
-balance = type === 'demo' ? 10000.00 : 0.00;
-// Update UI elements
-const headerBal = document.getElementById('header-balance');
-const desktopBal = document.getElementById('desktop-balance');
-const headerIcon = document.getElementById('account-type-icon');
-const desktopIcon = document.getElementById('desktop-account-type-icon');
-if (type === 'demo') {
-if(headerBal) { headerBal.innerText = balance.toFixed(2); headerBal.className = 'text-xs font-bold demo-active-text'; }
-if(desktopBal) { desktopBal.innerText = balance.toFixed(2); desktopBal.className = 'text-sm font-bold demo-active-text'; }
-if(headerIcon) { headerIcon.innerText = 'D'; headerIcon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all demo-active-bg text-white'; }
-if(desktopIcon) { desktopIcon.innerText = 'D'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all demo-active-bg text-white shadow-lg shadow-red-500/30'; }
-} else {
-if(headerBal) { headerBal.innerText = balance.toFixed(2); headerBal.className = 'text-xs font-bold text-[#7C3AED]'; }
-if(desktopBal) { desktopBal.innerText = balance.toFixed(2); desktopBal.className = 'text-sm font-bold text-[#7C3AED]'; }
-if(headerIcon) { headerIcon.innerText = 'R'; headerIcon.className = 'w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all bg-[#7C3AED] text-white'; }
-if(desktopIcon) { desktopIcon.innerText = 'R'; desktopIcon.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30'; }
-}
-document.getElementById('account-dropdown')?.classList.add('hidden');
-document.getElementById('account-dropdown-desktop')?.classList.add('hidden');
-}
-document.addEventListener('click', function(event) {
-const dropdown = document.getElementById('account-dropdown');
-const dropdownDesktop = document.getElementById('account-dropdown-desktop');
-const isClickInsideMobile = dropdown && (dropdown.contains(event.target) || event.target.closest('#mobile-account-trigger'));
-const isClickInsideDesktop = dropdownDesktop && (dropdownDesktop.contains(event.target) || event.target.closest('#desktop-account-trigger'));
-if (!isClickInsideMobile && dropdown) dropdown.classList.add('hidden');
-if (!isClickInsideDesktop && dropdownDesktop) dropdownDesktop.classList.add('hidden');
-});
-// ==========================================
-// TRADE TYPE SWITCHING
-// ==========================================
-let currentTradeType = 'even';
-function setTradeType(type) {
-currentTradeType = type;
-['trade-matches', 'trade-even', 'trade-over'].forEach(id => {
-const btn = document.getElementById(id);
-btn.classList.remove('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
-btn.classList.add('text-gray-500', 'hover:text-white');
-btn.querySelector('svg').classList.remove('text-[#7C3AED]');
-btn.querySelector('svg').classList.add('text-gray-500');
-});
-document.getElementById('even-odd-buttons').classList.add('hidden');
-document.getElementById('over-under-buttons').classList.add('hidden');
-document.getElementById('matches-differs-buttons').classList.add('hidden');
-document.getElementById('digit-selector').classList.add('hidden');
-const activeBtn = document.getElementById(`trade-${type}`);
-activeBtn.classList.remove('text-gray-500', 'hover:text-white');
-activeBtn.classList.add('bg-[#1F1936]', 'text-white', 'border', 'border-white/[0.07]', 'shadow-sm');
-activeBtn.querySelector('svg').classList.remove('text-gray-500');
-activeBtn.querySelector('svg').classList.add('text-[#7C3AED]');
-if (type === 'even') document.getElementById('even-odd-buttons').classList.remove('hidden');
-else if (type === 'over') {
-document.getElementById('over-under-buttons').classList.remove('hidden');
-document.getElementById('digit-selector').classList.remove('hidden');
-} else if (type === 'matches') {
-document.getElementById('matches-differs-buttons').classList.remove('hidden');
-document.getElementById('digit-selector').classList.remove('hidden');
-}
-}
-function selectDigit(digit) {
-document.querySelectorAll('.digit-btn').forEach(btn => {
-btn.classList.remove('bg-[#7C3AED]');
-btn.classList.add('bg-[#282041]');
-});
-event.target.classList.remove('bg-[#282041]');
-event.target.classList.add('bg-[#7C3AED]');
-}
-// ==========================================
-// AI SCANNER MODAL FUNCTIONS
-// ==========================================
-function openAIScanner() {
-document.getElementById('ai-scanner-modal').classList.remove('hidden');
-resetScannerModal();
-}
-function closeAIScanner() { document.getElementById('ai-scanner-modal').classList.add('hidden'); }
-function resetScannerModal() {
-document.getElementById('scan-status').textContent = 'Ready to scan';
-document.getElementById('scan-progress').textContent = '0/12';
-document.getElementById('scan-progress-bar').style.width = '0%';
-document.getElementById('best-entry-result').classList.add('hidden');
-document.getElementById('scan-button').classList.remove('hidden');
-document.getElementById('bot-button').classList.remove('hidden');
-}
-function startDeepScan() {
-const progressBar = document.getElementById('scan-progress-bar');
-const progressText = document.getElementById('scan-progress');
-const statusText = document.getElementById('scan-status');
-const scanButton = document.getElementById('scan-button');
-const botButton = document.getElementById('bot-button');
-const bestEntryResult = document.getElementById('best-entry-result');
-scanButton.disabled = true;
-scanButton.classList.add('opacity-50', 'cursor-not-allowed');
-botButton.classList.add('hidden');
-let progress = 0;
-const interval = setInterval(() => {
-progress += 10;
-progressBar.style.width = progress + '%';
-progressText.textContent = Math.floor((progress / 100) * 12) + '/12';
-statusText.textContent = 'Scanning...';
-if (progress >= 100) {
-clearInterval(interval);
-setTimeout(() => {
-statusText.textContent = 'Scan complete';
-bestEntryResult.classList.remove('hidden');
-scanButton.disabled = false;
-scanButton.classList.remove('opacity-50', 'cursor-not-allowed');
-botButton.classList.remove('hidden');
-}, 500);
-}
-}, 200);
-}
-function loadScannerBot() { alert('Deep Scanner Bot loading...'); }
-// ==========================================
-// AUTO/MANUAL TOGGLE FUNCTION
-// ==========================================
-let currentTradingMode = 'auto';
-function setTradingMode(mode) {
-currentTradingMode = mode;
-const mobileAutoBtn = document.getElementById('mobile-auto-btn');
-const mobileManualBtn = document.getElementById('mobile-manual-btn');
-const desktopAutoBtn = document.getElementById('desktop-auto-btn');
-const desktopManualBtn = document.getElementById('desktop-manual-btn');
-if (mode === 'auto') {
-mobileAutoBtn.style.backgroundColor = 'rgb(124, 58, 237)'; mobileAutoBtn.style.color = 'rgb(255, 255, 255)';
-mobileManualBtn.style.backgroundColor = 'transparent'; mobileManualBtn.style.color = 'rgb(148, 163, 184)';
-desktopAutoBtn.style.backgroundColor = 'rgb(124, 58, 237)'; desktopAutoBtn.style.color = 'rgb(255, 255, 255)';
-desktopManualBtn.style.backgroundColor = 'transparent'; desktopManualBtn.style.color = 'rgb(148, 163, 184)';
-} else {
-mobileManualBtn.style.backgroundColor = 'rgb(124, 58, 237)'; mobileManualBtn.style.color = 'rgb(255, 255, 255)';
-mobileAutoBtn.style.backgroundColor = 'transparent'; mobileAutoBtn.style.color = 'rgb(148, 163, 184)';
-desktopManualBtn.style.backgroundColor = 'rgb(124, 58, 237)'; desktopManualBtn.style.color = 'rgb(255, 255, 255)';
-desktopAutoBtn.style.backgroundColor = 'transparent'; desktopAutoBtn.style.color = 'rgb(148, 163, 184)';
-}
-}
-// ==========================================
-// AUTO TRADING & STOP BUTTON LOGIC
-// ==========================================
-let autoTradeInterval = null;
-let autoTradeChoice = null;
-let isAutoTrading = false;
-let isShowingAlert = false;
-function startAutoTrade(choice) {
-if (autoTradeInterval) { clearInterval(autoTradeInterval); autoTradeInterval = null; }
-if (currentTradingMode !== 'auto') { placeTrade(choice); return; }
-isAutoTrading = true;
-autoTradeChoice = choice;
-isShowingAlert = false;
-document.getElementById('even-btn').classList.add('hidden');
-document.getElementById('stop-btn').classList.remove('hidden');
-executeAutoTrade();
-autoTradeInterval = setInterval(() => { executeAutoTrade(); }, 2000);
-}
-function executeAutoTrade() {
-if (isShowingAlert) return;
-let stake = parseInt(document.getElementById('stake-input').value) || 10;
-if(stake > balance) {
-isShowingAlert = true;
-stopAutoTrade();
-setTimeout(() => {
-alert("Insufficient balance! Auto-trade stopped.");
-isShowingAlert = false;
-}, 100);
-return;
-}
-let isEven = lastDigit % 2 === 0;
-let won = false;
-if (autoTradeChoice === 'Even') won = isEven;
-else if (autoTradeChoice === 'Odd') won = !isEven;
-else if (autoTradeChoice === 'Over') won = lastDigit > 5;
-else if (autoTradeChoice === 'Under') won = lastDigit < 5;
-else if (autoTradeChoice === 'Matches') won = false;
-else if (autoTradeChoice === 'Differs') won = true;
-if(won) {
-let profit = stake * 0.952;
-balance += profit;
-} else {
-balance -= stake;
-}
-document.getElementById('header-balance').innerText = balance.toFixed(2);
-if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
-}
-function stopAutoTrade() {
-isAutoTrading = false;
-autoTradeChoice = null;
-if (autoTradeInterval) { clearInterval(autoTradeInterval); autoTradeInterval = null; }
-document.getElementById('stop-btn').classList.add('hidden');
-document.getElementById('even-btn').classList.remove('hidden');
-}
-// ==========================================
-// HIGHLIGHT STAKE BUTTON
-// ==========================================
-function highlightStakeBtn(btn) {
-document.querySelectorAll('.quick-stake-btn').forEach(b => b.classList.remove('active'));
-btn.classList.add('active');
-}
-// ==========================================
-// TRADING LOGIC
-// ==========================================
-let balance = 0.00; // Default to 0 for Real
-let price = 9501.21;
-let lastDigit = 2;
-let priceHistory = [];
-let digitCounts = [0,0,0,0,0,0,0,0,0,0];
-let totalTicks = 0;
-function initDigits() {
-const container = document.getElementById('digits-container');
-if (!container) return;
-container.innerHTML = '';
-for(let i=0; i<=9; i++) {
-const div = document.createElement('div');
-div.className = 'flex flex-col items-center';
-div.innerHTML = `
-<div class="relative" id="digit-wrapper-${i}" style="transform: scale(1); transition: transform 0.15s ease-out;">
-<svg width="42" height="42" class="transform -rotate-90">
-<circle class="digit-circle-bg" cx="21" cy="21" r="18" fill="#1F1936" stroke="rgba(255,255,255,0.07)" stroke-width="2"></circle>
-<circle class="digit-circle-ring" id="digit-ring-${i}" cx="21" cy="21" r="18" fill="transparent" stroke="#3a4459" stroke-width="2.5" stroke-dasharray="113.1" stroke-dashoffset="113.1" stroke-linecap="round" style="transition: stroke 0.15s ease-out;"></circle>
-</svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center">
-<span class="digit-val text-sm font-bold" id="digit-val-${i}" style="color: rgb(255, 255, 255);">${i}</span>
-<span class="digit-pct text-[8px] leading-none font-medium" id="digit-pct-${i}" style="color: rgb(156, 163, 175);">0.0%</span>
-</div>
-</div>
-`;
-container.appendChild(div);
-}
-}
-initDigits();
-function drawChart(canvasId) {
-const canvas = document.getElementById(canvasId);
-if (!canvas || priceHistory.length < 2) return;
-const ctx = canvas.getContext('2d');
-// HIGH DPI FIX
-const dpr = window.devicePixelRatio || 1;
-const rect = canvas.getBoundingClientRect();
-canvas.width = rect.width * dpr;
-canvas.height = rect.height * dpr;
-ctx.scale(dpr, dpr);
-const width = rect.width;
-const height = rect.height;
-const min = Math.min(...priceHistory) - 5;
-const max = Math.max(...priceHistory) + 5;
-const range = max - min || 1;
-ctx.clearRect(0, 0, width, height);
-const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
-const textColor = isDarkTheme ? '#9ca3af' : '#6b7280';
-ctx.strokeStyle = gridColor;
-ctx.lineWidth = 0.5;
-ctx.setLineDash([3, 3]);
-for (let i = 1; i < 5; i++) {
-const y = (height / 5) * i;
-ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
-const priceValue = max - ((range / 5) * i);
-ctx.fillStyle = textColor; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
-ctx.fillText(priceValue.toFixed(2), width - 5, y + 4);
-}
-const timeSteps = 5;
-for (let i = 1; i < timeSteps; i++) {
-const x = (width / timeSteps) * i;
-ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
-}
-ctx.setLineDash([]);
-ctx.beginPath();
-ctx.strokeStyle = isDarkTheme ? 'white' : '#1f2937';
-ctx.lineWidth = 1.5;
-ctx.lineJoin = 'round';
-ctx.lineCap = 'round';
-for(let i=0; i<priceHistory.length; i++) {
-const x = (i / (priceHistory.length - 1)) * width;
-const y = height - ((priceHistory[i] - min) / range) * height;
-if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-}
-ctx.stroke();
-// Time Axis
-ctx.fillStyle = textColor; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-const now = new Date();
-const totalSeconds = priceHistory.length;
-for (let i = 0; i < 5; i++) {
-const x = (width / 4) * i;
-const secondsAgo = totalSeconds - 1 - (i * (totalSeconds / 4));
-const time = new Date(now.getTime() - secondsAgo * 1000);
-const timeStr = time.toTimeString().split(' ')[0].substring(0, 8);
-ctx.fillText(timeStr, x, height - 8);
-}
-// Price Label Box
-const lastPrice = priceHistory[priceHistory.length - 1];
-const lastX = width;
-const lastY = height - ((lastPrice - min) / range) * height;
-const boxWidth = 70; const boxHeight = 24;
-const boxX = lastX - boxWidth - 2; const boxY = lastY - boxHeight / 2;
-ctx.fillStyle = '#1e2535'; ctx.strokeStyle = '#4bb4b3'; ctx.lineWidth = 1;
-ctx.beginPath();
-if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
-else ctx.rect(boxX, boxY, boxWidth, boxHeight);
-ctx.fill(); ctx.stroke();
-ctx.fillStyle = 'white'; ctx.textAlign = 'left'; ctx.font = 'bold 12px sans-serif';
-ctx.fillText(lastPrice.toFixed(2), boxX + 8, boxY + 16);
-ctx.beginPath(); ctx.arc(lastX - 2, lastY, 4, 0, Math.PI*2); ctx.fillStyle = 'white'; ctx.fill();
-}
-function adjustStake(amt) {
-let val = parseInt(document.getElementById('stake-input').value) + amt;
-if (val < 1) val = 1;
-setStake(val);
-}
-function setStake(amt) {
-document.getElementById('stake-input').value = amt;
-if(document.getElementById('desktop-stake')) document.getElementById('desktop-stake').value = amt;
-updatePayouts();
-}
-function updatePayouts() {
-const stake = parseInt(document.getElementById('stake-input').value) || 10;
-const payout = (stake * 1.952).toFixed(2);
-document.getElementById('even-payout').innerText = '$' + payout;
-document.getElementById('odd-payout').innerText = '$' + payout;
-if(document.getElementById('desktop-even-payout')) document.getElementById('desktop-even-payout').innerText = payout;
-if(document.getElementById('desktop-odd-payout')) document.getElementById('desktop-odd-payout').innerText = payout;
-}
-function placeTrade(choice) {
-if (currentTradingMode === 'auto') { startAutoTrade(choice); return; }
-let stake = parseInt(document.getElementById('stake-input').value) || 10;
-if(stake > balance) {
-if(currentAccount === 'real') openInsufficientModal();
-else alert("Insufficient balance!");
-return;
-}
-setTimeout(() => {
-let won = false;
-let message = '';
-if (choice === 'Even') { won = lastDigit % 2 === 0; message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.952).toFixed(2)}`; }
-else if (choice === 'Odd') { won = lastDigit % 2 !== 0; message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.952).toFixed(2)}`; }
-else if (choice === 'Over') { won = lastDigit > 5; message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 2).toFixed(2)}`; }
-else if (choice === 'Under') { won = lastDigit < 5; message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.9).toFixed(2)}`; }
-else if (choice === 'Matches') { won = false; message = `LOSS. Matches requires digit selection.`; }
-else if (choice === 'Differs') { won = true; message = `WIN! Last digit: ${lastDigit}. Profit: $${(stake * 0.1).toFixed(2)}`; }
-if(won && choice !== 'Matches' && choice !== 'Differs') {
-if (choice === 'Even' || choice === 'Odd') balance += stake * 0.952;
-else if (choice === 'Over') balance += stake * 2;
-else if (choice === 'Under') balance += stake * 0.9;
-alert(message);
-} else {
-balance -= stake;
-if (choice !== 'Matches' && choice !== 'Differs') alert(`LOSS. Last digit: ${lastDigit}. Lost: $${stake.toFixed(2)}`);
-else alert(message);
-}
-document.getElementById('header-balance').innerText = balance.toFixed(2);
-if(document.getElementById('desktop-balance')) document.getElementById('desktop-balance').innerText = balance.toFixed(2);
-}, 500);
-}
-setInterval(() => {
-const change = (Math.random() - 0.5) * 3;
-price += change;
-const pStr = price.toFixed(2);
-lastDigit = parseInt(pStr.split('.')[1].slice(-1));
-document.getElementById('chart-price-display').innerText = pStr;
-if(document.getElementById('desktop-price')) document.getElementById('desktop-price').innerText = pStr;
-const changePct = ((change / price) * 100).toFixed(2);
-const changeEl = document.getElementById('chart-change-display');
-changeEl.innerText = (change >= 0 ? '+' : '') + changePct + '%';
-changeEl.className = change >= 0 ? 'text-[9px] text-emerald-500' : 'text-[9px] text-[#ff444f]';
-if(document.getElementById('desktop-change')) {
-document.getElementById('desktop-change').innerText = (change >= 0 ? '+' : '') + change.toFixed(2) + ' (' + changePct + '%)';
-document.getElementById('desktop-change').className = change >= 0 ? 'text-[10px] text-[#4bb4b3]' : 'text-[10px] text-[#ff444f]';
-}
-priceHistory.push(price);
-if(priceHistory.length > 60) priceHistory.shift();
-drawChart('priceChart');
-drawChart('desktopChart');
-digitCounts[lastDigit]++;
-totalTicks++;
-for(let i=0; i<=9; i++) {
-const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100) : 0;
-const pctStr = pct.toFixed(1) + '%';
-document.getElementById(`digit-pct-${i}`).innerText = pctStr;
-const offset = 113.1 - (113.1 * (pct / 100));
-document.getElementById(`digit-ring-${i}`).setAttribute('stroke-dashoffset', offset);
-const valEl = document.getElementById(`digit-val-${i}`);
-const pctEl = document.getElementById(`digit-pct-${i}`);
-const ringEl = document.getElementById(`digit-ring-${i}`);
-if(i === lastDigit) {
-valEl.style.color = isDarkTheme ? '#ffffff' : '#111827';
-pctEl.style.color = '#f59e0b';
-ringEl.setAttribute('stroke', '#f59e0b');
-} else {
-valEl.style.color = isDarkTheme ? '#ffffff' : '#111827';
-pctEl.style.color = isDarkTheme ? '#9ca3af' : '#6b7280';
-ringEl.setAttribute('stroke', isDarkTheme ? '#3a4459' : '#d1d5db');
-}
-}
-}, 1000);
-window.addEventListener('resize', () => { drawChart('priceChart'); drawChart('desktopChart'); });
-setTimeout(() => { drawChart('priceChart'); drawChart('desktopChart'); }, 100);
-updatePayouts();
-// ==========================================
-// V2 CHAT SYSTEM LOGIC
-// ==========================================
-let v2Messages = [];
-let v2PendingImage = null;
-let v2IsRecording = false;
-let v2RecTimer = null;
-let v2RecSeconds = 0;
-const V2_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','','🧐','','😎','🥸','','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','','😨','😰','😥','','🤗','🤔','','🤫','👍','','👌','✌️','','🤟','🤘','','🙏','💪','❤️','🧡','💛','💚','💙','💜','💯','✅','❌','⚠️','🔥','⭐','💰','📈'];
-function initV2Chat() {
-const grid = document.getElementById('obx-v2-emoji-grid');
-grid.innerHTML = V2_EMOJIS.map(e => `<div class="emoji-item" onclick="insertV2Emoji('${e}')">${e}</div>`).join('');
-if(v2Messages.length === 0) addV2BotMessage("Hello! 👋 Welcome to OBX PRIME Support. How can I help you today?");
-}
-function openV2Chat() {
-document.getElementById('obx-v2-panel').classList.add('show');
-document.getElementById('obx-v2-overlay').classList.add('show');
-document.getElementById('obx-v2-fab').style.display = 'none';
-document.getElementById('obx-v2-badge').style.display = 'none';
-setTimeout(() => {
-document.getElementById('obx-v2-messages').scrollTop = document.getElementById('obx-v2-messages').scrollHeight;
-document.getElementById('obx-v2-input').focus();
-}, 300);
-}
-function closeV2Chat() {
-document.getElementById('obx-v2-panel').classList.remove('show');
-document.getElementById('obx-v2-overlay').classList.remove('show');
-document.getElementById('obx-v2-fab').style.display = 'flex';
-closeV2Popups();
-}
-function closeV2Popups() {
-document.getElementById('obx-v2-attach-menu').classList.remove('show');
-document.getElementById('obx-v2-emoji-picker').classList.remove('show');
-}
-function autoResizeV2(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px'; }
-function checkV2Send() {
-const input = document.getElementById('obx-v2-input');
-document.getElementById('obx-v2-send').disabled = !input.value.trim() && !v2PendingImage;
-}
-function toggleV2Attach() { closeV2Popups(); document.getElementById('obx-v2-attach-menu').classList.toggle('show'); }
-function toggleV2Emoji() { closeV2Popups(); document.getElementById('obx-v2-emoji-picker').classList.toggle('show'); }
-function insertV2Emoji(emoji) {
-const input = document.getElementById('obx-v2-input');
-input.value += emoji; input.focus(); checkV2Send();
-}
-function handleV2File(event, isCamera) {
-const file = event.target.files[0];
-if (!file) return;
-if (!file.type.startsWith('image/')) { alert('Please select an image.'); return; }
-if (file.size > 5 * 1024 * 1024) { alert('Image must be under 5MB.'); return; }
-const reader = new FileReader();
-reader.onload = (e) => {
-v2PendingImage = e.target.result;
-document.getElementById('obx-v2-preview-img').src = v2PendingImage;
-document.getElementById('obx-v2-preview').classList.add('show');
-document.getElementById('obx-v2-view-once-check').checked = false;
-closeV2Popups();
-};
-reader.readAsDataURL(file);
-event.target.value = '';
-}
-function cancelV2Preview() {
-v2PendingImage = null;
-document.getElementById('obx-v2-preview').classList.remove('show');
-checkV2Send();
-}
-function sendV2Preview() {
-const isViewOnce = document.getElementById('obx-v2-view-once-check').checked;
-const msg = { type: 'user', image: v2PendingImage, viewOnce: isViewOnce, timestamp: new Date().toISOString() };
-v2Messages.push(msg); renderV2Messages();
-v2PendingImage = null;
-document.getElementById('obx-v2-preview').classList.remove('show');
-scrollV2ToBottom();
-setTimeout(() => triggerV2BotResponse("I sent an image"), 1000);
-}
-function sendV2Text() {
-const input = document.getElementById('obx-v2-input');
-const text = input.value.trim();
-if (!text) return;
-const msg = { type: 'user', text: text, timestamp: new Date().toISOString() };
-v2Messages.push(msg); renderV2Messages();
-input.value = ''; input.style.height = 'auto'; checkV2Send(); scrollV2ToBottom();
-setTimeout(() => triggerV2BotResponse(text), 800);
-}
-function sendV2QuickReply(text) { document.getElementById('obx-v2-input').value = text; sendV2Text(); }
-function connectV2LiveAgent() {
-closeV2Popups();
-addV2BotMessage("🔄 Connecting you to a live agent... Please wait a moment.");
-setTimeout(() => addV2BotMessage("✅ You're now connected with a live support agent. They'll respond shortly!"), 2000);
-}
-function toggleV2Voice() { if (v2IsRecording) stopV2Voice(); else startV2Voice(); }
-function startV2Voice() {
-v2IsRecording = true; v2RecSeconds = 0;
-document.getElementById('obx-v2-mic').classList.add('recording');
-document.getElementById('obx-v2-recording').classList.add('show');
-updateV2RecTimer();
-v2RecTimer = setInterval(updateV2RecTimer, 1000);
-}
-function updateV2RecTimer() {
-v2RecSeconds++;
-const mins = Math.floor(v2RecSeconds / 60);
-const secs = v2RecSeconds % 60;
-document.getElementById('obx-v2-rec-timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-function stopV2Voice() {
-v2IsRecording = false; clearInterval(v2RecTimer);
-document.getElementById('obx-v2-mic').classList.remove('recording');
-document.getElementById('obx-v2-recording').classList.remove('show');
-const msg = { type: 'user', voiceNote: true, duration: v2RecSeconds, timestamp: new Date().toISOString() };
-v2Messages.push(msg); renderV2Messages(); scrollV2ToBottom();
-setTimeout(() => addV2BotMessage("🎙️ I received your voice note. Our team will listen and reply shortly."), 1500);
-}
-function cancelV2Voice() {
-v2IsRecording = false; clearInterval(v2RecTimer);
-document.getElementById('obx-v2-mic').classList.remove('recording');
-document.getElementById('obx-v2-recording').classList.remove('show');
-}
-function triggerV2BotResponse(userText) {
-const lower = userText.toLowerCase();
-let response = null;
-const responses = {
-'hi': "Hello! 👋 How can I help?",
-'deposit': "💰 We support M-Pesa, USDT, and Cards. Go to the Deposit section in the menu.",
-'withdraw': " Withdrawals take 1-24 hours via M-Pesa or USDT.",
-'live agent': "👨‍💼 Connecting you to a human agent now...",
-'default': "Thanks for your message! A support agent will be with you shortly."
-};
-for (let key in responses) { if (key !== 'default' && lower.includes(key)) { response = responses[key]; break; } }
-if (!response) response = responses['default'];
-setTimeout(() => addV2BotMessage(response), 1000);
-}
-function addV2BotMessage(text) {
-const msg = { type: 'bot', text: text, timestamp: new Date().toISOString() };
-v2Messages.push(msg); renderV2Messages(); scrollV2ToBottom();
-}
-function renderV2Messages() {
-const container = document.getElementById('obx-v2-messages');
-container.innerHTML = v2Messages.map(msg => {
-const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-let content = '';
-if (msg.image) {
-content += `<img src="${msg.image}" alt="Image">`;
-if (msg.viewOnce) content += `<div class="view-once-badge"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> View Once</div>`;
-} else if (msg.voiceNote) {
-const mins = Math.floor(msg.duration / 60); const secs = msg.duration % 60;
-content += `<div class="obx-v2-voice-note"><div class="obx-v2-voice-play"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div><div class="obx-v2-voice-wave"><span style="height:40%"></span><span style="height:80%"></span><span style="height:60%"></span><span style="height:100%"></span><span style="height:50%"></span><span style="height:70%"></span><span style="height:30%"></span></div><span style="font-size:11px; opacity:0.8;">${mins}:${secs.toString().padStart(2,'0')}</span></div>`;
-} else { content += msg.text; }
-return `<div class="obx-v2-msg ${msg.type}"><div class="obx-v2-bubble">${content}</div><div class="obx-v2-meta">${time} ${msg.type === 'user' ? '✓✓' : ''}</div></div>`;
-}).join('');
-}
-function scrollV2ToBottom() { const container = document.getElementById('obx-v2-messages'); container.scrollTop = container.scrollHeight; }
-document.addEventListener('click', function(e) {
-if (!e.target.closest('.obx-v2-icon-btn') && !e.target.closest('.obx-v2-popup')) closeV2Popups();
-});
-// WhatsApp Style Voice Note Logic
-document.addEventListener('DOMContentLoaded', function() {
-const micBtn = document.getElementById('obx-v2-mic');
-const inputArea = document.querySelector('.obx-v2-input-area');
-if (!micBtn || !inputArea) return;
-const recBar = document.createElement('div');
-recBar.className = 'wa-recording-bar';
-recBar.innerHTML = `
-<div class="wa-rec-mic-icon" id="wa-rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg></div>
-<div class="wa-rec-text" id="wa-rec-text"><span class="wa-rec-arrow">👈</span> Slide to cancel</div>
-<div class="wa-rec-timer" id="wa-rec-timer">0:00</div>`;
-inputArea.appendChild(recBar);
-let isRecording = false, isCancelMode = false, recTimer = null, recSeconds = 0, startX = 0, startY = 0;
-function startRecording(e) {
-e.preventDefault(); isRecording = true; isCancelMode = false; recSeconds = 0;
-if (e.touches) { startX = e.touches[0].clientX; startY = e.touches[0].clientY; } else { startX = e.clientX; startY = e.clientY; }
-recBar.classList.add('active');
-document.getElementById('wa-rec-timer').innerText = '0:00';
-document.getElementById('wa-rec-icon').classList.remove('cancel-mode');
-document.getElementById('wa-rec-text').classList.remove('cancel-mode');
-document.getElementById('wa-rec-text').innerHTML = '<span class="wa-rec-arrow">👈</span> Slide to cancel';
-recTimer = setInterval(() => {
-recSeconds++;
-const mins = Math.floor(recSeconds / 60); const secs = recSeconds % 60;
-document.getElementById('wa-rec-timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
-}, 1000);
-}
-function checkSwipe(e) {
-if (!isRecording) return; e.preventDefault();
-let currentX = e.touches ? e.touches[0].clientX : e.clientX;
-let currentY = e.touches ? e.touches[0].clientY : e.clientY;
-let diffX = startX - currentX; let diffY = Math.abs(startY - currentY);
-if (diffX > 50 && diffY < 100) {
-if (!isCancelMode) {
-isCancelMode = true;
-document.getElementById('wa-rec-icon').classList.add('cancel-mode');
-document.getElementById('wa-rec-text').classList.add('cancel-mode');
-document.getElementById('wa-rec-text').innerHTML = '<span class="wa-rec-arrow"></span> Release to cancel';
-}
-} else {
-if (isCancelMode) {
-isCancelMode = false;
-document.getElementById('wa-rec-icon').classList.remove('cancel-mode');
-document.getElementById('wa-rec-text').classList.remove('cancel-mode');
-document.getElementById('wa-rec-text').innerHTML = '<span class="wa-rec-arrow">👈</span> Slide to cancel';
-}
-}
-}
-function stopRecording(e) {
-if (!isRecording) return; e.preventDefault(); clearInterval(recTimer); recBar.classList.remove('active');
-if (!isCancelMode) {
-const msg = { type: 'user', voiceNote: true, duration: recSeconds, timestamp: new Date().toISOString() };
-if (typeof v2Messages !== 'undefined') {
-v2Messages.push(msg);
-if (typeof renderV2Messages === 'function') renderV2Messages();
-if (typeof scrollV2ToBottom === 'function') scrollV2ToBottom();
-setTimeout(() => { if (typeof addV2BotMessage === 'function') addV2BotMessage("🎙️ I received your voice note. Our team will listen and reply shortly."); }, 1500);
-}
-}
-isRecording = false; isCancelMode = false;
-}
-micBtn.addEventListener('touchstart', startRecording, { passive: false });
-micBtn.addEventListener('touchmove', checkSwipe, { passive: false });
-micBtn.addEventListener('touchend', stopRecording, { passive: false });
-micBtn.addEventListener('mousedown', startRecording);
-document.addEventListener('mousemove', checkSwipe);
-document.addEventListener('mouseup', stopRecording);
-});
-// ==========================================
-// REFER & EARN LOGIC
-// ==========================================
-let referData = { totalReferrals: 0, totalEarned: 0, pendingToday: 0, referralCode: 'OBX' + Math.random().toString(36).substr(2, 6).toUpperCase(), referralLink: '' };
-function initReferData() {
-referData.referralLink = 'https://obxprime.com/register?ref=' + referData.referralCode;
-document.getElementById('refer-link-url').textContent = referData.referralLink;
-try {
-const saved = localStorage.getItem('obx_refer_data');
-if (saved) {
-referData = { ...referData, ...JSON.parse(saved) };
-document.getElementById('refer-link-url').textContent = referData.referralLink;
-document.getElementById('refer-total-count').textContent = referData.totalReferrals;
-document.getElementById('refer-total-earned').textContent = '$' + referData.totalEarned.toFixed(2);
-document.getElementById('refer-pending').textContent = '+$' + referData.pendingToday.toFixed(2);
-}
-} catch(e) {}
-}
-function openReferModal() { document.getElementById('refer-modal').classList.add('show'); document.body.style.overflow = 'hidden'; }
-function closeReferModal() { document.getElementById('refer-modal').classList.remove('show'); document.body.style.overflow = ''; }
-function switchReferTab(tabName, btn) {
-document.querySelectorAll('.refer-tab').forEach(t => t.classList.remove('active'));
-document.querySelectorAll('.refer-tab-content').forEach(c => c.classList.remove('active'));
-btn.classList.add('active');
-document.getElementById('tab-' + tabName).classList.add('active');
-}
-function copyReferLink() {
-const link = referData.referralLink;
-const btn = document.getElementById('refer-copy-btn');
-if (navigator.clipboard) {
-navigator.clipboard.writeText(link).then(() => showCopySuccess(btn));
-} else {
-const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showCopySuccess(btn);
-}
-}
-function showCopySuccess(btn) {
-btn.classList.add('copied');
-btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-setTimeout(() => {
-btn.classList.remove('copied');
-btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>';
-}, 2000);
-}
-function shareReferLink() {
-const link = referData.referralLink;
-const text = 'Join me on OBX PRIME and trade synthetic indices! Use my link to sign up: ' + link;
-if (navigator.share) {
-navigator.share({ title: 'OBX PRIME', text: 'Join me on OBX PRIME!', url: link }).catch(() => window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank'));
-} else { window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank'); }
-}
-// ==========================================
-// INSUFFICIENT BALANCE LOGIC
-// ==========================================
-function openInsufficientModal() {
-const modal = document.getElementById('insufficient-modal');
-modal.classList.remove('hidden');
-setTimeout(() => modal.classList.add('show'), 10);
-}
-function closeInsufficientModal() {
-const modal = document.getElementById('insufficient-modal');
-modal.classList.remove('show');
-setTimeout(() => modal.classList.add('hidden'), 300);
-}
-// ==========================================
-// INITIALIZATION & NAVIGATION FIXES
-// ==========================================
-document.addEventListener('DOMContentLoaded', function() {
-initV2Chat();
-initReferData();
-// Fix Refer & Earn Button
-const referBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Refer & Earn' && el.classList.contains('bg-[#7C3AED]/15'));
-if (referBtn) { referBtn.onclick = function() { openReferModal(); closeMenu(); }; }
-// Fix Help Centre Button
-const helpBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Help Centre' && el.classList.contains('cursor-pointer'));
-if (helpBtn) { helpBtn.onclick = function() { window.location.href = 'help.html'; }; }
-// Fix Responsible Trading Button
-const respBtn = Array.from(document.querySelectorAll('div')).find(el => el.textContent.trim() === 'Responsible Trading' && el.classList.contains('cursor-pointer'));
-if (respBtn) { respBtn.onclick = function() { window.location.href = 'responsible.html'; }; }
-// Fix Download Banner
-const downloadBanner = document.querySelector('div[style*="linear-gradient(135deg, rgb(91, 33, 182)"]') || Array.from(document.querySelectorAll('div')).find(el => el.textContent.includes('Get the OBX PRIME App') && el.textContent.includes('Download'));
-if (downloadBanner) {
-downloadBanner.style.cursor = 'pointer';
-downloadBanner.onclick = function(e) { if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) window.location.href = 'download.html'; };
-}
-const downloadBtn = Array.from(document.querySelectorAll('a, button')).find(el => el.textContent.trim() === 'Download');
-if (downloadBtn) { downloadBtn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); window.location.href = 'download.html'; }; }
-// Background Music
-const bgMusic = document.getElementById('obx-bg-music');
-let isMusicPlaying = false;
-function tryStartMusic() {
-if (!bgMusic) return;
-bgMusic.volume = 0.3;
-bgMusic.play().then(() => { isMusicPlaying = true; }).catch(e => {});
-document.removeEventListener('click', tryStartMusic);
-document.removeEventListener('touchstart', tryStartMusic);
-}
-document.addEventListener('click', tryStartMusic);
-document.addEventListener('touchstart', tryStartMusic);
-const originalToggleSound = window.toggleSound;
-window.toggleSound = function() {
-if (originalToggleSound) originalToggleSound();
-if (bgMusic) {
-if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; }
-else { bgMusic.play().catch(e => {}); isMusicPlaying = true; }
-}
-};
-// Inject Account Dropdown Content
-const dropdownContent = `
-<button onclick="switchAccount('real')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left">
-<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-blue-500"></div><span class="text-sm font-medium text-white">Real Account</span></div>
-<span id="real-badge" class="text-[#7C3AED] text-xs font-semibold">Active</span>
-</button>
-<button onclick="switchAccount('demo')" class="w-full flex items-center justify-between px-4 py-3 hover:bg-[#7C3AED]/10 transition-colors text-left border-t border-white/5">
-<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-red-500"></div><span class="text-sm font-medium text-white">Demo Account</span></div>
-<span id="demo-badge" class="text-gray-500 text-xs font-semibold"></span>
-</button>
-<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-<span class="text-sm font-medium">Reset Demo Balance</span>
-</button>`;
-const mobDrop = document.getElementById('account-dropdown');
-const deskDrop = document.getElementById('account-dropdown-desktop');
-if(mobDrop) mobDrop.innerHTML = dropdownContent;
-if(deskDrop) {
-let deskHTML = dropdownContent.replace('id="real-badge"', 'id="real-badge-desktop"').replace('id="demo-badge"', 'id="demo-badge-desktop"');
-deskDrop.innerHTML = deskHTML;
-}
-window.resetDemoBalance = function() {
-if(currentAccount === 'demo') {
-balance = 10000.00;
-document.getElementById('header-balance').innerText = '10000.00';
-document.getElementById('desktop-balance').innerText = '10000.00';
-alert('✅ Demo balance reset to $10,000.00');
-} else { alert('You can only reset the Demo balance.'); }
-};
-// Initialize correct state on load
-switchAccount('real');
-// Auto-open chat if redirected
-if (localStorage.getItem('open_chat_on_load') === 'true' || window.location.href.includes('openchat=true')) {
-localStorage.removeItem('open_chat_on_load');
-setTimeout(function() { if (typeof openV2Chat === 'function') openV2Chat(); }, 800);
-}
-});
-</script>
-<!-- ============================================ -->
-<!-- ===== CLEAN BOTTOM NAV & POSITIONS FIX ===== -->
-<!-- ============================================ -->
-<style>
-/* Hide old chat FAB so it doesn't cover Positions */
-#obx-v2-fab { display: none !important; }
-nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
-/* Force Digits 0-9 to fit perfectly */
-#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
-#digits-container svg { width: 36px !important; height: 36px !important; }
-/* Stop Download Banner from hijacking clicks */
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a,
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
-</style>
+
+<!-- UNIFIED CLEAN SCRIPT FOR PROFILE, LOGOUT, AND ALL FIXES -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-// ========== FIX 1: MAKE POSITIONS TAB CLICKABLE & REMOVE DUPLICATE ==========
-// Find ALL elements that say "Positions" in the bottom nav
-const allPositionsBtns = Array.from(document.querySelectorAll('nav button, nav a')).filter(el =>
-el.textContent.trim().includes('Positions')
-);
-// Remove duplicates (keep only the first one)
-if (allPositionsBtns.length > 1) {
-for (let i = 1; i < allPositionsBtns.length; i++) {
-allPositionsBtns[i].remove();
-}
-}
-// Make the remaining Positions button/link go to positions.html
-const positionsBtn = allPositionsBtns[0];
-if (positionsBtn) {
-// If it's a <button>, replace it with an <a> tag
-if (positionsBtn.tagName === 'BUTTON') {
-const link = document.createElement('a');
-link.href = 'positions.html';
-link.className = positionsBtn.className;
-link.innerHTML = positionsBtn.innerHTML;
-positionsBtn.parentNode.replaceChild(link, positionsBtn);
-} else {
-// If it's already an <a>, just update the href
-positionsBtn.href = 'positions.html';
-}
-}
-// ========== FIX 2: ACCOUNT SETTINGS NAVIGATION ==========
-const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
-accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
-const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
-submenuItems.forEach(item => { item.onclick = function() { window.location.href = 'account-settings.html'; }; item.style.cursor = 'pointer'; });
-// ========== FIX 3: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
-if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
-balance = 0.00;
-if (typeof realBalance !== 'undefined') realBalance = 0.00;
-const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
-if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
-}
-// ========== FIX 4: CHAT SEND BUTTON RELIABILITY ==========
-const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
-if (v2Input && v2Send) {
-v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
-v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
-}
-// ========== FIX 5: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
-if (typeof updateChartForVolatility === 'function') {
-const originalUpdate = updateChartForVolatility;
-updateChartForVolatility = function(name) {
-const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
-price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
-};
-}
-// ========== FIX 6: ADD RESET DEMO BALANCE IF MISSING ==========
-const mobDrop = document.getElementById('account-dropdown'); const deskDrop = document.getElementById('account-dropdown-desktop');
-const resetHTML = `<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><span class="text-sm font-medium">Reset Demo Balance</span></button>`;
-if (mobDrop && !mobDrop.innerHTML.includes('Reset Demo Balance')) mobDrop.insertAdjacentHTML('beforeend', resetHTML);
-if (deskDrop && !deskDrop.innerHTML.includes('Reset Demo Balance')) deskDrop.insertAdjacentHTML('beforeend', resetHTML);
-window.resetDemoBalance = function() { if (currentAccount === 'demo') { balance = 10000.00; document.getElementById('header-balance').innerText = '10000.00'; document.getElementById('desktop-balance').innerText = '10000.00'; alert('✅ Demo balance reset to $10,000.00'); } else { alert('You can only reset the Demo balance.'); } };
-// ========== FIX 7: DROPDOWN COLORS & TEXT ==========
-window.switchAccount = function(type) {
-currentAccount = type; balance = type === 'demo' ? 10000.00 : 0.00;
-const isDemo = type === 'demo'; const mainColor = isDemo ? '#ef4444' : '#7C3AED';
-const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
-const hIcon = document.getElementById('account-type-icon'); const dIcon = document.getElementById('desktop-account-type-icon');
-if (hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
-if (dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
-if (hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
-if (dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
-const rBadge = document.getElementById('real-badge'); const dBadge = document.getElementById('demo-badge');
-const rBadgeD = document.getElementById('real-badge-desktop'); const dBadgeD = document.getElementById('demo-badge-desktop');
-if (isDemo) {
-if (rBadge) rBadge.innerText = ''; if (dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
-if (rBadgeD) rBadgeD.innerText = ''; if (dBadgeD) { dBadgeD.innerText = 'Active'; dBadgeD.style.color = '#ef4444'; }
-} else {
-if (rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; } if (dBadge) dBadge.innerText = '';
-if (rBadgeD) { rBadgeD.innerText = 'Active'; rBadgeD.style.color = '#7C3AED'; } if (dBadgeD) dBadgeD.innerText = '';
-}
-if (mobDrop) mobDrop.classList.add('hidden'); if (deskDrop) deskDrop.classList.add('hidden');
-};
+    
+    // ========== 1. LOAD USER PROFILE DYNAMICALLY ==========
+    const savedName = localStorage.getItem('userName') || 'Trader';
+    const savedEmail = localStorage.getItem('userEmail') || 'guest@obxprime.com';
+    
+    const avatarEl = document.getElementById('menu-avatar');
+    const nameEl = document.getElementById('menu-username');
+    const emailEl = document.getElementById('menu-useremail');
+    
+    if(nameEl) nameEl.innerText = savedName;
+    if(emailEl) emailEl.innerText = savedEmail;
+    if(avatarEl) avatarEl.innerText = savedName.charAt(0).toUpperCase();
+
+    // Security Check: Redirect ONLY if truly not logged in
+    if(localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'signin.html';
+        return; // STOP execution here if not logged in
+    }
+
+    // ========== 2. ADD SESSION STATS BAR ==========
+    const controlsCard = document.querySelector('.bg-[\\#141021]\\/95');
+    if (controlsCard && !document.getElementById('session-stats-bar')) {
+        const statsBar = document.createElement('div');
+        statsBar.id = 'session-stats-bar';
+        statsBar.className = 'session-stats-bar';
+        statsBar.innerHTML = `<div class="stats-left">LAST <span id="stat-total-trades">0</span>T · <span id="stat-wins">0</span>W · <span id="stat-losses">0</span>L</div><div class="stats-right" id="stat-pl-display">+$0.00</div>`;
+        const evenOddBtns = document.getElementById('even-odd-buttons');
+        if(evenOddBtns) evenOddBtns.parentNode.insertBefore(statsBar, evenOddBtns.nextSibling);
+    }
+
+    let sessionStats = { totalTrades: 0, wins: 0, losses: 0, pl: 0.00 };
+    window.updateSessionStats = function(profitAmount, isWin) {
+        sessionStats.totalTrades++; sessionStats.pl += profitAmount;
+        if (isWin) sessionStats.wins++; else sessionStats.losses++;
+        document.getElementById('stat-total-trades').innerText = sessionStats.totalTrades;
+        document.getElementById('stat-wins').innerText = sessionStats.wins;
+        document.getElementById('stat-losses').innerText = sessionStats.losses;
+        const plDisplay = document.getElementById('stat-pl-display');
+        const sign = sessionStats.pl >= 0 ? '+' : '';
+        plDisplay.innerText = `${sign}$${sessionStats.pl.toFixed(2)}`;
+        plDisplay.className = sessionStats.pl >= 0 ? 'stats-right' : 'stats-right loss';
+    };
+
+    if (typeof placeTrade === 'function') {
+        const originalPlaceTrade = placeTrade;
+        placeTrade = function(choice) {
+            let stake = parseInt(document.getElementById('stake-input').value) || 10;
+            setTimeout(() => {
+                let won = false;
+                if (choice === 'Even') won = lastDigit % 2 === 0;
+                else if (choice === 'Odd') won = lastDigit % 2 !== 0;
+                else if (choice === 'Over') won = lastDigit > 5;
+                else if (choice === 'Under') won = lastDigit < 5;
+                else if (choice === 'Differs') won = true;
+                if(won && choice !== 'Matches') updateSessionStats(stake * 0.952, true);
+                else updateSessionStats(-stake, false);
+            }, 500);
+            originalPlaceTrade(choice);
+        };
+    }
+
+    // ========== 3. LOGOUT FUNCTION ==========
+    window.logoutUser = function() {
+        if(confirm('Are you sure you want to log out?')) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'signin.html';
+        }
+    };
+
+    // ========== 4. EXISTING FIXES (Positions, Account Settings, Balance, Chat, Volatility) ==========
+    const allPositionsBtns = Array.from(document.querySelectorAll('nav button, nav a')).filter(el => el.textContent.trim().includes('Positions'));
+    if (allPositionsBtns.length > 1) for (let i = 1; i < allPositionsBtns.length; i++) allPositionsBtns[i].remove();
+    const positionsBtn = allPositionsBtns[0];
+    if (positionsBtn) {
+        if (positionsBtn.tagName === 'BUTTON') {
+            const link = document.createElement('a'); link.href = 'positions.html'; link.className = positionsBtn.className; link.innerHTML = positionsBtn.innerHTML;
+            positionsBtn.parentNode.replaceChild(link, positionsBtn);
+        } else positionsBtn.href = 'positions.html';
+    }
+
+    document.querySelectorAll('[onclick="toggleAccountSettings()"]').forEach(btn => btn.onclick = () => window.location.href = 'account-settings.html');
+    document.querySelectorAll('#account-settings-submenu > div').forEach(item => { item.onclick = () => window.location.href = 'account-settings.html'; item.style.cursor = 'pointer'; });
+
+    if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
+        balance = 0.00; if (typeof realBalance !== 'undefined') realBalance = 0.00;
+        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
+        if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
+    }
+
+    const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
+    if (v2Input && v2Send) {
+        v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
+        v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
+    }
+
+    if (typeof updateChartForVolatility === 'function') {
+        const originalUpdate = updateChartForVolatility;
+        updateChartForVolatility = function(name) {
+            const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
+            price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
+        };
+    }
+
+    const mobDrop = document.getElementById('account-dropdown'); const deskDrop = document.getElementById('account-dropdown-desktop');
+    const resetHTML = `<button onclick="resetDemoBalance()" class="w-full flex items-center gap-2 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-left border-t border-white/5 mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><span class="text-sm font-medium">Reset Demo Balance</span></button>`;
+    if (mobDrop && !mobDrop.innerHTML.includes('Reset Demo Balance')) mobDrop.insertAdjacentHTML('beforeend', resetHTML);
+    if (deskDrop && !deskDrop.innerHTML.includes('Reset Demo Balance')) deskDrop.insertAdjacentHTML('beforeend', resetHTML);
+    window.resetDemoBalance = function() { if (currentAccount === 'demo') { balance = 10000.00; document.getElementById('header-balance').innerText = '10000.00'; document.getElementById('desktop-balance').innerText = '10000.00'; alert('✅ Demo balance reset to $10,000.00'); } else { alert('You can only reset the Demo balance.'); } };
+
+    window.switchAccount = function(type) {
+        currentAccount = type; balance = type === 'demo' ? 10000.00 : 0.00;
+        const isDemo = type === 'demo'; const mainColor = isDemo ? '#ef4444' : '#7C3AED';
+        const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
+        const hIcon = document.getElementById('account-type-icon'); const dIcon = document.getElementById('desktop-account-type-icon');
+        if (hBal) { hBal.innerText = balance.toFixed(2); hBal.style.color = mainColor; }
+        if (dBal) { dBal.innerText = balance.toFixed(2); dBal.style.color = mainColor; }
+        if (hIcon) { hIcon.innerText = isDemo ? 'D' : 'R'; hIcon.style.backgroundColor = mainColor; }
+        if (dIcon) { dIcon.innerText = isDemo ? 'D' : 'R'; dIcon.style.backgroundColor = mainColor; }
+        const rBadge = document.getElementById('real-badge'); const dBadge = document.getElementById('demo-badge');
+        const rBadgeD = document.getElementById('real-badge-desktop'); const dBadgeD = document.getElementById('demo-badge-desktop');
+        if (isDemo) {
+            if (rBadge) rBadge.innerText = ''; if (dBadge) { dBadge.innerText = 'Active'; dBadge.style.color = '#ef4444'; }
+            if (rBadgeD) rBadgeD.innerText = ''; if (dBadgeD) { dBadgeD.innerText = 'Active'; dBadgeD.style.color = '#ef4444'; }
+        } else {
+            if (rBadge) { rBadge.innerText = 'Active'; rBadge.style.color = '#7C3AED'; } if (dBadge) dBadge.innerText = '';
+            if (rBadgeD) { rBadgeD.innerText = 'Active'; rBadgeD.style.color = '#7C3AED'; } if (dBadgeD) dBadgeD.innerText = '';
+        }
+        if (mobDrop) mobDrop.classList.add('hidden'); if (deskDrop) deskDrop.classList.add('hidden');
+    };
+    switchAccount('real');
 });
-</script>
-<style>
-/* Notification Dropdown Animation */
-@keyframes slideDownNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fade-in { animation: slideDownNotif 0.2s ease-out; }
-/* Notification Item Styles */
-.notif-item { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; cursor: pointer; }
-.notif-item:hover { background: rgba(124, 58, 237, 0.1); }
-.notif-item.unread { background: rgba(124, 58, 237, 0.05); }
-.notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.notif-content { flex: 1; min-width: 0; }
-.notif-title { color: white; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.notif-desc { color: #9ca3af; font-size: 11px; line-height: 1.4; }
-.notif-time { color: #6b7280; font-size: 10px; margin-top: 4px; }
-.notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #7C3AED; flex-shrink: 0; align-self: center; }
-</style>
-<script>
-// ===== NOTIFICATIONS SYSTEM =====
-function toggleNotifications(e) {
-e.stopPropagation();
-document.getElementById('notifications-dropdown').classList.toggle('hidden');
-}
-function markAsRead(item) {
-const dot = item.querySelector('.notif-unread-dot');
-if(dot) dot.style.display = 'none';
-item.classList.remove('unread');
-updateBadge();
-}
-function markAllAsRead() {
-document.querySelectorAll('.notif-unread-dot').forEach(d => d.style.display = 'none');
-document.querySelectorAll('.notif-item').forEach(i => i.classList.remove('unread'));
-updateBadge();
-}
-function updateBadge() {
-const unread = document.querySelectorAll('.notif-unread-dot:not([style*="display: none"])').length;
-const badge = document.getElementById('notif-badge');
-if(unread > 0) {
-badge.innerText = unread > 9 ? '9+' : unread;
-badge.style.display = 'flex';
-} else {
-badge.style.display = 'none';
-}
-}
-// Close notifications when clicking outside
-document.addEventListener('click', function(e) {
-const dropdown = document.getElementById('notifications-dropdown');
-if(dropdown && !dropdown.contains(e.target) && !e.target.closest('button[onclick*="toggleNotifications"]')) {
-dropdown.classList.add('hidden');
-}
-});
-</script>
-<!-- ============================================ -->
-<!-- ===== SIMPLE SESSION STATS & CHART FIX ===== -->
-<!-- ============================================ -->
-<style>
-/* 1. Shrink Chart to match PalOption screenshot */
-.chart-area-container { flex: 0 0 35vh !important; min-height: 200px !important; max-height: 300px !important; }
-/* 2. Session Stats Bar Styles */
-.session-stats-bar {
-display: flex; align-items: center; justify-content: space-between;
-padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4);
-border-top: 1px solid rgba(255, 255, 255, 0.05);
-border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-.stats-left { font-size: 12px; color: #6b7280; font-weight: 500; letter-spacing: 0.5px; }
-.stats-right { font-size: 14px; font-weight: 700; color: #10B981; }
-.stats-right.loss { color: #ff444f; }
-/* 3. Hide Chat FAB so Positions is clear */
-#obx-v2-fab { display: none !important; }
-nav button:last-child { opacity: 1 !important; visibility: visible !important; z-index: 50 !important; }
-/* 4. Force Digits 0-9 to fit */
-#digits-container > div { transform: scale(0.72) !important; margin: 0 -3px !important; }
-#digits-container svg { width: 36px !important; height: 36px !important; }
-/* 5. Stop Download Banner Hijacking */
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] { pointer-events: none !important; }
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] a,
-div[style*="linear-gradient(135deg, rgb(91, 33, 182)"] button { pointer-events: auto !important; }
-</style>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-// ========== FIX 1: ADD SESSION STATS BAR ==========
-const controlsCard = document.querySelector('.bg-[\\#141021]\\/95');
-if (controlsCard && !document.getElementById('session-stats-bar')) {
-const statsBar = document.createElement('div');
-statsBar.id = 'session-stats-bar';
-statsBar.className = 'session-stats-bar';
-statsBar.innerHTML = `
-<div class="stats-left">LAST <span id="stat-total-trades">0</span>T · <span id="stat-wins">0</span>W · <span id="stat-losses">0</span>L</div>
-<div class="stats-right" id="stat-pl-display">+$0.00</div>
-`;
-// Insert after the trade buttons but before closing div
-const evenOddBtns = document.getElementById('even-odd-buttons');
-if(evenOddBtns) evenOddBtns.parentNode.insertBefore(statsBar, evenOddBtns.nextSibling);
-}
-// Session Stats Logic
-let sessionStats = { totalTrades: 0, wins: 0, losses: 0, pl: 0.00 };
-window.updateSessionStats = function(profitAmount, isWin) {
-sessionStats.totalTrades++;
-sessionStats.pl += profitAmount;
-if (isWin) sessionStats.wins++; else sessionStats.losses++;
-document.getElementById('stat-total-trades').innerText = sessionStats.totalTrades;
-document.getElementById('stat-wins').innerText = sessionStats.wins;
-document.getElementById('stat-losses').innerText = sessionStats.losses;
-const plDisplay = document.getElementById('stat-pl-display');
-const sign = sessionStats.pl >= 0 ? '+' : '';
-plDisplay.innerText = `${sign}$${sessionStats.pl.toFixed(2)}`;
-plDisplay.className = sessionStats.pl >= 0 ? 'stats-right' : 'stats-right loss';
-};
-// Hook into existing placeTrade function
-if (typeof placeTrade === 'function') {
-const originalPlaceTrade = placeTrade;
-placeTrade = function(choice) {
-let stake = parseInt(document.getElementById('stake-input').value) || 10;
-if (currentAccount === 'real' && stake > balance) { openInsufficientModal(); return; }
-setTimeout(() => {
-let won = false;
-if (choice === 'Even') won = lastDigit % 2 === 0;
-else if (choice === 'Odd') won = lastDigit % 2 !== 0;
-else if (choice === 'Over') won = lastDigit > 5;
-else if (choice === 'Under') won = lastDigit < 5;
-else if (choice === 'Differs') won = true;
-if(won && choice !== 'Matches') updateSessionStats(stake * 0.952, true);
-else updateSessionStats(-stake, false);
-}, 500);
-originalPlaceTrade(choice);
-};
-}
-// ========== FIX 2: ACCOUNT SETTINGS NAVIGATION ==========
-const accountBtns = document.querySelectorAll('[onclick="toggleAccountSettings()"]');
-accountBtns.forEach(btn => { btn.onclick = function() { window.location.href = 'account-settings.html'; }; });
-const submenuItems = document.querySelectorAll('#account-settings-submenu > div');
-submenuItems.forEach(item => { item.onclick = function() { window.location.href = 'account-settings.html'; }; item.style.cursor = 'pointer'; });
-// ========== FIX 3: FORCE REAL BALANCE TO $0.00 ON LOAD ==========
-if (typeof currentAccount !== 'undefined' && currentAccount === 'real') {
-balance = 0.00;
-if (typeof realBalance !== 'undefined') realBalance = 0.00;
-const hBal = document.getElementById('header-balance'); const dBal = document.getElementById('desktop-balance');
-if (hBal) hBal.innerText = '0.00'; if (dBal) dBal.innerText = '0.00';
-}
-// ========== FIX 4: CHAT SEND BUTTON RELIABILITY ==========
-const v2Input = document.getElementById('obx-v2-input'); const v2Send = document.getElementById('obx-v2-send');
-if (v2Input && v2Send) {
-v2Input.addEventListener('input', function() { v2Send.disabled = !this.value.trim(); v2Send.style.opacity = this.value.trim() ? '1' : '0.4'; });
-v2Send.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); if (!v2Send.disabled && typeof sendV2Text === 'function') sendV2Text(); });
-}
-// ========== FIX 5: ENSURE VOLATILITY 75 WORKS IN SCANNER ==========
-if (typeof updateChartForVolatility === 'function') {
-const originalUpdate = updateChartForVolatility;
-updateChartForVolatility = function(name) {
-const basePrices = { 'Volatility 10 (1s) Index': 9501.21, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
-price = basePrices[name] || 9501.21; priceHistory = []; totalTicks = 0; digitCounts = [0,0,0,0,0,0,0,0,0,0];
-};
-}
-});
-</script>
-<script>
-// Simple logout function for dashboard
-function logoutUser() {
-if(confirm('Are you sure you want to log out?')) {
-localStorage.removeItem('isLoggedIn');
-localStorage.removeItem('userName');
-localStorage.removeItem('userEmail');
-window.location.href = 'signin.html';
-}
-}
-</script>
-<script>
-// ==========================================
-// LOAD USER PROFILE & HANDLE LOGOUT
-// ==========================================
-document.addEventListener('DOMContentLoaded', function() {
-// 1. Load User Data from LocalStorage
-const savedName = localStorage.getItem('userName') || 'Trader';
-const savedEmail = localStorage.getItem('userEmail') || 'guest@obxprime.com';
-// 2. Update Menu Elements
-const avatarEl = document.getElementById('menu-avatar');
-const nameEl = document.getElementById('menu-username');
-const emailEl = document.getElementById('menu-useremail');
-if(nameEl) nameEl.innerText = savedName;
-if(emailEl) emailEl.innerText = savedEmail;
-if(avatarEl) {
-// Set avatar to first letter of name
-avatarEl.innerText = savedName.charAt(0).toUpperCase();
-}
-// 3. Check if logged in, if not redirect to signin
-if(localStorage.getItem('isLoggedIn') !== 'true') {
-window.location.href = 'signin.html';
-}
-});
-// Logout Function
-function logoutUser() {
-if(confirm('Are you sure you want to log out?')) {
-localStorage.removeItem('isLoggedIn');
-localStorage.removeItem('userName');
-localStorage.removeItem('userEmail');
-window.location.href = 'signin.html';
-}
-}
 </script>
 </body>
 </html>
