@@ -74,9 +74,13 @@
     </main>
 
     <script>
-        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        
+        let obxSupabase;
+        if (typeof window.supabase !== 'undefined' && typeof obxSupabase === 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
 
         // Chart Setup
         const chartContainer = document.getElementById('chart');
@@ -104,13 +108,15 @@
         function setStake(val) { document.getElementById('stakeAmount').value = val; }
 
         async function placeTrade(direction) {
+            if (!obxSupabase) return alert("System error: Supabase not loaded.");
+            
             const stake = parseFloat(document.getElementById('stakeAmount').value);
             const entryPrice = currentPrice;
             
-            const { data: { user } } = await supabase.auth.getUser();
-            if(!user) return alert("Please login first via index.html");
+            const { data: { user } } = await obxSupabase.auth.getUser();
+            if(!user) return alert("Please login first via signin.html");
 
-            const { error } = await supabase.from('trades').insert({
+            const { error } = await obxSupabase.from('trades').insert({
                 user_id: user.id, asset: 'VOL_10', direction: direction, 
                 stake: stake, entry_price: entryPrice, status: 'OPEN'
             });
@@ -119,7 +125,7 @@
             else alert(`${direction} trade placed at ${entryPrice.toFixed(2)}!`);
         }
 
-        supabase.channel('public:trades')
+        obxSupabase?.channel('public:trades')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'trades' }, payload => {
                 console.log('New trade detected:', payload.new);
             })
