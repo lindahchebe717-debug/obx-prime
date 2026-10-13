@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Trade</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -19,7 +20,7 @@
         </div>
     </header>
 
-    <!-- Asset Selection Tabs -->
+    <!-- Asset Selection Tabs - EXACT ACTIVE STATE -->
     <div class="asset-tabs">
         <button class="asset-tab">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -33,6 +34,10 @@
             <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
             Over/Under
         </button>
+        <button class="asset-tab">
+            <svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            Rise/Fall
+        </button>
     </div>
 
     <!-- Main Chart Area -->
@@ -45,11 +50,10 @@
             <div class="current-price-lg" id="currentPrice">9607.39</div>
             <div style="font-size:0.75rem; color:var(--success-green); margin-top:2px; font-weight:600;">+1.13%</div>
         </div>
-        <!-- Custom Canvas Chart (No External Libraries) -->
-        <canvas id="chartCanvas"></canvas>
+        <div id="chart"></div>
     </div>
 
-    <!-- Digit Frequency Row -->
+    <!-- Digit Frequency Row - EXACT PROGRESS RINGS -->
     <div class="digit-row" id="digitRow"></div>
 
     <!-- Trading Controls -->
@@ -85,7 +89,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar - EXACT MATCH -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
@@ -113,86 +117,49 @@
             obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
         }
 
-        // --- CUSTOM CANVAS CHART ENGINE (NO EXTERNAL LIBS) ---
-        const canvas = document.getElementById('chartCanvas');
-        const ctx = canvas.getContext('2d');
-        let priceData = [];
+        // --- CHART SETUP ---
+        const chartContainer = document.getElementById('chart');
+        const chart = LightweightCharts.createChart(chartContainer, {
+            layout: { background: { color: 'transparent' }, textColor: '#9ca3af' },
+            grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+            timeScale: { visible: true, secondsVisible: true, borderColor: '#2d2f45', timeVisible: true },
+            rightPriceScale: { visible: true, borderColor: '#2d2f45' },
+            handleScroll: { vertTouchDrag: false }
+        });
+        
+        const lineSeries = chart.addLineSeries({ 
+            color: '#ffffff', lineWidth: 2,
+            crosshairMarkerRadius: 5,
+            crosshairMarkerBackgroundColor: '#fff',
+            crosshairMarkerBorderColor: '#8b5cf6',
+            crosshairMarkerBorderWidth: 2
+        });
+
+        // Simulate Vol 10 Index
         let currentPrice = 9607.39;
-
-        function resizeCanvas() {
-            const parent = canvas.parentElement;
-            canvas.width = parent.clientWidth;
-            canvas.height = parent.clientHeight;
-            drawChart();
-        }
-
-        function drawChart() {
-            if (!ctx || !canvas.width) return;
-            
-            // Clear
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Calculate Min/Max for scaling
-            let min = Math.min(...priceData);
-            let max = Math.max(...priceData);
-            let range = max - min || 1;
-            let padding = range * 0.2;
-            min -= padding;
-            max += padding;
-            range = max - min;
-
-            // Draw Line
-            ctx.beginPath();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.lineJoin = 'round';
-            
-            const stepX = canvas.width / (priceData.length - 1 || 1);
-            
-            priceData.forEach((price, i) => {
-                const x = i * stepX;
-                const y = canvas.height - ((price - min) / range) * canvas.height;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-
-            // Draw Gradient Fill below line
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.closePath();
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.2)');
-            gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fill();
-        }
-
-        // Simulate Data
+        let lastTime = Math.floor(Date.now() / 1000);
+        
         function updateChart() {
             const change = (Math.random() - 0.5) * 3;
             currentPrice += change;
-            
-            // Keep only last 100 points
-            priceData.push(currentPrice);
-            if (priceData.length > 100) priceData.shift();
-            
+            lastTime += 1;
+            lineSeries.update({ time: lastTime, value: currentPrice });
             document.getElementById('currentPrice').innerText = currentPrice.toFixed(2);
             updateDigitStats(currentPrice);
-            drawChart();
         }
 
-        // Init
         for(let i=0; i<100; i++) updateChart();
         setInterval(updateChart, 1000);
-        window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 100); // Ensure container is ready
 
-        // --- DIGIT FREQUENCY WITH SVG ARCS ---
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+        });
+
+        // --- DIGIT FREQUENCY WITH SVG PROGRESS RINGS ---
         const digitCounts = new Array(10).fill(0);
         let totalDigits = 0;
-        const RADIUS = 16;
-        const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+        const CIRCUMFERENCE = 2 * Math.PI * 16; // radius=16
 
         function initDigitRow() {
             const row = document.getElementById('digitRow');
@@ -201,13 +168,14 @@
                 row.innerHTML += `
                     <div class="digit-circle">
                         <div class="circle-container">
-                            <svg width="36" height="36" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="${RADIUS}" stroke="#2d2f45" stroke-width="3" fill="none"/>
-                                <circle id="prog-${i}" cx="18" cy="18" r="${RADIUS}" 
+                            <svg class="circle-bg" viewBox="0 0 38 38">
+                                <circle cx="19" cy="19" r="16" stroke="#2d2f45" stroke-width="3" fill="none"/>
+                            </svg>
+                            <svg class="circle-progress" viewBox="0 0 38 38">
+                                <circle id="prog-${i}" cx="19" cy="19" r="16" 
                                     stroke="var(--text-gray)" stroke-width="3" fill="none"
                                     stroke-dasharray="${CIRCUMFERENCE}" 
-                                    stroke-dashoffset="${CIRCUMFERENCE}"
-                                    transform="rotate(-90 18 18)"/>
+                                    stroke-dashoffset="${CIRCUMFERENCE}"/>
                             </svg>
                             <div class="digit-num">${i}</div>
                         </div>
@@ -232,6 +200,7 @@
                 const progCircle = document.getElementById(`prog-${i}`);
                 progCircle.style.strokeDashoffset = offset;
                 
+                // Color logic: Green if above average (10%), Red if below
                 if(pct >= 10) {
                     progCircle.style.stroke = 'var(--success-green)';
                 } else {
