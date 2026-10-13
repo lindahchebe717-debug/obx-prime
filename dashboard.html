@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Trade</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Removed external lightweight-charts script to prevent loading failures -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -53,15 +52,18 @@
         .ai-icon-wrap { width: 40px; height: 40px; }
         .ai-icon { width: 20px; height: 20px; }
 
-        /* NEW: Custom Chart Canvas Styling */
+        /* UPDATED: Reduced min-height to save space */
         #chartCanvas { width: 100%; height: 100%; display: block; }
-        .chart-wrapper { flex: 1; position: relative; min-height: 220px; padding: 0 16px; background: var(--bg-main); overflow: hidden; }
+        .chart-wrapper { flex: 1; position: relative; min-height: 180px; max-height: 220px; padding: 0 16px; background: var(--bg-main); overflow: hidden; }
         
         /* Fake Axis Labels for Real-time look */
         .axis-labels-right { position: absolute; right: 16px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 50px; }
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
+
+        /* ADDED: Bottom padding to prevent buttons from being cut off */
+        .controls-panel { padding-bottom: calc(var(--nav-height, 70px) + 20px); }
     </style>
 </head>
 <body>
@@ -95,13 +97,13 @@
         <!-- Custom Canvas replaces broken library -->
         <canvas id="chartCanvas"></canvas>
         
-        <!-- Fake Axis Labels to match PalOption look -->
-        <div class="axis-labels-right">
-            <div class="axis-label-r">9610.00</div>
-            <div class="axis-label-r">9608.50</div>
-            <div class="axis-label-r">9607.00</div>
-            <div class="axis-label-r">9605.50</div>
-            <div class="axis-label-r">9604.00</div>
+        <!-- Dynamic Axis Labels -->
+        <div class="axis-labels-right" id="axisLabelsRight">
+            <div class="axis-label-r">--</div>
+            <div class="axis-label-r">--</div>
+            <div class="axis-label-r">--</div>
+            <div class="axis-label-r">--</div>
+            <div class="axis-label-r">--</div>
         </div>
         <div class="axis-labels-bottom">
             <div class="axis-label-b">14:33:10</div>
@@ -159,7 +161,7 @@
         let obxSupabase;
         if (typeof window.supabase !== 'undefined') obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
 
-        // --- DIGIT FREQUENCY (MOVED TO TOP TO FIX REFERENCE ERROR) ---
+        // --- DIGIT FREQUENCY ---
         const digitCounts = new Array(10).fill(0);
         let totalDigits = 0;
         const RADIUS = 14;
@@ -200,8 +202,6 @@
                 }
             }
         }
-
-        // Initialize digits immediately
         initDigitRow();
 
         // --- CUSTOM CHART ENGINE ---
@@ -266,6 +266,18 @@
             gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
             ctx.fillStyle = gradient;
             ctx.fill();
+
+            // UPDATE AXIS LABELS TO MOVE WITH PRICE
+            const labelsContainer = document.getElementById('axisLabelsRight');
+            if(labelsContainer) {
+                const labels = labelsContainer.querySelectorAll('.axis-label-r');
+                for(let i=0; i<labels.length; i++) {
+                    // Calculate price at each grid line position
+                    const yPos = (canvas.height / 5) * (labels.length - i);
+                    const priceAtLevel = min + ((canvas.height - yPos) / canvas.height) * range;
+                    labels[i].innerText = priceAtLevel.toFixed(2);
+                }
+            }
         }
 
         function updateChart() {
