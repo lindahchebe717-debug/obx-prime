@@ -52,9 +52,16 @@
         .ai-icon-wrap { width: 40px; height: 40px; }
         .ai-icon { width: 20px; height: 20px; }
 
-        /* UPDATED: Reduced min-height to save space */
+        /* FIXED: Hardcoded height prevents chart from pushing content off screen */
         #chartCanvas { width: 100%; height: 100%; display: block; }
-        .chart-wrapper { flex: 1; position: relative; min-height: 180px; max-height: 220px; padding: 0 16px; background: var(--bg-main); overflow: hidden; }
+        .chart-wrapper { 
+            position: relative; 
+            height: 180px; /* Fixed height instead of flex/min-height */
+            padding: 0 16px; 
+            background: var(--bg-main); 
+            overflow: hidden; 
+            flex-shrink: 0; /* Prevents shrinking */
+        }
         
         /* Fake Axis Labels for Real-time look */
         .axis-labels-right { position: absolute; right: 16px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
@@ -62,11 +69,34 @@
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        /* FIXED: Increased bottom padding to 100px so buttons aren't cut off */
-        .controls-panel { padding-bottom: calc(var(--nav-height, 70px) + 30px); }
+        /* FIXED: Massive bottom padding ensures buttons are never hidden by nav bar */
+        .controls-panel { padding-bottom: 120px; }
         
-        /* FIXED: Added right padding to asset tabs so Over/Under isn't cut off */
-        .asset-tabs { padding-right: 20px; }
+        /* FIXED: Scrollable tabs with hidden scrollbar */
+        .asset-tabs { 
+            display: flex; 
+            gap: 8px; 
+            padding: 0 16px 12px; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            align-items: center; 
+        }
+        .asset-tabs::-webkit-scrollbar { display: none; }
+        .asset-tab { 
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-gray); 
+            padding: 8px 14px; border-radius: 20px; font-size: 0.8rem; 
+            white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .asset-tab svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.7; }
+        .asset-tab.active { 
+            background: rgba(139, 92, 246, 0.15); 
+            border-color: var(--primary-purple);
+            color: var(--text-white); 
+            font-weight: 600;
+        }
+        .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
     </style>
 </head>
 <body>
@@ -82,14 +112,14 @@
         </div>
     </header>
 
-    <!-- Asset Tabs -->
+    <!-- Asset Tabs (Scrollable) -->
     <div class="asset-tabs">
         <button class="asset-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs</button>
         <button class="asset-tab active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd</button>
         <button class="asset-tab"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
     </div>
 
-    <!-- Main Chart Area (Custom Canvas) -->
+    <!-- Main Chart Area -->
     <div class="chart-wrapper">
         <div class="price-overlay">
             <div class="asset-name"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2.5"><path d="M12 20V10M18 20V4M6 20v-4"/></svg> Vol 10 (1s)</div>
@@ -97,10 +127,8 @@
             <div style="font-size:0.65rem; color:var(--success-green); margin-top:2px; font-weight:600;">+1.13%</div>
         </div>
         
-        <!-- Custom Canvas replaces broken library -->
         <canvas id="chartCanvas"></canvas>
         
-        <!-- Dynamic Axis Labels -->
         <div class="axis-labels-right" id="axisLabelsRight">
             <div class="axis-label-r">--</div>
             <div class="axis-label-r">--</div>
@@ -109,11 +137,11 @@
             <div class="axis-label-r">--</div>
         </div>
         <div class="axis-labels-bottom">
-            <div class="axis-label-b">14:33:10</div>
-            <div class="axis-label-b">14:33:15</div>
-            <div class="axis-label-b">14:33:20</div>
-            <div class="axis-label-b">14:33:25</div>
-            <div class="axis-label-b">14:33:30</div>
+            <div class="axis-label-b">--:--:--</div>
+            <div class="axis-label-b">--:--:--</div>
+            <div class="axis-label-b">--:--:--</div>
+            <div class="axis-label-b">--:--:--</div>
+            <div class="axis-label-b">--:--:--</div>
         </div>
     </div>
 
@@ -207,12 +235,13 @@
         }
         initDigitRow();
 
-        // --- CUSTOM CHART ENGINE WITH MOVING CURVE ---
+        // --- MOVING CHART ENGINE ---
         const canvas = document.getElementById('chartCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
         let priceData = [];
+        let timeData = [];
         let currentPrice = 9607.39;
-        const MAX_POINTS = 60; // Show last 60 seconds for smooth sliding effect
+        const MAX_POINTS = 60; // Strictly 60 points for smooth sliding
 
         function resizeCanvas() {
             if (!canvas) return;
@@ -220,6 +249,11 @@
             canvas.width = parent.clientWidth;
             canvas.height = parent.clientHeight;
             drawChart();
+        }
+
+        function formatTime(timestamp) {
+            const d = new Date(timestamp * 1000);
+            return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
         }
 
         function drawChart() {
@@ -240,14 +274,15 @@
             }
             ctx.stroke();
 
-            // Draw Line Graph
             if (priceData.length === 0) return;
+            
             let min = Math.min(...priceData);
             let max = Math.max(...priceData);
             let range = max - min || 1;
             let padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
 
+            // Draw Line
             ctx.beginPath();
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
@@ -261,13 +296,16 @@
             });
             ctx.stroke();
 
-            // Draw Pulsing Dot at End of Line
-            const lastX = (priceData.length - 1) * stepX;
-            const lastY = canvas.height - ((priceData[priceData.length-1] - min) / range) * canvas.height;
+            // Pulsing Dot at End
+            const lastIdx = priceData.length - 1;
+            const lastX = lastIdx * stepX;
+            const lastY = canvas.height - ((priceData[lastIdx] - min) / range) * canvas.height;
+            
             ctx.beginPath();
             ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
+            
             ctx.beginPath();
             ctx.arc(lastX, lastY, 8, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
@@ -283,14 +321,25 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // UPDATE AXIS LABELS TO MOVE WITH PRICE
-            const labelsContainer = document.getElementById('axisLabelsRight');
-            if(labelsContainer) {
-                const labels = labelsContainer.querySelectorAll('.axis-label-r');
+            // Update Dynamic Axis Labels
+            const rightLabels = document.getElementById('axisLabelsRight');
+            if(rightLabels) {
+                const labels = rightLabels.querySelectorAll('.axis-label-r');
                 for(let i=0; i<labels.length; i++) {
                     const yPos = (canvas.height / 5) * (labels.length - i);
                     const priceAtLevel = min + ((canvas.height - yPos) / canvas.height) * range;
                     labels[i].innerText = priceAtLevel.toFixed(2);
+                }
+            }
+
+            // Update Bottom Time Labels based on actual data
+            const bottomLabels = document.querySelector('.axis-labels-bottom');
+            if(bottomLabels && timeData.length > 0) {
+                const labels = bottomLabels.querySelectorAll('.axis-label-b');
+                const step = Math.floor(timeData.length / 5);
+                for(let i=0; i<labels.length; i++) {
+                    const idx = Math.min(i * step, timeData.length - 1);
+                    labels[i].innerText = formatTime(timeData[idx]);
                 }
             }
         }
@@ -298,9 +347,16 @@
         function updateChart() {
             const change = (Math.random() - 0.5) * 3;
             currentPrice += change;
+            const now = Math.floor(Date.now() / 1000);
+            
             priceData.push(currentPrice);
-            // Keep only last MAX_POINTS for sliding window effect
-            if (priceData.length > MAX_POINTS) priceData.shift();
+            timeData.push(now);
+            
+            // SLIDING WINDOW: Remove oldest point when we exceed MAX_POINTS
+            if (priceData.length > MAX_POINTS) {
+                priceData.shift();
+                timeData.shift();
+            }
             
             const priceEl = document.getElementById('currentPrice');
             if(priceEl) priceEl.innerText = currentPrice.toFixed(2);
@@ -309,7 +365,7 @@
             drawChart();
         }
 
-        // Start Chart
+        // Initialize with MAX_POINTS so chart is full immediately
         for(let i=0; i<MAX_POINTS; i++) updateChart();
         setInterval(updateChart, 1000);
         window.addEventListener('resize', resizeCanvas);
