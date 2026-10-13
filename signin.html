@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBX PRIME | Sign In</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Load Supabase JS only once -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="auth-wrapper">
@@ -29,43 +30,45 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        // Use unique variable names to prevent redeclaration errors
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         
-        console.log("🔑 Supabase URL:", SUPABASE_URL);
-        console.log("🔑 Anon Key starts with:", SUPABASE_ANON_KEY.substring(0, 20) + "...");
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Safety check: only create client if window.supabase exists and obxSupabase doesn't
+        let obxSupabase;
+        if (typeof window.supabase !== 'undefined' && typeof obxSupabase === 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+            console.log("✅ OBX Supabase client initialized successfully");
+        } else {
+            console.error("❌ Failed to initialize Supabase. Check CDN load.");
+        }
 
         async function handleSignin() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            if (!email || !password) return alert("️ Please enter both email and password");
-
-            console.log("🔄 Attempting sign in for:", email);
+            if (!email || !password) return alert("Please enter both email and password");
+            if (!obxSupabase) return alert("System error: Supabase not loaded. Refresh page.");
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await obxSupabase.auth.signInWithPassword({ 
+                    email, 
+                    password 
+                });
                 
                 if (error) {
-                    console.error("❌ Sign in error:", error);
-                    
+                    console.error("Sign in failed:", error);
                     if (error.message.includes("Email not confirmed")) {
-                        return alert("📧 Email not verified! Check your inbox or disable email confirmation in Supabase Auth settings.");
+                        return alert("📧 Email not verified! Check your inbox.");
                     }
-                    if (error.message.includes("Invalid login credentials")) {
-                        return alert(" Wrong email or password. Try signing up first.");
-                    }
-                    return alert("❌ Error: " + error.message);
+                    return alert("Login failed: " + error.message);
                 }
 
-                console.log("✅ Sign in successful!", data.user.email);
                 localStorage.setItem('obx_token', data.session.access_token);
                 window.location.href = 'dashboard.html';
                 
             } catch (err) {
-                console.error("💥 Unexpected error:", err);
+                console.error("Unexpected sign in error:", err);
                 alert("Unexpected error: " + err.message);
             }
         }
