@@ -2,99 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBX PRIME | Sign In</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
-        .input-field { background-color: rgba(30, 27, 75, 0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s ease; }
-        .input-field:focus { border-color: #7C3AED; box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2); outline: none; }
-        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-[#1F1936] rounded-2xl shadow-2xl border border-white/5 p-8">
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-gradient-to-br from-[#7C3AED] to-[#EC4899] rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-[#7C3AED]/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-            </div>
-            <h1 class="text-2xl font-bold text-white">Welcome Back</h1>
-            <p class="text-gray-400 text-sm mt-2">Sign in to continue trading</p>
+<body class="auth-wrapper">
+    <div class="auth-card">
+        <h1 class="logo" style="text-align:center; margin-bottom: 0.5rem;">OBX PRIME</h1>
+        <p style="text-align:center; color:var(--text-gray); font-size:0.9rem; margin-bottom:2rem;">Welcome back, trader</p>
+        
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com">
         </div>
-
-        <!-- CRITICAL: No onsubmit attribute here -->
-        <form id="signin-form" class="space-y-5">
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email Address</label>
-                <input type="email" id="signin-email" required placeholder="name@example.com" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600">
-            </div>
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Password</label>
-                    <a href="#" class="text-xs text-[#7C3AED] hover:text-[#8B5CF6] transition-colors">Forgot Password?</a>
-                </div>
-                <div class="relative">
-                    <input type="password" id="signin-pass" required placeholder="••••••••" class="input-field w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-600 pr-12">
-                    <button type="button" onclick="togglePass('signin-pass')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </button>
-                </div>
-            </div>
-            <button type="submit" id="signin-btn" class="w-full bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:opacity-90 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#7C3AED]/25 mt-4 flex items-center justify-center gap-2">
-                <span>Sign In</span>
-            </button>
-        </form>
-
-        <div class="mt-8 text-center">
-            <p class="text-sm text-gray-400">Don't have an account? <a href="signup.html" class="text-[#7C3AED] font-semibold hover:text-[#8B5CF6] transition-colors">Sign Up</a></p>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
         </div>
+        
+        <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="handleSignin()">Sign In to Trade</button>
+        
+        <p style="text-align:center; margin-top:1.5rem; color:var(--text-gray); font-size:0.85rem;">
+            New to OBX PRIME? <a href="signup.html" style="color:var(--primary-purple);">Create Account</a>
+        </p>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://twwwpywcmjdrocsfhyia.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        function togglePass(id) {
-            const input = document.getElementById(id);
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         
-        // CRITICAL FIX: Intercept submit event directly
-        document.getElementById('signin-form').addEventListener('submit', async function(e) {
-            e.preventDefault(); // STOPS PAGE RELOAD
-            
-            const btn = document.getElementById('signin-btn');
-            const email = document.getElementById('signin-email').value;
-            const password = document.getElementById('signin-pass').value;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div>';
-            
+        console.log("🔑 Supabase URL:", SUPABASE_URL);
+        console.log("🔑 Anon Key starts with:", SUPABASE_ANON_KEY.substring(0, 20) + "...");
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleSignin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) return alert("️ Please enter both email and password");
+
+            console.log("🔄 Attempting sign in for:", email);
+
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({ 
-                    email: email, 
-                    password: password 
-                });
-
-                if (error) throw error;
-
-                const userName = data.user.user_metadata?.full_name || email.split('@')[0];
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', userName);
-                localStorage.setItem('userEmail', data.user.email);
-                
+                if (error) {
+                    console.error("❌ Sign in error:", error);
+                    
+                    if (error.message.includes("Email not confirmed")) {
+                        return alert("📧 Email not verified! Check your inbox or disable email confirmation in Supabase Auth settings.");
+                    }
+                    if (error.message.includes("Invalid login credentials")) {
+                        return alert(" Wrong email or password. Try signing up first.");
+                    }
+                    return alert("❌ Error: " + error.message);
+                }
+
+                console.log("✅ Sign in successful!", data.user.email);
+                localStorage.setItem('obx_token', data.session.access_token);
                 window.location.href = 'dashboard.html';
                 
             } catch (err) {
-                alert('❌ ' + err.message);
-                btn.disabled = false;
-                btn.innerHTML = '<span>Sign In</span>';
+                console.error("💥 Unexpected error:", err);
+                alert("Unexpected error: " + err.message);
             }
-        });
+        }
     </script>
 </body>
 </html>
