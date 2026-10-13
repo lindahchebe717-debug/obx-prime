@@ -408,12 +408,36 @@
             }
         }
 
+        // ✅ UPDATED: Fully functional dark/light theme toggle
         function toggleDarkTheme() {
             const toggle = document.getElementById('themeToggle');
-            toggle.classList.toggle('active');
-            // Add your actual theme switching logic here
-            console.log("Theme toggled:", toggle.classList.contains('active') ? 'Dark' : 'Light');
+            const body = document.body;
+            
+            // Toggle the light-theme class on the body
+            body.classList.toggle('light-theme');
+            
+            // Update the toggle switch visual state
+            if (body.classList.contains('light-theme')) {
+                toggle.classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggle.classList.add('active');
+                localStorage.setItem('theme', 'dark');
+            }
         }
+
+        // ✅ ADDED: Initialize theme on page load so it remembers the user's choice
+        (function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const toggle = document.getElementById('themeToggle');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if(toggle) toggle.classList.remove('active');
+            } else {
+                document.body.classList.remove('light-theme');
+                if(toggle) toggle.classList.add('active');
+            }
+        })();
 
         // --- DIGIT FREQUENCY ---
         const digitCounts = new Array(10).fill(0);
