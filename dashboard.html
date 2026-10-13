@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Added styles for the new P Logo and Sound Icon -->
+    <!-- Added styles for the new P Logo, Sound Icon, and New Trading Tabs -->
     <style>
         .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
         .icon-btn svg { width: 24px; height: 24px; stroke: var(--text-white); stroke-width: 2; fill: none; }
@@ -31,6 +31,28 @@
         
         /* Sound Icon Specifics */
         .sound-btn svg { stroke: var(--primary-purple); }
+
+        /* NEW: Target Profit, Stop Loss, Multiplier Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .stat-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 8px; text-align: center; }
+        .stat-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-value { font-size: 1.1rem; font-weight: 800; }
+        
+        .label-profit { color: var(--success-green); }
+        .label-loss { color: var(--danger-red); }
+        .label-mult { color: #f59e0b; }
+
+        /* NEW: Total Trades Summary Bar */
+        .trades-summary { 
+            display: flex; justify-content: space-around; align-items: center; 
+            background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px; padding: 10px; margin-bottom: 16px;
+        }
+        .summary-item { text-align: center; }
+        .summary-label { font-size: 0.65rem; color: var(--text-gray); font-weight: 600; margin-bottom: 2px; }
+        .summary-val { font-size: 1rem; font-weight: 800; color: white; }
+        .summary-val.win { color: var(--success-green); }
+        .summary-val.loss { color: var(--danger-red); }
     </style>
 </head>
 <body>
@@ -119,6 +141,38 @@
             <button class="qs-btn" onclick="setStake(25)">$25</button>
             <button class="qs-btn" onclick="setStake(50)">$50</button>
             <button class="qs-btn" onclick="setStake(100)">$100</button>
+        </div>
+
+        <!-- NEW: Target Profit, Stop Loss, Multiplier -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label label-profit">TARGET PROFIT</div>
+                <div class="stat-value">$200</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label label-loss">STOP LOSS</div>
+                <div class="stat-value">$999</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label label-mult">MULTIPLIER</div>
+                <div class="stat-value">x 2</div>
+            </div>
+        </div>
+
+        <!-- NEW: Total Trades / Wins / Losses Summary -->
+        <div class="trades-summary">
+            <div class="summary-item">
+                <div class="summary-label">TOTAL TRADES</div>
+                <div class="summary-val" id="totalTrades">0</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">WINS</div>
+                <div class="summary-val win" id="totalWins">0</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">LOSSES</div>
+                <div class="summary-val loss" id="totalLosses">0</div>
+            </div>
         </div>
 
         <div class="trade-actions">
@@ -254,6 +308,8 @@
         }
 
         // --- TRADING FUNCTIONS ---
+        let stats = { total: 0, wins: 0, losses: 0 };
+
         function setStake(val) { document.getElementById('stakeAmount').value = val; }
 
         async function placeTrade(direction) {
@@ -272,6 +328,16 @@
 
             if(error) console.error(error);
             else {
+                // Update local stats counter
+                stats.total++;
+                // Simulate random win/loss for demo purposes
+                if(Math.random() > 0.5) stats.wins++;
+                else stats.losses++;
+                
+                document.getElementById('totalTrades').innerText = stats.total;
+                document.getElementById('totalWins').innerText = stats.wins;
+                document.getElementById('totalLosses').innerText = stats.losses;
+
                 if(navigator.vibrate) navigator.vibrate(50);
                 alert(`${direction} trade placed at ${entryPrice.toFixed(2)}!`);
             }
