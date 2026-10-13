@@ -159,13 +159,59 @@
         let obxSupabase;
         if (typeof window.supabase !== 'undefined') obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
 
-        // --- CUSTOM CHART ENGINE (NO EXTERNAL LIBRARIES) ---
+        // --- DIGIT FREQUENCY (MOVED TO TOP TO FIX REFERENCE ERROR) ---
+        const digitCounts = new Array(10).fill(0);
+        let totalDigits = 0;
+        const RADIUS = 14;
+        const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+        function initDigitRow() {
+            const row = document.getElementById('digitRow');
+            if (!row) return;
+            row.innerHTML = '';
+            for(let i=0; i<=9; i++) {
+                row.innerHTML += `
+                    <div class="digit-circle">
+                        <div class="circle-container">
+                            <svg width="32" height="32" viewBox="0 0 32 32">
+                                <circle cx="16" cy="16" r="${RADIUS}" stroke="#2d2f45" stroke-width="2.5" fill="none"/>
+                                <circle id="prog-${i}" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
+                            </svg>
+                            <div class="digit-num">${i}</div>
+                        </div>
+                        <div class="digit-pct" id="pct-${i}">0%</div>
+                    </div>`;
+            }
+        }
+
+        function updateDigitStats(price) {
+            const lastDigit = Math.floor(price) % 10;
+            digitCounts[lastDigit]++;
+            totalDigits++;
+            for(let i=0; i<=9; i++) {
+                const pct = totalDigits > 0 ? (digitCounts[i] / totalDigits) * 100 : 0;
+                const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
+                const pctEl = document.getElementById(`pct-${i}`);
+                const progCircle = document.getElementById(`prog-${i}`);
+                if(pctEl) pctEl.innerText = pct.toFixed(1) + '%';
+                if(progCircle) {
+                    progCircle.style.strokeDashoffset = offset;
+                    progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)';
+                }
+            }
+        }
+
+        // Initialize digits immediately
+        initDigitRow();
+
+        // --- CUSTOM CHART ENGINE ---
         const canvas = document.getElementById('chartCanvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas ? canvas.getContext('2d') : null;
         let priceData = [];
         let currentPrice = 9607.39;
 
         function resizeCanvas() {
+            if (!canvas) return;
             const parent = canvas.parentElement;
             canvas.width = parent.clientWidth;
             canvas.height = parent.clientHeight;
@@ -176,30 +222,28 @@
             if (!ctx || !canvas.width) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw Grid Lines (Horizontal & Vertical)
+            // Draw Grid Lines
             ctx.strokeStyle = 'rgba(45, 47, 69, 0.4)';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            // Horizontal lines
             for(let i=1; i<5; i++) {
                 let y = (canvas.height / 5) * i;
                 ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
             }
-            // Vertical lines
             for(let i=1; i<5; i++) {
                 let x = (canvas.width / 5) * i;
                 ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
             }
             ctx.stroke();
 
-            // Calculate Min/Max for scaling
+            // Draw Line Graph
+            if (priceData.length === 0) return;
             let min = Math.min(...priceData);
             let max = Math.max(...priceData);
             let range = max - min || 1;
             let padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
 
-            // Draw White Line Graph
             ctx.beginPath();
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
@@ -213,7 +257,7 @@
             });
             ctx.stroke();
 
-            // Draw Gradient Fill below line
+            // Gradient Fill
             ctx.lineTo(canvas.width, canvas.height);
             ctx.lineTo(0, canvas.height);
             ctx.closePath();
@@ -230,89 +274,67 @@
             priceData.push(currentPrice);
             if (priceData.length > 100) priceData.shift();
             
-            document.getElementById('currentPrice').innerText = currentPrice.toFixed(2);
+            const priceEl = document.getElementById('currentPrice');
+            if(priceEl) priceEl.innerText = currentPrice.toFixed(2);
+            
             updateDigitStats(currentPrice);
             drawChart();
         }
 
-        // Initialize Chart
+        // Start Chart
         for(let i=0; i<100; i++) updateChart();
         setInterval(updateChart, 1000);
         window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 100); // Ensure container is ready
-
-        // --- DIGIT FREQUENCY WITH SVG ARCS ---
-        const digitCounts = new Array(10).fill(0);
-        let totalDigits = 0;
-        const RADIUS = 14;
-        const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-        function initDigitRow() {
-            const row = document.getElementById('digitRow');
-            row.innerHTML = '';
-            for(let i=0; i<=9; i++) {
-                row.innerHTML += `
-                    <div class="digit-circle">
-                        <div class="circle-container">
-                            <svg width="32" height="32" viewBox="0 0 32 32">
-                                <circle cx="16" cy="16" r="${RADIUS}" stroke="#2d2f45" stroke-width="2.5" fill="none"/>
-                                <circle id="prog-${i}" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
-                            </svg>
-                            <div class="digit-num">${i}</div>
-                        </div>
-                        <div class="digit-pct" id="pct-${i}">0%</div>
-                    </div>`;
-            }
-        }
-        initDigitRow();
-
-        function updateDigitStats(price) {
-            const lastDigit = Math.floor(price) % 10;
-            digitCounts[lastDigit]++;
-            totalDigits++;
-            for(let i=0; i<=9; i++) {
-                const pct = totalDigits > 0 ? (digitCounts[i] / totalDigits) * 100 : 0;
-                const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
-                document.getElementById(`pct-${i}`).innerText = pct.toFixed(1) + '%';
-                const progCircle = document.getElementById(`prog-${i}`);
-                progCircle.style.strokeDashoffset = offset;
-                progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)';
-            }
-        }
+        setTimeout(resizeCanvas, 100);
 
         // --- TRADING FUNCTIONS ---
         let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
-        function setStake(val) { document.getElementById('stakeAmount').value = val; }
+        function setStake(val) { 
+            const el = document.getElementById('stakeAmount');
+            if(el) el.value = val; 
+        }
         function adjustStake(delta) {
             const input = document.getElementById('stakeAmount');
+            if(!input) return;
             let val = parseInt(input.value) || 0;
             input.value = Math.max(1, val + delta);
         }
 
         async function placeTrade(direction) {
             if (!obxSupabase) return alert("System error: Supabase not loaded.");
-            const stake = parseFloat(document.getElementById('stakeAmount').value);
+            const stakeInput = document.getElementById('stakeAmount');
+            const stake = parseFloat(stakeInput ? stakeInput.value : 10);
             const entryPrice = currentPrice;
-            const { data: { user } } = await obxSupabase.auth.getUser();
-            if(!user) return alert("Please login first via index.html");
+            
+            try {
+                const { data: { user } } = await obxSupabase.auth.getUser();
+                if(!user) return alert("Please login first via index.html");
 
-            const { error } = await obxSupabase.from('trades').insert({
-                user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN'
-            });
+                const { error } = await obxSupabase.from('trades').insert({
+                    user_id: user.id, asset: 'VOL_10', direction: direction, 
+                    stake: stake, entry_price: entryPrice, status: 'OPEN'
+                });
 
-            if(error) console.error(error);
-            else {
-                stats.total++;
-                const won = Math.random() > 0.5;
-                if(won) { stats.wins++; stats.pnl += stake * 0.952; } 
-                else { stats.losses++; stats.pnl -= stake; }
-                
-                document.getElementById('liveStatsText').innerText = `${stats.total}T · ${stats.wins}W · ${stats.losses}L`;
-                const pnlEl = document.getElementById('livePnl');
-                const sign = stats.pnl >= 0 ? '+' : '';
-                pnlEl.innerText = `${sign}$${Math.abs(stats.pnl).toFixed(2)}`;
-                pnlEl.className = `live-pnl ${stats.pnl >= 0 ? 'positive' : 'negative'}`;
-                if(navigator.vibrate) navigator.vibrate(50);
+                if(error) console.error(error);
+                else {
+                    stats.total++;
+                    const won = Math.random() > 0.5;
+                    if(won) { stats.wins++; stats.pnl += stake * 0.952; } 
+                    else { stats.losses++; stats.pnl -= stake; }
+                    
+                    const statsText = document.getElementById('liveStatsText');
+                    const pnlEl = document.getElementById('livePnl');
+                    
+                    if(statsText) statsText.innerText = `${stats.total}T · ${stats.wins}W · ${stats.losses}L`;
+                    if(pnlEl) {
+                        const sign = stats.pnl >= 0 ? '+' : '';
+                        pnlEl.innerText = `${sign}$${Math.abs(stats.pnl).toFixed(2)}`;
+                        pnlEl.className = `live-pnl ${stats.pnl >= 0 ? 'positive' : 'negative'}`;
+                    }
+                    if(navigator.vibrate) navigator.vibrate(50);
+                }
+            } catch(e) {
+                console.error("Trade error:", e);
             }
         }
     </script>
