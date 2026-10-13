@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBX PRIME | Volatility 10 Index</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Lightweight Charts by TradingView -->
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -14,14 +13,13 @@
         <div class="logo">OBX PRIME</div>
         <div class="nav-links">
             <a href="#" class="active">Trade</a>
-            <a href="#">Positions</a>
+            <a href="positions.html">Positions</a>
             <a href="#">AI Signals</a>
             <button class="btn-deposit">Deposit</button>
         </div>
     </nav>
 
     <main class="trade-container">
-        <!-- Left: Chart -->
         <div class="chart-panel">
             <div class="asset-header">
                 <div>
@@ -33,7 +31,6 @@
             <div id="chart" style="width:100%; height:400px;"></div>
         </div>
 
-        <!-- Right: Controls -->
         <div class="control-panel">
             <div style="display:flex; background:var(--bg-main); border-radius:8px; padding:4px;">
                 <button style="flex:1; background:var(--primary-purple); border:none; color:white; padding:8px; border-radius:6px;">AUTO</button>
@@ -77,7 +74,11 @@
     </main>
 
     <script>
-        // --- CHART INITIALIZATION ---
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Chart Setup
         const chartContainer = document.getElementById('chart');
         const chart = LightweightCharts.createChart(chartContainer, {
             layout: { background: { color: '#1a1b2e' }, textColor: '#9ca3af' },
@@ -85,10 +86,8 @@
             crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
             timeScale: { timeVisible: true, secondsVisible: true }
         });
-
         const lineSeries = chart.addLineSeries({ color: '#ffffff', lineWidth: 2 });
         
-        // Simulate Vol 10 Index Data
         let currentPrice = 9607.39;
         let lastTime = Math.floor(Date.now() / 1000);
         
@@ -96,45 +95,30 @@
             const change = (Math.random() - 0.5) * 5;
             currentPrice += change;
             lastTime += 1;
-            
             lineSeries.update({ time: lastTime, value: currentPrice });
             document.getElementById('currentPrice').innerText = currentPrice.toFixed(2);
         }
-
-        // Initial data fill
         for(let i=0; i<60; i++) updateChart();
         setInterval(updateChart, 1000);
 
-        // --- TRADING LOGIC ---
         function setStake(val) { document.getElementById('stakeAmount').value = val; }
 
         async function placeTrade(direction) {
             const stake = parseFloat(document.getElementById('stakeAmount').value);
             const entryPrice = currentPrice;
             
-            // Save trade to Supabase
             const { data: { user } } = await supabase.auth.getUser();
-            if(!user) return alert("Please login first");
+            if(!user) return alert("Please login first via index.html");
 
             const { error } = await supabase.from('trades').insert({
-                user_id: user.id,
-                asset: 'VOL_10',
-                direction: direction,
-                stake: stake,
-                entry_price: entryPrice,
-                status: 'OPEN'
+                user_id: user.id, asset: 'VOL_10', direction: direction, 
+                stake: stake, entry_price: entryPrice, status: 'OPEN'
             });
 
             if(error) console.error(error);
             else alert(`${direction} trade placed at ${entryPrice.toFixed(2)}!`);
         }
 
-        // --- SUPABASE REALTIME SUBSCRIPTION ---
-        const supabaseUrl = 'YOUR_SUPABASE_URL';
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        // Listen for other traders or system updates
         supabase.channel('public:trades')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'trades' }, payload => {
                 console.log('New trade detected:', payload.new);
