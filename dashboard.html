@@ -99,12 +99,174 @@
             color: var(--text-white); font-weight: 600;
         }
         .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
+
+        /* =========================================
+           NEW: SIDE MENU (DRAWER) STYLES
+           ========================================= */
+        .menu-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .menu-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .side-menu {
+            position: fixed; top: 0; left: 0; bottom: 0; width: 85%; max-width: 320px;
+            background: var(--bg-card); z-index: 9999;
+            transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+        }
+        .side-menu.show { transform: translateX(0); }
+
+        .menu-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; border-bottom: 1px solid var(--border-color);
+        }
+        .menu-title { font-size: 1.2rem; font-weight: 800; color: white; }
+        .menu-close { background: none; border: none; color: white; cursor: pointer; padding: 4px; }
+        .menu-lang { font-size: 0.85rem; font-weight: 700; color: white; margin-left: 12px; }
+
+        .menu-profile {
+            display: flex; align-items: center; gap: 12px; padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .profile-avatar {
+            width: 48px; height: 48px; border-radius: 50%; background: var(--primary-purple);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 800; color: white; flex-shrink: 0;
+        }
+        .profile-info { display: flex; flex-direction: column; gap: 2px; }
+        .profile-name { font-size: 1rem; font-weight: 700; color: white; }
+        .profile-email { font-size: 0.8rem; color: var(--text-gray); }
+
+        .menu-list { list-style: none; padding: 8px 0; margin: 0; flex: 1; }
+        .menu-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+            color: var(--text-gray); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+            transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent;
+        }
+        .menu-item:hover { background: rgba(139, 92, 246, 0.08); color: white; }
+        .menu-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; flex-shrink: 0; }
+        .menu-item .chevron { margin-left: auto; width: 16px; height: 16px; opacity: 0.5; }
+
+        /* Refer & Earn Highlight */
+        .menu-item.refer-highlight {
+            background: rgba(139, 92, 246, 0.15); color: #a78bfa;
+            border-left-color: var(--primary-purple); font-weight: 700;
+        }
+        .menu-item.refer-highlight svg { stroke: #a78bfa; }
+
+        /* Dark Theme Toggle Row */
+        .menu-item.theme-row { justify-content: space-between; }
+        .theme-toggle {
+            width: 44px; height: 24px; border-radius: 12px; background: #374151;
+            position: relative; cursor: pointer; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle.active { background: var(--primary-purple); }
+        .theme-toggle::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 20px; border-radius: 50%; background: white;
+            transition: transform 0.3s;
+        }
+        .theme-toggle.active::after { transform: translateX(20px); }
+
+        .menu-footer {
+            padding: 16px 20px; border-top: 1px solid var(--border-color);
+            font-size: 0.7rem; color: var(--text-gray); text-align: center;
+        }
     </style>
 </head>
 <body>
+    <!-- =========================================
+         SIDE MENU OVERLAY & DRAWER
+         ========================================= -->
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    
+    <nav class="side-menu" id="sideMenu">
+        <!-- Menu Header -->
+        <div class="menu-header">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-close" onclick="closeMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+                <span class="menu-title">Menu</span>
+            </div>
+            <span class="menu-lang">EN</span>
+        </div>
+
+        <!-- User Profile -->
+        <div class="menu-profile">
+            <div class="profile-avatar" id="profileAvatar">?</div>
+            <div class="profile-info">
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-email" id="profileEmail">Please sign in</div>
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <ul class="menu-list">
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                OBX PRIME
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Account settings
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="deposit.html" class="menu-item">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Deposit
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Withdraw
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="positions.html" class="menu-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                History
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="#" class="menu-item refer-highlight">
+                <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                Refer & Earn
+            </a></li>
+            <li>
+                <div class="menu-item theme-row" onclick="toggleDarkTheme()">
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        Dark theme
+                    </div>
+                    <div class="theme-toggle active" id="themeToggle"></div>
+                </div>
+            </li>
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Help Centre
+            </a></li>
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Responsible Trading
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+            <li><a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Live Chat
+                <span style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </a></li>
+        </ul>
+
+        <div class="menu-footer" id="menuFooter">OBX PRIME</div>
+    </nav>
+
     <!-- Top Header -->
     <header class="top-header">
-        <button class="icon-btn menu-icon"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <!-- UPDATED: Menu button now opens side menu -->
+        <button class="icon-btn menu-icon" onclick="openMenu()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <div class="p-logo">P</div>
         <div style="display:flex; align-items:center; gap:8px;">
             <div class="user-balance"><span style="color:var(--primary-purple); font-weight:800; font-size:0.8rem;">R</span> <span style="font-size:0.85rem;">$0.00</span></div>
@@ -193,6 +355,62 @@
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         let obxSupabase;
         if (typeof window.supabase !== 'undefined') obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+
+        // --- MENU FUNCTIONS ---
+        function openMenu() {
+            document.getElementById('menuOverlay').classList.add('show');
+            document.getElementById('sideMenu').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadUserProfile();
+        }
+
+        function closeMenu() {
+            document.getElementById('menuOverlay').classList.remove('show');
+            document.getElementById('sideMenu').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function loadUserProfile() {
+            const nameEl = document.getElementById('profileName');
+            const emailEl = document.getElementById('profileEmail');
+            const avatarEl = document.getElementById('profileAvatar');
+            const footerEl = document.getElementById('menuFooter');
+
+            if (!obxSupabase) {
+                nameEl.innerText = 'Not Signed In';
+                emailEl.innerText = 'Please log in';
+                return;
+            }
+
+            try {
+                const { data: { user } } = await obxSupabase.auth.getUser();
+                if (user) {
+                    const displayName = user.user_metadata?.username || user.email?.split('@')[0] || 'Trader';
+                    const maskedEmail = user.email ? user.email.replace(/(.{2}).*(@.*)/, '$1***$2') : '';
+                    
+                    nameEl.innerText = displayName;
+                    emailEl.innerText = maskedEmail;
+                    avatarEl.innerText = displayName.charAt(0).toUpperCase();
+                    
+                    // Update footer with GMT time
+                    const now = new Date();
+                    footerEl.innerText = `${now.toISOString().replace('T', ' ').split('.')[0]} GMT`;
+                } else {
+                    nameEl.innerText = 'Guest';
+                    emailEl.innerText = 'Sign in to access full features';
+                    avatarEl.innerText = 'G';
+                }
+            } catch(e) {
+                console.error("Profile load error:", e);
+            }
+        }
+
+        function toggleDarkTheme() {
+            const toggle = document.getElementById('themeToggle');
+            toggle.classList.toggle('active');
+            // Add your actual theme switching logic here
+            console.log("Theme toggled:", toggle.classList.contains('active') ? 'Dark' : 'Light');
+        }
 
         // --- DIGIT FREQUENCY ---
         const digitCounts = new Array(10).fill(0);
