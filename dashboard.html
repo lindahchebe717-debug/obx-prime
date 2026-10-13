@@ -8,6 +8,34 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
+        /* =========================================
+           CSS VARIABLES FOR THEME TOGGLE
+           ========================================= */
+        :root {
+            --bg-main: #141021;
+            --bg-card: #1e1b4b;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --primary-purple: #8b5cf6;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+
+        /* Light theme overrides for CSS variables */
+        body.light-theme {
+            --bg-main: #f9fafb;
+            --bg-card: #ffffff;
+            --text-white: #1f2937;
+            --text-gray: #6b7280;
+            --primary-purple: #7c3aed;
+            --border-color: rgba(0, 0, 0, 0.1);
+            background-color: #f9fafb !important;
+            color: #1f2937 !important;
+        }
+
         /* Keep all your existing styles exactly as they are */
         .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
@@ -51,7 +79,7 @@
         /* FIXED: Smaller bottom nav to save space for buttons */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 60px; /* Reduced from 70px */
+            height: 60px; 
             background: var(--bg-card); 
             border-top: 1px solid var(--border-color); 
             display: flex; justify-content: space-around; align-items: center; 
@@ -59,8 +87,8 @@
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; transition: color 0.2s; }
         .nav-item.active { color: var(--primary-purple); }
-        .nav-icon { width: 20px; height: 20px; } /* Smaller icons */
-        .ai-icon-wrap { width: 36px; height: 36px; } /* Smaller AI button */
+        .nav-icon { width: 20px; height: 20px; } 
+        .ai-icon-wrap { width: 36px; height: 36px; } 
         .ai-icon { width: 18px; height: 18px; }
 
         /* Chart & Axis Styles */
@@ -78,10 +106,8 @@
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        /* FIXED: Reduced padding since nav is smaller */
         .controls-panel { padding-bottom: 90px; } 
         
-        /* FIXED: Compact tabs */
         .asset-tabs { 
             display: flex; gap: 6px; padding: 0 12px 10px; 
             overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; 
@@ -101,7 +127,7 @@
         .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
 
         /* =========================================
-           NEW: SIDE MENU (DRAWER) STYLES
+           SIDE MENU (DRAWER) STYLES
            ========================================= */
         .menu-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
@@ -149,14 +175,12 @@
         .menu-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; flex-shrink: 0; }
         .menu-item .chevron { margin-left: auto; width: 16px; height: 16px; opacity: 0.5; }
 
-        /* Refer & Earn Highlight */
         .menu-item.refer-highlight {
             background: rgba(139, 92, 246, 0.15); color: #a78bfa;
             border-left-color: var(--primary-purple); font-weight: 700;
         }
         .menu-item.refer-highlight svg { stroke: #a78bfa; }
 
-        /* Dark Theme Toggle Row */
         .menu-item.theme-row { justify-content: space-between; }
         .theme-toggle {
             width: 44px; height: 24px; border-radius: 12px; background: #374151;
@@ -174,6 +198,19 @@
             padding: 16px 20px; border-top: 1px solid var(--border-color);
             font-size: 0.7rem; color: var(--text-gray); text-align: center;
         }
+        
+        /* Additional Light Theme Overrides for Tailwind-like classes */
+        body.light-theme .text-white { color: #1f2937 !important; }
+        body.light-theme .text-gray-400, body.light-theme .text-gray-500 { color: #6b7280 !important; }
+        body.light-theme .text-gray-300 { color: #4b5563 !important; }
+        body.light-theme .border-white\/10, body.light-theme .border-white\/5, body.light-theme .border-white\/\[0\.07\] { border-color: rgba(0, 0, 0, 0.1) !important; }
+        body.light-theme .bg-white\/5, body.light-theme .bg-white\/\[0\.04\], body.light-theme .bg-white\/\[0\.06\], body.light-theme .bg-white\/15 { background-color: rgba(0, 0, 0, 0.05) !important; }
+        body.light-theme input, body.light-theme select { color: #1f2937 !important; }
+        body.light-theme canvas { background-color: #ffffff !important; }
+        body.light-theme .digit-circle-bg { fill: #f3f4f6 !important; stroke: rgba(0, 0, 0, 0.15) !important; }
+        body.light-theme .digit-circle-ring { stroke: #d1d5db !important; }
+        body.light-theme .digit-val { color: #111827 !important; font-weight: 700 !important; }
+        body.light-theme .digit-pct { color: #4b5563 !important; }
     </style>
 </head>
 <body>
@@ -231,7 +268,6 @@
                 <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </a></li>
             
-            <!-- ✅ UPDATED: Changed href="#" to href="refer.html" -->
             <li><a href="refer.html" class="menu-item refer-highlight">
                 <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
                 Refer & Earn
@@ -268,7 +304,6 @@
 
     <!-- Top Header -->
     <header class="top-header">
-        <!-- UPDATED: Menu button now opens side menu -->
         <button class="icon-btn menu-icon" onclick="openMenu()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <div class="p-logo">P</div>
         <div style="display:flex; align-items:center; gap:8px;">
@@ -395,7 +430,6 @@
                     emailEl.innerText = maskedEmail;
                     avatarEl.innerText = displayName.charAt(0).toUpperCase();
                     
-                    // Update footer with GMT time
                     const now = new Date();
                     footerEl.innerText = `${now.toISOString().replace('T', ' ').split('.')[0]} GMT`;
                 } else {
@@ -413,10 +447,8 @@
             const toggle = document.getElementById('themeToggle');
             const body = document.body;
             
-            // Toggle the light-theme class on the body
             body.classList.toggle('light-theme');
             
-            // Update the toggle switch visual state
             if (body.classList.contains('light-theme')) {
                 toggle.classList.remove('active');
                 localStorage.setItem('theme', 'light');
@@ -507,7 +539,6 @@
             if (!ctx || !canvas.width) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw Grid Lines
             ctx.strokeStyle = 'rgba(45, 47, 69, 0.4)';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -529,7 +560,6 @@
             let padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
 
-            // Draw Line
             ctx.beginPath();
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
@@ -543,7 +573,6 @@
             });
             ctx.stroke();
 
-            // Pulsing Dot at End
             const lastIdx = priceData.length - 1;
             const lastX = lastIdx * stepX;
             const lastY = canvas.height - ((priceData[lastIdx] - min) / range) * canvas.height;
@@ -558,7 +587,6 @@
             ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
             ctx.fill();
 
-            // Gradient Fill
             ctx.lineTo(canvas.width, canvas.height);
             ctx.lineTo(0, canvas.height);
             ctx.closePath();
@@ -568,7 +596,6 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Update Dynamic Axis Labels
             const rightLabels = document.getElementById('axisLabelsRight');
             if(rightLabels) {
                 const labels = rightLabels.querySelectorAll('.axis-label-r');
@@ -579,7 +606,6 @@
                 }
             }
 
-            // Update Bottom Time Labels based on actual data
             const bottomLabels = document.querySelector('.axis-labels-bottom');
             if(bottomLabels && timeData.length > 0) {
                 const labels = bottomLabels.querySelectorAll('.axis-label-b');
@@ -599,7 +625,6 @@
             priceData.push(currentPrice);
             timeData.push(now);
             
-            // SLIDING WINDOW: Remove oldest point when we exceed MAX_POINTS
             if (priceData.length > MAX_POINTS) {
                 priceData.shift();
                 timeData.shift();
@@ -612,7 +637,6 @@
             drawChart();
         }
 
-        // Initialize with MAX_POINTS so chart is full immediately
         for(let i=0; i<MAX_POINTS; i++) updateChart();
         setInterval(updateChart, 1000);
         window.addEventListener('resize', resizeCanvas);
