@@ -3,32 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | Create Account</title>
+    <title>OBX PRIME | Sign In</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="auth-wrapper">
     <div class="auth-card">
         <h1 class="logo" style="text-align:center; margin-bottom: 0.5rem;">OBX PRIME</h1>
-        <p style="text-align:center; color:var(--text-gray); font-size:0.9rem; margin-bottom:2rem;">Start your trading journey today</p>
+        <p style="text-align:center; color:var(--text-gray); font-size:0.9rem; margin-bottom:2rem;">Welcome back, trader</p>
         
-        <div class="input-group">
-            <label>Username</label>
-            <input type="text" id="username" placeholder="e.g. CitraTrader">
-        </div>
         <div class="input-group">
             <label>Email Address</label>
             <input type="email" id="email" placeholder="you@example.com">
         </div>
         <div class="input-group">
-            <label>Password (Min 6 chars)</label>
+            <label>Password</label>
             <input type="password" id="password" placeholder="••••••••">
         </div>
         
-        <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="handleSignup()">Create Free Account</button>
+        <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="handleSignin()">Sign In to Trade</button>
         
         <p style="text-align:center; margin-top:1.5rem; color:var(--text-gray); font-size:0.85rem;">
-            Already have an account? <a href="signin.html" style="color:var(--primary-purple);">Sign In</a>
+            New to OBX PRIME? <a href="signup.html" style="color:var(--primary-purple);">Create Account</a>
         </p>
     </div>
 
@@ -37,39 +33,23 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function handleSignup() {
-            const username = document.getElementById('username').value.trim();
+        async function handleSignin() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            if (!username || !email || !password) return alert("All fields are required");
-            if (password.length < 6) return alert("Password must be at least 6 characters");
+            if (!email || !password) return alert("Please enter both email and password");
 
-            // 1. Sign up with Supabase Auth
-            const { data, error } = await supabase.auth.signUp({ 
-                email, 
-                password,
-                options: { data: { username } } 
-            });
-
-            if (error) return alert(error.message);
-
-            // 2. Create Profile Row Immediately
-            if (data.user) {
-                const { error: profileError } = await supabase.from('profiles').insert({
-                    id: data.user.id,
-                    username: username,
-                    balance: 0
-                });
-
-                if (profileError) {
-                    console.error("Profile creation failed:", profileError);
-                    // Don't block user, auth succeeded
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                if (error.message.includes("Email not confirmed")) {
+                    return alert("Please verify your email first. Check your inbox!");
                 }
-                
-                alert("Account created! Please check your email to verify before logging in.");
-                window.location.href = 'signin.html';
+                return alert(error.message);
             }
+
+            localStorage.setItem('obx_token', data.session.access_token);
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
