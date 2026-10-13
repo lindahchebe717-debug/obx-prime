@@ -8,77 +8,123 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Added styles for the new P Logo, Sound Icon, and New Trading Tabs -->
+    <!-- Updated styles for smaller fonts, +/- buttons, and LIVE stats bar -->
     <style>
         .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
-        .icon-btn svg { width: 24px; height: 24px; stroke: var(--text-white); stroke-width: 2; fill: none; }
+        .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
         
-        /* New P Logo Styling */
+        /* P Logo */
         .p-logo { 
-            width: 36px; height: 36px; 
+            width: 32px; height: 32px; 
             background: var(--primary-purple); 
             color: white; 
             border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; font-size: 1.2rem; 
+            font-weight: 800; font-size: 1rem; 
             margin-left: 8px;
         }
 
-        /* Bell Icon Styling */
+        /* Bell Icon */
         .bell-icon { position: relative; }
-        .bell-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
+        .bell-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
         
-        /* Sound Icon Specifics */
+        /* Sound Icon */
         .sound-btn svg { stroke: var(--primary-purple); }
 
-        /* NEW: Target Profit, Stop Loss, Multiplier Grid */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .stat-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 8px; text-align: center; }
-        .stat-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .stat-value { font-size: 1.1rem; font-weight: 800; }
-        
-        .label-profit { color: var(--success-green); }
-        .label-loss { color: var(--danger-red); }
-        .label-mult { color: #f59e0b; }
-
-        /* NEW: Total Trades Summary Bar */
-        .trades-summary { 
-            display: flex; justify-content: space-around; align-items: center; 
-            background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 12px; padding: 10px; margin-bottom: 16px;
+        /* Stake Box with +/- Buttons */
+        .stake-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .stake-adjust-btn { 
+            width: 40px; height: 40px; border-radius: 10px; 
+            background: var(--bg-main); border: 1px solid var(--border-color); 
+            color: var(--text-gray); font-size: 1.2rem; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
-        .summary-item { text-align: center; }
-        .summary-label { font-size: 0.65rem; color: var(--text-gray); font-weight: 600; margin-bottom: 2px; }
-        .summary-val { font-size: 1rem; font-weight: 800; color: white; }
-        .summary-val.win { color: var(--success-green); }
-        .summary-val.loss { color: var(--danger-red); }
+        .stake-adjust-btn:active { background: rgba(139, 92, 246, 0.2); color: white; }
+        
+        .stake-box { 
+            flex: 1; background: var(--bg-main); border: 1px solid var(--border-color); 
+            border-radius: 16px; padding: 12px 16px; text-align: center; position: relative; 
+        }
+        .stake-label { 
+            position: absolute; top: -9px; left: 50%; transform: translateX(-50%); 
+            background: var(--bg-card); padding: 0 8px; 
+            color: var(--primary-purple); font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; 
+        }
+        .stake-input { background: transparent; border: none; color: white; font-size: 1.6rem; font-weight: 800; text-align: center; width: 100%; outline: none; }
+        .stake-currency { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--primary-purple); font-weight: 700; font-size: 1rem; }
+
+        /* Quick Stakes - Smaller */
+        .quick-stakes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px; }
+        .qs-btn { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-gray); padding: 8px 0; border-radius: 8px; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+        .qs-btn:hover, .qs-btn:active { border-color: var(--primary-purple); color: white; background: rgba(139, 92, 246, 0.1); }
+
+        /* LIVE Stats Bar */
+        .live-stats-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(26, 27, 46, 0.8); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
+        }
+        .live-left { display: flex; align-items: center; gap: 8px; }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .live-label { font-size: 0.7rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px; }
+        .live-stats { font-size: 0.7rem; color: var(--text-gray); font-weight: 600; }
+        .live-pnl { font-size: 0.85rem; font-weight: 800; }
+        .live-pnl.positive { color: var(--success-green); }
+        .live-pnl.negative { color: var(--danger-red); }
+
+        /* Digit Row - Smaller circles */
+        .digit-row { display: flex; justify-content: space-between; padding: 8px 16px 12px; gap: 2px; background: var(--bg-main); }
+        .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .digit-num { position: absolute; font-weight: 800; font-size: 0.8rem; color: white; z-index: 2; }
+        .digit-pct { font-size: 0.55rem; color: var(--text-gray); font-weight: 500; }
+
+        /* Trade Buttons - Smaller */
+        .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-trade { border: none; padding: 14px 10px; border-radius: 14px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .btn-even { background: var(--success-green); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .btn-odd { background: var(--danger-red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        .payout-info { font-size: 0.6rem; font-weight: 500; opacity: 0.9; }
+
+        /* Price Overlay - Smaller */
+        .current-price-lg { font-size: 1.3rem; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
+        .asset-name { font-size: 0.85rem; font-weight: 700; }
+
+        /* Mode Toggle - Smaller */
+        .mode-toggle { display: flex; background: var(--bg-main); border-radius: 10px; padding: 3px; margin-bottom: 12px; border: 1px solid var(--border-color); }
+        .mode-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer; background: transparent; color: var(--text-gray); letter-spacing: 0.5px; }
+        .mode-btn.active { background: var(--primary-purple); color: white; }
+
+        /* Bottom Nav - Smaller */
+        .nav-item { font-size: 0.65rem; }
+        .nav-icon { width: 22px; height: 22px; }
+        .ai-icon-wrap { width: 40px; height: 40px; }
+        .ai-icon { width: 20px; height: 20px; }
     </style>
 </head>
 <body>
     <!-- Top Header -->
     <header class="top-header">
-        <!-- Hamburger Menu (Top Left) -->
         <button class="icon-btn menu-icon">
             <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
 
-        <!-- Purple 'P' Logo (Replaces OBX PRIME Text) -->
         <div class="p-logo">P</div>
 
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
             <div class="user-balance">
-                <span style="color:var(--primary-purple); font-weight:800;">R</span> $0.00
+                <span style="color:var(--primary-purple); font-weight:800; font-size:0.8rem;">R</span> 
+                <span style="font-size:0.85rem;">$0.00</span>
             </div>
             
-            <!-- Sound/Speaker Icon (Before Deposit) -->
             <button class="icon-btn sound-btn">
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
 
-            <button class="btn-deposit">Deposit</button>
+            <button class="btn-deposit" style="padding:6px 14px; font-size:0.8rem;">Deposit</button>
             
-            <!-- Notification Bell (Top Right) -->
             <button class="icon-btn bell-icon">
                 <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <div class="bell-dot"></div>
@@ -86,7 +132,7 @@
         </div>
     </header>
 
-    <!-- Asset Selection Tabs - EXACT ACTIVE STATE -->
+    <!-- Asset Selection Tabs -->
     <div class="asset-tabs">
         <button class="asset-tab">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -100,26 +146,22 @@
             <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
             Over/Under
         </button>
-        <button class="asset-tab">
-            <svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-            Rise/Fall
-        </button>
     </div>
 
     <!-- Main Chart Area -->
     <div class="chart-wrapper">
         <div class="price-overlay">
             <div class="asset-name">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2.5"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2.5"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
                 Vol 10 (1s)
             </div>
             <div class="current-price-lg" id="currentPrice">9607.39</div>
-            <div style="font-size:0.75rem; color:var(--success-green); margin-top:2px; font-weight:600;">+1.13%</div>
+            <div style="font-size:0.65rem; color:var(--success-green); margin-top:2px; font-weight:600;">+1.13%</div>
         </div>
         <div id="chart"></div>
     </div>
 
-    <!-- Digit Frequency Row - EXACT PROGRESS RINGS -->
+    <!-- Digit Frequency Row -->
     <div class="digit-row" id="digitRow"></div>
 
     <!-- Trading Controls -->
@@ -129,11 +171,18 @@
             <button class="mode-btn">MANUAL</button>
         </div>
 
-        <div class="stake-box">
-            <div class="stake-label">STAKE</div>
-            <input type="number" class="stake-input" value="10" id="stakeAmount">
+        <!-- Stake with +/- Buttons -->
+        <div class="stake-wrapper">
+            <button class="stake-adjust-btn" onclick="adjustStake(-1)">−</button>
+            <div class="stake-box">
+                <div class="stake-label">STAKE</div>
+                <span class="stake-currency">$</span>
+                <input type="number" class="stake-input" value="10" id="stakeAmount">
+            </div>
+            <button class="stake-adjust-btn" onclick="adjustStake(1)">+</button>
         </div>
 
+        <!-- Quick Stakes -->
         <div class="quick-stakes">
             <button class="qs-btn" onclick="setStake(1)">$1</button>
             <button class="qs-btn" onclick="setStake(5)">$5</button>
@@ -143,38 +192,17 @@
             <button class="qs-btn" onclick="setStake(100)">$100</button>
         </div>
 
-        <!-- NEW: Target Profit, Stop Loss, Multiplier -->
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label label-profit">TARGET PROFIT</div>
-                <div class="stat-value">$200</div>
+        <!-- LIVE Stats Bar -->
+        <div class="live-stats-bar">
+            <div class="live-left">
+                <div class="live-dot"></div>
+                <span class="live-label">LIVE</span>
+                <span class="live-stats" id="liveStatsText">0T · 0W · 0L</span>
             </div>
-            <div class="stat-box">
-                <div class="stat-label label-loss">STOP LOSS</div>
-                <div class="stat-value">$999</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label label-mult">MULTIPLIER</div>
-                <div class="stat-value">x 2</div>
-            </div>
+            <div class="live-pnl positive" id="livePnl">+$0.00</div>
         </div>
 
-        <!-- NEW: Total Trades / Wins / Losses Summary -->
-        <div class="trades-summary">
-            <div class="summary-item">
-                <div class="summary-label">TOTAL TRADES</div>
-                <div class="summary-val" id="totalTrades">0</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">WINS</div>
-                <div class="summary-val win" id="totalWins">0</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">LOSSES</div>
-                <div class="summary-val loss" id="totalLosses">0</div>
-            </div>
-        </div>
-
+        <!-- Trade Actions -->
         <div class="trade-actions">
             <button class="btn-trade btn-even" onclick="placeTrade('EVEN')">
                 Even
@@ -187,7 +215,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar - EXACT MATCH -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
@@ -228,13 +256,12 @@
         
         const lineSeries = chart.addLineSeries({ 
             color: '#ffffff', lineWidth: 2,
-            crosshairMarkerRadius: 5,
+            crosshairMarkerRadius: 4,
             crosshairMarkerBackgroundColor: '#fff',
             crosshairMarkerBorderColor: '#8b5cf6',
             crosshairMarkerBorderWidth: 2
         });
 
-        // Simulate Vol 10 Index
         let currentPrice = 9607.39;
         let lastTime = Math.floor(Date.now() / 1000);
         
@@ -254,10 +281,10 @@
             chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
         });
 
-        // --- DIGIT FREQUENCY WITH SVG PROGRESS RINGS ---
+        // --- DIGIT FREQUENCY ---
         const digitCounts = new Array(10).fill(0);
         let totalDigits = 0;
-        const CIRCUMFERENCE = 2 * Math.PI * 16; // radius=16
+        const CIRCUMFERENCE = 2 * Math.PI * 14;
 
         function initDigitRow() {
             const row = document.getElementById('digitRow');
@@ -266,14 +293,13 @@
                 row.innerHTML += `
                     <div class="digit-circle">
                         <div class="circle-container">
-                            <svg class="circle-bg" viewBox="0 0 38 38">
-                                <circle cx="19" cy="19" r="16" stroke="#2d2f45" stroke-width="3" fill="none"/>
-                            </svg>
-                            <svg class="circle-progress" viewBox="0 0 38 38">
-                                <circle id="prog-${i}" cx="19" cy="19" r="16" 
-                                    stroke="var(--text-gray)" stroke-width="3" fill="none"
+                            <svg width="32" height="32" viewBox="0 0 32 32">
+                                <circle cx="16" cy="16" r="14" stroke="#2d2f45" stroke-width="2.5" fill="none"/>
+                                <circle id="prog-${i}" cx="16" cy="16" r="14" 
+                                    stroke="var(--text-gray)" stroke-width="2.5" fill="none"
                                     stroke-dasharray="${CIRCUMFERENCE}" 
-                                    stroke-dashoffset="${CIRCUMFERENCE}"/>
+                                    stroke-dashoffset="${CIRCUMFERENCE}"
+                                    transform="rotate(-90 16 16)"/>
                             </svg>
                             <div class="digit-num">${i}</div>
                         </div>
@@ -298,7 +324,6 @@
                 const progCircle = document.getElementById(`prog-${i}`);
                 progCircle.style.strokeDashoffset = offset;
                 
-                // Color logic: Green if above average (10%), Red if below
                 if(pct >= 10) {
                     progCircle.style.stroke = 'var(--success-green)';
                 } else {
@@ -308,9 +333,16 @@
         }
 
         // --- TRADING FUNCTIONS ---
-        let stats = { total: 0, wins: 0, losses: 0 };
+        let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
 
         function setStake(val) { document.getElementById('stakeAmount').value = val; }
+        
+        function adjustStake(delta) {
+            const input = document.getElementById('stakeAmount');
+            let val = parseInt(input.value) || 0;
+            val = Math.max(1, val + delta);
+            input.value = val;
+        }
 
         async function placeTrade(direction) {
             if (!obxSupabase) return alert("System error: Supabase not loaded.");
@@ -328,18 +360,24 @@
 
             if(error) console.error(error);
             else {
-                // Update local stats counter
                 stats.total++;
-                // Simulate random win/loss for demo purposes
-                if(Math.random() > 0.5) stats.wins++;
-                else stats.losses++;
+                const won = Math.random() > 0.5;
+                if(won) {
+                    stats.wins++;
+                    stats.pnl += stake * 0.952;
+                } else {
+                    stats.losses++;
+                    stats.pnl -= stake;
+                }
                 
-                document.getElementById('totalTrades').innerText = stats.total;
-                document.getElementById('totalWins').innerText = stats.wins;
-                document.getElementById('totalLosses').innerText = stats.losses;
+                document.getElementById('liveStatsText').innerText = `${stats.total}T · ${stats.wins}W · ${stats.losses}L`;
+                
+                const pnlEl = document.getElementById('livePnl');
+                const sign = stats.pnl >= 0 ? '+' : '';
+                pnlEl.innerText = `${sign}$${Math.abs(stats.pnl).toFixed(2)}`;
+                pnlEl.className = `live-pnl ${stats.pnl >= 0 ? 'positive' : 'negative'}`;
 
                 if(navigator.vibrate) navigator.vibrate(50);
-                alert(`${direction} trade placed at ${entryPrice.toFixed(2)}!`);
             }
         }
     </script>
