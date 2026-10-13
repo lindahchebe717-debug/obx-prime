@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Transaction History</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ADDED: Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -12,10 +15,12 @@
         
         /* Light theme classes */
         body.light-theme { background-color: #f9fafb; color: #1f2937; }
-        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#181329\], body.light-theme .bg-\[\#1F1936\], body.light-theme .bg-\[\#151a25\], body.light-theme .bg-\[\#1e1b4b\], body.light-theme .bg-\[\#1e2535\], body.light-theme .bg-\[\#252d3d\], body.light-theme .bg-\[\#282041\], body.light-theme .bg-\[\#2E2447\], body.light-theme .bg-\[\#2a3548\] { background-color: #ffffff !important; }
+        body.light-theme .bg-\[\#130f1c\], body.light-theme .bg-\[\#141021\], body.light-theme .bg-\[\#181329\], 
+        body.light-theme .bg-\[\#1F1936\], body.light-theme .bg-\[\#151a25\], body.light-theme .bg-\[\#1e1b4b\], 
+        body.light-theme .bg-\[\#1e2535\], body.light-theme .bg-\[\#252d3d\], body.light-theme .bg-\[\#282041\], 
+        body.light-theme .bg-\[\#2E2447\], body.light-theme .bg-\[\#2a3548\] { background-color: #ffffff !important; }
         body.light-theme .text-white { color: #1f2937 !important; }
-        body.light-theme .text-gray-400 { color: #6b7280 !important; }
-        body.light-theme .text-gray-500 { color: #6b7280 !important; }
+        body.light-theme .text-gray-400, body.light-theme .text-gray-500 { color: #6b7280 !important; }
         body.light-theme .border-white\/10, body.light-theme .border-white\/5, body.light-theme .border-white\/\[0\.07\] { border-color: rgba(0, 0, 0, 0.1) !important; }
         body.light-theme .bg-white\/5, body.light-theme .bg-white\/\[0\.04\], body.light-theme .bg-white\/\[0\.06\], body.light-theme .bg-white\/15 { background-color: rgba(0, 0, 0, 0.05) !important; }
         
@@ -39,20 +44,19 @@
         }
         
         /* Tab Styles */
-        .tab-btn {
-            transition: all 0.2s ease;
-        }
-        .tab-btn.active {
-            background-color: #7C3AED;
-            color: white;
-        }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background-color: #7C3AED; color: white; }
+        
+        /* Loading Spinner */
+        .loading-spinner { text-align: center; padding: 40px; color: #7C3AED; font-weight: bold; }
     </style>
 </head>
 <body class="antialiased text-white min-h-screen flex flex-col">
 
     <!-- Header -->
     <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10">
-        <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+        <!-- FIXED: Links back to dashboard.html -->
+        <a href="dashboard.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
             <span class="font-bold">Back to Trade</span>
         </a>
@@ -78,7 +82,7 @@
         <div class="mb-6">
             <label class="block text-sm font-semibold text-white mb-2">Date Range</label>
             <div class="flex gap-2 flex-wrap">
-                <button onclick="filterByDate('all')" class="date-btn px-4 py-2 rounded-lg text-sm font-medium bg-[#282041] text-gray-400 hover:bg-[#7C3AED] hover:text-white transition-all active">All Time</button>
+                <button onclick="filterByDate('all')" class="date-btn active px-4 py-2 rounded-lg text-sm font-medium bg-[#7C3AED] text-white transition-all">All Time</button>
                 <button onclick="filterByDate('today')" class="date-btn px-4 py-2 rounded-lg text-sm font-medium bg-[#282041] text-gray-400 hover:bg-[#7C3AED] hover:text-white transition-all">Today</button>
                 <button onclick="filterByDate('7days')" class="date-btn px-4 py-2 rounded-lg text-sm font-medium bg-[#282041] text-gray-400 hover:bg-[#7C3AED] hover:text-white transition-all">Last 7 Days</button>
                 <button onclick="filterByDate('30days')" class="date-btn px-4 py-2 rounded-lg text-sm font-medium bg-[#282041] text-gray-400 hover:bg-[#7C3AED] hover:text-white transition-all">Last 30 Days</button>
@@ -95,122 +99,11 @@
             </div>
         </div>
 
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-spinner">Loading transactions...</div>
+
         <!-- Transaction List -->
-        <div id="transaction-list" class="space-y-3">
-            <!-- Sample Deposit - Completed -->
-            <div class="transaction-card p-4 rounded-xl" data-type="deposit" data-date="2026-01-05">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Deposit via M-Pesa</div>
-                            <div class="text-gray-400 text-xs">Jan 5, 2026 · 14:32</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-emerald-500 font-bold text-lg">+$500.00</div>
-                        <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-semibold inline-block mt-1">Completed</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Withdrawal - Pending -->
-            <div class="transaction-card p-4 rounded-xl" data-type="withdrawal" data-date="2026-01-04">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Withdrawal to USDT</div>
-                            <div class="text-gray-400 text-xs">Jan 4, 2026 · 09:15</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-[#ff444f] font-bold text-lg">-$250.00</div>
-                        <div class="px-2 py-0.5 rounded-full bg-[#f59e0b]/20 text-[#f59e0b] text-xs font-semibold inline-block mt-1">Pending</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Trade - Win -->
-            <div class="transaction-card p-4 rounded-xl" data-type="trade" data-date="2026-01-04">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Even Trade (Vol 10)</div>
-                            <div class="text-gray-400 text-xs">Jan 4, 2026 · 08:47</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-emerald-500 font-bold text-lg">+$19.52</div>
-                        <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-semibold inline-block mt-1">Won</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Trade - Loss -->
-            <div class="transaction-card p-4 rounded-xl" data-type="trade" data-date="2026-01-03">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#ff444f]/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#ff444f]"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Odd Trade (Vol 25)</div>
-                            <div class="text-gray-400 text-xs">Jan 3, 2026 · 22:18</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-[#ff444f] font-bold text-lg">-$10.00</div>
-                        <div class="px-2 py-0.5 rounded-full bg-[#ff444f]/20 text-[#ff444f] text-xs font-semibold inline-block mt-1">Lost</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Deposit - Failed -->
-            <div class="transaction-card p-4 rounded-xl" data-type="deposit" data-date="2026-01-02">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Deposit via Card</div>
-                            <div class="text-gray-400 text-xs">Jan 2, 2026 · 16:05</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-gray-400 font-bold text-lg">$100.00</div>
-                        <div class="px-2 py-0.5 rounded-full bg-[#ff444f]/20 text-[#ff444f] text-xs font-semibold inline-block mt-1">Failed</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Withdrawal - Completed -->
-            <div class="transaction-card p-4 rounded-xl" data-type="withdrawal" data-date="2026-01-01">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-white font-semibold">Withdrawal to M-Pesa</div>
-                            <div class="text-gray-400 text-xs">Jan 1, 2026 · 11:23</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-[#ff444f] font-bold text-lg">-$75.00</div>
-                        <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-semibold inline-block mt-1">Completed</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="transaction-list" class="space-y-3"></div>
 
         <!-- Empty State (Hidden by default) -->
         <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16">
@@ -227,70 +120,183 @@
     </footer>
 
     <script>
-        // Theme Toggle
-        let isDarkTheme = true;
-        function toggleDarkTheme() {
-            isDarkTheme = !isDarkTheme;
-            const body = document.body;
-            if (isDarkTheme) {
-                body.classList.remove('light-theme');
-            } else {
-                body.classList.add('light-theme');
+        // ===== SUPABASE CONFIGURATION =====
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        let obxSupabase;
+        let currentUser = null;
+        let allTransactions = [];
+
+        if (typeof window.supabase !== 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
+
+        // CHECK AUTH & LOAD DATA ON STARTUP
+        async function initPage() {
+            if (!obxSupabase) return;
+            
+            const { data: { session } } = await obxSupabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = session.user;
+            await loadTransactions();
+        }
+
+        // FETCH REAL TRANSACTIONS FROM SUPABASE
+        async function loadTransactions() {
+            const listEl = document.getElementById('transaction-list');
+            const loadingEl = document.getElementById('loading-state');
+            const emptyEl = document.getElementById('empty-state');
+            
+            try {
+                // Fetch Trades
+                const { data: trades, error: tradeErr } = await obxSupabase
+                    .from('trades')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                    
+                // Fetch Deposits  
+                const { data: deposits, error: depErr } = await obxSupabase
+                    .from('deposits')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                    
+                // Fetch Withdrawals
+                const { data: withdrawals, error: withErr } = await obxSupabase
+                    .from('withdrawals')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (tradeErr || depErr || withErr) throw new Error("Failed to fetch transactions");
+
+                // Combine and normalize data
+                allTransactions = [
+                    ...(trades || []).map(t => ({ ...t, type: 'trade' })),
+                    ...(deposits || []).map(d => ({ ...d, type: 'deposit' })),
+                    ...(withdrawals || []).map(w => ({ ...w, type: 'withdrawal' }))
+                ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                renderTransactions(allTransactions);
+                
+            } catch (err) {
+                console.error("Load error:", err);
+                listEl.innerHTML = '<p class="text-center text-red-500 py-8">Failed to load transactions. Please try again.</p>';
+            } finally {
+                loadingEl.style.display = 'none';
             }
         }
 
-        // Sound Toggle
-        let isSoundOn = true;
-        function toggleSound() {
-            isSoundOn = !isSoundOn;
-            const iconOn = document.getElementById('sound-icon-on');
-            const iconOff = document.getElementById('sound-icon-off');
-            if (isSoundOn) {
-                iconOn.classList.remove('hidden');
-                iconOff.classList.add('hidden');
-            } else {
-                iconOn.classList.add('hidden');
-                iconOff.classList.remove('hidden');
+        // RENDER TRANSACTION CARDS
+        function renderTransactions(transactions) {
+            const listEl = document.getElementById('transaction-list');
+            const emptyEl = document.getElementById('empty-state');
+            
+            if (transactions.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
             }
+            
+            emptyEl.classList.add('hidden');
+            listEl.innerHTML = transactions.map(t => createTransactionCard(t)).join('');
         }
 
-        // Filter by transaction type
+        // CREATE INDIVIDUAL CARD HTML
+        function createTransactionCard(t) {
+            const date = new Date(t.created_at);
+            const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            let icon, title, amountClass, amountText, statusClass, statusText;
+            
+            if (t.type === 'trade') {
+                const isWin = t.status === 'WON' || (t.pnl && t.pnl > 0);
+                icon = isWin 
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#ff444f]"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>`;
+                title = `${t.direction} Trade (${t.asset})`;
+                amountClass = isWin ? 'text-emerald-500' : 'text-[#ff444f]';
+                amountText = `${isWin ? '+' : '-'}$${Math.abs(t.pnl || t.stake).toFixed(2)}`;
+                statusClass = isWin ? 'bg-emerald-500/20 text-emerald-500' : 'bg-[#ff444f]/20 text-[#ff444f]';
+                statusText = isWin ? 'Won' : 'Lost';
+            } else if (t.type === 'deposit') {
+                icon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#7C3AED]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+                title = `Deposit via ${t.currency}`;
+                amountClass = 'text-emerald-500';
+                amountText = `+$${parseFloat(t.amount).toFixed(2)}`;
+                statusClass = t.status === 'CONFIRMED' ? 'bg-emerald-500/20 text-emerald-500' : 
+                              t.status === 'FAILED' ? 'bg-[#ff444f]/20 text-[#ff444f]' : 
+                              'bg-[#f59e0b]/20 text-[#f59e0b]';
+                statusText = t.status.charAt(0) + t.status.slice(1).toLowerCase();
+            } else { // withdrawal
+                icon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#10B981]"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+                title = `Withdrawal to ${t.method?.toUpperCase() || 'Wallet'}`;
+                amountClass = 'text-[#ff444f]';
+                amountText = `-$${parseFloat(t.amount).toFixed(2)}`;
+                statusClass = t.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-500' : 
+                              t.status === 'REJECTED' ? 'bg-[#ff444f]/20 text-[#ff444f]' : 
+                              'bg-[#f59e0b]/20 text-[#f59e0b]';
+                statusText = t.status.charAt(0) + t.status.slice(1).toLowerCase();
+            }
+
+            return `
+                <div class="transaction-card p-4 rounded-xl" data-type="${t.type}" data-date="${date.toISOString().split('T')[0]}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-opacity-20 flex items-center justify-center shrink-0" style="background-color: ${t.type === 'trade' ? (amountClass.includes('emerald') ? 'rgba(16,185,129,0.2)' : 'rgba(255,68,79,0.2)') : t.type === 'deposit' ? 'rgba(124,58,237,0.2)' : 'rgba(16,185,129,0.2)'}">
+                                ${icon}
+                            </div>
+                            <div>
+                                <div class="text-white font-semibold">${title}</div>
+                                <div class="text-gray-400 text-xs">${dateStr} · ${timeStr}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="${amountClass} font-bold text-lg">${amountText}</div>
+                            <div class="px-2 py-0.5 rounded-full ${statusClass} text-xs font-semibold inline-block mt-1">${statusText}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // FILTER FUNCTIONS
         let currentTypeFilter = 'all';
         let currentDateFilter = 'all';
 
         function filterByType(type) {
             currentTypeFilter = type;
-            
-            // Update tab styles
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
                 btn.classList.add('bg-[#282041]', 'text-gray-400');
             });
             event.target.classList.add('active');
             event.target.classList.remove('bg-[#282041]', 'text-gray-400');
-            
             applyFilters();
         }
 
         function filterByDate(range) {
             currentDateFilter = range;
-            
-            // Update date button styles
             document.querySelectorAll('.date-btn').forEach(btn => {
-                btn.classList.remove('bg-[#7C3AED]', 'text-white');
+                btn.classList.remove('bg-[#7C3AED]', 'text-white', 'active');
                 btn.classList.add('bg-[#282041]', 'text-gray-400');
             });
-            event.target.classList.add('bg-[#7C3AED]', 'text-white');
+            event.target.classList.add('bg-[#7C3AED]', 'text-white', 'active');
             event.target.classList.remove('bg-[#282041]', 'text-gray-400');
-            
             applyFilters();
         }
 
         function applyFilters() {
-            const transactions = document.querySelectorAll('.transaction-card');
+            const cards = document.querySelectorAll('.transaction-card');
             let visibleCount = 0;
             
-            transactions.forEach(card => {
+            cards.forEach(card => {
                 const type = card.getAttribute('data-type');
                 const date = card.getAttribute('data-date');
                 
@@ -320,14 +326,26 @@
                 }
             });
             
-            // Show/hide empty state
-            const emptyState = document.getElementById('empty-state');
-            if (visibleCount === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-            }
+            document.getElementById('empty-state').classList.toggle('hidden', visibleCount > 0);
         }
+
+        // Theme Toggle
+        let isDarkTheme = true;
+        function toggleDarkTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('light-theme', !isDarkTheme);
+        }
+
+        // Sound Toggle
+        let isSoundOn = true;
+        function toggleSound() {
+            isSoundOn = !isSoundOn;
+            document.getElementById('sound-icon-on').classList.toggle('hidden', !isSoundOn);
+            document.getElementById('sound-icon-off').classList.toggle('hidden', isSoundOn);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initPage);
     </script>
 </body>
 </html>
