@@ -40,15 +40,24 @@
     </main>
 
     <script>
-        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        
+        let obxSupabase;
+        if (typeof window.supabase !== 'undefined' && typeof obxSupabase === 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
 
         async function loadTrades() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if(!user) return window.location.href = 'index.html';
+            if (!obxSupabase) {
+                document.getElementById('tradesTable').innerHTML = '<tr><td colspan="6" style="padding:2rem; text-align:center; color:red;">System error: Supabase not loaded.</td></tr>';
+                return;
+            }
 
-            const { data, error } = await supabase
+            const { data: { user } } = await obxSupabase.auth.getUser();
+            if(!user) return window.location.href = 'signin.html';
+
+            const { data, error } = await obxSupabase
                 .from('trades')
                 .select('*')
                 .eq('user_id', user.id)
