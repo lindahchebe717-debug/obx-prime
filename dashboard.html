@@ -243,23 +243,53 @@
             obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
         }
 
-        // --- CHART SETUP ---
+        // --- CHART SETUP (EXACT PALOPTION STYLE) ---
         const chartContainer = document.getElementById('chart');
+        
+        // Initialize chart with Grid Lines and Axes enabled
         const chart = LightweightCharts.createChart(chartContainer, {
-            layout: { background: { color: 'transparent' }, textColor: '#9ca3af' },
-            grid: { vertLines: { visible: false }, horzLines: { visible: false } },
-            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-            timeScale: { visible: true, secondsVisible: true, borderColor: '#2d2f45', timeVisible: true },
-            rightPriceScale: { visible: true, borderColor: '#2d2f45' },
+            layout: { 
+                background: { color: 'transparent' }, 
+                textColor: '#9ca3af',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 10
+            },
+            // Enable Grid Lines exactly like screenshot
+            grid: { 
+                vertLines: { visible: true, color: 'rgba(45, 47, 69, 0.4)', style: 1 }, 
+                horzLines: { visible: true, color: 'rgba(45, 47, 69, 0.4)', style: 1 } 
+            },
+            crosshair: { 
+                mode: LightweightCharts.CrosshairMode.Normal,
+                vertLine: { color: '#8b5cf6', width: 1, style: 3, labelBackgroundColor: '#8b5cf6' },
+                horzLine: { color: '#8b5cf6', width: 1, style: 3, labelBackgroundColor: '#8b5cf6' }
+            },
+            // Time Axis (Bottom) - Shows Real Time
+            timeScale: { 
+                visible: true, 
+                secondsVisible: true, 
+                timeVisible: true,
+                borderColor: '#2d2f45',
+                rightOffset: 5,
+                barSpacing: 10
+            },
+            // Price Axis (Right Side) - Shows Exact Numbers
+            rightPriceScale: { 
+                visible: true, 
+                borderColor: '#2d2f45',
+                scaleMargins: { top: 0.1, bottom: 0.1 }
+            },
             handleScroll: { vertTouchDrag: false }
         });
         
         const lineSeries = chart.addLineSeries({ 
-            color: '#ffffff', lineWidth: 2,
-            crosshairMarkerRadius: 4,
+            color: '#ffffff', 
+            lineWidth: 2,
+            crosshairMarkerRadius: 5,
             crosshairMarkerBackgroundColor: '#fff',
             crosshairMarkerBorderColor: '#8b5cf6',
-            crosshairMarkerBorderWidth: 2
+            crosshairMarkerBorderWidth: 2,
+            priceLineVisible: false // Hide default price line to use our custom overlay
         });
 
         let currentPrice = 9607.39;
@@ -274,9 +304,11 @@
             updateDigitStats(currentPrice);
         }
 
+        // Fill initial data so chart isn't empty
         for(let i=0; i<100; i++) updateChart();
         setInterval(updateChart, 1000);
 
+        // Handle Resize
         window.addEventListener('resize', () => {
             chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
         });
