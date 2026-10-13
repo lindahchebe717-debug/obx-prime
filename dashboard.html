@@ -62,8 +62,11 @@
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        /* ADDED: Bottom padding to prevent buttons from being cut off */
-        .controls-panel { padding-bottom: calc(var(--nav-height, 70px) + 20px); }
+        /* FIXED: Increased bottom padding to 100px so buttons aren't cut off */
+        .controls-panel { padding-bottom: calc(var(--nav-height, 70px) + 30px); }
+        
+        /* FIXED: Added right padding to asset tabs so Over/Under isn't cut off */
+        .asset-tabs { padding-right: 20px; }
     </style>
 </head>
 <body>
@@ -204,11 +207,12 @@
         }
         initDigitRow();
 
-        // --- CUSTOM CHART ENGINE ---
+        // --- CUSTOM CHART ENGINE WITH MOVING CURVE ---
         const canvas = document.getElementById('chartCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
         let priceData = [];
         let currentPrice = 9607.39;
+        const MAX_POINTS = 60; // Show last 60 seconds for smooth sliding effect
 
         function resizeCanvas() {
             if (!canvas) return;
@@ -248,7 +252,7 @@
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
             ctx.lineJoin = 'round';
-            const stepX = canvas.width / (priceData.length - 1 || 1);
+            const stepX = canvas.width / (MAX_POINTS - 1);
             
             priceData.forEach((price, i) => {
                 const x = i * stepX;
@@ -256,6 +260,18 @@
                 if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             });
             ctx.stroke();
+
+            // Draw Pulsing Dot at End of Line
+            const lastX = (priceData.length - 1) * stepX;
+            const lastY = canvas.height - ((priceData[priceData.length-1] - min) / range) * canvas.height;
+            ctx.beginPath();
+            ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(lastX, lastY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fill();
 
             // Gradient Fill
             ctx.lineTo(canvas.width, canvas.height);
@@ -272,7 +288,6 @@
             if(labelsContainer) {
                 const labels = labelsContainer.querySelectorAll('.axis-label-r');
                 for(let i=0; i<labels.length; i++) {
-                    // Calculate price at each grid line position
                     const yPos = (canvas.height / 5) * (labels.length - i);
                     const priceAtLevel = min + ((canvas.height - yPos) / canvas.height) * range;
                     labels[i].innerText = priceAtLevel.toFixed(2);
@@ -284,7 +299,8 @@
             const change = (Math.random() - 0.5) * 3;
             currentPrice += change;
             priceData.push(currentPrice);
-            if (priceData.length > 100) priceData.shift();
+            // Keep only last MAX_POINTS for sliding window effect
+            if (priceData.length > MAX_POINTS) priceData.shift();
             
             const priceEl = document.getElementById('currentPrice');
             if(priceEl) priceEl.innerText = currentPrice.toFixed(2);
@@ -294,7 +310,7 @@
         }
 
         // Start Chart
-        for(let i=0; i<100; i++) updateChart();
+        for(let i=0; i<MAX_POINTS; i++) updateChart();
         setInterval(updateChart, 1000);
         window.addEventListener('resize', resizeCanvas);
         setTimeout(resizeCanvas, 100);
