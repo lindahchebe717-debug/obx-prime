@@ -47,56 +47,54 @@
         .mode-toggle { display: flex; background: var(--bg-main); border-radius: 10px; padding: 3px; margin-bottom: 12px; border: 1px solid var(--border-color); }
         .mode-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer; background: transparent; color: var(--text-gray); letter-spacing: 0.5px; }
         .mode-btn.active { background: var(--primary-purple); color: white; }
+        .nav-item { font-size: 0.65rem; }
+        .nav-icon { width: 22px; height: 22px; }
+        .ai-icon-wrap { width: 40px; height: 40px; }
+        .ai-icon { width: 20px; height: 20px; }
 
-        /* FIXED: Smaller bottom nav to save space for buttons */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 60px; /* Reduced from 70px */
-            background: var(--bg-card); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; align-items: center; 
-            z-index: 100; padding-bottom: env(safe-area-inset-bottom); 
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; transition: color 0.2s; }
-        .nav-item.active { color: var(--primary-purple); }
-        .nav-icon { width: 20px; height: 20px; } /* Smaller icons */
-        .ai-icon-wrap { width: 36px; height: 36px; } /* Smaller AI button */
-        .ai-icon { width: 18px; height: 18px; }
-
-        /* Chart & Axis Styles */
+        /* FIXED: Hardcoded height prevents chart from pushing content off screen */
         #chartCanvas { width: 100%; height: 100%; display: block; }
         .chart-wrapper { 
             position: relative; 
-            height: 180px; 
+            height: 180px; /* Fixed height instead of flex/min-height */
             padding: 0 16px; 
             background: var(--bg-main); 
             overflow: hidden; 
-            flex-shrink: 0; 
+            flex-shrink: 0; /* Prevents shrinking */
         }
+        
+        /* Fake Axis Labels for Real-time look */
         .axis-labels-right { position: absolute; right: 16px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 50px; }
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        /* FIXED: Reduced padding since nav is smaller */
-        .controls-panel { padding-bottom: 90px; } 
+        /* FIXED: Massive bottom padding ensures buttons are never hidden by nav bar */
+        .controls-panel { padding-bottom: 120px; }
         
-        /* FIXED: Compact tabs */
+        /* FIXED: Scrollable tabs with hidden scrollbar */
         .asset-tabs { 
-            display: flex; gap: 6px; padding: 0 12px 10px; 
-            overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; 
+            display: flex; 
+            gap: 8px; 
+            padding: 0 16px 12px; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            align-items: center; 
         }
         .asset-tabs::-webkit-scrollbar { display: none; }
         .asset-tab { 
             background: transparent; border: 1px solid var(--border-color); color: var(--text-gray); 
-            padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; 
-            white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            padding: 8px 14px; border-radius: 20px; font-size: 0.8rem; 
+            white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px;
             transition: all 0.2s; flex-shrink: 0;
         }
-        .asset-tab svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
+        .asset-tab svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.7; }
         .asset-tab.active { 
-            background: rgba(139, 92, 246, 0.15); border-color: var(--primary-purple);
-            color: var(--text-white); font-weight: 600;
+            background: rgba(139, 92, 246, 0.15); 
+            border-color: var(--primary-purple);
+            color: var(--text-white); 
+            font-weight: 600;
         }
         .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
     </style>
@@ -180,7 +178,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (SMALLER) -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>Trade</a>
         <a href="#" class="nav-item ai-btn"><div class="ai-icon-wrap"><svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div>AI</a>
@@ -243,7 +241,7 @@
         let priceData = [];
         let timeData = [];
         let currentPrice = 9607.39;
-        const MAX_POINTS = 60; 
+        const MAX_POINTS = 60; // Strictly 60 points for smooth sliding
 
         function resizeCanvas() {
             if (!canvas) return;
