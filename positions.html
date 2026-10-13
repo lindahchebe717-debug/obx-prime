@@ -33,16 +33,16 @@
                     </tr>
                 </thead>
                 <tbody id="tradesTable">
-                    <!-- Populated by JS -->
+                    <tr><td colspan="6" style="padding:2rem; text-align:center;">Loading trades...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
     <script>
-        const supabaseUrl = 'YOUR_SUPABASE_URL';
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function loadTrades() {
             const { data: { user } } = await supabase.auth.getUser();
@@ -55,8 +55,12 @@
                 .order('created_at', { ascending: false });
 
             const tbody = document.getElementById('tradesTable');
-            tbody.innerHTML = '';
+            if(error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding:2rem; text-align:center;">No trades found. Start trading!</td></tr>';
+                return;
+            }
             
+            tbody.innerHTML = '';
             data.forEach(trade => {
                 const plClass = trade.pnl >= 0 ? 'color:var(--success-green)' : 'color:var(--danger-red)';
                 tbody.innerHTML += `
