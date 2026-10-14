@@ -9,7 +9,7 @@
     
     <style>
         /* =========================================
-           CSS VARIABLES - PALOPTION STYLE (LIGHT)
+           CSS VARIABLES - LIGHT THEME (DEFAULT)
            ========================================= */
         :root {
             --bg-main: #f8fafc;
@@ -22,9 +22,39 @@
             --border-color: rgba(0, 0, 0, 0.08);
         }
 
-        body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+        /* =========================================
+           DARK THEME OVERRIDES
+           ========================================= */
+        body.dark-theme {
+            --bg-main: #141021;
+            --bg-card: #1e1b4b;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        body.dark-theme .digit-row,
+        body.dark-theme .qs-btn,
+        body.dark-theme .live-stats-bar,
+        body.dark-theme .mode-toggle,
+        body.dark-theme .asset-tab,
+        body.dark-theme .stake-box,
+        body.dark-theme .volatility-dropdown,
+        body.dark-theme .chart-wrapper {
+            box-shadow: none !important;
+        }
+        body.dark-theme .volatility-item {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-theme .volatility-item:hover {
+            background: rgba(124, 58, 237, 0.15);
+        }
+        body.dark-theme .volatility-item.active {
+            background: rgba(124, 58, 237, 0.25);
+        }
 
-        /* Chart Styles - PALOPTION STYLE */
+        body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
+
+        /* Chart Styles */
         #chartCanvas { width: 100%; height: 100%; display: block; }
         .chart-wrapper { 
             position: relative; 
@@ -37,6 +67,7 @@
             overflow: hidden; 
             flex-shrink: 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: background 0.3s, border-color 0.3s;
         }
         .axis-labels-right { position: absolute; right: 16px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 50px; }
@@ -262,7 +293,7 @@
                         <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                         Dark theme
                     </div>
-                    <div class="theme-toggle active" id="themeToggle"></div>
+                    <div class="theme-toggle" id="themeToggle"></div>
                 </div>
             </li>
             <li><a href="#" class="menu-item">
@@ -304,7 +335,7 @@
         <button class="asset-tab"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
     </div>
 
-    <!-- Main Chart Area - PALOPTION STYLE -->
+    <!-- Main Chart Area -->
     <div class="chart-wrapper">
         <!-- Volatility Selector - LEFT -->
         <div style="position: absolute; top: 12px; left: 16px; z-index: 20;">
@@ -461,32 +492,32 @@
             }
         }
 
-        // Theme toggle
+        // ✅ FIXED: Theme toggle logic
         function toggleDarkTheme() {
             const toggle = document.getElementById('themeToggle');
             const body = document.body;
             
-            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
             
-            if (body.classList.contains('light-theme')) {
-                toggle.classList.remove('active');
-                localStorage.setItem('theme', 'light');
-            } else {
+            if (body.classList.contains('dark-theme')) {
                 toggle.classList.add('active');
                 localStorage.setItem('theme', 'dark');
+            } else {
+                toggle.classList.remove('active');
+                localStorage.setItem('theme', 'light');
             }
         }
 
-        // Initialize theme
+        // ✅ FIXED: Initialize theme correctly
         (function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const toggle = document.getElementById('themeToggle');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-theme');
-                if(toggle) toggle.classList.remove('active');
-            } else {
-                document.body.classList.remove('light-theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
                 if(toggle) toggle.classList.add('active');
+            } else {
+                document.body.classList.remove('dark-theme');
+                if(toggle) toggle.classList.remove('active');
             }
         })();
 
@@ -505,7 +536,7 @@
                     <div class="digit-circle">
                         <div class="circle-container">
                             <svg width="32" height="32" viewBox="0 0 32 32">
-                                <circle cx="16" cy="16" r="${RADIUS}" stroke="#e2e8f0" stroke-width="2.5" fill="none"/>
+                                <circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/>
                                 <circle id="prog-${i}" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
                             </svg>
                             <div class="digit-num">${i}</div>
@@ -558,12 +589,15 @@
             return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
         }
 
+        // ✅ FIXED: Chart now adapts to Dark/Light theme
         function drawChart() {
             if (!ctx || !canvas.width) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Grid lines - PALOPTION STYLE (visible)
-            ctx.strokeStyle = '#e2e8f0';
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            // Grid lines - adapt to theme
+            ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
             ctx.lineWidth = 1;
             ctx.beginPath();
             for(let i=1; i<5; i++) {
@@ -584,9 +618,9 @@
             let padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
 
-            // Chart line - PALOPTION STYLE (dark visible line)
+            // Chart line - adapt to theme
             ctx.beginPath();
-            ctx.strokeStyle = '#1e293b';
+            ctx.strokeStyle = isDark ? '#ffffff' : '#1e293b';
             ctx.lineWidth = 2;
             ctx.lineJoin = 'round';
             const stepX = canvas.width / (MAX_POINTS - 1);
@@ -604,19 +638,19 @@
             
             ctx.beginPath();
             ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = isDark ? '#ffffff' : '#1e293b';
             ctx.fill();
             
             ctx.beginPath();
             ctx.arc(lastX, lastY, 8, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(30, 41, 59, 0.2)';
+            ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(30, 41, 59, 0.2)';
             ctx.fill();
 
             ctx.lineTo(canvas.width, canvas.height);
             ctx.lineTo(0, canvas.height);
             ctx.closePath();
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(124, 58, 237, 0.1)');
+            gradient.addColorStop(0, isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(124, 58, 237, 0.1)');
             gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
             ctx.fillStyle = gradient;
             ctx.fill();
