@@ -23,7 +23,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-[#151923] border-b border-white/5">
         <div class="flex items-center justify-between px-4 py-4">
-            <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+            <a href="dashboard.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
             </a>
             <div class="flex items-center gap-3">
@@ -222,15 +222,27 @@
     </main>
 
     <script>
-        // Theme Toggle
+        // Theme Toggle & Initialization
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
         }
 
-        // Contact Support - opens live chat on index.html
+        // Initialize theme on load to match dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+        });
+
+        // Contact Support - opens live chat on dashboard.html
         function openSupportChat() {
             localStorage.setItem('open_chat_on_load', 'true');
-            window.location.href = 'index.html';
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
