@@ -35,7 +35,8 @@
 
     <!-- Header -->
     <header class="shrink-0 flex items-center justify-between px-4 py-4 bg-[#1F1936] border-b border-white/10 sticky top-0 z-40">
-        <a href="index.html" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
+        <!-- SIMPLE BACK BUTTON: Goes to the previous page automatically -->
+        <a href="javascript:history.back()" class="flex items-center gap-2 text-white hover:text-[#A78BFA] transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
             <span class="font-bold">Back</span>
         </a>
@@ -257,11 +258,11 @@
             });
         }
 
-        // Open Live Chat and redirect back to main page
+        // Open Live Chat and redirect back to dashboard
         function openLiveChatAndRedirect() {
-            // Set a flag in localStorage so index.html knows to open the chat
+            // Set a flag in localStorage so dashboard.html knows to open the chat
             localStorage.setItem('open_chat_on_load', 'true');
-            window.location.href = 'index.html';
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
