@@ -56,10 +56,9 @@
         <div class="text-center my-4 z-10">
             <span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span>
         </div>
-        <!-- Messages injected here -->
     </main>
 
-    <!-- Reply Preview Bar (Hidden by default) -->
+    <!-- Reply Preview Bar -->
     <div id="reply-bar" class="hidden bg-[#111b21] border-l-4 border-[#00a884] p-3 mx-2 mb-2 rounded flex justify-between items-center z-10">
         <div>
             <p class="text-[#00a884] text-xs font-bold mb-1">Replying to...</p>
@@ -106,9 +105,11 @@
 
     <script>
         // --- SUPABASE CONFIG ---
-        const SUPABASE_URL = 'https://twwwpywcmjdrocsfhyia.supabase.co';
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhyia.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // ✅ FIXED: Use 'supabaseClient' instead of 'supabase' to prevent redeclaration error
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
         let currentRoomId = null;
@@ -128,7 +129,7 @@
         // --- INITIALIZATION ---
         async function init() {
             try {
-                const { data: { user }, error } = await supabase.auth.getUser();
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
                 if (error || !user) { 
                     alert("Please log in to access Live Support.");
                     window.location.href = 'signin.html'; 
@@ -136,12 +137,12 @@
                 }
                 currentUser = user;
                 
-                const { data: room } = await supabase.from('support_rooms').select('*').eq('user_id', user.id).neq('status', 'closed').order('created_at', { ascending: false }).limit(1).single();
+                const { data: room } = await supabaseClient.from('support_rooms').select('*').eq('user_id', user.id).neq('status', 'closed').order('created_at', { ascending: false }).limit(1).single();
                 
                 if (room) {
                     currentRoomId = room.id;
                 } else {
-                    const { data: newRoom } = await supabase.from('support_rooms').insert({ user_id: user.id, status: 'waiting' }).select().single();
+                    const { data: newRoom } = await supabaseClient.from('support_rooms').insert({ user_id: user.id, status: 'waiting' }).select().single();
                     currentRoomId = newRoom.id;
                     setTimeout(() => sendBotMessage("👋 Welcome to OBX PRIME Support! Tap a quick reply below or ask a question."), 500);
                 }
@@ -157,7 +158,7 @@
 
         // --- MESSAGING ---
         async function loadMessages() {
-            const { data } = await supabase.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
+            const { data } = await supabaseClient.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
             const container = document.getElementById('chat-container');
             container.innerHTML = '<div class="chat-bg"></div><div class="text-center my-4 z-10"><span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span></div>';
             
@@ -168,7 +169,7 @@
         }
 
         function listenForNewMessages() {
-            supabase.channel('room-' + currentRoomId)
+            supabaseClient.channel('room-' + currentRoomId)
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `room_id=eq.${currentRoomId}` }, payload => {
                     renderMessage(payload.new);
                     scrollToBottom();
@@ -212,20 +213,19 @@
             const text = input.value.trim();
             if (!text) return;
 
-            await supabase.from('support_messages').insert({
+            await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: text, type: 'text', reply_to_id: replyToId
             });
             input.value = '';
             cancelReply();
             
-            const { data: room } = await supabase.from('support_rooms').select('status').eq('id', currentRoomId).single();
+            const { data: room } = await supabaseClient.from('support_rooms').select('status').eq('id', currentRoomId).single();
             if (room && room.status === 'waiting') {
                 setTimeout(() => checkBotTrigger(text), 1000);
             }
         }
 
-        // ✅ FIXED: Added the missing bot trigger function
         function checkBotTrigger(text) {
             const lowerText = text.toLowerCase();
             let response = "🕒 Thanks for your message! A live agent will be with you shortly. In the meantime, you can tap the quick reply buttons above for instant answers.";
@@ -244,7 +244,7 @@
         }
 
         async function sendFaq(type) {
-            await supabase.from('support_messages').insert({
+            await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: type.charAt(0).toUpperCase() + type.slice(1), type: 'text'
             });
@@ -252,18 +252,18 @@
         }
 
         async function sendBotMessage(text) {
-            await supabase.from('support_messages').insert({
+            await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'bot',
                 content: text, type: 'text'
             });
         }
 
         async function connectToAgent() {
-            await supabase.from('support_messages').insert({
+            await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: "👨‍💼 User requested a Live Agent.", type: 'text'
             });
-            await supabase.from('support_rooms').update({ status: 'waiting' }).eq('id', currentRoomId);
+            await supabaseClient.from('support_rooms').update({ status: 'waiting' }).eq('id', currentRoomId);
             document.getElementById('agent-status').innerText = "⏳ Waiting for agent...";
             sendBotMessage("🕒 Please hold on. A live support agent will join this chat shortly.");
         }
@@ -282,16 +282,16 @@
         async function sendImage() {
             if (!selectedFile) return;
             const fileName = `${currentUser.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`;
-            const { data, error } = await supabase.storage.from('chat_uploads').upload(fileName, selectedFile);
+            const { data, error } = await supabaseClient.storage.from('chat_uploads').upload(fileName, selectedFile);
             
             if (error) {
                 alert("Failed to upload image: " + error.message);
                 return;
             }
             
-            const { data: { publicUrl } } = supabase.storage.from('chat_uploads').getPublicUrl(data.path);
+            const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
 
-            await supabase.from('support_messages').insert({
+            await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: publicUrl, type: 'image', view_once: isViewOnce, reply_to_id: replyToId
             });
@@ -316,10 +316,10 @@
             mediaRecorder.onstop = async () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 const fileName = `${currentUser.id}/voice_${Date.now()}.webm`;
-                const { data } = await supabase.storage.from('chat_uploads').upload(fileName, audioBlob);
-                const { data: { publicUrl } } = supabase.storage.from('chat_uploads').getPublicUrl(data.path);
+                const { data } = await supabaseClient.storage.from('chat_uploads').upload(fileName, audioBlob);
+                const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
 
-                await supabase.from('support_messages').insert({
+                await supabaseClient.from('support_messages').insert({
                     room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                     content: publicUrl, type: 'voice'
                 });
@@ -362,7 +362,7 @@
 
         function revealViewOnce(el, msgId) {
             el.classList.add('revealed');
-            supabase.from('support_messages').update({ is_viewed: true }).eq('id', msgId);
+            supabaseClient.from('support_messages').update({ is_viewed: true }).eq('id', msgId);
         }
 
         function setupEmojis() {
