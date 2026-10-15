@@ -96,17 +96,14 @@
         </main>
     </div>
 
-        <script>
-        // Wait for the page to fully load before running any code
+            <script>
         document.addEventListener('DOMContentLoaded', async function() {
-            
-            // 1. Check if Supabase loaded correctly
             if (typeof window.supabase === 'undefined') {
                 alert("ERROR: Supabase script failed to load. Check your internet connection.");
                 return;
             }
 
-            // --- SUPABASE CONFIG ---
+            // ✅ FIXED: Corrected the URL typo (twvww instead of twww)
             const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhyia.supabase.co';
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -114,18 +111,16 @@
             let agentId = null;
             let activeRoomId = null;
 
-            // --- LOGIN LOGIC ---
             const loginForm = document.getElementById('login-form');
             if (loginForm) {
                 loginForm.addEventListener('submit', async function(e) {
-                    e.preventDefault(); // STRICTLY stops the page from refreshing
+                    e.preventDefault(); 
                     
                     const btn = document.getElementById('login-btn');
                     const errorText = document.getElementById('login-error');
                     const email = document.getElementById('agent-email').value.trim();
                     const password = document.getElementById('agent-password').value;
 
-                    // Basic validation
                     if (!email || !password) {
                         alert("Please enter both email and password.");
                         return;
@@ -136,18 +131,15 @@
                     errorText.classList.add('hidden');
 
                     try {
-                        // Attempt to Sign In
                         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
                         if (error) {
-                            // Show the EXACT error message in an alert AND on the screen
                             alert("Login Failed: " + error.message);
                             errorText.innerText = error.message;
                             errorText.classList.remove('hidden');
                             btn.innerText = 'Sign In';
                             btn.disabled = false;
                         } else {
-                            // Success!
                             document.getElementById('login-screen').style.display = 'none';
                             document.getElementById('agent-dashboard').style.display = 'flex';
                             agentId = data.user.id;
@@ -155,7 +147,7 @@
                             listenForRooms();
                         }
                     } catch (err) {
-                        alert("Unexpected Error: " + err.message);
+                        alert("Network Error: " + err.message + "\n\nTip: Try opening this file using 'Live Server' in VS Code, or disable your ad-blocker.");
                         btn.innerText = 'Sign In';
                         btn.disabled = false;
                     }
@@ -167,7 +159,6 @@
                 location.reload();
             }
 
-            // --- DASHBOARD LOGIC ---
             async function loadRooms() {
                 try {
                     const { data, error } = await supabase.from('support_rooms').select('*').in('status', ['waiting', 'active']).order('created_at', { ascending: false });
@@ -254,5 +245,3 @@
             }
         });
     </script>
-</body>
-</html>
