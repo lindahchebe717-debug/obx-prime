@@ -108,7 +108,7 @@
         const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhyia.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         
-        // ✅ FIXED: Use 'supabaseClient' instead of 'supabase' to prevent redeclaration error
+        // ✅ FIXED: Use 'supabaseClient' to prevent redeclaration crash
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
@@ -126,15 +126,35 @@
             refer: "🎁 **Refer & Earn:** Share your unique link! You earn 10% of your referral's net trading losses daily. Commissions are paid out automatically."
         };
 
-        // --- INITIALIZATION ---
+        // --- INITIALIZATION (IMPROVED LOGIN CHECK) ---
         async function init() {
             try {
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
-                if (error || !user) { 
+                // 1. Use getSession() instead of getUser() for instant local storage checking
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                // 2. Fallback to our local storage flag just in case Supabase is slightly delayed
+                const localLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+                if ((error || !session) && !localLoggedIn) { 
                     alert("Please log in to access Live Support.");
                     window.location.href = 'signin.html'; 
                     return; 
                 }
+
+                // 3. If session is missing but local storage says logged in, give Supabase a split second to hydrate
+                let user = session ? session.user : null;
+                if (!user && localLoggedIn) {
+                    await new Promise(r => setTimeout(r, 500)); // Wait 500ms
+                    const { data: { session: retrySession } } = await supabaseClient.auth.getSession();
+                    user = retrySession ? retrySession.user : null;
+                }
+
+                if (!user) {
+                    // If still no user, force a fresh login to get a valid token
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
                 currentUser = user;
                 
                 const { data: room } = await supabaseClient.from('support_rooms').select('*').eq('user_id', user.id).neq('status', 'closed').order('created_at', { ascending: false }).limit(1).single();
@@ -153,6 +173,7 @@
                 setupEmojis();
             } catch (err) {
                 console.error("Init error:", err);
+                alert("An error occurred while loading chat. Please try refreshing.");
             }
         }
 
