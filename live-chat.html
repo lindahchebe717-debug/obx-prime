@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #0b141a; color: #e9edef; font-family: system-ui, sans-serif; }
+        body { background-color: #0b141a; color: #e9edef; font-family: system-ui, sans-serif; } /* WhatsApp Dark BG */
         body.light-theme { background-color: #efeae2; color: #111b21; }
         
         .chat-bg { background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color: #0b141a; opacity: 0.06; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
@@ -22,6 +22,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* View Once Blur */
         .view-once-blur { filter: blur(15px); transition: filter 0.3s; cursor: pointer; }
         .view-once-blur.revealed { filter: blur(0); }
     </style>
@@ -56,9 +57,10 @@
         <div class="text-center my-4 z-10">
             <span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span>
         </div>
+        <!-- Messages injected here -->
     </main>
 
-    <!-- Reply Preview Bar -->
+    <!-- Reply Preview Bar (Hidden by default) -->
     <div id="reply-bar" class="hidden bg-[#111b21] border-l-4 border-[#00a884] p-3 mx-2 mb-2 rounded flex justify-between items-center z-10">
         <div>
             <p class="text-[#00a884] text-xs font-bold mb-1">Replying to...</p>
@@ -69,6 +71,7 @@
 
     <!-- Input Area -->
     <footer class="bg-[#1f2c34] p-2 flex items-center gap-2 z-20">
+        <!-- Emoji & Attach -->
         <button onclick="toggleEmoji()" class="p-2 text-gray-400 hover:text-white"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
         
         <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative">
@@ -76,13 +79,16 @@
             <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
         </label>
 
+        <!-- Text Input -->
         <div class="flex-1 bg-[#2a3942] rounded-lg flex items-center px-4 py-2">
             <input type="text" id="msg-input" placeholder="Message" class="bg-transparent w-full outline-none text-white placeholder-gray-400" onkeypress="handleEnter(event)">
+            <!-- View Once Toggle -->
             <button id="view-once-btn" onclick="toggleViewOnce()" class="text-gray-500 hover:text-[#00a884] ml-2 hidden">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
         </div>
 
+        <!-- Send / Mic Button -->
         <button id="send-btn" onclick="sendMessage()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -91,8 +97,10 @@
         </button>
     </footer>
 
-    <!-- Emoji Picker -->
-    <div id="emoji-picker" class="hidden absolute bottom-20 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto"></div>
+    <!-- Emoji Picker (Simple Grid) -->
+    <div id="emoji-picker" class="hidden absolute bottom-20 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto">
+        <!-- Emojis injected via JS -->
+    </div>
 
     <!-- Image Preview Modal -->
     <div id="preview-modal" class="hidden fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center p-4">
@@ -105,11 +113,9 @@
 
     <script>
         // --- SUPABASE CONFIG ---
-        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhyia.supabase.co';
+        const SUPABASE_URL = 'https://twwwpywcmjdrocsfhyia.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        
-        // ✅ FIXED: Use 'supabaseClient' to prevent redeclaration crash
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
         let currentRoomId = null;
@@ -119,6 +125,7 @@
         let mediaRecorder = null;
         let audioChunks = [];
 
+        // --- FAQ BOT RESPONSES ---
         const botResponses = {
             trading: "📈 **Trading:** We offer synthetic indices like Volatility 10, 25, 50, 75, and 100. You can trade Even/Odd, Over/Under, and Matches/Differs. Payouts are up to 95.2%!",
             deposit: "💰 **Deposits:** We exclusively support crypto! You can deposit via BTC, ETH, or USDT (ERC20). Go to Menu > Deposit to get your unique wallet address.",
@@ -126,71 +133,42 @@
             refer: "🎁 **Refer & Earn:** Share your unique link! You earn 10% of your referral's net trading losses daily. Commissions are paid out automatically."
         };
 
-        // --- INITIALIZATION (IMPROVED LOGIN CHECK) ---
+        // --- INITIALIZATION ---
         async function init() {
-            try {
-                // 1. Use getSession() instead of getUser() for instant local storage checking
-                const { data: { session }, error } = await supabaseClient.auth.getSession();
-                
-                // 2. Fallback to our local storage flag just in case Supabase is slightly delayed
-                const localLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-                if ((error || !session) && !localLoggedIn) { 
-                    alert("Please log in to access Live Support.");
-                    window.location.href = 'signin.html'; 
-                    return; 
-                }
-
-                // 3. If session is missing but local storage says logged in, give Supabase a split second to hydrate
-                let user = session ? session.user : null;
-                if (!user && localLoggedIn) {
-                    await new Promise(r => setTimeout(r, 500)); // Wait 500ms
-                    const { data: { session: retrySession } } = await supabaseClient.auth.getSession();
-                    user = retrySession ? retrySession.user : null;
-                }
-
-                if (!user) {
-                    // If still no user, force a fresh login to get a valid token
-                    window.location.href = 'signin.html';
-                    return;
-                }
-
-                currentUser = user;
-                
-                const { data: room } = await supabaseClient.from('support_rooms').select('*').eq('user_id', user.id).neq('status', 'closed').order('created_at', { ascending: false }).limit(1).single();
-                
-                if (room) {
-                    currentRoomId = room.id;
-                } else {
-                    const { data: newRoom } = await supabaseClient.from('support_rooms').insert({ user_id: user.id, status: 'waiting' }).select().single();
-                    currentRoomId = newRoom.id;
-                    setTimeout(() => sendBotMessage("👋 Welcome to OBX PRIME Support! Tap a quick reply below or ask a question."), 500);
-                }
-
-                loadMessages();
-                listenForNewMessages();
-                setupInputListeners();
-                setupEmojis();
-            } catch (err) {
-                console.error("Init error:", err);
-                alert("An error occurred while loading chat. Please try refreshing.");
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) { window.location.href = 'signin.html'; return; }
+            currentUser = user;
+            
+            // Load or Create Room
+            const { data: room } = await supabase.from('support_rooms').select('*').eq('user_id', user.id).eq('status', '!=', 'closed').order('created_at', { ascending: false }).limit(1).single();
+            
+            if (room) {
+                currentRoomId = room.id;
+            } else {
+                const { data: newRoom } = await supabase.from('support_rooms').insert({ user_id: user.id, status: 'waiting' }).select().single();
+                currentRoomId = newRoom.id;
+                // Send welcome bot message
+                setTimeout(() => sendBotMessage("👋 Welcome to OBX PRIME Support! Tap a quick reply below or ask a question."), 500);
             }
+
+            loadMessages();
+            listenForNewMessages();
+            setupInputListeners();
+            setupEmojis();
         }
 
         // --- MESSAGING ---
         async function loadMessages() {
-            const { data } = await supabaseClient.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
+            const { data } = await supabase.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
             const container = document.getElementById('chat-container');
             container.innerHTML = '<div class="chat-bg"></div><div class="text-center my-4 z-10"><span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span></div>';
             
-            if (data) {
-                data.forEach(msg => renderMessage(msg));
-            }
+            data.forEach(msg => renderMessage(msg));
             scrollToBottom();
         }
 
         function listenForNewMessages() {
-            supabaseClient.channel('room-' + currentRoomId)
+            supabase.channel('room-' + currentRoomId)
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `room_id=eq.${currentRoomId}` }, payload => {
                     renderMessage(payload.new);
                     scrollToBottom();
@@ -209,7 +187,7 @@
                 contentHtml = `<p class="text-[15px]">${formatText(msg.content)}</p>`;
             } else if (msg.type === 'image') {
                 if (msg.view_once && !msg.is_viewed) {
-                    contentHtml = `<div class="view-once-blur w-48 h-48 bg-black flex items-center justify-center rounded relative" onclick="revealViewOnce(this, '${msg.id}')"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="absolute text-white text-xs mt-12">View Once</span></div>`;
+                    contentHtml = `<div class="view-once-blur w-48 h-48 bg-black flex items-center justify-center rounded" onclick="revealViewOnce(this, '${msg.id}')"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="absolute text-white text-xs mt-12">View Once</span></div>`;
                 } else {
                     contentHtml = `<img src="${msg.content}" class="max-w-[250px] rounded-lg mb-1" oncontextmenu="return false;">`;
                 }
@@ -234,58 +212,42 @@
             const text = input.value.trim();
             if (!text) return;
 
-            await supabaseClient.from('support_messages').insert({
+            await supabase.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: text, type: 'text', reply_to_id: replyToId
             });
             input.value = '';
             cancelReply();
             
-            const { data: room } = await supabaseClient.from('support_rooms').select('status').eq('id', currentRoomId).single();
-            if (room && room.status === 'waiting') {
+            // Trigger Bot if no agent is active
+            const { data: room } = await supabase.from('support_rooms').select('status').eq('id', currentRoomId).single();
+            if (room.status === 'waiting') {
                 setTimeout(() => checkBotTrigger(text), 1000);
             }
         }
 
-        function checkBotTrigger(text) {
-            const lowerText = text.toLowerCase();
-            let response = "🕒 Thanks for your message! A live agent will be with you shortly. In the meantime, you can tap the quick reply buttons above for instant answers.";
-            
-            if (lowerText.includes('trade') || lowerText.includes('trading') || lowerText.includes('index')) {
-                response = botResponses.trading;
-            } else if (lowerText.includes('deposit') || lowerText.includes('fund') || lowerText.includes('add money')) {
-                response = botResponses.deposit;
-            } else if (lowerText.includes('withdraw') || lowerText.includes('cash out') || lowerText.includes('payout')) {
-                response = botResponses.withdraw;
-            } else if (lowerText.includes('refer') || lowerText.includes('affiliate') || lowerText.includes('invite')) {
-                response = botResponses.refer;
-            }
-            
-            sendBotMessage(response);
-        }
-
         async function sendFaq(type) {
-            await supabaseClient.from('support_messages').insert({
+            await supabase.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
-                content: type.charAt(0).toUpperCase() + type.slice(1), type: 'text'
+                content: type.toUpperCase(), type: 'text'
             });
             setTimeout(() => sendBotMessage(botResponses[type]), 800);
         }
 
         async function sendBotMessage(text) {
-            await supabaseClient.from('support_messages').insert({
-                room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'bot',
+            await supabase.from('support_messages').insert({
+                room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'bot', // Bot acts as system
                 content: text, type: 'text'
             });
         }
 
         async function connectToAgent() {
-            await supabaseClient.from('support_messages').insert({
+            await supabase.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: "👨‍💼 User requested a Live Agent.", type: 'text'
             });
-            await supabaseClient.from('support_rooms').update({ status: 'waiting' }).eq('id', currentRoomId);
-            document.getElementById('agent-status').innerText = "⏳ Waiting for agent...";
+            await supabase.from('support_rooms').update({ status: 'waiting' }).eq('id', currentRoomId);
+            document.getElementById('agent-status').innerText = " Waiting for agent...";
             sendBotMessage("🕒 Please hold on. A live support agent will join this chat shortly.");
         }
 
@@ -303,16 +265,10 @@
         async function sendImage() {
             if (!selectedFile) return;
             const fileName = `${currentUser.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`;
-            const { data, error } = await supabaseClient.storage.from('chat_uploads').upload(fileName, selectedFile);
-            
-            if (error) {
-                alert("Failed to upload image: " + error.message);
-                return;
-            }
-            
-            const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
+            const { data } = await supabase.storage.from('chat_uploads').upload(fileName, selectedFile);
+            const { data: { publicUrl } } = supabase.storage.from('chat_uploads').getPublicUrl(data.path);
 
-            await supabaseClient.from('support_messages').insert({
+            await supabase.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: publicUrl, type: 'image', view_once: isViewOnce, reply_to_id: replyToId
             });
@@ -328,7 +284,7 @@
                 document.getElementById('send-btn').classList.add('hidden');
                 document.getElementById('mic-btn').classList.remove('hidden');
                 document.getElementById('mic-btn').classList.add('animate-pulse', 'bg-red-500');
-            }).catch(err => alert("Microphone access denied."));
+            });
         }
 
         async function stopRecording() {
@@ -337,10 +293,10 @@
             mediaRecorder.onstop = async () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 const fileName = `${currentUser.id}/voice_${Date.now()}.webm`;
-                const { data } = await supabaseClient.storage.from('chat_uploads').upload(fileName, audioBlob);
-                const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
+                const { data } = await supabase.storage.from('chat_uploads').upload(fileName, audioBlob);
+                const { data: { publicUrl } } = supabase.storage.from('chat_uploads').getPublicUrl(data.path);
 
-                await supabaseClient.from('support_messages').insert({
+                await supabase.from('support_messages').insert({
                     room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                     content: publicUrl, type: 'voice'
                 });
@@ -383,11 +339,11 @@
 
         function revealViewOnce(el, msgId) {
             el.classList.add('revealed');
-            supabaseClient.from('support_messages').update({ is_viewed: true }).eq('id', msgId);
+            supabase.from('support_messages').update({ is_viewed: true }).eq('id', msgId);
         }
 
         function setupEmojis() {
-            const emojis = ['😀','😂','😍','🥰','😎','🤔','👍','👎','🔥','💯','🚀','💰','📈','📉','👋','🤝','👨‍💼','⏳','✅','❌'];
+            const emojis = ['😀','😂','😍','🥰','😎','🤔','','👎','🔥','💯','🚀','💰','📈','📉','','🤝','👨‍💼','⏳','✅','❌'];
             const picker = document.getElementById('emoji-picker');
             emojis.forEach(e => {
                 const btn = document.createElement('button');
@@ -405,7 +361,6 @@
         function formatText(t) { return t.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); }
         function toggleTheme() { document.body.classList.toggle('light-theme'); }
 
-        // Start the app
         init();
     </script>
 </body>
