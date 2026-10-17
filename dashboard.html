@@ -236,7 +236,7 @@
         .volatility-item-price { font-size: 9px; color: var(--text-gray); }
 
         /* =========================================
-           NEW: NOTIFICATION SYSTEM STYLES
+           NOTIFICATION SYSTEM STYLES
            ========================================= */
         .notif-dropdown {
             position: absolute; top: 100%; right: 0; margin-top: 8px;
@@ -253,6 +253,15 @@
         .notif-time { font-size: 0.7rem; color: var(--text-gray); }
         .notif-desc { font-size: 0.75rem; color: var(--text-gray); line-height: 1.4; }
         .notif-empty { padding: 24px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
+        
+        /* ✅ NEW: Close button at bottom */
+        .notif-close-btn {
+            width: 100%; padding: 12px; background: rgba(124, 58, 237, 0.1);
+            border: none; border-top: 1px solid var(--border-color);
+            color: var(--primary-purple); font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notif-close-btn:hover { background: rgba(124, 58, 237, 0.2); }
 
         .notif-modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
@@ -388,6 +397,8 @@
                         <button onclick="clearNotifications(event)" style="font-size: 0.75rem; color: var(--primary-purple); background: none; border: none; cursor: pointer; font-weight: 600;">Clear all</button>
                     </div>
                     <div id="notif-list"></div>
+                    <!-- ✅ NEW: Close button at bottom -->
+                    <button class="notif-close-btn" onclick="closeNotifications(event)">Close</button>
                 </div>
             </div>
         </div>
@@ -520,15 +531,61 @@
 
     <script>
         // ==========================================
-        // ✅ SOUND TOGGLE SYSTEM (Unchanged & Working)
+        // ✅ SOUND TOGGLE SYSTEM WITH MUSIC
         // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
+        let audioContext = null;
+        let oscillator = null;
+        let gainNode = null;
 
         function toggleSound() {
             isMuted = !isMuted;
             localStorage.setItem('obx_sound_muted', isMuted);
             updateSoundIcon();
-            if (!isMuted) playUiSound();
+            
+            if (!isMuted) {
+                startBackgroundMusic();
+            } else {
+                stopBackgroundMusic();
+            }
+        }
+
+        function startBackgroundMusic() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Create a pleasant ambient tone (sine wave at 440Hz - A4 note)
+                oscillator = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+                
+                // Very low volume for background music (not annoying)
+                gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+                
+                oscillator.start();
+                console.log('Background music started');
+            } catch (e) {
+                console.error('Error starting music:', e);
+            }
+        }
+
+        function stopBackgroundMusic() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+                oscillator = null;
+            }
+            if (gainNode) {
+                gainNode.disconnect();
+                gainNode = null;
+            }
         }
 
         function updateSoundIcon() {
@@ -546,9 +603,7 @@
 
         function playUiSound() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
@@ -642,6 +697,13 @@
             event.stopPropagation();
             saveNotifications([]);
             renderNotifications();
+        }
+
+        // ✅ NEW: Close notifications dropdown
+        function closeNotifications(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('notif-dropdown');
+            dropdown.classList.remove('show');
         }
 
         // Close dropdown when clicking outside
