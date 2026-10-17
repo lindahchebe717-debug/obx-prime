@@ -39,13 +39,17 @@
         body.dark-theme .asset-tab,
         body.dark-theme .stake-box,
         body.dark-theme .volatility-dropdown,
-        body.dark-theme .chart-wrapper {
+        body.dark-theme .chart-wrapper,
+        body.dark-theme .notif-dropdown,
+        body.dark-theme .notif-modal {
             box-shadow: none !important;
         }
-        body.dark-theme .volatility-item {
+        body.dark-theme .volatility-item,
+        body.dark-theme .notif-item {
             border-bottom-color: rgba(255, 255, 255, 0.05);
         }
-        body.dark-theme .volatility-item:hover {
+        body.dark-theme .volatility-item:hover,
+        body.dark-theme .notif-item:hover {
             background: rgba(124, 58, 237, 0.15);
         }
         body.dark-theme .volatility-item.active {
@@ -230,6 +234,47 @@
         .volatility-item.active { background: rgba(124, 58, 237, 0.1); color: var(--primary-purple); }
         .volatility-item-name { font-size: 11px; font-weight: 600; color: var(--text-white); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .volatility-item-price { font-size: 9px; color: var(--text-gray); }
+
+        /* =========================================
+           NEW: NOTIFICATION SYSTEM STYLES
+           ========================================= */
+        .notif-dropdown {
+            position: absolute; top: 100%; right: 0; margin-top: 8px;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 100; width: 300px; max-height: 400px; overflow-y: auto; display: none;
+        }
+        .notif-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
+        .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+        .notif-item:hover { background: rgba(124, 58, 237, 0.05); }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .notif-title { font-size: 0.85rem; font-weight: 600; color: var(--text-white); }
+        .notif-time { font-size: 0.7rem; color: var(--text-gray); }
+        .notif-desc { font-size: 0.75rem; color: var(--text-gray); line-height: 1.4; }
+        .notif-empty { padding: 24px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
+
+        .notif-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .notif-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .notif-modal {
+            background: var(--bg-card); border-radius: 16px; width: 90%; max-width: 400px;
+            padding: 24px; box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            transform: translateY(20px); transition: transform 0.3s ease;
+        }
+        .notif-modal-overlay.show .notif-modal { transform: translateY(0); }
+        .notif-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .notif-modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-white); }
+        .notif-modal-close { background: none; border: none; color: var(--text-gray); cursor: pointer; }
+        .notif-modal-body { color: var(--text-gray); font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
+        .notif-modal-footer { margin-top: 20px; text-align: right; }
+        .notif-modal-btn {
+            background: var(--primary-purple); color: white; border: none;
+            padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -323,13 +368,28 @@
         <div style="display:flex; align-items:center; gap:8px;">
             <div class="user-balance"><span style="color:var(--primary-purple); font-weight:800; font-size:0.8rem;">R</span> <span style="font-size:0.85rem;">$0.00</span></div>
             
-            <!-- ✅ UPDATED: Sound Toggle Button with ID and OnClick -->
+            <!-- ✅ Sound Toggle Button -->
             <button id="sound-toggle-btn" class="icon-btn sound-btn" onclick="toggleSound()" title="Toggle Sound">
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
             
             <a href="deposit.html" style="padding:6px 14px; background:var(--primary-purple); color:white; border-radius:8px; font-size:0.8rem; font-weight:700; text-decoration:none;">Deposit</a>
-            <button class="icon-btn bell-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-dot"></div></button>
+            
+            <!-- ✅ Notification Bell & Dropdown -->
+            <div style="position: relative;">
+                <button id="notif-btn" class="icon-btn bell-icon" onclick="toggleNotifications(event)">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <div class="bell-dot" id="notif-dot"></div>
+                </button>
+                
+                <div id="notif-dropdown" class="notif-dropdown">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 700; color: var(--text-white);">Notifications</span>
+                        <button onclick="clearNotifications(event)" style="font-size: 0.75rem; color: var(--primary-purple); background: none; border: none; cursor: pointer; font-weight: 600;">Clear all</button>
+                    </div>
+                    <div id="notif-list"></div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -442,9 +502,25 @@
         <a href="positions.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>Positions</a>
     </nav>
 
+    <!-- ✅ Notification Details Modal -->
+    <div class="notif-modal-overlay" id="notif-modal-overlay" onclick="closeNotifModal()">
+        <div class="notif-modal" onclick="event.stopPropagation()">
+            <div class="notif-modal-header">
+                <h3 class="notif-modal-title" id="modal-title">Notification Details</h3>
+                <button class="notif-modal-close" onclick="closeNotifModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div class="notif-modal-body" id="modal-body"></div>
+            <div class="notif-modal-footer">
+                <button class="notif-modal-btn" onclick="closeNotifModal()">Got it</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
-        // ✅ NEW: EFFICIENT SOUND TOGGLE SYSTEM
+        // ✅ SOUND TOGGLE SYSTEM (Unchanged & Working)
         // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
 
@@ -452,22 +528,16 @@
             isMuted = !isMuted;
             localStorage.setItem('obx_sound_muted', isMuted);
             updateSoundIcon();
-            
-            // Play a short, pleasant UI blip when unmuting (using Web Audio API for zero network requests)
-            if (!isMuted) {
-                playUiSound();
-            }
+            if (!isMuted) playUiSound();
         }
 
         function updateSoundIcon() {
             const btn = document.getElementById('sound-toggle-btn');
             if (isMuted) {
-                // Muted Icon (Speaker with slash)
                 btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
                 btn.style.opacity = "0.4";
                 btn.title = "Sound is muted. Click to unmute.";
             } else {
-                // Unmuted Icon (Speaker with waves)
                 btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
                 btn.style.opacity = "1";
                 btn.title = "Sound is on. Click to mute.";
@@ -481,30 +551,118 @@
                 const ctx = new AudioContext();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
+                osc.connect(gain); gain.connect(ctx.destination);
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, ctx.currentTime); // 800Hz pleasant blip
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
                 gain.gain.setValueAtTime(0.1, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-                
-                osc.start();
-                osc.stop(ctx.currentTime + 0.15);
-            } catch (e) {
-                // Silently fail if browser blocks audio
+                osc.start(); osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {}
+        }
+
+        // ==========================================
+        // ✅ NOTIFICATION SYSTEM
+        // ==========================================
+        const defaultNotifications = [
+            {
+                id: 1,
+                title: "Deposit Successful",
+                time: "2 mins ago",
+                shortDesc: "Your deposit of $500.00 via USDT (ERC20) has been credited.",
+                fullDetails: "Transaction ID: 0x8a7b...3f2e\nAmount: $500.00\nMethod: USDT (ERC20)\nStatus: Completed\nTime: " + new Date().toLocaleString()
+            },
+            {
+                id: 2,
+                title: "Welcome to OBX PRIME",
+                time: "1 day ago",
+                shortDesc: "Start trading synthetic indices with up to 95.2% payouts!",
+                fullDetails: "Welcome to OBX PRIME! Explore our Even/Odd, Over/Under, and Matches/Differs markets. Don't forget to check out the Refer & Earn program to earn 10% commission."
+            }
+        ];
+
+        function getNotifications() {
+            const stored = localStorage.getItem('obx_notifications');
+            return stored ? JSON.parse(stored) : defaultNotifications;
+        }
+
+        function saveNotifications(notifs) {
+            localStorage.setItem('obx_notifications', JSON.stringify(notifs));
+            updateNotifDot();
+        }
+
+        function updateNotifDot() {
+            const notifs = getNotifications();
+            const dot = document.getElementById('notif-dot');
+            dot.style.display = notifs.length > 0 ? 'block' : 'none';
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notif-list');
+            const notifs = getNotifications();
+            if (notifs.length === 0) {
+                list.innerHTML = '<div class="notif-empty">No new notifications</div>';
+                return;
+            }
+            list.innerHTML = notifs.map(n => `
+                <div class="notif-item" onclick="showNotifDetails(${n.id})">
+                    <div class="notif-header">
+                        <span class="notif-title">${n.title}</span>
+                        <span class="notif-time">${n.time}</span>
+                    </div>
+                    <div class="notif-desc">${n.shortDesc}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleNotifications(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('notif-dropdown');
+            dropdown.classList.toggle('show');
+            renderNotifications();
+        }
+
+        function showNotifDetails(id) {
+            const notifs = getNotifications();
+            const notif = notifs.find(n => n.id === id);
+            if (notif) {
+                document.getElementById('modal-title').innerText = notif.title;
+                document.getElementById('modal-body').innerText = notif.fullDetails;
+                document.getElementById('notif-modal-overlay').classList.add('show');
+                // Remove from list after viewing
+                saveNotifications(notifs.filter(n => n.id !== id));
+                renderNotifications();
             }
         }
-        // ==========================================
 
-        // --- SUPABASE INIT ---
+        function closeNotifModal() {
+            document.getElementById('notif-modal-overlay').classList.remove('show');
+        }
+
+        function clearNotifications(event) {
+            event.stopPropagation();
+            saveNotifications([]);
+            renderNotifications();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('notif-dropdown');
+            const btn = document.getElementById('notif-btn');
+            if (dropdown && dropdown.classList.contains('show')) {
+                if (!dropdown.contains(event.target) && !btn.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // ==========================================
+        // ✅ EXISTING DASHBOARD LOGIC (Unchanged)
+        // ==========================================
         const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         let obxSupabase;
         if (typeof window.supabase !== 'undefined') obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
 
-        // --- MENU FUNCTIONS ---
         function openMenu() {
             document.getElementById('menuOverlay').classList.add('show');
             document.getElementById('sideMenu').classList.add('show');
@@ -535,11 +693,9 @@
                 if (user) {
                     const displayName = user.user_metadata?.username || user.email?.split('@')[0] || 'Trader';
                     const maskedEmail = user.email ? user.email.replace(/(.{2}).*(@.*)/, '$1***$2') : '';
-                    
                     nameEl.innerText = displayName;
                     emailEl.innerText = maskedEmail;
                     avatarEl.innerText = displayName.charAt(0).toUpperCase();
-                    
                     const now = new Date();
                     footerEl.innerText = `${now.toISOString().replace('T', ' ').split('.')[0]} GMT`;
                 } else {
@@ -547,18 +703,13 @@
                     emailEl.innerText = 'Sign in to access full features';
                     avatarEl.innerText = 'G';
                 }
-            } catch(e) {
-                console.error("Profile load error:", e);
-            }
+            } catch(e) { console.error("Profile load error:", e); }
         }
 
-        // ✅ FIXED: Theme toggle logic
         function toggleDarkTheme() {
             const toggle = document.getElementById('themeToggle');
             const body = document.body;
-            
             body.classList.toggle('dark-theme');
-            
             if (body.classList.contains('dark-theme')) {
                 toggle.classList.add('active');
                 localStorage.setItem('theme', 'dark');
@@ -568,7 +719,6 @@
             }
         }
 
-        // ✅ FIXED: Initialize theme correctly
         (function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const toggle = document.getElementById('themeToggle');
@@ -579,12 +729,10 @@
                 document.body.classList.remove('dark-theme');
                 if(toggle) toggle.classList.remove('active');
             }
-            
-            // ✅ Initialize sound icon state on load
             updateSoundIcon();
+            updateNotifDot(); // Initialize notification dot
         })();
 
-        // --- DIGIT FREQUENCY ---
         const digitCounts = new Array(10).fill(0);
         let totalDigits = 0;
         const RADIUS = 14;
@@ -627,7 +775,6 @@
         }
         initDigitRow();
 
-        // --- CHART ENGINE ---
         const canvas = document.getElementById('chartCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
         let priceData = [];
@@ -652,14 +799,10 @@
             return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
         }
 
-        // ✅ FIXED: Chart now adapts to Dark/Light theme
         function drawChart() {
             if (!ctx || !canvas.width) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             const isDark = document.body.classList.contains('dark-theme');
-            
-            // Grid lines - adapt to theme
             ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -674,20 +817,17 @@
             ctx.stroke();
 
             if (priceData.length === 0) return;
-            
             let min = Math.min(...priceData);
             let max = Math.max(...priceData);
             let range = max - min || 1;
             let padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
 
-            // Chart line - adapt to theme
             ctx.beginPath();
             ctx.strokeStyle = isDark ? '#ffffff' : '#1e293b';
             ctx.lineWidth = 2;
             ctx.lineJoin = 'round';
             const stepX = canvas.width / (MAX_POINTS - 1);
-            
             priceData.forEach((price, i) => {
                 const x = i * stepX;
                 const y = canvas.height - ((price - min) / range) * canvas.height;
@@ -698,25 +838,13 @@
             const lastIdx = priceData.length - 1;
             const lastX = lastIdx * stepX;
             const lastY = canvas.height - ((priceData[lastIdx] - min) / range) * canvas.height;
-            
-            ctx.beginPath();
-            ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
-            ctx.fillStyle = isDark ? '#ffffff' : '#1e293b';
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.arc(lastX, lastY, 8, 0, Math.PI * 2);
-            ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(30, 41, 59, 0.2)';
-            ctx.fill();
-
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.closePath();
+            ctx.beginPath(); ctx.arc(lastX, lastY, 4, 0, Math.PI * 2); ctx.fillStyle = isDark ? '#ffffff' : '#1e293b'; ctx.fill();
+            ctx.beginPath(); ctx.arc(lastX, lastY, 8, 0, Math.PI * 2); ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(30, 41, 59, 0.2)'; ctx.fill();
+            ctx.lineTo(canvas.width, canvas.height); ctx.lineTo(0, canvas.height); ctx.closePath();
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(124, 58, 237, 0.1)');
             gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fill();
+            ctx.fillStyle = gradient; ctx.fill();
 
             const rightLabels = document.getElementById('axisLabelsRight');
             if(rightLabels) {
@@ -727,7 +855,6 @@
                     labels[i].innerText = priceAtLevel.toFixed(2);
                 }
             }
-
             const bottomLabels = document.querySelector('.axis-labels-bottom');
             if(bottomLabels && timeData.length > 0) {
                 const labels = bottomLabels.querySelectorAll('.axis-label-b');
@@ -743,20 +870,13 @@
             const change = (Math.random() - 0.5) * 3;
             currentPrice += change;
             const now = Math.floor(Date.now() / 1000);
-            
             priceData.push(currentPrice);
             timeData.push(now);
-            
-            if (priceData.length > MAX_POINTS) {
-                priceData.shift();
-                timeData.shift();
-            }
-            
+            if (priceData.length > MAX_POINTS) { priceData.shift(); timeData.shift(); }
             const priceEl = document.getElementById('currentPrice');
             const chartPriceEl = document.getElementById('chart-price-display');
             if(priceEl) priceEl.innerText = currentPrice.toFixed(2);
             if(chartPriceEl) chartPriceEl.innerText = currentPrice.toFixed(2);
-            
             updateDigitStats(currentPrice);
             drawChart();
         }
@@ -766,7 +886,6 @@
         window.addEventListener('resize', resizeCanvas);
         setTimeout(resizeCanvas, 100);
 
-        // --- VOLATILITY DROPDOWN ---
         function toggleVolatilityDropdown(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('volatility-dropdown');
@@ -790,8 +909,7 @@
                 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45
             };
             currentPrice = basePrices[volatilityName] || 9607.39;
-            priceData = [];
-            timeData = [];
+            priceData = []; timeData = [];
             for(let i=0; i<MAX_POINTS; i++) {
                 priceData.push(currentPrice + (Math.random() - 0.5) * 10);
                 timeData.push(Math.floor(Date.now() / 1000) - (MAX_POINTS - i));
@@ -807,12 +925,8 @@
             }
         });
 
-        // --- TRADING FUNCTIONS ---
         let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
-        function setStake(val) { 
-            const el = document.getElementById('stakeAmount');
-            if(el) el.value = val; 
-        }
+        function setStake(val) { const el = document.getElementById('stakeAmount'); if(el) el.value = val; }
         function adjustStake(delta) {
             const input = document.getElementById('stakeAmount');
             if(!input) return;
@@ -825,26 +939,19 @@
             const stakeInput = document.getElementById('stakeAmount');
             const stake = parseFloat(stakeInput ? stakeInput.value : 10);
             const entryPrice = currentPrice;
-            
             try {
                 const { data: { user } } = await obxSupabase.auth.getUser();
                 if(!user) return alert("Please login first via index.html");
-
                 const { error } = await obxSupabase.from('trades').insert({
-                    user_id: user.id, asset: 'VOL_10', direction: direction, 
-                    stake: stake, entry_price: entryPrice, status: 'OPEN'
+                    user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN'
                 });
-
                 if(error) console.error(error);
                 else {
                     stats.total++;
                     const won = Math.random() > 0.5;
-                    if(won) { stats.wins++; stats.pnl += stake * 0.952; } 
-                    else { stats.losses++; stats.pnl -= stake; }
-                    
+                    if(won) { stats.wins++; stats.pnl += stake * 0.952; } else { stats.losses++; stats.pnl -= stake; }
                     const statsText = document.getElementById('liveStatsText');
                     const pnlEl = document.getElementById('livePnl');
-                    
                     if(statsText) statsText.innerText = `${stats.total}T · ${stats.wins}W · ${stats.losses}L`;
                     if(pnlEl) {
                         const sign = stats.pnl >= 0 ? '+' : '';
@@ -853,9 +960,7 @@
                     }
                     if(navigator.vibrate) navigator.vibrate(50);
                 }
-            } catch(e) {
-                console.error("Trade error:", e);
-            }
+            } catch(e) { console.error("Trade error:", e); }
         }
     </script>
 </body>
