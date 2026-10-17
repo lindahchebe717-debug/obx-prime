@@ -768,7 +768,7 @@
         });
 
         // ==========================================
-        // ✅ PLEASANT SOUND TOGGLE SYSTEM (No more annoying beeps!)
+        // ✅ LUXURY CORPORATE AMBIENT SOUND SYSTEM
         // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
         let audioContext = null;
@@ -793,16 +793,19 @@
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
                 
-                // Master volume (very soft and pleasant)
+                // Master volume (very soft, subtle, and luxurious)
                 masterGainNode = audioContext.createGain();
-                masterGainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                masterGainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                masterGainNode.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 3); // Slow, smooth 3-second fade-in
                 masterGainNode.connect(audioContext.destination);
 
-                // Create a soft, pleasant ambient chord (A minor add9 vibe)
+                // Luxury Corporate Ambient Chord: C Major 7 (C4, E4, G4, B4)
+                // This creates a warm, professional, and upscale atmosphere (no sad/minor tones)
                 const notes = [
-                    { freq: 220.00, type: 'sine', gain: 0.6 },      // A3 (Root)
-                    { freq: 261.63, type: 'triangle', gain: 0.3 },  // C4 (Minor 3rd - soft warmth)
-                    { freq: 329.63, type: 'sine', gain: 0.4 }       // E4 (Perfect 5th)
+                    { freq: 261.63, type: 'sine', gain: 0.5 },      // C4 (Root)
+                    { freq: 329.63, type: 'sine', gain: 0.4 },      // E4 (Major 3rd - warm)
+                    { freq: 392.00, type: 'triangle', gain: 0.2 },  // G4 (Perfect 5th - subtle body)
+                    { freq: 493.88, type: 'sine', gain: 0.3 }       // B4 (Major 7th - luxurious feel)
                 ];
 
                 notes.forEach(note => {
@@ -811,16 +814,19 @@
                     
                     osc.type = note.type;
                     osc.frequency.setValueAtTime(note.freq, audioContext.currentTime);
-                    gain.gain.setValueAtTime(note.gain, audioContext.currentTime);
+                    
+                    // Smooth envelope for each note to prevent any "clicking" and sound like a real high-end ambient pad
+                    gain.gain.setValueAtTime(0, audioContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(note.gain, audioContext.currentTime + 2); // 2 second soft attack
                     
                     osc.connect(gain);
                     gain.connect(masterGainNode);
                     osc.start();
                     
-                    oscillators.push(osc);
+                    oscillators.push({ osc, gain });
                 });
                 
-                console.log('Pleasant ambient music started');
+                console.log('Luxury corporate ambient music started');
             } catch (e) {
                 console.error('Error starting music:', e);
             }
@@ -828,13 +834,19 @@
 
         function stopBackgroundMusic() {
             if (oscillators.length > 0) {
-                oscillators.forEach(osc => {
+                // Smooth 1-second fade out
+                const currentTime = audioContext.currentTime;
+                oscillators.forEach(({ osc, gain }) => {
                     try {
-                        osc.stop();
-                        osc.disconnect();
+                        gain.gain.cancelScheduledValues(currentTime);
+                        gain.gain.setValueAtTime(gain.gain.value, currentTime);
+                        gain.gain.linearRampToValueAtTime(0, currentTime + 1); 
+                        osc.stop(currentTime + 1.1);
                     } catch(e) {}
                 });
-                oscillators = [];
+                setTimeout(() => {
+                    oscillators = [];
+                }, 1200);
             }
             if (masterGainNode) {
                 try {
