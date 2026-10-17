@@ -41,15 +41,18 @@
         body.dark-theme .volatility-dropdown,
         body.dark-theme .chart-wrapper,
         body.dark-theme .notif-dropdown,
-        body.dark-theme .notif-modal {
+        body.dark-theme .notif-modal,
+        body.dark-theme .account-dropdown {
             box-shadow: none !important;
         }
         body.dark-theme .volatility-item,
-        body.dark-theme .notif-item {
+        body.dark-theme .notif-item,
+        body.dark-theme .account-option {
             border-bottom-color: rgba(255, 255, 255, 0.05);
         }
         body.dark-theme .volatility-item:hover,
-        body.dark-theme .notif-item:hover {
+        body.dark-theme .notif-item:hover,
+        body.dark-theme .account-option:hover {
             background: rgba(124, 58, 237, 0.15);
         }
         body.dark-theme .volatility-item.active {
@@ -284,6 +287,131 @@
             background: var(--primary-purple); color: white; border: none;
             padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
         }
+
+        /* =========================================
+           ACCOUNT SWITCHER STYLES
+           ========================================= */
+        .account-switcher {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .account-switcher:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: var(--primary-purple);
+        }
+        .account-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .account-icon.real {
+            background: var(--primary-purple);
+            color: white;
+        }
+        .account-icon.demo {
+            background: var(--danger-red);
+            color: white;
+        }
+        .account-balance {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .account-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            min-width: 220px;
+            display: none;
+            overflow: hidden;
+        }
+        .account-dropdown.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+        .account-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .account-option:last-child {
+            border-bottom: none;
+        }
+        .account-option:hover {
+            background: rgba(124, 58, 237, 0.05);
+        }
+        .account-option.active {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        .account-option-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .account-option-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .account-option-dot.real {
+            background: var(--primary-purple);
+        }
+        .account-option-dot.demo {
+            background: var(--danger-red);
+        }
+        .account-option-text {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .account-option-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--success-green);
+        }
+        .reset-demo-btn {
+            padding: 12px 16px;
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            border-top: 1px solid var(--border-color);
+            color: var(--danger-red);
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .reset-demo-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        .reset-demo-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 <body>
@@ -375,7 +503,34 @@
         <button class="icon-btn menu-icon" onclick="openMenu()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <div class="p-logo">P</div>
         <div style="display:flex; align-items:center; gap:8px;">
-            <div class="user-balance"><span style="color:var(--primary-purple); font-weight:800; font-size:0.8rem;">R</span> <span style="font-size:0.85rem;">$0.00</span></div>
+            <!-- ✅ ACCOUNT SWITCHER -->
+            <div class="account-switcher" onclick="toggleAccountDropdown(event)">
+                <div class="account-icon" id="accountIcon">R</div>
+                <div class="account-balance" id="accountBalance">$0.00</div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;"><path d="m6 9 6 6 6-6"/></svg>
+                
+                <!-- Account Dropdown -->
+                <div class="account-dropdown" id="accountDropdown">
+                    <div class="account-option" onclick="switchAccount('real', event)">
+                        <div class="account-option-label">
+                            <div class="account-option-dot real"></div>
+                            <span class="account-option-text">Real Account</span>
+                        </div>
+                        <span class="account-option-status" id="realStatus"></span>
+                    </div>
+                    <div class="account-option" onclick="switchAccount('demo', event)">
+                        <div class="account-option-label">
+                            <div class="account-option-dot demo"></div>
+                            <span class="account-option-text">Demo Account</span>
+                        </div>
+                        <span class="account-option-status" id="demoStatus"></span>
+                    </div>
+                    <button class="reset-demo-btn" id="resetDemoBtn" onclick="resetDemoBalance(event)" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>
+                        Reset Demo Balance
+                    </button>
+                </div>
+            </div>
             
             <!-- ✅ Sound Toggle Button -->
             <button id="sound-toggle-btn" class="icon-btn sound-btn" onclick="toggleSound()" title="Toggle Sound">
@@ -530,6 +685,88 @@
     </div>
 
     <script>
+        // ==========================================
+        // ✅ ACCOUNT SWITCHER SYSTEM
+        // ==========================================
+        let currentAccount = localStorage.getItem('obx_account_mode') || 'demo';
+        let realBalance = 0.00;
+        let demoBalance = parseFloat(localStorage.getItem('obx_demo_balance')) || 10000.00;
+
+        function toggleAccountDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.classList.toggle('show');
+            updateAccountDropdownUI();
+        }
+
+        function updateAccountDropdownUI() {
+            const realStatus = document.getElementById('realStatus');
+            const demoStatus = document.getElementById('demoStatus');
+            const resetDemoBtn = document.getElementById('resetDemoBtn');
+            
+            if (currentAccount === 'real') {
+                realStatus.innerText = 'Active';
+                demoStatus.innerText = '';
+                resetDemoBtn.style.display = 'none';
+            } else {
+                realStatus.innerText = '';
+                demoStatus.innerText = 'Active';
+                resetDemoBtn.style.display = 'flex';
+            }
+        }
+
+        function switchAccount(accountType, event) {
+            if (event) event.stopPropagation();
+            currentAccount = accountType;
+            localStorage.setItem('obx_account_mode', accountType);
+            updateAccountDisplay();
+            updateAccountDropdownUI();
+            closeAccountDropdown();
+            playUiSound();
+        }
+
+        function resetDemoBalance(event) {
+            if (event) event.stopPropagation();
+            if (confirm('Are you sure you want to reset your demo balance to $10,000.00?')) {
+                demoBalance = 10000.00;
+                localStorage.setItem('obx_demo_balance', demoBalance);
+                updateAccountDisplay();
+                closeAccountDropdown();
+                playUiSound();
+            }
+        }
+
+        function closeAccountDropdown() {
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.classList.remove('show');
+        }
+
+        function updateAccountDisplay() {
+            const accountIcon = document.getElementById('accountIcon');
+            const accountBalance = document.getElementById('accountBalance');
+            
+            if (currentAccount === 'real') {
+                accountIcon.className = 'account-icon real';
+                accountIcon.innerText = 'R';
+                accountBalance.innerText = '$' + realBalance.toFixed(2);
+                accountBalance.style.color = 'var(--primary-purple)';
+            } else {
+                accountIcon.className = 'account-icon demo';
+                accountIcon.innerText = 'D';
+                accountBalance.innerText = '$' + demoBalance.toFixed(2);
+                accountBalance.style.color = 'var(--danger-red)';
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('accountDropdown');
+            const switcher = event.target.closest('.account-switcher');
+            if (dropdown && dropdown.classList.contains('show') && !switcher) {
+                closeAccountDropdown();
+            }
+        });
+
         // ==========================================
         // ✅ PLEASANT SOUND TOGGLE SYSTEM (No more annoying beeps!)
         // ==========================================
@@ -823,6 +1060,7 @@
             }
             updateSoundIcon();
             updateNotifDot(); // Initialize notification dot
+            updateAccountDisplay(); // Initialize account display
         })();
 
         const digitCounts = new Array(10).fill(0);
