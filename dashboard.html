@@ -75,7 +75,7 @@
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
         /* Keep all your existing styles */
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
+        .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
         .p-logo { width: 32px; height: 32px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-left: 8px; }
@@ -322,7 +322,12 @@
         <div class="p-logo">P</div>
         <div style="display:flex; align-items:center; gap:8px;">
             <div class="user-balance"><span style="color:var(--primary-purple); font-weight:800; font-size:0.8rem;">R</span> <span style="font-size:0.85rem;">$0.00</span></div>
-            <button class="icon-btn sound-btn"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+            
+            <!-- ✅ UPDATED: Sound Toggle Button with ID and OnClick -->
+            <button id="sound-toggle-btn" class="icon-btn sound-btn" onclick="toggleSound()" title="Toggle Sound">
+                <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            
             <a href="deposit.html" style="padding:6px 14px; background:var(--primary-purple); color:white; border-radius:8px; font-size:0.8rem; font-weight:700; text-decoration:none;">Deposit</a>
             <button class="icon-btn bell-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-dot"></div></button>
         </div>
@@ -438,6 +443,61 @@
     </nav>
 
     <script>
+        // ==========================================
+        // ✅ NEW: EFFICIENT SOUND TOGGLE SYSTEM
+        // ==========================================
+        let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
+
+        function toggleSound() {
+            isMuted = !isMuted;
+            localStorage.setItem('obx_sound_muted', isMuted);
+            updateSoundIcon();
+            
+            // Play a short, pleasant UI blip when unmuting (using Web Audio API for zero network requests)
+            if (!isMuted) {
+                playUiSound();
+            }
+        }
+
+        function updateSoundIcon() {
+            const btn = document.getElementById('sound-toggle-btn');
+            if (isMuted) {
+                // Muted Icon (Speaker with slash)
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+                btn.style.opacity = "0.4";
+                btn.title = "Sound is muted. Click to unmute.";
+            } else {
+                // Unmuted Icon (Speaker with waves)
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+                btn.style.opacity = "1";
+                btn.title = "Sound is on. Click to mute.";
+            }
+        }
+
+        function playUiSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, ctx.currentTime); // 800Hz pleasant blip
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {
+                // Silently fail if browser blocks audio
+            }
+        }
+        // ==========================================
+
         // --- SUPABASE INIT ---
         const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
@@ -519,6 +579,9 @@
                 document.body.classList.remove('dark-theme');
                 if(toggle) toggle.classList.remove('active');
             }
+            
+            // ✅ Initialize sound icon state on load
+            updateSoundIcon();
         })();
 
         // --- DIGIT FREQUENCY ---
