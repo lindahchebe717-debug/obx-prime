@@ -531,12 +531,12 @@
 
     <script>
         // ==========================================
-        // ✅ SOUND TOGGLE SYSTEM WITH MUSIC
+        // ✅ PLEASANT SOUND TOGGLE SYSTEM (No more annoying beeps!)
         // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
         let audioContext = null;
-        let oscillator = null;
-        let gainNode = null;
+        let oscillators = [];
+        let masterGainNode = null;
 
         function toggleSound() {
             isMuted = !isMuted;
@@ -556,35 +556,54 @@
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
                 
-                // Create a pleasant ambient tone (sine wave at 440Hz - A4 note)
-                oscillator = audioContext.createOscillator();
-                gainNode = audioContext.createGain();
+                // Master volume (very soft and pleasant)
+                masterGainNode = audioContext.createGain();
+                masterGainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                masterGainNode.connect(audioContext.destination);
+
+                // Create a soft, pleasant ambient chord (A minor add9 vibe)
+                const notes = [
+                    { freq: 220.00, type: 'sine', gain: 0.6 },      // A3 (Root)
+                    { freq: 261.63, type: 'triangle', gain: 0.3 },  // C4 (Minor 3rd - soft warmth)
+                    { freq: 329.63, type: 'sine', gain: 0.4 }       // E4 (Perfect 5th)
+                ];
+
+                notes.forEach(note => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    
+                    osc.type = note.type;
+                    osc.frequency.setValueAtTime(note.freq, audioContext.currentTime);
+                    gain.gain.setValueAtTime(note.gain, audioContext.currentTime);
+                    
+                    osc.connect(gain);
+                    gain.connect(masterGainNode);
+                    osc.start();
+                    
+                    oscillators.push(osc);
+                });
                 
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-                
-                // Very low volume for background music (not annoying)
-                gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
-                
-                oscillator.start();
-                console.log('Background music started');
+                console.log('Pleasant ambient music started');
             } catch (e) {
                 console.error('Error starting music:', e);
             }
         }
 
         function stopBackgroundMusic() {
-            if (oscillator) {
-                oscillator.stop();
-                oscillator.disconnect();
-                oscillator = null;
+            if (oscillators.length > 0) {
+                oscillators.forEach(osc => {
+                    try {
+                        osc.stop();
+                        osc.disconnect();
+                    } catch(e) {}
+                });
+                oscillators = [];
             }
-            if (gainNode) {
-                gainNode.disconnect();
-                gainNode = null;
+            if (masterGainNode) {
+                try {
+                    masterGainNode.disconnect();
+                } catch(e) {}
+                masterGainNode = null;
             }
         }
 
@@ -604,14 +623,25 @@
         function playUiSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-                osc.start(); osc.stop(ctx.currentTime + 0.15);
+                
+                // Pleasant two-note "chime" instead of a single beep
+                const playNote = (freq, startTime, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.1, startTime + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + duration);
+                };
+
+                const now = ctx.currentTime;
+                playNote(523.25, now, 0.3);       // C5
+                playNote(659.25, now + 0.1, 0.4);  // E5 (slightly delayed for a "ding" effect)
             } catch (e) {}
         }
 
