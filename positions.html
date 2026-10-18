@@ -2,90 +2,542 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | My Positions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Positions</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-dark: #0f0a1f;
+            --bg-card: #1a1535;
+            --primary-purple: #7c3aed;
+            --primary-pink: #ec4899;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* App Banner */
+        .app-banner {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .app-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .app-banner-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-banner-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: white;
+        }
+
+        .app-banner-text h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .app-banner-text p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .app-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-banner-download {
+            background: white;
+            color: var(--primary-purple);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .app-banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .logo-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--primary-purple);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .account-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(124, 58, 237, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+        }
+
+        .account-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--danger-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .account-balance {
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            cursor: pointer;
+            padding: 0.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .deposit-btn {
+            background: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary-purple);
+            border-bottom-color: var(--primary-purple);
+        }
+
+        /* Main Content */
+        .positions-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-icon svg {
+            width: 50px;
+            height: 50px;
+            color: var(--text-gray);
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        /* Session Stats */
+        .session-stats {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .stat-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .stat-value.negative {
+            color: var(--danger-red);
+        }
+
+        .stat-value.positive {
+            color: var(--success-green);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.75rem 0;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-purple);
+        }
+
+        .nav-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .ai-icon-wrap {
+            width: 3.5rem;
+            height: 3.5rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -1.5rem 0;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .ai-icon {
+            width: 2rem;
+            height: 2rem;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <!-- App Banner -->
+    <div class="app-banner" id="appBanner">
+        <div class="app-banner-content">
+            <div class="app-banner-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </div>
+            <div class="app-banner-text">
+                <h4>Get the OBX PRIME App</h4>
+                <p>Get a better trading experience</p>
+            </div>
+        </div>
+        <div class="app-banner-actions">
+            <button class="app-banner-download">Download</button>
+            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'">✕</button>
+        </div>
+    </div>
+
+    <!-- Top Navigation -->
     <nav class="top-nav">
-        <div class="logo">OBX PRIME</div>
-        <div class="nav-links">
-            <a href="dashboard.html">Trade</a>
-            <a href="#" class="active">Positions</a>
-            <a href="#">AI Signals</a>
-            <button class="btn-deposit">Deposit</button>
+        <div class="nav-left">
+            <button class="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="logo-btn">P</div>
+            <div class="account-selector">
+                <div class="account-icon">R</div>
+                <span class="account-balance">$ 0.00</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+            </button>
+            <button class="deposit-btn">Deposit</button>
+            <button class="icon-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+            </button>
         </div>
     </nav>
 
-    <main class="trade-container" style="display:block;">
-        <div class="chart-panel" style="height:auto; min-height:400px;">
-            <h2 style="margin-bottom:1.5rem;">Active & Closed Trades</h2>
-            <table style="width:100%; border-collapse:collapse; color:var(--text-gray);">
-                <thead>
-                    <tr style="border-bottom:1px solid var(--border-color); text-align:left;">
-                        <th style="padding:1rem;">Asset</th>
-                        <th>Type</th>
-                        <th>Stake</th>
-                        <th>Entry</th>
-                        <th>Status</th>
-                        <th>P/L</th>
-                    </tr>
-                </thead>
-                <tbody id="tradesTable">
-                    <tr><td colspan="6" style="padding:2rem; text-align:center;">Loading trades...</td></tr>
-                </tbody>
-            </table>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active">Open (0)</div>
+        <div class="tab">Closed (0)</div>
+        <div class="tab">Transactions</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="positions-content">
+        <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
         </div>
-    </main>
+        <h2 class="empty-title">No open positions</h2>
+        <p class="empty-subtitle">Your active trades will appear here</p>
+    </div>
+
+    <!-- Session Stats -->
+    <div class="session-stats">
+        <div class="stat-row">
+            <span class="stat-label">Last Session</span>
+            <span class="stat-value">2 trades (0W / 2L)</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Session P/L:</span>
+            <span class="stat-value negative">-20.00 USD</span>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" x2="18" y1="20" y2="10"></line>
+                <line x1="12" x2="12" y1="20" y2="4"></line>
+                <line x1="6" x2="6" y1="20" y2="14"></line>
+            </svg>
+            <span>Trade</span>
+        </a>
+        <a href="ai.html" class="nav-item">
+            <div class="ai-icon-wrap">
+                <svg class="ai-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+            </div>
+            <span>AI</span>
+        </a>
+        <a href="positions.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Positions</span>
+        </a>
+    </nav>
 
     <script>
-        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        
-        let obxSupabase;
-        if (typeof window.supabase !== 'undefined' && typeof obxSupabase === 'undefined') {
-            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
-        }
-
-        async function loadTrades() {
-            if (!obxSupabase) {
-                document.getElementById('tradesTable').innerHTML = '<tr><td colspan="6" style="padding:2rem; text-align:center; color:red;">System error: Supabase not loaded.</td></tr>';
-                return;
-            }
-
-            const { data: { user } } = await obxSupabase.auth.getUser();
-            if(!user) return window.location.href = 'signin.html';
-
-            const { data, error } = await obxSupabase
-                .from('trades')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            const tbody = document.getElementById('tradesTable');
-            if(error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="padding:2rem; text-align:center;">No trades found. Start trading!</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            data.forEach(trade => {
-                const plClass = trade.pnl >= 0 ? 'color:var(--success-green)' : 'color:var(--danger-red)';
-                tbody.innerHTML += `
-                    <tr style="border-bottom:1px solid var(--border-color);">
-                        <td style="padding:1rem; color:white;">${trade.asset}</td>
-                        <td><span style="background:${trade.direction === 'EVEN' ? 'var(--success-green)' : 'var(--danger-red)'}; padding:4px 8px; border-radius:4px; color:white; font-size:0.8rem;">${trade.direction}</span></td>
-                        <td>$${trade.stake}</td>
-                        <td>${trade.entry_price.toFixed(2)}</td>
-                        <td>${trade.status}</td>
-                        <td style="${plClass}; font-weight:600;">${trade.pnl ? '$'+trade.pnl : '-'}</td>
-                    </tr>
-                `;
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
             });
+        });
+
+        // Load positions from Supabase
+        async function loadPositions() {
+            if (!window.obxSupabase) return;
+            
+            try {
+                const { data: { user } } = await window.obxSupabase.auth.getUser();
+                if (!user) return;
+
+                const { data: trades } = await window.obxSupabase
+                    .from('trades')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('status', 'OPEN')
+                    .order('created_at', { ascending: false });
+
+                if (trades && trades.length > 0) {
+                    displayPositions(trades);
+                }
+            } catch (error) {
+                console.error('Error loading positions:', error);
+            }
         }
 
-        loadTrades();
+        function displayPositions(trades) {
+            const content = document.querySelector('.positions-content');
+            content.innerHTML = `
+                <div style="width: 100%; padding: 1rem;">
+                    ${trades.map(trade => `
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 700;">${trade.asset || 'VOL_10'}</span>
+                                <span style="color: ${trade.direction === 'EVEN' ? 'var(--success-green)' : 'var(--danger-red)'}; font-weight: 700;">
+                                    ${trade.direction}
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-gray);">
+                                <span>Stake: $${trade.stake || 10}</span>
+                                <span>Entry: ${trade.entry_price || '0.00'}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Initialize
+        if (typeof window.obxSupabase === 'undefined' && typeof window.supabase !== 'undefined') {
+            window.obxSupabase = window.supabase.createClient(
+                'https://twvwwpywcmjdrocsfhya.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8'
+            );
+        }
+
+        loadPositions();
     </script>
 </body>
 </html>
