@@ -180,18 +180,22 @@
         
         .digit-row { display: flex; justify-content: space-between; padding: 8px 16px 12px; gap: 2px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin: 0 16px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
-        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: box-shadow 0.3s; }
-        .circle-container.win { box-shadow: 0 0 0 2px var(--success-green); }
-        .circle-container.loss { box-shadow: 0 0 0 2px var(--danger-red); }
+        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .circle-container.win { background: var(--success-green); }
+        .circle-container.win .digit-num { color: white; }
+        .circle-container.loss .prog-circle-loss { stroke: var(--danger-red); stroke-width: 3; }
         .digit-num { position: absolute; font-weight: 800; font-size: 0.8rem; color: var(--text-white); z-index: 2; }
         .digit-pct { font-size: 0.55rem; color: var(--text-gray); font-weight: 500; }
-        .digit-arrow { display: none; color: #f59e0b; font-size: 14px; margin-top: -4px; font-weight: bold; }
+        .digit-arrow { display: none; color: var(--success-green); font-size: 14px; margin-top: -4px; font-weight: bold; }
+        .digit-arrow.show { display: block; }
         
         .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-trade { border: none; padding: 14px 10px; border-radius: 14px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; }
+        .btn-trade { border: none; padding: 14px 10px; border-radius: 14px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; min-height: 60px; justify-content: center; }
         .btn-even { background: var(--success-green); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
         .btn-odd { background: var(--danger-red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
-        .btn-stop { background: #f59e0b !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important; grid-column: span 2; }
+        .btn-stop { background: #f59e0b !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important; }
+        .btn-grayed { background: #4a5568 !important; box-shadow: none !important; opacity: 0.6; pointer-events: none; }
+        .btn-starting { background: #4a5568 !important; box-shadow: none !important; pointer-events: none; }
         .payout-info { font-size: 0.6rem; font-weight: 500; opacity: 0.9; }
         .current-price-lg { font-size: 1.3rem; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
         .asset-name { font-size: 0.85rem; font-weight: 700; }
@@ -493,7 +497,7 @@
         }
 
         /* =========================================
-           NEW: APP DOWNLOAD BANNER STYLES (PalOption Style)
+           APP DOWNLOAD BANNER STYLES (PalOption Style)
            ========================================= */
         .app-download-banner {
             position: fixed;
@@ -757,10 +761,46 @@
             height: 14px;
             color: var(--primary-purple);
         }
+
+        /* =========================================
+           SPINNER ANIMATION
+           ========================================= */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        .btn-starting-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* =========================================
+           ADVANCED SETTINGS VISIBILITY
+           ========================================= */
+        .advanced-settings {
+            display: none;
+            margin-bottom: 12px;
+        }
+        .advanced-settings.show {
+            display: flex;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
-    <!-- ✅ NEW: APP DOWNLOAD BANNER (PalOption Style) -->
+    <!-- APP DOWNLOAD BANNER (PalOption Style) -->
     <div class="app-download-banner" id="appDownloadBanner">
         <div class="app-banner-content">
             <div class="app-banner-icon">
@@ -871,7 +911,7 @@
             <div class="p-logo">P</div>
         </div>
         <div class="header-right">
-            <!-- ✅ ACCOUNT SWITCHER -->
+            <!-- ACCOUNT SWITCHER -->
             <div class="account-switcher" onclick="toggleAccountDropdown(event)">
                 <div class="account-icon" id="accountIcon">R</div>
                 <div class="account-balance" id="accountBalance">$0.00</div>
@@ -900,14 +940,14 @@
                 </div>
             </div>
             
-            <!-- ✅ Sound Toggle Button -->
+            <!-- Sound Toggle Button -->
             <button id="sound-toggle-btn" class="icon-btn sound-btn" onclick="toggleSound()" title="Toggle Sound">
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
             
             <a href="deposit.html" class="deposit-btn">Deposit</a>
             
-            <!-- ✅ Notification Bell & Dropdown -->
+            <!-- Notification Bell & Dropdown -->
             <div class="notif-wrapper">
                 <button id="notif-btn" class="icon-btn bell-icon" onclick="toggleNotifications(event)">
                     <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -1019,20 +1059,20 @@
             <button class="qs-btn" onclick="setStake(50)">$50</button><button class="qs-btn" onclick="setStake(100)">$100</button>
         </div>
 
-        <!-- ✅ NEW: Advanced Trading Settings (Side-by-Side like PalOption) -->
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <!-- Advanced Trading Settings (Side-by-Side like PalOption) - Only visible in AUTO mode -->
+        <div class="advanced-settings" id="advancedSettings">
             <div class="stake-box" style="flex: 1; padding: 8px 4px;">
-                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px;">TARGET PROFIT</div>
+                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: var(--success-green);">TARGET PROFIT</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">$</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="200" id="targetProfitInput">
             </div>
             <div class="stake-box" style="flex: 1; padding: 8px 4px;">
-                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px;">STOP LOSS</div>
+                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: var(--danger-red);">STOP LOSS</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">$</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="999" id="stopLossInput">
             </div>
             <div class="stake-box" style="flex: 1; padding: 8px 4px;">
-                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px;">MULTIPLIER</div>
+                <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: #f59e0b;">MULTIPLIER</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">x</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="2" id="multiplierInput">
             </div>
@@ -1061,7 +1101,7 @@
         <a href="positions.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>Positions</a>
     </nav>
 
-    <!-- ✅ Notification Details Modal -->
+    <!-- Notification Details Modal -->
     <div class="notif-modal-overlay" id="notif-modal-overlay" onclick="closeNotifModal()">
         <div class="notif-modal" onclick="event.stopPropagation()">
             <div class="notif-modal-header">
@@ -1077,7 +1117,7 @@
         </div>
     </div>
 
-    <!-- ✅ INSUFFICIENT BALANCE MODAL -->
+    <!-- INSUFFICIENT BALANCE MODAL -->
     <div class="insufficient-modal-overlay" id="insufficientModal" onclick="closeInsufficientModal(event)">
         <div class="insufficient-modal" onclick="event.stopPropagation()">
             <div class="insufficient-header">
@@ -1160,7 +1200,7 @@
 
     <script>
         // ==========================================
-        // ✅ APP DOWNLOAD BANNER FUNCTIONS
+        // APP DOWNLOAD BANNER FUNCTIONS
         // ==========================================
         function closeAppBanner() {
             const banner = document.getElementById('appDownloadBanner');
@@ -1183,7 +1223,7 @@
         window.addEventListener('load', showAppBanner);
 
         // ==========================================
-        // ✅ INSUFFICIENT BALANCE MODAL FUNCTIONS
+        // INSUFFICIENT BALANCE MODAL FUNCTIONS
         // ==========================================
         function checkBalanceAndTrade(direction) {
             if (currentAccount === 'real' && realBalance <= 0) {
@@ -1211,7 +1251,7 @@
         }
 
         // ==========================================
-        // ✅ ACCOUNT SWITCHER SYSTEM
+        // ACCOUNT SWITCHER SYSTEM
         // ==========================================
         let currentAccount = localStorage.getItem('obx_account_mode') || 'demo';
         let realBalance = 0.00;
@@ -1292,7 +1332,7 @@
         });
 
         // ==========================================
-        // ✅ LUXURY CORPORATE AMBIENT SOUND SYSTEM
+        // LUXURY CORPORATE AMBIENT SOUND SYSTEM
         // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
         let audioContext = null;
@@ -1392,7 +1432,7 @@
         }
 
         // ==========================================
-        // ✅ NOTIFICATION SYSTEM
+        // NOTIFICATION SYSTEM
         // ==========================================
         const defaultNotifications = [
             { id: 1, title: "Deposit Successful", time: "2 mins ago", shortDesc: "Your deposit of $500.00 via USDT (ERC20) has been credited.", fullDetails: "Transaction ID: 0x8a7b...3f2e\nAmount: $500.00\nMethod: USDT (ERC20)\nStatus: Completed\nTime: " + new Date().toLocaleString() },
@@ -1479,7 +1519,7 @@
         });
 
         // ==========================================
-        // ✅ EXISTING DASHBOARD LOGIC (Unchanged)
+        // EXISTING DASHBOARD LOGIC (Unchanged)
         // ==========================================
         const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
@@ -1555,6 +1595,7 @@
             updateSoundIcon();
             updateNotifDot();
             updateAccountDisplay();
+            updateAdvancedSettingsVisibility();
         })();
 
         const digitCounts = new Array(10).fill(0);
@@ -1572,7 +1613,7 @@
                         <div class="circle-container" id="circle-${i}">
                             <svg width="32" height="32" viewBox="0 0 32 32">
                                 <circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/>
-                                <circle id="prog-${i}" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
+                                <circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
                             </svg>
                             <div class="digit-num">${i}</div>
                         </div>
@@ -1582,7 +1623,7 @@
             }
         }
 
-        function updateDigitStats(price, isWin = undefined) {
+        function updateDigitStats(price, isWin = undefined, winDigit = -1) {
             const lastDigit = Math.floor(price) % 10;
             digitCounts[lastDigit]++;
             totalDigits++;
@@ -1601,12 +1642,16 @@
                 }
                 if(circleContainer) {
                     circleContainer.classList.remove('win', 'loss');
-                    if (i === lastDigit && isWin !== undefined) {
+                    if (isWin !== undefined && i === winDigit) {
                         circleContainer.classList.add(isWin ? 'win' : 'loss');
                     }
                 }
                 if(arrowEl) {
-                    arrowEl.style.display = (i === lastDigit) ? 'block' : 'none';
+                    if (isWin !== undefined && i === winDigit && isWin) {
+                        arrowEl.classList.add('show');
+                    } else {
+                        arrowEl.classList.remove('show');
+                    }
                 }
             }
         }
@@ -1764,7 +1809,7 @@
 
         let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
         
-        // ✅ NEW: Trading State
+        // Trading State
         let isTrading = false;
         let isAutoMode = true;
         let currentTradeDirection = null;
@@ -1784,23 +1829,44 @@
             if (!isAutoMode && isTrading) {
                 stopAutoTrade();
             }
+            updateAdvancedSettingsVisibility();
+        }
+
+        function updateAdvancedSettingsVisibility() {
+            const advancedSettings = document.getElementById('advancedSettings');
+            if (advancedSettings) {
+                if (isAutoMode) {
+                    advancedSettings.classList.add('show');
+                } else {
+                    advancedSettings.classList.remove('show');
+                }
+            }
         }
 
         function startTrade(direction) {
+            if (isTrading) return;
             isTrading = true;
             currentTradeDirection = direction;
             
             const btnEven = document.getElementById('btnEven');
             const btnOdd = document.getElementById('btnOdd');
+            const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
+            
+            // Deduct stake from balance immediately
+            if (currentAccount === 'demo') {
+                demoBalance -= stake;
+                localStorage.setItem('obx_demo_balance', demoBalance);
+                updateAccountDisplay();
+            }
             
             if (direction === 'EVEN') {
-                btnEven.innerHTML = '<span class="btn-text">Starting...</span>';
-                btnOdd.style.opacity = '0.5';
-                btnOdd.style.pointerEvents = 'none';
+                btnEven.className = 'btn-trade btn-starting';
+                btnEven.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
+                btnOdd.className = 'btn-trade btn-grayed';
             } else {
-                btnOdd.innerHTML = '<span class="btn-text">Starting...</span>';
-                btnEven.style.opacity = '0.5';
-                btnEven.style.pointerEvents = 'none';
+                btnOdd.className = 'btn-trade btn-starting';
+                btnOdd.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
+                btnEven.className = 'btn-trade btn-grayed';
             }
 
             setTimeout(() => {
@@ -1811,20 +1877,35 @@
         function executeTrade(direction) {
             const won = Math.random() > 0.5;
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
+            const lastDigit = Math.floor(currentPrice) % 10;
+            const isEven = lastDigit % 2 === 0;
+            const actualWin = (direction === 'EVEN' && isEven) || (direction === 'ODD' && !isEven);
             
-            if (won) {
+            // Use actualWin for realistic trading
+            const tradeWon = actualWin;
+            const winDigit = lastDigit;
+            
+            if (tradeWon) {
                 stats.wins++;
-                stats.pnl += stake * 0.952;
+                const payout = stake * 0.952;
+                stats.pnl += payout;
+                // Add payout back to balance (stake was already deducted)
+                if (currentAccount === 'demo') {
+                    demoBalance += stake + payout;
+                    localStorage.setItem('obx_demo_balance', demoBalance);
+                    updateAccountDisplay();
+                }
                 playWinSound();
             } else {
                 stats.losses++;
                 stats.pnl -= stake;
+                // Stake already deducted, no need to deduct again
                 playLossSound();
             }
             stats.total++;
             
             updateLiveStats();
-            updateDigitStats(currentPrice, won);
+            updateDigitStats(currentPrice, tradeWon, winDigit);
 
             if (isAutoMode) {
                 const targetProfit = parseFloat(document.getElementById('targetProfitInput').value) || 999999;
@@ -1837,14 +1918,14 @@
                 
                 const activeBtn = direction === 'EVEN' ? document.getElementById('btnEven') : document.getElementById('btnOdd');
                 activeBtn.className = 'btn-trade btn-stop';
-                activeBtn.innerHTML = '<span class="btn-text">STOP</span>';
+                activeBtn.innerHTML = '<span class="btn-text">■ STOP</span>';
                 activeBtn.style.pointerEvents = 'auto';
-                activeBtn.style.opacity = '1';
                 activeBtn.onclick = stopAutoTrade;
                 
                 setTimeout(() => {
                     if (isTrading) {
-                        activeBtn.innerHTML = '<span class="btn-text">Starting...</span>';
+                        activeBtn.className = 'btn-trade btn-starting';
+                        activeBtn.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
                         setTimeout(() => executeTrade(direction), 1000);
                     }
                 }, 1500);
@@ -1865,13 +1946,11 @@
             
             btnEven.className = 'btn-trade btn-even';
             btnEven.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
-            btnEven.style.opacity = '1';
             btnEven.style.pointerEvents = 'auto';
             btnEven.onclick = () => checkBalanceAndTrade('EVEN');
             
             btnOdd.className = 'btn-trade btn-odd';
             btnOdd.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
-            btnOdd.style.opacity = '1';
             btnOdd.style.pointerEvents = 'auto';
             btnOdd.onclick = () => checkBalanceAndTrade('ODD');
         }
@@ -1923,9 +2002,6 @@
                     user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN'
                 });
                 if(error) console.error(error);
-                else {
-                    // Stats are now handled in executeTrade for the UI demo
-                }
             } catch(e) { console.error("Trade error:", e); }
         }
     </script>
