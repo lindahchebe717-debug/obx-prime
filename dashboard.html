@@ -61,6 +61,65 @@
 
         body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
 
+        /* =========================================
+           HEADER STYLES (PalOption Perfect Alignment)
+           ========================================= */
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: top 0.3s ease;
+        }
+        
+        body.has-app-banner .top-header {
+            top: 64px; /* Push down exactly by banner height to prevent overlap */
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .deposit-btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+            padding: 6px 12px;
+            background: var(--primary-purple);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+        .deposit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .notif-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
         /* Chart Styles */
         #chartCanvas { width: 100%; height: 100%; display: block; }
         .chart-wrapper { 
@@ -82,10 +141,20 @@
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
         /* Keep all your existing styles */
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .icon-btn { 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            padding: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: opacity 0.2s;
+            flex-shrink: 0; /* CRITICAL: Prevents icon squishing */
+        }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
-        .p-logo { width: 32px; height: 32px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-left: 8px; }
+        .p-logo { width: 32px; height: 32px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-left: 8px; flex-shrink: 0; }
         .bell-icon { position: relative; }
         .bell-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
         .sound-btn svg { stroke: var(--primary-purple); }
@@ -257,7 +326,6 @@
         .notif-desc { font-size: 0.75rem; color: var(--text-gray); line-height: 1.4; }
         .notif-empty { padding: 24px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
         
-        /* ✅ NEW: Close button at bottom */
         .notif-close-btn {
             width: 100%; padding: 12px; background: rgba(124, 58, 237, 0.1);
             border: none; border-top: 1px solid var(--border-color);
@@ -295,13 +363,15 @@
             position: relative;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
-            padding: 6px 12px;
+            padding: 6px 10px;
             background: var(--bg-card);
             border-radius: 8px;
             border: 1px solid var(--border-color);
             transition: all 0.2s;
+            flex-shrink: 0; /* CRITICAL: Prevents squishing */
+            white-space: nowrap; /* CRITICAL: Prevents text wrapping */
         }
         .account-switcher:hover {
             background: rgba(124, 58, 237, 0.1);
@@ -511,10 +581,6 @@
             height: 16px;
             color: white;
         }
-        /* Adjust main content to account for banner */
-        body.has-app-banner .top-header {
-            margin-top: 64px;
-        }
     </style>
 </head>
 <body>
@@ -620,16 +686,20 @@
         <div class="menu-footer" id="menuFooter">OBX PRIME</div>
     </nav>
 
-    <!-- Top Header -->
-    <header class="top-header" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <button class="icon-btn menu-icon" onclick="openMenu()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <div class="p-logo">P</div>
-        <div style="display:flex; align-items:center; gap:8px;">
+    <!-- Top Header (Refactored for Perfect Alignment) -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="icon-btn menu-icon" onclick="openMenu()">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="p-logo">P</div>
+        </div>
+        <div class="header-right">
             <!-- ✅ ACCOUNT SWITCHER -->
             <div class="account-switcher" onclick="toggleAccountDropdown(event)">
                 <div class="account-icon" id="accountIcon">R</div>
                 <div class="account-balance" id="accountBalance">$0.00</div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;"><path d="m6 9 6 6 6-6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;"><path d="m6 9 6 6 6-6"/></svg>
                 
                 <!-- Account Dropdown -->
                 <div class="account-dropdown" id="accountDropdown">
@@ -659,10 +729,10 @@
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
             
-            <a href="deposit.html" style="padding:6px 14px; background:var(--primary-purple); color:white; border-radius:8px; font-size:0.8rem; font-weight:700; text-decoration:none;">Deposit</a>
+            <a href="deposit.html" class="deposit-btn">Deposit</a>
             
             <!-- ✅ Notification Bell & Dropdown -->
-            <div style="position: relative;">
+            <div class="notif-wrapper">
                 <button id="notif-btn" class="icon-btn bell-icon" onclick="toggleNotifications(event)">
                     <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     <div class="bell-dot" id="notif-dot"></div>
@@ -674,7 +744,6 @@
                         <button onclick="clearNotifications(event)" style="font-size: 0.75rem; color: var(--primary-purple); background: none; border: none; cursor: pointer; font-weight: 600;">Clear all</button>
                     </div>
                     <div id="notif-list"></div>
-                    <!-- ✅ NEW: Close button at bottom -->
                     <button class="notif-close-btn" onclick="closeNotifications(event)">Close</button>
                 </div>
             </div>
@@ -820,20 +889,14 @@
         }
 
         function showAppBanner() {
-            // Check if user has already closed the banner
             const isClosed = localStorage.getItem('obx_app_banner_closed');
             if (!isClosed || isClosed !== 'true') {
                 document.body.classList.add('has-app-banner');
             } else {
-                // Hide banner if already closed
                 const banner = document.getElementById('appDownloadBanner');
-                if (banner) {
-                    banner.style.display = 'none';
-                }
+                if (banner) banner.style.display = 'none';
             }
         }
-
-        // Show banner on page load
         window.addEventListener('load', showAppBanner);
 
         // ==========================================
@@ -909,7 +972,6 @@
             }
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('accountDropdown');
             const switcher = event.target.closest('.account-switcher');
@@ -930,62 +992,42 @@
             isMuted = !isMuted;
             localStorage.setItem('obx_sound_muted', isMuted);
             updateSoundIcon();
-            
-            if (!isMuted) {
-                startBackgroundMusic();
-            } else {
-                stopBackgroundMusic();
-            }
+            if (!isMuted) startBackgroundMusic();
+            else stopBackgroundMusic();
         }
 
         function startBackgroundMusic() {
             try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                
-                // Master volume (very soft, subtle, and luxurious)
+                if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 masterGainNode = audioContext.createGain();
                 masterGainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                masterGainNode.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 3); // Slow, smooth 3-second fade-in
+                masterGainNode.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 3);
                 masterGainNode.connect(audioContext.destination);
 
-                // Luxury Corporate Ambient Chord: C Major 7 (C4, E4, G4, B4)
-                // This creates a warm, professional, and upscale atmosphere (no sad/minor tones)
                 const notes = [
-                    { freq: 261.63, type: 'sine', gain: 0.5 },      // C4 (Root)
-                    { freq: 329.63, type: 'sine', gain: 0.4 },      // E4 (Major 3rd - warm)
-                    { freq: 392.00, type: 'triangle', gain: 0.2 },  // G4 (Perfect 5th - subtle body)
-                    { freq: 493.88, type: 'sine', gain: 0.3 }       // B4 (Major 7th - luxurious feel)
+                    { freq: 261.63, type: 'sine', gain: 0.5 },
+                    { freq: 329.63, type: 'sine', gain: 0.4 },
+                    { freq: 392.00, type: 'triangle', gain: 0.2 },
+                    { freq: 493.88, type: 'sine', gain: 0.3 }
                 ];
 
                 notes.forEach(note => {
                     const osc = audioContext.createOscillator();
                     const gain = audioContext.createGain();
-                    
                     osc.type = note.type;
                     osc.frequency.setValueAtTime(note.freq, audioContext.currentTime);
-                    
-                    // Smooth envelope for each note to prevent any "clicking" and sound like a real high-end ambient pad
                     gain.gain.setValueAtTime(0, audioContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(note.gain, audioContext.currentTime + 2); // 2 second soft attack
-                    
+                    gain.gain.linearRampToValueAtTime(note.gain, audioContext.currentTime + 2);
                     osc.connect(gain);
                     gain.connect(masterGainNode);
                     osc.start();
-                    
                     oscillators.push({ osc, gain });
                 });
-                
-                console.log('Luxury corporate ambient music started');
-            } catch (e) {
-                console.error('Error starting music:', e);
-            }
+            } catch (e) { console.error('Error starting music:', e); }
         }
 
         function stopBackgroundMusic() {
             if (oscillators.length > 0) {
-                // Smooth 1-second fade out
                 const currentTime = audioContext.currentTime;
                 oscillators.forEach(({ osc, gain }) => {
                     try {
@@ -995,14 +1037,10 @@
                         osc.stop(currentTime + 1.1);
                     } catch(e) {}
                 });
-                setTimeout(() => {
-                    oscillators = [];
-                }, 1200);
+                setTimeout(() => { oscillators = []; }, 1200);
             }
             if (masterGainNode) {
-                try {
-                    masterGainNode.disconnect();
-                } catch(e) {}
+                try { masterGainNode.disconnect(); } catch(e) {}
                 masterGainNode = null;
             }
         }
@@ -1023,8 +1061,6 @@
         function playUiSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Pleasant two-note "chime" instead of a single beep
                 const playNote = (freq, startTime, duration) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1038,10 +1074,9 @@
                     osc.start(startTime);
                     osc.stop(startTime + duration);
                 };
-
                 const now = ctx.currentTime;
-                playNote(523.25, now, 0.3);       // C5
-                playNote(659.25, now + 0.1, 0.4);  // E5 (slightly delayed for a "ding" effect)
+                playNote(523.25, now, 0.3);
+                playNote(659.25, now + 0.1, 0.4);
             } catch (e) {}
         }
 
@@ -1049,20 +1084,8 @@
         // ✅ NOTIFICATION SYSTEM
         // ==========================================
         const defaultNotifications = [
-            {
-                id: 1,
-                title: "Deposit Successful",
-                time: "2 mins ago",
-                shortDesc: "Your deposit of $500.00 via USDT (ERC20) has been credited.",
-                fullDetails: "Transaction ID: 0x8a7b...3f2e\nAmount: $500.00\nMethod: USDT (ERC20)\nStatus: Completed\nTime: " + new Date().toLocaleString()
-            },
-            {
-                id: 2,
-                title: "Welcome to OBX PRIME",
-                time: "1 day ago",
-                shortDesc: "Start trading synthetic indices with up to 95.2% payouts!",
-                fullDetails: "Welcome to OBX PRIME! Explore our Even/Odd, Over/Under, and Matches/Differs markets. Don't forget to check out the Refer & Earn program to earn 10% commission."
-            }
+            { id: 1, title: "Deposit Successful", time: "2 mins ago", shortDesc: "Your deposit of $500.00 via USDT (ERC20) has been credited.", fullDetails: "Transaction ID: 0x8a7b...3f2e\nAmount: $500.00\nMethod: USDT (ERC20)\nStatus: Completed\nTime: " + new Date().toLocaleString() },
+            { id: 2, title: "Welcome to OBX PRIME", time: "1 day ago", shortDesc: "Start trading synthetic indices with up to 95.2% payouts!", fullDetails: "Welcome to OBX PRIME! Explore our Even/Odd, Over/Under, and Matches/Differs markets. Don't forget to check out the Refer & Earn program to earn 10% commission." }
         ];
 
         function getNotifications() {
@@ -1113,7 +1136,6 @@
                 document.getElementById('modal-title').innerText = notif.title;
                 document.getElementById('modal-body').innerText = notif.fullDetails;
                 document.getElementById('notif-modal-overlay').classList.add('show');
-                // Remove from list after viewing
                 saveNotifications(notifs.filter(n => n.id !== id));
                 renderNotifications();
             }
@@ -1129,14 +1151,12 @@
             renderNotifications();
         }
 
-        // ✅ NEW: Close notifications dropdown
         function closeNotifications(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('notif-dropdown');
             dropdown.classList.remove('show');
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('notif-dropdown');
             const btn = document.getElementById('notif-btn');
@@ -1222,8 +1242,8 @@
                 if(toggle) toggle.classList.remove('active');
             }
             updateSoundIcon();
-            updateNotifDot(); // Initialize notification dot
-            updateAccountDisplay(); // Initialize account display
+            updateNotifDot();
+            updateAccountDisplay();
         })();
 
         const digitCounts = new Array(10).fill(0);
