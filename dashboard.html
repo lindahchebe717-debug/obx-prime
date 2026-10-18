@@ -483,7 +483,7 @@
 
     <script>
         // ==========================================
-        // TRADING STATE (Declared at top to prevent ReferenceError)
+        // TRADING STATE
         // ==========================================
         let isTrading = false;
         let isAutoMode = true;
@@ -838,8 +838,8 @@
         function updateAdvancedSettingsVisibility() {
             const advancedSettings = document.getElementById('advancedSettings');
             if (advancedSettings) {
-                if (isAutoMode) { advancedSettings.classList.add('show'); } 
-                else { advancedSettings.classList.remove('show'); }
+                // ✅ FIX 1: Always show in both AUTO and MANUAL modes as requested
+                advancedSettings.classList.add('show');
             }
         }
 
@@ -913,6 +913,9 @@
                     }
                 }, 1500);
             } else {
+                // ✅ FIX 2: Reset trading state in MANUAL mode so user can trade again immediately
+                isTrading = false;
+                currentTradeDirection = null;
                 resetTradeButtons();
             }
         }
