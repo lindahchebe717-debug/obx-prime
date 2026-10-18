@@ -412,9 +412,131 @@
             width: 16px;
             height: 16px;
         }
+
+        /* =========================================
+           NEW: APP DOWNLOAD BANNER STYLES (PalOption Style)
+           ========================================= */
+        .app-download-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: slideDownBanner 0.3s ease-out;
+        }
+        @keyframes slideDownBanner {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .app-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .app-banner-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .app-banner-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+        .app-banner-text {
+            flex: 1;
+        }
+        .app-banner-title {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .app-banner-subtitle {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+        .app-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-banner-download {
+            background: white;
+            color: #7c3aed;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .app-banner-download:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .app-banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .app-banner-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .app-banner-close svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+        /* Adjust main content to account for banner */
+        body.has-app-banner .top-header {
+            margin-top: 64px;
+        }
     </style>
 </head>
 <body>
+    <!-- ✅ NEW: APP DOWNLOAD BANNER (PalOption Style) -->
+    <div class="app-download-banner" id="appDownloadBanner">
+        <div class="app-banner-content">
+            <div class="app-banner-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </div>
+            <div class="app-banner-text">
+                <div class="app-banner-title">Get the OBX PRIME App</div>
+                <div class="app-banner-subtitle">Get a better trading experience</div>
+            </div>
+        </div>
+        <div class="app-banner-actions">
+            <a href="download.html" class="app-banner-download">Download</a>
+            <button class="app-banner-close" onclick="closeAppBanner()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+
     <!-- Menu Overlay & Drawer -->
     <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
     
@@ -685,6 +807,35 @@
     </div>
 
     <script>
+        // ==========================================
+        // ✅ APP DOWNLOAD BANNER FUNCTIONS
+        // ==========================================
+        function closeAppBanner() {
+            const banner = document.getElementById('appDownloadBanner');
+            if (banner) {
+                banner.style.display = 'none';
+                document.body.classList.remove('has-app-banner');
+                localStorage.setItem('obx_app_banner_closed', 'true');
+            }
+        }
+
+        function showAppBanner() {
+            // Check if user has already closed the banner
+            const isClosed = localStorage.getItem('obx_app_banner_closed');
+            if (!isClosed || isClosed !== 'true') {
+                document.body.classList.add('has-app-banner');
+            } else {
+                // Hide banner if already closed
+                const banner = document.getElementById('appDownloadBanner');
+                if (banner) {
+                    banner.style.display = 'none';
+                }
+            }
+        }
+
+        // Show banner on page load
+        window.addEventListener('load', showAppBanner);
+
         // ==========================================
         // ✅ ACCOUNT SWITCHER SYSTEM
         // ==========================================
