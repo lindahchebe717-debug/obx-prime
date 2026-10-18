@@ -868,7 +868,12 @@
             setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
-        function executeTrade(direction) {
+        // ✅ FIXED: Made this async and added await placeTrade(direction) so it actually saves to Supabase!
+        async function executeTrade(direction) {
+            // 1. Save the trade to the database first
+            await placeTrade(direction);
+
+            // 2. Continue with local simulation
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             const lastDigit = Math.floor(currentPrice) % 10;
             const isEven = lastDigit % 2 === 0;
@@ -987,9 +992,9 @@
                     stake: stake, 
                     entry_price: entryPrice, 
                     status: 'OPEN',
-                    account_type: currentAccount // ✅ ADDED THIS LINE TO FILTER BY ACCOUNT TYPE
+                    account_type: currentAccount // ✅ This ensures it saves with the correct account type
                 });
-                if(error) console.error(error);
+                if(error) console.error("Supabase insert error:", error);
             } catch(e) { console.error("Trade error:", e); }
         }
     </script>
