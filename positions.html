@@ -484,7 +484,7 @@
             });
         });
 
-        // Load positions from Supabase
+        // Load positions from Supabase (Updated to filter by account type)
         async function loadPositions() {
             if (!window.obxSupabase) return;
             
@@ -492,41 +492,59 @@
                 const { data: { user } } = await window.obxSupabase.auth.getUser();
                 if (!user) return;
 
-                const { data: trades } = await window.obxSupabase
+                // Get the current account mode from localStorage (defaults to 'demo')
+                const currentAccount = localStorage.getItem('obx_account_mode') || 'demo';
+
+                const { data: trades, error } = await window.obxSupabase
                     .from('trades')
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('status', 'OPEN')
+                    .eq('account_type', currentAccount) // Filters by Real or Demo
                     .order('created_at', { ascending: false });
 
+                if (error) {
+                    console.error('Error loading positions:', error);
+                    return;
+                }
+
+                const content = document.querySelector('.positions-content');
+                
                 if (trades && trades.length > 0) {
-                    displayPositions(trades);
+                    content.innerHTML = `
+                        <div style="width: 100%; padding: 1rem;">
+                            ${trades.map(trade => `
+                                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <span style="font-weight: 700;">${trade.asset || 'VOL_10'}</span>
+                                        <span style="color: ${trade.direction === 'EVEN' ? 'var(--success-green)' : 'var(--danger-red)'}; font-weight: 700;">
+                                            ${trade.direction}
+                                        </span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-gray);">
+                                        <span>Stake: $${trade.stake || 10}</span>
+                                        <span>Entry: ${trade.entry_price || '0.00'}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    // Show empty state if no matching trades are found
+                    content.innerHTML = `
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <h2 class="empty-title">No open positions</h2>
+                        <p class="empty-subtitle">Your active trades will appear here</p>
+                    `;
                 }
             } catch (error) {
                 console.error('Error loading positions:', error);
             }
-        }
-
-        function displayPositions(trades) {
-            const content = document.querySelector('.positions-content');
-            content.innerHTML = `
-                <div style="width: 100%; padding: 1rem;">
-                    ${trades.map(trade => `
-                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span style="font-weight: 700;">${trade.asset || 'VOL_10'}</span>
-                                <span style="color: ${trade.direction === 'EVEN' ? 'var(--success-green)' : 'var(--danger-red)'}; font-weight: 700;">
-                                    ${trade.direction}
-                                </span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-gray);">
-                                <span>Stake: $${trade.stake || 10}</span>
-                                <span>Entry: ${trade.entry_price || '0.00'}</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
         }
 
         // Initialize
