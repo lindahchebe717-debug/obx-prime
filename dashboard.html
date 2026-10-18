@@ -8,9 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* =========================================
-           CSS VARIABLES - LIGHT THEME (DEFAULT)
-           ========================================= */
         :root {
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
@@ -22,9 +19,6 @@
             --border-color: rgba(0, 0, 0, 0.08);
         }
 
-        /* =========================================
-           DARK THEME OVERRIDES
-           ========================================= */
         body.dark-theme {
             --bg-main: #141021;
             --bg-card: #1e1b4b;
@@ -32,128 +26,29 @@
             --text-gray: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.1);
         }
-        body.dark-theme .digit-row,
-        body.dark-theme .qs-btn,
-        body.dark-theme .live-stats-bar,
-        body.dark-theme .mode-toggle,
-        body.dark-theme .asset-tab,
-        body.dark-theme .stake-box,
-        body.dark-theme .volatility-dropdown,
-        body.dark-theme .chart-wrapper,
-        body.dark-theme .notif-dropdown,
-        body.dark-theme .notif-modal,
-        body.dark-theme .account-dropdown,
-        body.dark-theme .insufficient-modal {
-            box-shadow: none !important;
-        }
-        body.dark-theme .volatility-item,
-        body.dark-theme .notif-item,
-        body.dark-theme .account-option,
-        body.dark-theme .payment-method {
-            border-bottom-color: rgba(255, 255, 255, 0.05);
-        }
-        body.dark-theme .volatility-item:hover,
-        body.dark-theme .notif-item:hover,
-        body.dark-theme .account-option:hover,
-        body.dark-theme .payment-method:hover {
-            background: rgba(124, 58, 237, 0.15);
-        }
-        body.dark-theme .volatility-item.active {
-            background: rgba(124, 58, 237, 0.25);
-        }
+        body.dark-theme .digit-row, body.dark-theme .qs-btn, body.dark-theme .live-stats-bar, body.dark-theme .mode-toggle, body.dark-theme .asset-tab, body.dark-theme .stake-box, body.dark-theme .volatility-dropdown, body.dark-theme .chart-wrapper, body.dark-theme .notif-dropdown, body.dark-theme .notif-modal, body.dark-theme .account-dropdown, body.dark-theme .insufficient-modal { box-shadow: none !important; }
+        body.dark-theme .volatility-item, body.dark-theme .notif-item, body.dark-theme .account-option, body.dark-theme .payment-method { border-bottom-color: rgba(255, 255, 255, 0.05); }
+        body.dark-theme .volatility-item:hover, body.dark-theme .notif-item:hover, body.dark-theme .account-option:hover, body.dark-theme .payment-method:hover { background: rgba(124, 58, 237, 0.15); }
+        body.dark-theme .volatility-item.active { background: rgba(124, 58, 237, 0.25); }
 
         body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
 
-        /* =========================================
-           HEADER STYLES (PalOption Perfect Alignment)
-           ========================================= */
-        .top-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 12px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: top 0.3s ease;
-        }
-        
-        body.has-app-banner .top-header {
-            top: 64px;
-        }
+        .top-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: top 0.3s ease; }
+        body.has-app-banner .top-header { top: 64px; }
+        .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .deposit-btn { flex-shrink: 0; white-space: nowrap; padding: 6px 12px; background: var(--primary-purple); color: white; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .deposit-btn:hover { opacity: 0.9; }
+        .notif-wrapper { position: relative; flex-shrink: 0; }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .deposit-btn {
-            flex-shrink: 0;
-            white-space: nowrap;
-            padding: 6px 12px;
-            background: var(--primary-purple);
-            color: white;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.2s;
-        }
-        .deposit-btn:hover {
-            opacity: 0.9;
-        }
-
-        .notif-wrapper {
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        /* Chart Styles */
         #chartCanvas { width: 100%; height: 100%; display: block; }
-        .chart-wrapper { 
-            position: relative; 
-            height: 280px;
-            padding: 0 16px; 
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin: 12px 16px;
-            overflow: hidden; 
-            flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: background 0.3s, border-color 0.3s;
-        }
+        .chart-wrapper { position: relative; height: 280px; padding: 0 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin: 12px 16px; overflow: hidden; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
         .axis-labels-right { position: absolute; right: 16px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 50px; }
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        .icon-btn { 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            padding: 8px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: opacity 0.2s;
-            flex-shrink: 0;
-        }
+        .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; flex-shrink: 0; }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
         .p-logo { width: 32px; height: 32px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-left: 8px; flex-shrink: 0; }
@@ -197,119 +92,52 @@
         .btn-grayed { background: #4a5568 !important; box-shadow: none !important; opacity: 0.6; pointer-events: none; }
         .btn-starting { background: #4a5568 !important; box-shadow: none !important; pointer-events: none; }
         .payout-info { font-size: 0.6rem; font-weight: 500; opacity: 0.9; }
-        .current-price-lg { font-size: 1.3rem; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
-        .asset-name { font-size: 0.85rem; font-weight: 700; }
         .mode-toggle { display: flex; background: var(--bg-card); border-radius: 10px; padding: 3px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .mode-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer; background: transparent; color: var(--text-gray); letter-spacing: 0.5px; transition: all 0.2s; }
         .mode-btn.active { background: var(--primary-purple); color: white; }
 
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 60px; 
-            background: var(--bg-card); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; align-items: center; 
-            z-index: 100; padding-bottom: env(safe-area-inset-bottom); 
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; transition: color 0.2s; }
         .nav-item.active { color: var(--primary-purple); }
         .nav-icon { width: 20px; height: 20px; } 
         .ai-icon-wrap { width: 36px; height: 36px; } 
         .ai-icon { width: 18px; height: 18px; }
-
         .controls-panel { padding: 16px; padding-bottom: 90px; background: var(--bg-main); }
         
-        .asset-tabs { 
-            display: flex; gap: 6px; padding: 0 12px 10px; 
-            overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; 
-        }
+        .asset-tabs { display: flex; gap: 6px; padding: 0 12px 10px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; }
         .asset-tabs::-webkit-scrollbar { display: none; }
-        .asset-tab { 
-            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); 
-            padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; 
-            white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 5px;
-            transition: all 0.2s; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-        }
+        .asset-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .asset-tab svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
-        .asset-tab.active { 
-            background: rgba(124, 58, 237, 0.1); border-color: var(--primary-purple);
-            color: var(--primary-purple); font-weight: 600;
-        }
+        .asset-tab.active { background: rgba(124, 58, 237, 0.1); border-color: var(--primary-purple); color: var(--primary-purple); font-weight: 600; }
         .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
 
-        /* Side Menu Styles */
-        .menu-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
-
-        .side-menu {
-            position: fixed; top: 0; left: 0; bottom: 0; width: 85%; max-width: 320px;
-            background: var(--bg-card); z-index: 9999;
-            transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.5);
-        }
+        .side-menu { position: fixed; top: 0; left: 0; bottom: 0; width: 85%; max-width: 320px; background: var(--bg-card); z-index: 9999; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
         .side-menu.show { transform: translateX(0); }
-
-        .menu-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 20px; border-bottom: 1px solid var(--border-color);
-        }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
         .menu-title { font-size: 1.2rem; font-weight: 800; color: var(--text-white); }
         .menu-close { background: none; border: none; color: var(--text-white); cursor: pointer; padding: 4px; }
         .menu-lang { font-size: 0.85rem; font-weight: 700; color: var(--text-white); margin-left: 12px; }
-
-        .menu-profile {
-            display: flex; align-items: center; gap: 12px; padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .profile-avatar {
-            width: 48px; height: 48px; border-radius: 50%; background: var(--primary-purple);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 800; color: white; flex-shrink: 0;
-        }
+        .menu-profile { display: flex; align-items: center; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-purple); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: white; flex-shrink: 0; }
         .profile-info { display: flex; flex-direction: column; gap: 2px; }
         .profile-name { font-size: 1rem; font-weight: 700; color: var(--text-white); }
         .profile-email { font-size: 0.8rem; color: var(--text-gray); }
-
         .menu-list { list-style: none; padding: 8px 0; margin: 0; flex: 1; }
-        .menu-item {
-            display: flex; align-items: center; gap: 14px; padding: 14px 20px;
-            color: var(--text-gray); text-decoration: none; font-size: 0.95rem; font-weight: 500;
-            transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent;
-        }
+        .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: var(--text-gray); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent; }
         .menu-item:hover { background: rgba(124, 58, 237, 0.08); color: var(--text-white); }
         .menu-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; flex-shrink: 0; }
         .menu-item .chevron { margin-left: auto; width: 16px; height: 16px; opacity: 0.5; }
-
-        .menu-item.refer-highlight {
-            background: rgba(124, 58, 237, 0.1); color: var(--primary-purple);
-            border-left-color: var(--primary-purple); font-weight: 700;
-        }
+        .menu-item.refer-highlight { background: rgba(124, 58, 237, 0.1); color: var(--primary-purple); border-left-color: var(--primary-purple); font-weight: 700; }
         .menu-item.refer-highlight svg { stroke: var(--primary-purple); }
-
         .menu-item.theme-row { justify-content: space-between; }
-        .theme-toggle {
-            width: 44px; height: 24px; border-radius: 12px; background: #cbd5e1;
-            position: relative; cursor: pointer; transition: background 0.3s; flex-shrink: 0;
-        }
+        .theme-toggle { width: 44px; height: 24px; border-radius: 12px; background: #cbd5e1; position: relative; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
         .theme-toggle.active { background: var(--primary-purple); }
-        .theme-toggle::after {
-            content: ''; position: absolute; top: 2px; left: 2px;
-            width: 20px; height: 20px; border-radius: 50%; background: white;
-            transition: transform 0.3s;
-        }
+        .theme-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform 0.3s; }
         .theme-toggle.active::after { transform: translateX(20px); }
+        .menu-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-gray); text-align: center; }
 
-        .menu-footer {
-            padding: 16px 20px; border-top: 1px solid var(--border-color);
-            font-size: 0.7rem; color: var(--text-gray); text-align: center;
-        }
-
-        /* Volatility Dropdown */
         .volatility-dropdown { position: absolute; top: 100%; left: 0; margin-top: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); z-index: 100; min-width: 200px; max-height: 320px; overflow-y: auto; display: none; }
         .volatility-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
@@ -320,15 +148,7 @@
         .volatility-item-name { font-size: 11px; font-weight: 600; color: var(--text-white); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .volatility-item-price { font-size: 9px; color: var(--text-gray); }
 
-        /* =========================================
-           NOTIFICATION SYSTEM STYLES
-           ========================================= */
-        .notif-dropdown {
-            position: absolute; top: 100%; right: 0; margin-top: 8px;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            z-index: 100; width: 300px; max-height: 400px; overflow-y: auto; display: none;
-        }
+        .notif-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 100; width: 300px; max-height: 400px; overflow-y: auto; display: none; }
         .notif-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
         .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
         .notif-item:hover { background: rgba(124, 58, 237, 0.05); }
@@ -338,469 +158,94 @@
         .notif-time { font-size: 0.7rem; color: var(--text-gray); }
         .notif-desc { font-size: 0.75rem; color: var(--text-gray); line-height: 1.4; }
         .notif-empty { padding: 24px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
-        
-        .notif-close-btn {
-            width: 100%; padding: 12px; background: rgba(124, 58, 237, 0.1);
-            border: none; border-top: 1px solid var(--border-color);
-            color: var(--primary-purple); font-weight: 600; cursor: pointer;
-            transition: background 0.2s;
-        }
+        .notif-close-btn { width: 100%; padding: 12px; background: rgba(124, 58, 237, 0.1); border: none; border-top: 1px solid var(--border-color); color: var(--primary-purple); font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .notif-close-btn:hover { background: rgba(124, 58, 237, 0.2); }
-
-        .notif-modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .notif-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; align-items: center; justify-content: center; }
         .notif-modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .notif-modal {
-            background: var(--bg-card); border-radius: 16px; width: 90%; max-width: 400px;
-            padding: 24px; box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-            transform: translateY(20px); transition: transform 0.3s ease;
-        }
+        .notif-modal { background: var(--bg-card); border-radius: 16px; width: 90%; max-width: 400px; padding: 24px; box-shadow: 0 12px 32px rgba(0,0,0,0.3); transform: translateY(20px); transition: transform 0.3s ease; }
         .notif-modal-overlay.show .notif-modal { transform: translateY(0); }
         .notif-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .notif-modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-white); }
         .notif-modal-close { background: none; border: none; color: var(--text-gray); cursor: pointer; }
         .notif-modal-body { color: var(--text-gray); font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
         .notif-modal-footer { margin-top: 20px; text-align: right; }
-        .notif-modal-btn {
-            background: var(--primary-purple); color: white; border: none;
-            padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
-        }
+        .notif-modal-btn { background: var(--primary-purple); color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-        /* =========================================
-           ACCOUNT SWITCHER STYLES
-           ========================================= */
-        .account-switcher {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            padding: 6px 10px;
-            background: var(--bg-card);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .account-switcher:hover {
-            background: rgba(124, 58, 237, 0.1);
-            border-color: var(--primary-purple);
-        }
-        .account-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
-        .account-icon.real {
-            background: var(--primary-purple);
-            color: white;
-        }
-        .account-icon.demo {
-            background: var(--danger-red);
-            color: white;
-        }
-        .account-balance {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .account-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin-top: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            min-width: 220px;
-            display: none;
-            overflow: hidden;
-        }
-        .account-dropdown.show {
-            display: block;
-            animation: slideDown 0.2s ease-out;
-        }
-        .account-option {
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .account-option:last-child {
-            border-bottom: none;
-        }
-        .account-option:hover {
-            background: rgba(124, 58, 237, 0.05);
-        }
-        .account-option.active {
-            background: rgba(124, 58, 237, 0.1);
-        }
-        .account-option-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .account-option-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        .account-option-dot.real {
-            background: var(--primary-purple);
-        }
-        .account-option-dot.demo {
-            background: var(--danger-red);
-        }
-        .account-option-text {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        .account-option-status {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--success-green);
-        }
-        .reset-demo-btn {
-            padding: 12px 16px;
-            background: rgba(239, 68, 68, 0.1);
-            border: none;
-            border-top: 1px solid var(--border-color);
-            color: var(--danger-red);
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-        .reset-demo-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-        .reset-demo-btn svg {
-            width: 16px;
-            height: 16px;
-        }
+        .account-switcher { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); transition: all 0.2s; flex-shrink: 0; white-space: nowrap; }
+        .account-switcher:hover { background: rgba(124, 58, 237, 0.1); border-color: var(--primary-purple); }
+        .account-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; }
+        .account-icon.real { background: var(--primary-purple); color: white; }
+        .account-icon.demo { background: var(--danger-red); color: white; }
+        .account-balance { font-weight: 700; font-size: 0.9rem; }
+        .account-dropdown { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 100; min-width: 220px; display: none; overflow: hidden; }
+        .account-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
+        .account-option { padding: 12px 16px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+        .account-option:last-child { border-bottom: none; }
+        .account-option:hover { background: rgba(124, 58, 237, 0.05); }
+        .account-option.active { background: rgba(124, 58, 237, 0.1); }
+        .account-option-label { display: flex; align-items: center; gap: 8px; }
+        .account-option-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .account-option-dot.real { background: var(--primary-purple); }
+        .account-option-dot.demo { background: var(--danger-red); }
+        .account-option-text { font-weight: 600; font-size: 0.9rem; }
+        .account-option-status { font-size: 0.75rem; font-weight: 600; color: var(--success-green); }
+        .reset-demo-btn { padding: 12px 16px; background: rgba(239, 68, 68, 0.1); border: none; border-top: 1px solid var(--border-color); color: var(--danger-red); font-weight: 600; cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
+        .reset-demo-btn:hover { background: rgba(239, 68, 68, 0.2); }
+        .reset-demo-btn svg { width: 16px; height: 16px; }
 
-        /* =========================================
-           APP DOWNLOAD BANNER STYLES (PalOption Style)
-           ========================================= */
-        .app-download-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 10000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            animation: slideDownBanner 0.3s ease-out;
-        }
-        @keyframes slideDownBanner {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .app-banner-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-        .app-banner-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .app-banner-icon svg {
-            width: 24px;
-            height: 24px;
-            color: white;
-        }
-        .app-banner-text {
-            flex: 1;
-        }
-        .app-banner-title {
-            color: white;
-            font-size: 0.95rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        .app-banner-subtitle {
-            color: rgba(255,255,255,0.85);
-            font-size: 0.75rem;
-            line-height: 1.2;
-        }
-        .app-banner-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .app-banner-download {
-            background: white;
-            color: #7c3aed;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .app-banner-download:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .app-banner-close {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .app-banner-close:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .app-banner-close svg {
-            width: 16px;
-            height: 16px;
-            color: white;
-        }
+        .app-download-banner { position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: slideDownBanner 0.3s ease-out; }
+        @keyframes slideDownBanner { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .app-banner-content { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .app-banner-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .app-banner-icon svg { width: 24px; height: 24px; color: white; }
+        .app-banner-text { flex: 1; }
+        .app-banner-title { color: white; font-size: 0.95rem; font-weight: 700; line-height: 1.2; }
+        .app-banner-subtitle { color: rgba(255,255,255,0.85); font-size: 0.75rem; line-height: 1.2; }
+        .app-banner-actions { display: flex; align-items: center; gap: 8px; }
+        .app-banner-download { background: white; color: #7c3aed; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .app-banner-download:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .app-banner-close { background: rgba(255,255,255,0.2); border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        .app-banner-close:hover { background: rgba(255,255,255,0.3); }
+        .app-banner-close svg { width: 16px; height: 16px; color: white; }
 
-        /* =========================================
-           INSUFFICIENT BALANCE MODAL STYLES
-           ========================================= */
-        .insufficient-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 10001;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .insufficient-modal-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .insufficient-modal {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 24px;
-        }
-        .insufficient-modal-overlay.show .insufficient-modal {
-            transform: translateY(0);
-        }
-        .insufficient-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-        .insufficient-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--danger-red);
-            margin-bottom: 4px;
-        }
-        .insufficient-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-        }
-        .insufficient-close {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .insufficient-close:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .insufficient-close svg {
-            width: 18px;
-            height: 18px;
-            color: white;
-        }
-        .insufficient-alert {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .insufficient-alert svg {
-            width: 20px;
-            height: 20px;
-            color: #fbbf24;
-            flex-shrink: 0;
-        }
-        .insufficient-alert-text {
-            color: var(--danger-red);
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-        .payment-methods {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .payment-method {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .payment-method:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary-purple);
-            transform: translateX(4px);
-        }
-        .payment-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 1.5rem;
-        }
+        .insufficient-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; align-items: flex-end; justify-content: center; }
+        .insufficient-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .insufficient-modal { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 24px 24px 0 0; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; }
+        .insufficient-modal-overlay.show .insufficient-modal { transform: translateY(0); }
+        .insufficient-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .insufficient-title { font-size: 1.5rem; font-weight: 800; color: var(--danger-red); margin-bottom: 4px; }
+        .insufficient-subtitle { font-size: 0.9rem; color: var(--text-gray); }
+        .insufficient-close { background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+        .insufficient-close:hover { background: rgba(255,255,255,0.2); }
+        .insufficient-close svg { width: 18px; height: 18px; color: white; }
+        .insufficient-alert { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .insufficient-alert svg { width: 20px; height: 20px; color: #fbbf24; flex-shrink: 0; }
+        .insufficient-alert-text { color: var(--danger-red); font-weight: 700; font-size: 0.95rem; }
+        .payment-methods { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .payment-method { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .payment-method:hover { background: rgba(255,255,255,0.1); border-color: var(--primary-purple); transform: translateX(4px); }
+        .payment-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.5rem; }
         .payment-icon.btc { background: #f7931a; }
         .payment-icon.eth { background: #627eea; }
         .payment-icon.usdt { background: #26a17b; }
-        .payment-info {
-            flex: 1;
-        }
-        .payment-name {
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 2px;
-        }
-        .payment-desc {
-            color: var(--text-gray);
-            font-size: 0.85rem;
-        }
-        .payment-arrow {
-            color: var(--text-gray);
-            opacity: 0.6;
-        }
-        .payment-arrow svg {
-            width: 20px;
-            height: 20px;
-        }
-        .insufficient-footer {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-gray);
-            font-size: 0.8rem;
-        }
-        .footer-item svg {
-            width: 14px;
-            height: 14px;
-            color: var(--primary-purple);
-        }
+        .payment-info { flex: 1; }
+        .payment-name { color: white; font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+        .payment-desc { color: var(--text-gray); font-size: 0.85rem; }
+        .payment-arrow { color: var(--text-gray); opacity: 0.6; }
+        .payment-arrow svg { width: 20px; height: 20px; }
+        .insufficient-footer { display: flex; justify-content: center; gap: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .footer-item { display: flex; align-items: center; gap: 6px; color: var(--text-gray); font-size: 0.8rem; }
+        .footer-item svg { width: 14px; height: 14px; color: var(--primary-purple); }
 
-        /* =========================================
-           SPINNER ANIMATION
-           ========================================= */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-        .btn-starting-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
+        .btn-starting-content { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        /* =========================================
-           ADVANCED SETTINGS VISIBILITY
-           ========================================= */
-        .advanced-settings {
-            display: none;
-            margin-bottom: 12px;
-        }
-        .advanced-settings.show {
-            display: flex;
-            gap: 8px;
-        }
+        .advanced-settings { display: none; margin-bottom: 12px; }
+        .advanced-settings.show { display: flex; gap: 8px; }
     </style>
 </head>
 <body>
-    <!-- APP DOWNLOAD BANNER (PalOption Style) -->
     <div class="app-download-banner" id="appDownloadBanner">
         <div class="app-banner-content">
             <div class="app-banner-icon">
@@ -819,20 +264,15 @@
         </div>
     </div>
 
-    <!-- Menu Overlay & Drawer -->
     <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-    
     <nav class="side-menu" id="sideMenu">
         <div class="menu-header">
             <div style="display:flex;align-items:center;gap:12px;">
-                <button class="menu-close" onclick="closeMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
+                <button class="menu-close" onclick="closeMenu()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
                 <span class="menu-title">Menu</span>
             </div>
             <span class="menu-lang">EN</span>
         </div>
-
         <div class="menu-profile">
             <div class="profile-avatar" id="profileAvatar">?</div>
             <div class="profile-info">
@@ -840,120 +280,54 @@
                 <div class="profile-email" id="profileEmail">Please sign in</div>
             </div>
         </div>
-
         <ul class="menu-list">
-            <li><a href="#" class="menu-item">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                OBX PRIME
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            <li><a href="account-settings.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                Account settings
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            <li><a href="deposit.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Deposit
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            <li><a href="withdraw.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                Withdraw
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            <li><a href="history.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                History
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            
-            <li><a href="refer.html" class="menu-item refer-highlight">
-                <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-                Refer & Earn
-            </a></li>
-            
-            <li>
-                <div class="menu-item theme-row" onclick="toggleDarkTheme()">
-                    <div style="display:flex;align-items:center;gap:14px;">
-                        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                        Dark theme
-                    </div>
-                    <div class="theme-toggle" id="themeToggle"></div>
-                </div>
-            </li>
-            <li><a href="help.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                Help Centre
-            </a></li>
-            <li><a href="responsible.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Responsible Trading
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
-            <li><a href="live-chat.html" class="menu-item">
-                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Live Chat
-                <span style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
-                <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </a></li>
+            <li><a href="#" class="menu-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> OBX PRIME <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="account-settings.html" class="menu-item"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Account settings <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="deposit.html" class="menu-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Deposit <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="withdraw.html" class="menu-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Withdraw <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="history.html" class="menu-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> History <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="refer.html" class="menu-item refer-highlight"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> Refer & Earn</a></li>
+            <li><div class="menu-item theme-row" onclick="toggleDarkTheme()"><div style="display:flex;align-items:center;gap:14px;"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Dark theme</div><div class="theme-toggle" id="themeToggle"></div></div></li>
+            <li><a href="help.html" class="menu-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Help Centre</a></li>
+            <li><a href="responsible.html" class="menu-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Responsible Trading <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="live-chat.html" class="menu-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Live Chat <span style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:#10b981;"></span> <svg class="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></a></li>
         </ul>
-
         <div class="menu-footer" id="menuFooter">OBX PRIME</div>
     </nav>
 
-    <!-- Top Header (Refactored for Perfect Alignment) -->
     <header class="top-header">
         <div class="header-left">
-            <button class="icon-btn menu-icon" onclick="openMenu()">
-                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
+            <button class="icon-btn menu-icon" onclick="openMenu()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
             <div class="p-logo">P</div>
         </div>
         <div class="header-right">
-            <!-- ACCOUNT SWITCHER -->
             <div class="account-switcher" onclick="toggleAccountDropdown(event)">
                 <div class="account-icon" id="accountIcon">R</div>
                 <div class="account-balance" id="accountBalance">$0.00</div>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;"><path d="m6 9 6 6 6-6"/></svg>
-                
-                <!-- Account Dropdown -->
                 <div class="account-dropdown" id="accountDropdown">
                     <div class="account-option" onclick="switchAccount('real', event)">
-                        <div class="account-option-label">
-                            <div class="account-option-dot real"></div>
-                            <span class="account-option-text">Real Account</span>
-                        </div>
+                        <div class="account-option-label"><div class="account-option-dot real"></div><span class="account-option-text">Real Account</span></div>
                         <span class="account-option-status" id="realStatus"></span>
                     </div>
                     <div class="account-option" onclick="switchAccount('demo', event)">
-                        <div class="account-option-label">
-                            <div class="account-option-dot demo"></div>
-                            <span class="account-option-text">Demo Account</span>
-                        </div>
+                        <div class="account-option-label"><div class="account-option-dot demo"></div><span class="account-option-text">Demo Account</span></div>
                         <span class="account-option-status" id="demoStatus"></span>
                     </div>
                     <button class="reset-demo-btn" id="resetDemoBtn" onclick="resetDemoBalance(event)" style="display: none;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>
-                        Reset Demo Balance
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg> Reset Demo Balance
                     </button>
                 </div>
             </div>
-            
-            <!-- Sound Toggle Button -->
             <button id="sound-toggle-btn" class="icon-btn sound-btn" onclick="toggleSound()" title="Toggle Sound">
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
-            
             <a href="deposit.html" class="deposit-btn">Deposit</a>
-            
-            <!-- Notification Bell & Dropdown -->
             <div class="notif-wrapper">
                 <button id="notif-btn" class="icon-btn bell-icon" onclick="toggleNotifications(event)">
                     <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     <div class="bell-dot" id="notif-dot"></div>
                 </button>
-                
                 <div id="notif-dropdown" class="notif-dropdown">
                     <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: 700; color: var(--text-white);">Notifications</span>
@@ -966,16 +340,13 @@
         </div>
     </header>
 
-    <!-- Asset Tabs -->
     <div class="asset-tabs">
         <button class="asset-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs</button>
         <button class="asset-tab active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd</button>
         <button class="asset-tab"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
     </div>
 
-    <!-- Main Chart Area -->
     <div class="chart-wrapper">
-        <!-- Volatility Selector - LEFT -->
         <div style="position: absolute; top: 12px; left: 16px; z-index: 20;">
             <div style="position: relative;">
                 <button onclick="toggleVolatilityDropdown(event)" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
@@ -991,54 +362,30 @@
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-gray)" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                 </button>
-                <!-- Volatility Dropdown -->
                 <div id="volatility-dropdown" class="volatility-dropdown">
-                    <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)">
-                        <div class="volatility-item-name">Volatility 10 (1s) Index</div>
-                        <div class="volatility-item-price">9607.39 +1.13%</div>
-                    </div>
-                    <div class="volatility-item" onclick="selectVolatility('Volatility 25 Index', this)">
-                        <div class="volatility-item-name">Volatility 25 Index</div>
-                        <div class="volatility-item-price">7621.45 +0.12%</div>
-                    </div>
-                    <div class="volatility-item" onclick="selectVolatility('Volatility 75 (1s) Index', this)">
-                        <div class="volatility-item-name">Volatility 75 (1s) Index</div>
-                        <div class="volatility-item-price">4123.45 +0.31%</div>
-                    </div>
+                    <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)"><div class="volatility-item-name">Volatility 10 (1s) Index</div><div class="volatility-item-price">9607.39 +1.13%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 25 Index', this)"><div class="volatility-item-name">Volatility 25 Index</div><div class="volatility-item-price">7621.45 +0.12%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 75 (1s) Index', this)"><div class="volatility-item-name">Volatility 75 (1s) Index</div><div class="volatility-item-price">4123.45 +0.31%</div></div>
                 </div>
             </div>
         </div>
-
-        <!-- Price Display - RIGHT -->
         <div style="position: absolute; top: 12px; right: 16px; z-index: 20; text-align: right;">
             <div style="background: var(--bg-card); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="font-size: 18px; font-weight: 700; color: var(--text-white);" id="currentPrice">9607.39</div>
                 <div style="font-size: 10px; color: var(--success-green); font-weight: 600;" id="price-change">+1.13%</div>
             </div>
         </div>
-        
         <canvas id="chartCanvas"></canvas>
-        
         <div class="axis-labels-right" id="axisLabelsRight">
-            <div class="axis-label-r">--</div>
-            <div class="axis-label-r">--</div>
-            <div class="axis-label-r">--</div>
-            <div class="axis-label-r">--</div>
-            <div class="axis-label-r">--</div>
+            <div class="axis-label-r">--</div><div class="axis-label-r">--</div><div class="axis-label-r">--</div><div class="axis-label-r">--</div><div class="axis-label-r">--</div>
         </div>
         <div class="axis-labels-bottom">
-            <div class="axis-label-b">--:--:--</div>
-            <div class="axis-label-b">--:--:--</div>
-            <div class="axis-label-b">--:--:--</div>
-            <div class="axis-label-b">--:--:--</div>
-            <div class="axis-label-b">--:--:--</div>
+            <div class="axis-label-b">--:--:--</div><div class="axis-label-b">--:--:--</div><div class="axis-label-b">--:--:--</div><div class="axis-label-b">--:--:--</div><div class="axis-label-b">--:--:--</div>
         </div>
     </div>
 
-    <!-- Digit Frequency Row -->
     <div class="digit-row" id="digitRow"></div>
 
-    <!-- Trading Controls -->
     <div class="controls-panel">
         <div class="mode-toggle">
             <button class="mode-btn active" onclick="setMode('AUTO', this)">AUTO</button>
@@ -1059,7 +406,6 @@
             <button class="qs-btn" onclick="setStake(50)">$50</button><button class="qs-btn" onclick="setStake(100)">$100</button>
         </div>
 
-        <!-- Advanced Trading Settings (Side-by-Side like PalOption) - Only visible in AUTO mode -->
         <div class="advanced-settings" id="advancedSettings">
             <div class="stake-box" style="flex: 1; padding: 8px 4px;">
                 <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: var(--success-green);">TARGET PROFIT</div>
@@ -1094,259 +440,147 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>Trade</a>
         <a href="#" class="nav-item ai-btn"><div class="ai-icon-wrap"><svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div>AI</a>
         <a href="positions.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>Positions</a>
     </nav>
 
-    <!-- Notification Details Modal -->
     <div class="notif-modal-overlay" id="notif-modal-overlay" onclick="closeNotifModal()">
         <div class="notif-modal" onclick="event.stopPropagation()">
             <div class="notif-modal-header">
                 <h3 class="notif-modal-title" id="modal-title">Notification Details</h3>
-                <button class="notif-modal-close" onclick="closeNotifModal()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
+                <button class="notif-modal-close" onclick="closeNotifModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
             </div>
             <div class="notif-modal-body" id="modal-body"></div>
-            <div class="notif-modal-footer">
-                <button class="notif-modal-btn" onclick="closeNotifModal()">Got it</button>
-            </div>
+            <div class="notif-modal-footer"><button class="notif-modal-btn" onclick="closeNotifModal()">Got it</button></div>
         </div>
     </div>
 
-    <!-- INSUFFICIENT BALANCE MODAL -->
     <div class="insufficient-modal-overlay" id="insufficientModal" onclick="closeInsufficientModal(event)">
         <div class="insufficient-modal" onclick="event.stopPropagation()">
             <div class="insufficient-header">
-                <div>
-                    <div class="insufficient-title">Insufficient Balance</div>
-                    <div class="insufficient-subtitle">Top up now to continue trading</div>
-                </div>
-                <button class="insufficient-close" onclick="closeInsufficientModal()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
+                <div><div class="insufficient-title">Insufficient Balance</div><div class="insufficient-subtitle">Top up now to continue trading</div></div>
+                <button class="insufficient-close" onclick="closeInsufficientModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
             </div>
-            
             <div class="insufficient-alert">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"/></svg>
                 <span class="insufficient-alert-text">Insufficient balance. Top up now!</span>
             </div>
-
             <div class="payment-methods">
-                <a href="deposit.html#btc" class="payment-method">
-                    <div class="payment-icon btc">₿</div>
-                    <div class="payment-info">
-                        <div class="payment-name">Bitcoin (BTC)</div>
-                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
-                    </div>
-                    <div class="payment-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </div>
-                </a>
-
-                <a href="deposit.html#eth" class="payment-method">
-                    <div class="payment-icon eth">Ξ</div>
-                    <div class="payment-info">
-                        <div class="payment-name">Ethereum (ETH)</div>
-                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
-                    </div>
-                    <div class="payment-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </div>
-                </a>
-
-                <a href="deposit.html#usdt-trc20" class="payment-method">
-                    <div class="payment-icon usdt"></div>
-                    <div class="payment-info">
-                        <div class="payment-name">USDT (TRC20)</div>
-                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
-                    </div>
-                    <div class="payment-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </div>
-                </a>
-
-                <a href="deposit.html#usdt-erc20" class="payment-method">
-                    <div class="payment-icon usdt">₮</div>
-                    <div class="payment-info">
-                        <div class="payment-name">USDT (ERC20)</div>
-                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
-                    </div>
-                    <div class="payment-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </div>
-                </a>
+                <a href="deposit.html#btc" class="payment-method"><div class="payment-icon btc">₿</div><div class="payment-info"><div class="payment-name">Bitcoin (BTC)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#eth" class="payment-method"><div class="payment-icon eth">Ξ</div><div class="payment-info"><div class="payment-name">Ethereum (ETH)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#usdt-trc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (TRC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt">₮</div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
             </div>
-
             <div class="insufficient-footer">
-                <div class="footer-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span>Secure</span>
-                </div>
-                <div class="footer-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.03v2.02c4.39.5 7.97 4.08 8.47 8.47h2.02C23.5 6.57 19.43 2.5 13 2.03zm-2 0C4.57 2.5 .5 6.57 .5 12.5h2.02c.5-4.39 4.08-7.97 8.47-8.47V2.03zm0 19.94v-2.02c-4.39-.5-7.97-4.08-8.47-8.47H.5c.5 6.43 4.57 10.5 11 10.97zm2 0c6.43-.47 10.5-4.54 11-10.97h-2.02c-.5 4.39-4.08 7.97-8.47 8.47v2.02z"/></svg>
-                    <span>Instant</span>
-                </div>
-                <div class="footer-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                    <span>24/7 Support</span>
-                </div>
+                <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Secure</span></div>
+                <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.03v2.02c4.39.5 7.97 4.08 8.47 8.47h2.02C23.5 6.57 19.43 2.5 13 2.03zm-2 0C4.57 2.5 .5 6.57 .5 12.5h2.02c.5-4.39 4.08-7.97 8.47-8.47V2.03zm0 19.94v-2.02c-4.39-.5-7.97-4.08-8.47-8.47H.5c.5 6.43 4.57 10.5 11 10.97zm2 0c6.43-.47 10.5-4.54 11-10.97h-2.02c-.5 4.39-4.08 7.97-8.47 8.47v2.02z"/></svg><span>Instant</span></div>
+                <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>24/7 Support</span></div>
             </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // APP DOWNLOAD BANNER FUNCTIONS
+        // TRADING STATE (Declared at top to prevent ReferenceError)
         // ==========================================
+        let isTrading = false;
+        let isAutoMode = true;
+        let currentTradeDirection = null;
+        let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
+
         function closeAppBanner() {
             const banner = document.getElementById('appDownloadBanner');
-            if (banner) {
-                banner.style.display = 'none';
-                document.body.classList.remove('has-app-banner');
-                localStorage.setItem('obx_app_banner_closed', 'true');
-            }
+            if (banner) { banner.style.display = 'none'; document.body.classList.remove('has-app-banner'); localStorage.setItem('obx_app_banner_closed', 'true'); }
         }
-
         function showAppBanner() {
             const isClosed = localStorage.getItem('obx_app_banner_closed');
-            if (!isClosed || isClosed !== 'true') {
-                document.body.classList.add('has-app-banner');
-            } else {
-                const banner = document.getElementById('appDownloadBanner');
-                if (banner) banner.style.display = 'none';
-            }
+            if (!isClosed || isClosed !== 'true') { document.body.classList.add('has-app-banner'); } 
+            else { const banner = document.getElementById('appDownloadBanner'); if (banner) banner.style.display = 'none'; }
         }
         window.addEventListener('load', showAppBanner);
 
-        // ==========================================
-        // INSUFFICIENT BALANCE MODAL FUNCTIONS
-        // ==========================================
         function checkBalanceAndTrade(direction) {
-            if (currentAccount === 'real' && realBalance <= 0) {
-                showInsufficientModal();
-            } else {
-                startTrade(direction);
-            }
+            if (currentAccount === 'real' && realBalance <= 0) { showInsufficientModal(); } 
+            else { startTrade(direction); }
         }
-
         function showInsufficientModal() {
             const modal = document.getElementById('insufficientModal');
-            if (modal) {
-                modal.classList.add('show');
-                playUiSound();
-            }
+            if (modal) { modal.classList.add('show'); playUiSound(); }
         }
-
         function closeInsufficientModal(event) {
             if (!event || event.target === document.getElementById('insufficientModal') || event.target.closest('.insufficient-close')) {
                 const modal = document.getElementById('insufficientModal');
-                if (modal) {
-                    modal.classList.remove('show');
-                }
+                if (modal) { modal.classList.remove('show'); }
             }
         }
 
-        // ==========================================
-        // ACCOUNT SWITCHER SYSTEM
-        // ==========================================
         let currentAccount = localStorage.getItem('obx_account_mode') || 'demo';
         let realBalance = 0.00;
         let demoBalance = parseFloat(localStorage.getItem('obx_demo_balance')) || 10000.00;
 
         function toggleAccountDropdown(event) {
             event.stopPropagation();
-            const dropdown = document.getElementById('accountDropdown');
-            dropdown.classList.toggle('show');
+            document.getElementById('accountDropdown').classList.toggle('show');
             updateAccountDropdownUI();
         }
-
         function updateAccountDropdownUI() {
-            const realStatus = document.getElementById('realStatus');
-            const demoStatus = document.getElementById('demoStatus');
-            const resetDemoBtn = document.getElementById('resetDemoBtn');
-            
             if (currentAccount === 'real') {
-                realStatus.innerText = 'Active';
-                demoStatus.innerText = '';
-                resetDemoBtn.style.display = 'none';
+                document.getElementById('realStatus').innerText = 'Active';
+                document.getElementById('demoStatus').innerText = '';
+                document.getElementById('resetDemoBtn').style.display = 'none';
             } else {
-                realStatus.innerText = '';
-                demoStatus.innerText = 'Active';
-                resetDemoBtn.style.display = 'flex';
+                document.getElementById('realStatus').innerText = '';
+                document.getElementById('demoStatus').innerText = 'Active';
+                document.getElementById('resetDemoBtn').style.display = 'flex';
             }
         }
-
         function switchAccount(accountType, event) {
             if (event) event.stopPropagation();
             currentAccount = accountType;
             localStorage.setItem('obx_account_mode', accountType);
             updateAccountDisplay();
             updateAccountDropdownUI();
-            closeAccountDropdown();
+            document.getElementById('accountDropdown').classList.remove('show');
             playUiSound();
         }
-
         function resetDemoBalance(event) {
             if (event) event.stopPropagation();
             if (confirm('Are you sure you want to reset your demo balance to $10,000.00?')) {
                 demoBalance = 10000.00;
                 localStorage.setItem('obx_demo_balance', demoBalance);
                 updateAccountDisplay();
-                closeAccountDropdown();
+                document.getElementById('accountDropdown').classList.remove('show');
                 playUiSound();
             }
         }
-
-        function closeAccountDropdown() {
-            const dropdown = document.getElementById('accountDropdown');
-            dropdown.classList.remove('show');
-        }
-
         function updateAccountDisplay() {
             const accountIcon = document.getElementById('accountIcon');
             const accountBalance = document.getElementById('accountBalance');
-            
             if (currentAccount === 'real') {
-                accountIcon.className = 'account-icon real';
-                accountIcon.innerText = 'R';
-                accountBalance.innerText = '$' + realBalance.toFixed(2);
-                accountBalance.style.color = 'var(--primary-purple)';
+                accountIcon.className = 'account-icon real'; accountIcon.innerText = 'R';
+                accountBalance.innerText = '$' + realBalance.toFixed(2); accountBalance.style.color = 'var(--primary-purple)';
             } else {
-                accountIcon.className = 'account-icon demo';
-                accountIcon.innerText = 'D';
-                accountBalance.innerText = '$' + demoBalance.toFixed(2);
-                accountBalance.style.color = 'var(--danger-red)';
+                accountIcon.className = 'account-icon demo'; accountIcon.innerText = 'D';
+                accountBalance.innerText = '$' + demoBalance.toFixed(2); accountBalance.style.color = 'var(--danger-red)';
             }
         }
-
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('accountDropdown');
             const switcher = event.target.closest('.account-switcher');
-            if (dropdown && dropdown.classList.contains('show') && !switcher) {
-                closeAccountDropdown();
-            }
+            if (dropdown && dropdown.classList.contains('show') && !switcher) { dropdown.classList.remove('show'); }
         });
 
-        // ==========================================
-        // LUXURY CORPORATE AMBIENT SOUND SYSTEM
-        // ==========================================
         let isMuted = localStorage.getItem('obx_sound_muted') === 'true';
-        let audioContext = null;
-        let oscillators = [];
-        let masterGainNode = null;
+        let audioContext = null, oscillators = [], masterGainNode = null;
 
         function toggleSound() {
             isMuted = !isMuted;
             localStorage.setItem('obx_sound_muted', isMuted);
             updateSoundIcon();
-            if (!isMuted) startBackgroundMusic();
-            else stopBackgroundMusic();
+            if (!isMuted) startBackgroundMusic(); else stopBackgroundMusic();
         }
-
         function startBackgroundMusic() {
             try {
                 if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1354,248 +588,113 @@
                 masterGainNode.gain.setValueAtTime(0, audioContext.currentTime);
                 masterGainNode.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 3);
                 masterGainNode.connect(audioContext.destination);
-
-                const notes = [
-                    { freq: 261.63, type: 'sine', gain: 0.5 },
-                    { freq: 329.63, type: 'sine', gain: 0.4 },
-                    { freq: 392.00, type: 'triangle', gain: 0.2 },
-                    { freq: 493.88, type: 'sine', gain: 0.3 }
-                ];
-
+                const notes = [{ freq: 261.63, type: 'sine', gain: 0.5 }, { freq: 329.63, type: 'sine', gain: 0.4 }, { freq: 392.00, type: 'triangle', gain: 0.2 }, { freq: 493.88, type: 'sine', gain: 0.3 }];
                 notes.forEach(note => {
                     const osc = audioContext.createOscillator();
                     const gain = audioContext.createGain();
-                    osc.type = note.type;
-                    osc.frequency.setValueAtTime(note.freq, audioContext.currentTime);
-                    gain.gain.setValueAtTime(0, audioContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(note.gain, audioContext.currentTime + 2);
-                    osc.connect(gain);
-                    gain.connect(masterGainNode);
-                    osc.start();
+                    osc.type = note.type; osc.frequency.setValueAtTime(note.freq, audioContext.currentTime);
+                    gain.gain.setValueAtTime(0, audioContext.currentTime); gain.gain.linearRampToValueAtTime(note.gain, audioContext.currentTime + 2);
+                    osc.connect(gain); gain.connect(masterGainNode); osc.start();
                     oscillators.push({ osc, gain });
                 });
             } catch (e) { console.error('Error starting music:', e); }
         }
-
         function stopBackgroundMusic() {
             if (oscillators.length > 0) {
                 const currentTime = audioContext.currentTime;
                 oscillators.forEach(({ osc, gain }) => {
-                    try {
-                        gain.gain.cancelScheduledValues(currentTime);
-                        gain.gain.setValueAtTime(gain.gain.value, currentTime);
-                        gain.gain.linearRampToValueAtTime(0, currentTime + 1); 
-                        osc.stop(currentTime + 1.1);
-                    } catch(e) {}
+                    try { gain.gain.cancelScheduledValues(currentTime); gain.gain.setValueAtTime(gain.gain.value, currentTime); gain.gain.linearRampToValueAtTime(0, currentTime + 1); osc.stop(currentTime + 1.1); } catch(e) {}
                 });
                 setTimeout(() => { oscillators = []; }, 1200);
             }
-            if (masterGainNode) {
-                try { masterGainNode.disconnect(); } catch(e) {}
-                masterGainNode = null;
-            }
+            if (masterGainNode) { try { masterGainNode.disconnect(); } catch(e) {} masterGainNode = null; }
         }
-
         function updateSoundIcon() {
             const btn = document.getElementById('sound-toggle-btn');
             if (isMuted) {
                 btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
-                btn.style.opacity = "0.4";
-                btn.title = "Sound is muted. Click to unmute.";
+                btn.style.opacity = "0.4"; btn.title = "Sound is muted. Click to unmute.";
             } else {
                 btn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
-                btn.style.opacity = "1";
-                btn.title = "Sound is on. Click to mute.";
+                btn.style.opacity = "1"; btn.title = "Sound is on. Click to mute.";
             }
         }
-
         function playUiSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const playNote = (freq, startTime, duration) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, startTime);
-                    gain.gain.setValueAtTime(0, startTime);
-                    gain.gain.linearRampToValueAtTime(0.1, startTime + 0.05);
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime); gain.gain.linearRampToValueAtTime(0.1, startTime + 0.05);
                     gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(startTime);
-                    osc.stop(startTime + duration);
+                    osc.connect(gain); gain.connect(ctx.destination); osc.start(startTime); osc.stop(startTime + duration);
                 };
-                const now = ctx.currentTime;
-                playNote(523.25, now, 0.3);
-                playNote(659.25, now + 0.1, 0.4);
+                const now = ctx.currentTime; playNote(523.25, now, 0.3); playNote(659.25, now + 0.1, 0.4);
             } catch (e) {}
         }
 
-        // ==========================================
-        // NOTIFICATION SYSTEM
-        // ==========================================
         const defaultNotifications = [
             { id: 1, title: "Deposit Successful", time: "2 mins ago", shortDesc: "Your deposit of $500.00 via USDT (ERC20) has been credited.", fullDetails: "Transaction ID: 0x8a7b...3f2e\nAmount: $500.00\nMethod: USDT (ERC20)\nStatus: Completed\nTime: " + new Date().toLocaleString() },
             { id: 2, title: "Welcome to OBX PRIME", time: "1 day ago", shortDesc: "Start trading synthetic indices with up to 95.2% payouts!", fullDetails: "Welcome to OBX PRIME! Explore our Even/Odd, Over/Under, and Matches/Differs markets. Don't forget to check out the Refer & Earn program to earn 10% commission." }
         ];
-
-        function getNotifications() {
-            const stored = localStorage.getItem('obx_notifications');
-            return stored ? JSON.parse(stored) : defaultNotifications;
-        }
-
-        function saveNotifications(notifs) {
-            localStorage.setItem('obx_notifications', JSON.stringify(notifs));
-            updateNotifDot();
-        }
-
-        function updateNotifDot() {
-            const notifs = getNotifications();
-            const dot = document.getElementById('notif-dot');
-            dot.style.display = notifs.length > 0 ? 'block' : 'none';
-        }
-
+        function getNotifications() { const stored = localStorage.getItem('obx_notifications'); return stored ? JSON.parse(stored) : defaultNotifications; }
+        function saveNotifications(notifs) { localStorage.setItem('obx_notifications', JSON.stringify(notifs)); updateNotifDot(); }
+        function updateNotifDot() { document.getElementById('notif-dot').style.display = getNotifications().length > 0 ? 'block' : 'none'; }
         function renderNotifications() {
             const list = document.getElementById('notif-list');
             const notifs = getNotifications();
-            if (notifs.length === 0) {
-                list.innerHTML = '<div class="notif-empty">No new notifications</div>';
-                return;
-            }
-            list.innerHTML = notifs.map(n => `
-                <div class="notif-item" onclick="showNotifDetails(${n.id})">
-                    <div class="notif-header">
-                        <span class="notif-title">${n.title}</span>
-                        <span class="notif-time">${n.time}</span>
-                    </div>
-                    <div class="notif-desc">${n.shortDesc}</div>
-                </div>
-            `).join('');
+            if (notifs.length === 0) { list.innerHTML = '<div class="notif-empty">No new notifications</div>'; return; }
+            list.innerHTML = notifs.map(n => `<div class="notif-item" onclick="showNotifDetails(${n.id})"><div class="notif-header"><span class="notif-title">${n.title}</span><span class="notif-time">${n.time}</span></div><div class="notif-desc">${n.shortDesc}</div></div>`).join('');
         }
-
-        function toggleNotifications(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('notif-dropdown');
-            dropdown.classList.toggle('show');
-            renderNotifications();
-        }
-
+        function toggleNotifications(event) { event.stopPropagation(); document.getElementById('notif-dropdown').classList.toggle('show'); renderNotifications(); }
         function showNotifDetails(id) {
-            const notifs = getNotifications();
-            const notif = notifs.find(n => n.id === id);
+            const notifs = getNotifications(); const notif = notifs.find(n => n.id === id);
             if (notif) {
                 document.getElementById('modal-title').innerText = notif.title;
                 document.getElementById('modal-body').innerText = notif.fullDetails;
                 document.getElementById('notif-modal-overlay').classList.add('show');
-                saveNotifications(notifs.filter(n => n.id !== id));
-                renderNotifications();
+                saveNotifications(notifs.filter(n => n.id !== id)); renderNotifications();
             }
         }
-
-        function closeNotifModal() {
-            document.getElementById('notif-modal-overlay').classList.remove('show');
-        }
-
-        function clearNotifications(event) {
-            event.stopPropagation();
-            saveNotifications([]);
-            renderNotifications();
-        }
-
-        function closeNotifications(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('notif-dropdown');
-            dropdown.classList.remove('show');
-        }
-
+        function closeNotifModal() { document.getElementById('notif-modal-overlay').classList.remove('show'); }
+        function clearNotifications(event) { event.stopPropagation(); saveNotifications([]); renderNotifications(); }
+        function closeNotifications(event) { event.stopPropagation(); document.getElementById('notif-dropdown').classList.remove('show'); }
         document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('notif-dropdown');
-            const btn = document.getElementById('notif-btn');
-            if (dropdown && dropdown.classList.contains('show')) {
-                if (!dropdown.contains(event.target) && !btn.contains(event.target)) {
-                    dropdown.classList.remove('show');
-                }
-            }
+            const dropdown = document.getElementById('notif-dropdown'); const btn = document.getElementById('notif-btn');
+            if (dropdown && dropdown.classList.contains('show')) { if (!dropdown.contains(event.target) && !btn.contains(event.target)) { dropdown.classList.remove('show'); } }
         });
 
-        // ==========================================
-        // EXISTING DASHBOARD LOGIC (Unchanged)
-        // ==========================================
         const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         let obxSupabase;
         if (typeof window.supabase !== 'undefined') obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
 
-        function openMenu() {
-            document.getElementById('menuOverlay').classList.add('show');
-            document.getElementById('sideMenu').classList.add('show');
-            document.body.style.overflow = 'hidden';
-            loadUserProfile();
-        }
-
-        function closeMenu() {
-            document.getElementById('menuOverlay').classList.remove('show');
-            document.getElementById('sideMenu').classList.remove('show');
-            document.body.style.overflow = '';
-        }
-
+        function openMenu() { document.getElementById('menuOverlay').classList.add('show'); document.getElementById('sideMenu').classList.add('show'); document.body.style.overflow = 'hidden'; loadUserProfile(); }
+        function closeMenu() { document.getElementById('menuOverlay').classList.remove('show'); document.getElementById('sideMenu').classList.remove('show'); document.body.style.overflow = ''; }
         async function loadUserProfile() {
-            const nameEl = document.getElementById('profileName');
-            const emailEl = document.getElementById('profileEmail');
-            const avatarEl = document.getElementById('profileAvatar');
-            const footerEl = document.getElementById('menuFooter');
-
-            if (!obxSupabase) {
-                nameEl.innerText = 'Not Signed In';
-                emailEl.innerText = 'Please log in';
-                return;
-            }
-
+            const nameEl = document.getElementById('profileName'), emailEl = document.getElementById('profileEmail'), avatarEl = document.getElementById('profileAvatar'), footerEl = document.getElementById('menuFooter');
+            if (!obxSupabase) { nameEl.innerText = 'Not Signed In'; emailEl.innerText = 'Please log in'; return; }
             try {
                 const { data: { user } } = await obxSupabase.auth.getUser();
                 if (user) {
                     const displayName = user.user_metadata?.username || user.email?.split('@')[0] || 'Trader';
                     const maskedEmail = user.email ? user.email.replace(/(.{2}).*(@.*)/, '$1***$2') : '';
-                    nameEl.innerText = displayName;
-                    emailEl.innerText = maskedEmail;
-                    avatarEl.innerText = displayName.charAt(0).toUpperCase();
-                    const now = new Date();
-                    footerEl.innerText = `${now.toISOString().replace('T', ' ').split('.')[0]} GMT`;
-                } else {
-                    nameEl.innerText = 'Guest';
-                    emailEl.innerText = 'Sign in to access full features';
-                    avatarEl.innerText = 'G';
-                }
+                    nameEl.innerText = displayName; emailEl.innerText = maskedEmail; avatarEl.innerText = displayName.charAt(0).toUpperCase();
+                    footerEl.innerText = `${new Date().toISOString().replace('T', ' ').split('.')[0]} GMT`;
+                } else { nameEl.innerText = 'Guest'; emailEl.innerText = 'Sign in to access full features'; avatarEl.innerText = 'G'; }
             } catch(e) { console.error("Profile load error:", e); }
         }
-
         function toggleDarkTheme() {
-            const toggle = document.getElementById('themeToggle');
-            const body = document.body;
+            const toggle = document.getElementById('themeToggle'), body = document.body;
             body.classList.toggle('dark-theme');
-            if (body.classList.contains('dark-theme')) {
-                toggle.classList.add('active');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                toggle.classList.remove('active');
-                localStorage.setItem('theme', 'light');
-            }
+            if (body.classList.contains('dark-theme')) { toggle.classList.add('active'); localStorage.setItem('theme', 'dark'); }
+            else { toggle.classList.remove('active'); localStorage.setItem('theme', 'light'); }
         }
-
         (function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const toggle = document.getElementById('themeToggle');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-                if(toggle) toggle.classList.add('active');
-            } else {
-                document.body.classList.remove('dark-theme');
-                if(toggle) toggle.classList.remove('active');
-            }
-            updateSoundIcon();
-            updateNotifDot();
-            updateAccountDisplay();
-            updateAdvancedSettingsVisibility();
+            const savedTheme = localStorage.getItem('theme'), toggle = document.getElementById('themeToggle');
+            if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); if(toggle) toggle.classList.add('active'); }
+            else { document.body.classList.remove('dark-theme'); if(toggle) toggle.classList.remove('active'); }
+            updateSoundIcon(); updateNotifDot(); updateAccountDisplay(); updateAdvancedSettingsVisibility();
         })();
 
         const digitCounts = new Array(10).fill(0);
@@ -1608,25 +707,12 @@
             if (!row) return;
             row.innerHTML = '';
             for(let i=0; i<=9; i++) {
-                row.innerHTML += `
-                    <div class="digit-circle">
-                        <div class="circle-container" id="circle-${i}">
-                            <svg width="32" height="32" viewBox="0 0 32 32">
-                                <circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/>
-                                <circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/>
-                            </svg>
-                            <div class="digit-num">${i}</div>
-                        </div>
-                        <div class="digit-pct" id="pct-${i}">0%</div>
-                        <div class="digit-arrow" id="arrow-${i}">▼</div>
-                    </div>`;
+                row.innerHTML += `<div class="digit-circle"><div class="circle-container" id="circle-${i}"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/><circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/></svg><div class="digit-num">${i}</div></div><div class="digit-pct" id="pct-${i}">0%</div><div class="digit-arrow" id="arrow-${i}">▼</div></div>`;
             }
         }
-
         function updateDigitStats(price, isWin = undefined, winDigit = -1) {
             const lastDigit = Math.floor(price) % 10;
-            digitCounts[lastDigit]++;
-            totalDigits++;
+            digitCounts[lastDigit]++; totalDigits++;
             for(let i=0; i<=9; i++) {
                 const pct = totalDigits > 0 ? (digitCounts[i] / totalDigits) * 100 : 0;
                 const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
@@ -1634,34 +720,20 @@
                 const progCircle = document.getElementById(`prog-${i}`);
                 const circleContainer = document.getElementById(`circle-${i}`);
                 const arrowEl = document.getElementById(`arrow-${i}`);
-                
                 if(pctEl) pctEl.innerText = pct.toFixed(1) + '%';
-                if(progCircle) {
-                    progCircle.style.strokeDashoffset = offset;
-                    progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)';
-                }
+                if(progCircle) { progCircle.style.strokeDashoffset = offset; progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)'; }
                 if(circleContainer) {
                     circleContainer.classList.remove('win', 'loss');
-                    if (isWin !== undefined && i === winDigit) {
-                        circleContainer.classList.add(isWin ? 'win' : 'loss');
-                    }
+                    if (isWin !== undefined && i === winDigit) { circleContainer.classList.add(isWin ? 'win' : 'loss'); }
                 }
-                if(arrowEl) {
-                    if (isWin !== undefined && i === winDigit && isWin) {
-                        arrowEl.classList.add('show');
-                    } else {
-                        arrowEl.classList.remove('show');
-                    }
-                }
+                if(arrowEl) { if (isWin !== undefined && i === winDigit && isWin) { arrowEl.classList.add('show'); } else { arrowEl.classList.remove('show'); } }
             }
         }
         initDigitRow();
 
         const canvas = document.getElementById('chartCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
-        let priceData = [];
-        let timeData = [];
-        let currentPrice = 9607.39;
+        let priceData = [], timeData = [], currentPrice = 9607.39;
         const MAX_POINTS = 60; 
 
         function resizeCanvas() {
@@ -1675,51 +747,23 @@
                 setTimeout(resizeCanvas, 100);
             }
         }
-
-        function formatTime(timestamp) {
-            const d = new Date(timestamp * 1000);
-            return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
-        }
-
+        function formatTime(timestamp) { const d = new Date(timestamp * 1000); return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`; }
         function drawChart() {
             if (!ctx || !canvas.width) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const isDark = document.body.classList.contains('dark-theme');
-            ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for(let i=1; i<5; i++) {
-                let y = (canvas.height / 5) * i;
-                ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
-            }
-            for(let i=1; i<5; i++) {
-                let x = (canvas.width / 5) * i;
-                ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
-            }
+            ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'; ctx.lineWidth = 1; ctx.beginPath();
+            for(let i=1; i<5; i++) { let y = (canvas.height / 5) * i; ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
+            for(let i=1; i<5; i++) { let x = (canvas.width / 5) * i; ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
             ctx.stroke();
-
             if (priceData.length === 0) return;
-            let min = Math.min(...priceData);
-            let max = Math.max(...priceData);
-            let range = max - min || 1;
-            let padding = range * 0.2;
+            let min = Math.min(...priceData), max = Math.max(...priceData), range = max - min || 1, padding = range * 0.2;
             min -= padding; max += padding; range = max - min;
-
-            ctx.beginPath();
-            ctx.strokeStyle = isDark ? '#ffffff' : '#1e293b';
-            ctx.lineWidth = 2;
-            ctx.lineJoin = 'round';
+            ctx.beginPath(); ctx.strokeStyle = isDark ? '#ffffff' : '#1e293b'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
             const stepX = canvas.width / (MAX_POINTS - 1);
-            priceData.forEach((price, i) => {
-                const x = i * stepX;
-                const y = canvas.height - ((price - min) / range) * canvas.height;
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            });
+            priceData.forEach((price, i) => { const x = i * stepX; const y = canvas.height - ((price - min) / range) * canvas.height; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
             ctx.stroke();
-
-            const lastIdx = priceData.length - 1;
-            const lastX = lastIdx * stepX;
-            const lastY = canvas.height - ((priceData[lastIdx] - min) / range) * canvas.height;
+            const lastIdx = priceData.length - 1, lastX = lastIdx * stepX, lastY = canvas.height - ((priceData[lastIdx] - min) / range) * canvas.height;
             ctx.beginPath(); ctx.arc(lastX, lastY, 4, 0, Math.PI * 2); ctx.fillStyle = isDark ? '#ffffff' : '#1e293b'; ctx.fill();
             ctx.beginPath(); ctx.arc(lastX, lastY, 8, 0, Math.PI * 2); ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(30, 41, 59, 0.2)'; ctx.fill();
             ctx.lineTo(canvas.width, canvas.height); ctx.lineTo(0, canvas.height); ctx.closePath();
@@ -1727,92 +771,53 @@
             gradient.addColorStop(0, isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(124, 58, 237, 0.1)');
             gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
             ctx.fillStyle = gradient; ctx.fill();
-
             const rightLabels = document.getElementById('axisLabelsRight');
             if(rightLabels) {
                 const labels = rightLabels.querySelectorAll('.axis-label-r');
-                for(let i=0; i<labels.length; i++) {
-                    const yPos = (canvas.height / 5) * (labels.length - i);
-                    const priceAtLevel = min + ((canvas.height - yPos) / canvas.height) * range;
-                    labels[i].innerText = priceAtLevel.toFixed(2);
-                }
+                for(let i=0; i<labels.length; i++) { const yPos = (canvas.height / 5) * (labels.length - i); labels[i].innerText = (min + ((canvas.height - yPos) / canvas.height) * range).toFixed(2); }
             }
             const bottomLabels = document.querySelector('.axis-labels-bottom');
             if(bottomLabels && timeData.length > 0) {
-                const labels = bottomLabels.querySelectorAll('.axis-label-b');
-                const step = Math.floor(timeData.length / 5);
-                for(let i=0; i<labels.length; i++) {
-                    const idx = Math.min(i * step, timeData.length - 1);
-                    labels[i].innerText = formatTime(timeData[idx]);
-                }
+                const labels = bottomLabels.querySelectorAll('.axis-label-b'), step = Math.floor(timeData.length / 5);
+                for(let i=0; i<labels.length; i++) { labels[i].innerText = formatTime(timeData[Math.min(i * step, timeData.length - 1)]); }
             }
         }
-
         function updateChart() {
             const change = (Math.random() - 0.5) * 3;
             currentPrice += change;
             const now = Math.floor(Date.now() / 1000);
-            priceData.push(currentPrice);
-            timeData.push(now);
+            priceData.push(currentPrice); timeData.push(now);
             if (priceData.length > MAX_POINTS) { priceData.shift(); timeData.shift(); }
-            const priceEl = document.getElementById('currentPrice');
-            const chartPriceEl = document.getElementById('chart-price-display');
-            if(priceEl) priceEl.innerText = currentPrice.toFixed(2);
-            if(chartPriceEl) chartPriceEl.innerText = currentPrice.toFixed(2);
+            document.getElementById('currentPrice').innerText = currentPrice.toFixed(2);
+            document.getElementById('chart-price-display').innerText = currentPrice.toFixed(2);
             updateDigitStats(currentPrice);
             drawChart();
         }
-
         for(let i=0; i<MAX_POINTS; i++) updateChart();
         setInterval(updateChart, 1000);
         window.addEventListener('resize', resizeCanvas);
         setTimeout(resizeCanvas, 100);
 
-        function toggleVolatilityDropdown(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('volatility-dropdown');
-            if (dropdown) dropdown.classList.toggle('show');
-        }
-
+        function toggleVolatilityDropdown(event) { event.stopPropagation(); document.getElementById('volatility-dropdown').classList.toggle('show'); }
         function selectVolatility(name, element) {
-            const selectedEl = document.getElementById('selected-volatility');
-            if(selectedEl) selectedEl.textContent = name.split(' ')[1] + ' ' + name.split(' ')[2];
-            document.querySelectorAll('.volatility-item').forEach(item => { item.classList.remove('active'); });
+            document.getElementById('selected-volatility').textContent = name.split(' ')[1] + ' ' + name.split(' ')[2];
+            document.querySelectorAll('.volatility-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-            const dropdown = document.getElementById('volatility-dropdown');
-            if (dropdown) dropdown.classList.remove('show');
+            document.getElementById('volatility-dropdown').classList.remove('show');
             updateChartForVolatility(name);
         }
-
         function updateChartForVolatility(volatilityName) {
-            const basePrices = {
-                'Volatility 10 (1s) Index': 9607.39, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67,
-                'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23,
-                'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45
-            };
+            const basePrices = { 'Volatility 10 (1s) Index': 9607.39, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
             currentPrice = basePrices[volatilityName] || 9607.39;
             priceData = []; timeData = [];
-            for(let i=0; i<MAX_POINTS; i++) {
-                priceData.push(currentPrice + (Math.random() - 0.5) * 10);
-                timeData.push(Math.floor(Date.now() / 1000) - (MAX_POINTS - i));
-            }
+            for(let i=0; i<MAX_POINTS; i++) { priceData.push(currentPrice + (Math.random() - 0.5) * 10); timeData.push(Math.floor(Date.now() / 1000) - (MAX_POINTS - i)); }
             drawChart();
         }
-
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('volatility-dropdown');
             const button = event.target.closest('button');
-            if (dropdown && (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown'))) {
-                dropdown.classList.remove('show');
-            }
+            if (dropdown && (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown'))) { dropdown.classList.remove('show'); }
         });
-
-        let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
-        
-        // Trading State
-        let isTrading = false;
-        let isAutoMode = true;
-        let currentTradeDirection = null;
 
         function setStake(val) { const el = document.getElementById('stakeAmount'); if(el) el.value = val; }
         function adjustStake(delta) {
@@ -1826,20 +831,15 @@
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             isAutoMode = (mode === 'AUTO');
-            if (!isAutoMode && isTrading) {
-                stopAutoTrade();
-            }
+            if (!isAutoMode && isTrading) { stopAutoTrade(); }
             updateAdvancedSettingsVisibility();
         }
 
         function updateAdvancedSettingsVisibility() {
             const advancedSettings = document.getElementById('advancedSettings');
             if (advancedSettings) {
-                if (isAutoMode) {
-                    advancedSettings.classList.add('show');
-                } else {
-                    advancedSettings.classList.remove('show');
-                }
+                if (isAutoMode) { advancedSettings.classList.add('show'); } 
+                else { advancedSettings.classList.remove('show'); }
             }
         }
 
@@ -1847,12 +847,10 @@
             if (isTrading) return;
             isTrading = true;
             currentTradeDirection = direction;
-            
             const btnEven = document.getElementById('btnEven');
             const btnOdd = document.getElementById('btnOdd');
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             
-            // Deduct stake from balance immediately
             if (currentAccount === 'demo') {
                 demoBalance -= stake;
                 localStorage.setItem('obx_demo_balance', demoBalance);
@@ -1868,28 +866,19 @@
                 btnOdd.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
                 btnEven.className = 'btn-trade btn-grayed';
             }
-
-            setTimeout(() => {
-                executeTrade(direction);
-            }, 1000);
+            setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
         function executeTrade(direction) {
-            const won = Math.random() > 0.5;
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             const lastDigit = Math.floor(currentPrice) % 10;
             const isEven = lastDigit % 2 === 0;
-            const actualWin = (direction === 'EVEN' && isEven) || (direction === 'ODD' && !isEven);
-            
-            // Use actualWin for realistic trading
-            const tradeWon = actualWin;
-            const winDigit = lastDigit;
+            const tradeWon = (direction === 'EVEN' && isEven) || (direction === 'ODD' && !isEven);
             
             if (tradeWon) {
                 stats.wins++;
                 const payout = stake * 0.952;
                 stats.pnl += payout;
-                // Add payout back to balance (stake was already deducted)
                 if (currentAccount === 'demo') {
                     demoBalance += stake + payout;
                     localStorage.setItem('obx_demo_balance', demoBalance);
@@ -1899,22 +888,16 @@
             } else {
                 stats.losses++;
                 stats.pnl -= stake;
-                // Stake already deducted, no need to deduct again
                 playLossSound();
             }
             stats.total++;
-            
             updateLiveStats();
-            updateDigitStats(currentPrice, tradeWon, winDigit);
+            updateDigitStats(currentPrice, tradeWon, lastDigit);
 
             if (isAutoMode) {
                 const targetProfit = parseFloat(document.getElementById('targetProfitInput').value) || 999999;
                 const stopLoss = parseFloat(document.getElementById('stopLossInput').value) || 999999;
-                
-                if (stats.pnl >= targetProfit || Math.abs(stats.pnl) >= stopLoss) {
-                    stopAutoTrade();
-                    return;
-                }
+                if (stats.pnl >= targetProfit || Math.abs(stats.pnl) >= stopLoss) { stopAutoTrade(); return; }
                 
                 const activeBtn = direction === 'EVEN' ? document.getElementById('btnEven') : document.getElementById('btnOdd');
                 activeBtn.className = 'btn-trade btn-stop';
@@ -1943,12 +926,10 @@
         function resetTradeButtons() {
             const btnEven = document.getElementById('btnEven');
             const btnOdd = document.getElementById('btnOdd');
-            
             btnEven.className = 'btn-trade btn-even';
             btnEven.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
             btnEven.style.pointerEvents = 'auto';
             btnEven.onclick = () => checkBalanceAndTrade('EVEN');
-            
             btnOdd.className = 'btn-trade btn-odd';
             btnOdd.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
             btnOdd.style.pointerEvents = 'auto';
@@ -1998,9 +979,7 @@
             try {
                 const { data: { user } } = await obxSupabase.auth.getUser();
                 if(!user) return alert("Please login first via index.html");
-                const { error } = await obxSupabase.from('trades').insert({
-                    user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN'
-                });
+                const { error } = await obxSupabase.from('trades').insert({ user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN' });
                 if(error) console.error(error);
             } catch(e) { console.error("Trade error:", e); }
         }
