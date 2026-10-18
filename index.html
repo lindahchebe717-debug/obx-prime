@@ -524,7 +524,7 @@
             color: var(--danger-red);
         }
 
-        /* Chart - FIXED with inline SVG */
+        /* Chart */
         .chart-container {
             height: 150px;
             background: linear-gradient(180deg, rgba(239, 68, 68, 0.15), transparent);
@@ -576,17 +576,17 @@
             justify-content: space-between;
             padding: 0.625rem 0;
             border-bottom: 1px solid var(--border-color);
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.4s ease;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateX(-20px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
             }
         }
 
@@ -1252,7 +1252,6 @@
                     <p id="btcChange">-0.13%</p>
                 </div>
             </div>
-            <!-- FIXED: Using inline SVG instead of background image -->
             <div class="chart-container" id="chartContainer">
                 <svg id="liveChart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
             </div>
@@ -1262,84 +1261,6 @@
                 <span class="live-dot"></span>
                 LIVE TRADES
             </h4>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar up">↑</div>
-                    <div class="trade-info">
-                        <h5>Lindah</h5>
-                        <p>just now</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="green">$20</h5>
-                    <p>Higher</p>
-                </div>
-            </div>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar up">↑</div>
-                    <div class="trade-info">
-                        <h5>Samson</h5>
-                        <p>1 min ago</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="green">$10</h5>
-                    <p>Higher</p>
-                </div>
-            </div>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar down">↓</div>
-                    <div class="trade-info">
-                        <h5>Sharon</h5>
-                        <p>2 min ago</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="red">$5</h5>
-                    <p>Lower</p>
-                </div>
-            </div>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar up">↑</div>
-                    <div class="trade-info">
-                        <h5>Laban</h5>
-                        <p>3 min ago</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="green">$10</h5>
-                    <p>Higher</p>
-                </div>
-            </div>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar up">↑</div>
-                    <div class="trade-info">
-                        <h5>Jayden</h5>
-                        <p>4 min ago</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="green">$25</h5>
-                    <p>Higher</p>
-                </div>
-            </div>
-            <div class="trade-item">
-                <div class="trade-left">
-                    <div class="trade-avatar down">↓</div>
-                    <div class="trade-info">
-                        <h5>Carolyne</h5>
-                        <p>5 min ago</p>
-                    </div>
-                </div>
-                <div class="trade-right">
-                    <h5 class="red">$50</h5>
-                    <p>Lower</p>
-                </div>
-            </div>
         </div>
         <button class="btn-start-trading" onclick="openAuthModal('signup')">Start Trading</button>
     </section>
@@ -1555,57 +1476,6 @@
                 </div>
             </div>
         </div>
-        <div class="testimonial-card">
-            <div class="stars">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <blockquote>"Started on the demo, moved to live in a week. Withdrawals have never let me down."</blockquote>
-            <div class="testimonial-author">
-                <div class="author-avatar">AS</div>
-                <div class="author-info">
-                    <h5>Amina S.</h5>
-                    <p>Lagos</p>
-                </div>
-            </div>
-        </div>
-        <div class="testimonial-card">
-            <div class="stars">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <blockquote>"Execution is genuinely instant. Perfect for the quick in-and-out trades I like."</blockquote>
-            <div class="testimonial-author">
-                <div class="author-avatar">DR</div>
-                <div class="author-info">
-                    <h5>Diego R.</h5>
-                    <p>Madrid</p>
-                </div>
-            </div>
-        </div>
-        <div class="testimonial-card">
-            <div class="stars">
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <blockquote>"The mobile app is beautiful and dead simple. I trade on my commute every morning."</blockquote>
-            <div class="testimonial-author">
-                <div class="author-avatar">GW</div>
-                <div class="author-info">
-                    <h5>Grace W.</h5>
-                    <p>Mombasa</p>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- CTA Section -->
@@ -1729,13 +1599,11 @@
                 if (authMode === 'signin') {
                     const { data, error } = await obxSupabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    
                     localStorage.setItem('obx_token', data.session.access_token);
                     window.location.href = 'dashboard.html';
                 } else {
                     const { data, error } = await obxSupabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    
                     alert('Account created! Please check your email to verify your account.');
                     closeAuthModal();
                 }
@@ -1750,9 +1618,7 @@
         }
 
         document.getElementById('authModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAuthModal();
-            }
+            if (e.target === this) closeAuthModal();
         });
 
         // Ticker price updates
@@ -1766,15 +1632,11 @@
             });
         }, 5000);
 
-        // ============================================
-        // FIXED CHART: Using inline SVG that actually renders
-        // ============================================
+        // Chart Logic
         let chartData = [];
         const maxDataPoints = 60;
         let currentPrice = 43199.69;
-        let previousPrice = 43199.69;
 
-        // Initialize chart data with realistic movement
         for (let i = 0; i < maxDataPoints; i++) {
             currentPrice += (Math.random() - 0.5) * 30;
             chartData.push(currentPrice);
@@ -1790,7 +1652,6 @@
             const maxPrice = Math.max(...chartData);
             const range = maxPrice - minPrice || 1;
             
-            // Build path
             let pathD = '';
             const points = [];
             
@@ -1799,35 +1660,28 @@
                 const y = padding + (1 - (chartData[i] - minPrice) / range) * (height - padding * 2);
                 points.push({x, y});
                 
-                if (i === 0) {
-                    pathD += `M ${x} ${y}`;
-                } else {
-                    // Smooth curve using quadratic bezier
+                if (i === 0) pathD += `M ${x} ${y}`;
+                else {
                     const prevX = points[i-1].x;
                     const prevY = points[i-1].y;
-                    const cpX = (prevX + x) / 2;
-                    pathD += ` Q ${cpX} ${prevY} ${x} ${y}`;
+                    pathD += ` Q ${(prevX + x) / 2} ${prevY} ${x} ${y}`;
                 }
             }
             
-            // Create area fill path
             const lastPoint = points[points.length - 1];
             const firstPoint = points[0];
             const areaPath = `${pathD} L ${lastPoint.x} ${height} L ${firstPoint.x} ${height} Z`;
-            
-            // Determine color based on trend
             const isUp = chartData[chartData.length - 1] >= chartData[0];
             const lineColor = isUp ? '#10b981' : '#ef4444';
-            const gradientId = 'chartGradient';
             
             svg.innerHTML = `
                 <defs>
-                    <linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.3"/>
                         <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
                     </linearGradient>
                 </defs>
-                <path d="${areaPath}" fill="url(#${gradientId})"/>
+                <path d="${areaPath}" fill="url(#chartGradient)"/>
                 <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="${lineColor}">
                     <animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite"/>
@@ -1835,42 +1689,27 @@
                 </circle>
             `;
             
-            // Update container background color
-            const container = document.getElementById('chartContainer');
-            container.style.background = `linear-gradient(180deg, ${isUp ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}, transparent)`;
+            document.getElementById('chartContainer').style.background = `linear-gradient(180deg, ${isUp ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}, transparent)`;
         }
 
         function updateChart() {
-            previousPrice = currentPrice;
-            // Realistic small movements
-            const change = (Math.random() - 0.5) * 25;
-            currentPrice += change;
+            currentPrice += (Math.random() - 0.5) * 25;
             chartData.push(currentPrice);
-            
-            if (chartData.length > maxDataPoints) {
-                chartData.shift();
-            }
-            
+            if (chartData.length > maxDataPoints) chartData.shift();
             drawChart();
             
-            // Update price display
-            const priceElement = document.getElementById('btcPrice');
-            const changeElement = document.getElementById('btcChange');
             const priceChange = ((currentPrice - 43199.69) / 43199.69 * 100).toFixed(2);
-            
-            priceElement.textContent = '$' + currentPrice.toFixed(2);
-            changeElement.textContent = (priceChange >= 0 ? '+' : '') + priceChange + '%';
-            changeElement.style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
-            priceElement.style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
+            document.getElementById('btcPrice').textContent = '$' + currentPrice.toFixed(2);
+            document.getElementById('btcChange').textContent = (priceChange >= 0 ? '+' : '') + priceChange + '%';
+            document.getElementById('btcChange').style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
+            document.getElementById('btcPrice').style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
         }
 
-        // Initial draw
         drawChart();
-        // Update chart every 1.5 seconds
         setInterval(updateChart, 1500);
 
         // ============================================
-        // FIXED LIVE TRADES: 30+ diverse names, no repetition
+        // DYNAMIC LIVE TRADES FEED (Constantly Moving)
         // ============================================
         const traderNames = [
             'Lindah', 'Sharon', 'Samson', 'Laban', 'Jayden', 'Carolyne', 'Musa',
@@ -1878,77 +1717,79 @@
             'Daniel', 'Naomi', 'Caleb', 'Lydia', 'Isaac', 'Hannah',
             'Samuel', 'Rebecca', 'David', 'Sarah', 'Michael', 'Grace',
             'James', 'Martha', 'Paul', 'Deborah', 'John', 'Rachel',
-            'Stephen', 'Abigail', 'Timothy', 'Miriam', 'Andrew', 'Elizabeth'
+            'Stephen', 'Abigail', 'Timothy', 'Miriam', 'Andrew', 'Elizabeth',
+            'Kevin', 'Diana', 'Mark', 'Lucy', 'George', 'Susan', 'Alex', 'Emma'
         ];
         
-        const tradeAmounts = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100];
-        const timeLabels = ['just now', 'just now', 'just now', '1 min ago', '1 min ago', '2 min ago', '3 min ago', '4 min ago', '5 min ago'];
-        
-        // Track recently used names to avoid immediate repetition
+        const tradeAmounts = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200];
         let recentlyUsedNames = [];
-        const recentNamesLimit = 8;
 
         function getRandomName() {
-            // Filter out recently used names
             const available = traderNames.filter(name => !recentlyUsedNames.includes(name));
             const pool = available.length > 0 ? available : traderNames;
             const name = pool[Math.floor(Math.random() * pool.length)];
-            
             recentlyUsedNames.push(name);
-            if (recentlyUsedNames.length > recentNamesLimit) {
-                recentlyUsedNames.shift();
-            }
-            
+            if (recentlyUsedNames.length > 15) recentlyUsedNames.shift();
             return name;
         }
 
-        function addLiveTrade() {
-            const tradesContainer = document.getElementById('liveTrades');
-            const name = getRandomName();
-            const amount = tradeAmounts[Math.floor(Math.random() * tradeAmounts.length)];
-            const isHigher = Math.random() > 0.45; // Slightly more wins
-            const time = timeLabels[Math.floor(Math.random() * timeLabels.length)];
-            
-            const tradeItem = document.createElement('div');
-            tradeItem.className = 'trade-item';
-            tradeItem.innerHTML = `
-                <div class="trade-left">
-                    <div class="trade-avatar ${isHigher ? 'up' : 'down'}">${isHigher ? '↑' : '↓'}</div>
-                    <div class="trade-info">
-                        <h5>${name}</h5>
-                        <p>${time}</p>
+        function createTradeHTML(name, amount, isHigher, timeText) {
+            return `
+                <div class="trade-item">
+                    <div class="trade-left">
+                        <div class="trade-avatar ${isHigher ? 'up' : 'down'}">${isHigher ? '↑' : '↓'}</div>
+                        <div class="trade-info">
+                            <h5>${name}</h5>
+                            <p class="trade-time">${timeText}</p>
+                        </div>
+                    </div>
+                    <div class="trade-right">
+                        <h5 class="${isHigher ? 'green' : 'red'}">$${amount}</h5>
+                        <p>${isHigher ? 'Higher' : 'Lower'}</p>
                     </div>
                 </div>
-                <div class="trade-right">
-                    <h5 class="${isHigher ? 'green' : 'red'}">$${amount}</h5>
-                    <p>${isHigher ? 'Higher' : 'Lower'}</p>
-                </div>
             `;
-
-            // Insert after the header (first child)
-            const header = tradesContainer.querySelector('h4');
-            if (header && header.nextSibling) {
-                tradesContainer.insertBefore(tradeItem, header.nextSibling);
-            } else {
-                tradesContainer.appendChild(tradeItem);
-            }
-
-            // Keep only 6 trades visible
-            const tradeItems = tradesContainer.querySelectorAll('.trade-item');
-            while (tradeItems.length > 6) {
-                tradesContainer.removeChild(tradeItems[tradeItems.length - 1]);
-            }
         }
 
-        // Add new trade every 2-4 seconds (randomized)
-        function scheduleNextTrade() {
-            const delay = 2000 + Math.random() * 2000;
-            setTimeout(() => {
-                addLiveTrade();
-                scheduleNextTrade();
-            }, delay);
+        function updateLiveFeed() {
+            const container = document.getElementById('liveTrades');
+            const header = container.querySelector('h4');
+            const existingItems = Array.from(container.querySelectorAll('.trade-item'));
+            
+            // 1. Create new trade
+            const newName = getRandomName();
+            const newAmount = tradeAmounts[Math.floor(Math.random() * tradeAmounts.length)];
+            const isHigher = Math.random() > 0.45;
+            const newTradeHTML = createTradeHTML(newName, newAmount, isHigher, 'just now');
+            
+            // 2. Shift times of existing trades
+            const timeLabels = ['1 min ago', '2 min ago', '3 min ago', '4 min ago', '5 min ago', '6 min ago'];
+            let newHTML = header ? header.outerHTML : '<h4><span class="live-dot"></span> LIVE TRADES</h4>';
+            newHTML += newTradeHTML;
+            
+            existingItems.forEach((item, index) => {
+                if (index < 5) { // Keep up to 5 old trades
+                    const clone = item.cloneNode(true);
+                    const timeEl = clone.querySelector('.trade-time');
+                    if (timeEl) timeEl.textContent = timeLabels[index];
+                    newHTML += clone.outerHTML;
+                }
+            });
+            
+            container.innerHTML = newHTML;
         }
-        scheduleNextTrade();
+
+        // Pre-populate initial 6 trades
+        const initContainer = document.getElementById('liveTrades');
+        const initTimes = ['just now', '1 min ago', '2 min ago', '3 min ago', '4 min ago', '5 min ago'];
+        let initHTML = '<h4><span class="live-dot"></span> LIVE TRADES</h4>';
+        for (let i = 0; i < 6; i++) {
+            initHTML += createTradeHTML(getRandomName(), tradeAmounts[Math.floor(Math.random() * tradeAmounts.length)], Math.random() > 0.45, initTimes[i]);
+        }
+        initContainer.innerHTML = initHTML;
+
+        // Add a new trade and shift times every 3 seconds
+        setInterval(updateLiveFeed, 3000);
     </script>
 </body>
 </html>
