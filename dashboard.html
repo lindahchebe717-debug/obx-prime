@@ -838,7 +838,6 @@
         function updateAdvancedSettingsVisibility() {
             const advancedSettings = document.getElementById('advancedSettings');
             if (advancedSettings) {
-                // ✅ FIX 1: Always show in both AUTO and MANUAL modes as requested
                 advancedSettings.classList.add('show');
             }
         }
@@ -913,7 +912,6 @@
                     }
                 }, 1500);
             } else {
-                // ✅ FIX 2: Reset trading state in MANUAL mode so user can trade again immediately
                 isTrading = false;
                 currentTradeDirection = null;
                 resetTradeButtons();
@@ -982,7 +980,15 @@
             try {
                 const { data: { user } } = await obxSupabase.auth.getUser();
                 if(!user) return alert("Please login first via index.html");
-                const { error } = await obxSupabase.from('trades').insert({ user_id: user.id, asset: 'VOL_10', direction: direction, stake: stake, entry_price: entryPrice, status: 'OPEN' });
+                const { error } = await obxSupabase.from('trades').insert({ 
+                    user_id: user.id, 
+                    asset: 'VOL_10', 
+                    direction: direction, 
+                    stake: stake, 
+                    entry_price: entryPrice, 
+                    status: 'OPEN',
+                    account_type: currentAccount // ✅ ADDED THIS LINE TO FILTER BY ACCOUNT TYPE
+                });
                 if(error) console.error(error);
             } catch(e) { console.error("Trade error:", e); }
         }
