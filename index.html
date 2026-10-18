@@ -2,68 +2,1567 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | Binary Trading Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Crypto Trading Platform - 95% Payouts</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-dark: #0f0a1f;
+            --bg-card: #1a1535;
+            --primary-purple: #7c3aed;
+            --primary-pink: #ec4899;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* App Banner */
+        .app-banner {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .app-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .app-banner-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-banner-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: white;
+        }
+
+        .app-banner-text h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .app-banner-text p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .app-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-banner-download {
+            background: white;
+            color: var(--primary-purple);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .app-banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(15, 10, 31, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 48px;
+            z-index: 999;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo svg {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-link {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem;
+        }
+
+        .btn-get-started {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 3rem 1rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary-cta {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.875rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary-cta {
+            background: transparent;
+            color: var(--text-white);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 0.875rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .feature-pills {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+        }
+
+        .pill svg {
+            width: 1rem;
+            height: 1rem;
+            color: var(--primary-purple);
+        }
+
+        /* Crypto Ticker */
+        .crypto-ticker {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            overflow: hidden;
+        }
+
+        .ticker-wrapper {
+            display: flex;
+            animation: scroll 30s linear infinite;
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 1.5rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ticker-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .ticker-icon.btc { background: #f7931a; }
+        .ticker-icon.eth { background: #627eea; }
+        .ticker-icon.sol { background: #00ffa3; color: #000; }
+        .ticker-icon.bnb { background: #f3ba2f; }
+        .ticker-icon.xrp { background: #23292f; }
+
+        .ticker-info h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .ticker-info p {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .ticker-price {
+            text-align: right;
+        }
+
+        .ticker-price h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .ticker-price p {
+            font-size: 0.75rem;
+            color: var(--success-green);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Live Trading Preview */
+        .live-preview {
+            padding: 2rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .price-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .asset-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            background: #f7931a;
+        }
+
+        .asset-info h3 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .asset-info p {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .live-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-green);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .price-right {
+            text-align: right;
+        }
+
+        .price-right h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--danger-red);
+        }
+
+        .price-right p {
+            font-size: 0.75rem;
+            color: var(--danger-red);
+        }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            height: 150px;
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.2), transparent);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0,150 Q50,120 100,140 T200,100 T300,130 T400,80 T500,110 T600,60 T700,90 T800,50 T900,100 T1000,70 T1100,120 T1200,100' fill='none' stroke='%23ef4444' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .live-trades {
+            margin-top: 1rem;
+        }
+
+        .live-trades h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-gray);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .trade-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .trade-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trade-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .trade-avatar.up { background: var(--success-green); }
+        .trade-avatar.down { background: var(--danger-red); }
+
+        .trade-info h5 {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .trade-info p {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .trade-right {
+            text-align: right;
+        }
+
+        .trade-right h5 {
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .trade-right h5.green { color: var(--success-green); }
+        .trade-right h5.red { color: var(--danger-red); }
+
+        .trade-right p {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+
+        .btn-start-trading {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.875rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        /* Why Section */
+        .why-section {
+            padding: 3rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .section-header h2 span {
+            color: var(--primary-purple);
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        /* Steps Section */
+        .steps-section {
+            padding: 3rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin: 0 auto 1rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 2rem 1rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 3rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stars svg {
+            width: 1rem;
+            height: 1rem;
+            fill: #fbbf24;
+        }
+
+        .testimonial-card blockquote {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .author-info h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .author-info p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 3rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .cta-card h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary-purple);
+            border: none;
+            padding: 1rem;
+            border-radius: 0.875rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 1rem;
+            border-radius: 0.875rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* App Download Card */
+        .app-card {
+            padding: 3rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .app-download-card {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .phone-mockup {
+            width: 120px;
+            height: 240px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 1.5rem;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .phone-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .download-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-green);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-bottom: 1rem;
+        }
+
+        .app-download-card h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-download-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-features {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-white);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .section-header h2 { font-size: 2rem; }
+            .feature-pills { grid-template-columns: repeat(4, 1fr); }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
 </head>
-<body class="auth-wrapper">
-    <div class="auth-card">
-        <h1 class="logo" style="text-align:center; margin-bottom: 0.5rem;">OBX PRIME</h1>
-        <p style="text-align:center; color:var(--text-gray); font-size:0.9rem; margin-bottom:2rem;">Trade Volatility Indices with 95% Payouts</p>
-        
-        <div class="input-group">
-            <label>Email Address</label>
-            <input type="email" id="email" placeholder="you@example.com">
+<body>
+    <!-- App Banner -->
+    <div class="app-banner" id="appBanner">
+        <div class="app-banner-content">
+            <div class="app-banner-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </div>
+            <div class="app-banner-text">
+                <h4>Get the OBX PRIME App</h4>
+                <p>Get a better trading experience</p>
+            </div>
         </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="password" placeholder="••••••••">
+        <div class="app-banner-actions">
+            <button class="app-banner-download">Download</button>
+            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'">✕</button>
         </div>
-        
-        <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="handleSignin()">Sign In to Trade</button>
-        
-        <p style="text-align:center; margin-top:1.5rem; color:var(--text-gray); font-size:0.85rem;">
-            New trader? <a href="signup.html" style="color:var(--primary-purple);">Create Free Account</a>
-        </p>
     </div>
 
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/>
+                    <path d="M18 17l-5-5-4 4-3-3"/>
+                </svg>
+                OBX PRIME
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
+        </div>
+        <div class="nav-right">
+            <a href="signin.html" class="nav-link">Log in</a>
+            <button class="btn-get-started" onclick="window.location.href='signup.html'">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="trust-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+            Trusted by 1M+ traders worldwide
+        </div>
+        <h1>Master the Markets,<br><span>On Your Terms</span></h1>
+        <p>Tap into 100+ global markets with instant execution and payouts up to 95%. Fund with crypto and start from just $10.</p>
+        <div class="hero-buttons">
+            <button class="btn-primary-cta" onclick="window.location.href='signup.html'">
+                Get Started — It's Free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </button>
+            <button class="btn-secondary-cta" onclick="window.location.href='dashboard.html'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Try Demo
+            </button>
+        </div>
+        <div class="feature-pills">
+            <div class="pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                &lt;1s execution
+            </div>
+            <div class="pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Up to 95% payout
+            </div>
+            <div class="pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Bank-level security
+            </div>
+            <div class="pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="1" y1="4" x2="6" y2="4"/>
+                    <line x1="1" y1="20" x2="6" y2="20"/>
+                    <line x1="18" y1="4" x2="23" y2="4"/>
+                    <line x1="18" y1="20" x2="23" y2="20"/>
+                </svg>
+                Zero fees
+            </div>
+        </div>
+    </section>
+
+    <!-- Crypto Ticker -->
+    <div class="crypto-ticker">
+        <div class="ticker-wrapper">
+            <div class="ticker-item">
+                <div class="ticker-icon btc">₿</div>
+                <div class="ticker-info">
+                    <h4>BTC</h4>
+                    <p>$43,256</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+2.34%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon eth">Ξ</div>
+                <div class="ticker-info">
+                    <h4>ETH</h4>
+                    <p>$2,284</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+1.87%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon sol">◎</div>
+                <div class="ticker-info">
+                    <h4>SOL</h4>
+                    <p>$98.45</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--danger-red)">-0.52%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon bnb">B</div>
+                <div class="ticker-info">
+                    <h4>BNB</h4>
+                    <p>$312.78</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+3.21%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon xrp">X</div>
+                <div class="ticker-info">
+                    <h4>XRP</h4>
+                    <p>$0.62</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--danger-red)">-1.15%</h4>
+                </div>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="ticker-item">
+                <div class="ticker-icon btc">₿</div>
+                <div class="ticker-info">
+                    <h4>BTC</h4>
+                    <p>$43,256</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+2.34%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon eth">Ξ</div>
+                <div class="ticker-info">
+                    <h4>ETH</h4>
+                    <p>$2,284</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+1.87%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon sol">◎</div>
+                <div class="ticker-info">
+                    <h4>SOL</h4>
+                    <p>$98.45</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--danger-red)">-0.52%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon bnb">B</div>
+                <div class="ticker-info">
+                    <h4>BNB</h4>
+                    <p>$312.78</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--success-green)">+3.21%</h4>
+                </div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon xrp">X</div>
+                <div class="ticker-info">
+                    <h4>XRP</h4>
+                    <p>$0.62</p>
+                </div>
+                <div class="ticker-price">
+                    <h4 style="color: var(--danger-red)">-1.15%</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Trading Preview -->
+    <section class="live-preview">
+        <div class="price-card">
+            <div class="price-header">
+                <div class="price-left">
+                    <div class="asset-icon">₿</div>
+                    <div class="asset-info">
+                        <h3>BTC/USD</h3>
+                        <p>Bitcoin / US Dollar</p>
+                    </div>
+                    <span class="live-badge">LIVE</span>
+                </div>
+                <div class="price-right">
+                    <h3>$43,199.69</h3>
+                    <p>-0.13%</p>
+                </div>
+            </div>
+            <div class="chart-placeholder">
+                <div class="chart-line"></div>
+            </div>
+        </div>
+        <div class="live-trades">
+            <h4>
+                <span class="live-dot"></span>
+                LIVE TRADES
+            </h4>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar up">↑</div>
+                    <div class="trade-info">
+                        <h5>Emma</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="green">$20</h5>
+                    <p>Higher</p>
+                </div>
+            </div>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar up">↑</div>
+                    <div class="trade-info">
+                        <h5>Chris</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="green">$10</h5>
+                    <p>Higher</p>
+                </div>
+            </div>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar down">↓</div>
+                    <div class="trade-info">
+                        <h5>Nina</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="red">$5</h5>
+                    <p>Lower</p>
+                </div>
+            </div>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar up">↑</div>
+                    <div class="trade-info">
+                        <h5>David</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="green">$10</h5>
+                    <p>Higher</p>
+                </div>
+            </div>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar up">↑</div>
+                    <div class="trade-info">
+                        <h5>Chris</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="green">$25</h5>
+                    <p>Higher</p>
+                </div>
+            </div>
+            <div class="trade-item">
+                <div class="trade-left">
+                    <div class="trade-avatar down">↓</div>
+                    <div class="trade-info">
+                        <h5>Maria</h5>
+                        <p>just now</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="red">$50</h5>
+                    <p>Lower</p>
+                </div>
+            </div>
+        </div>
+        <button class="btn-start-trading" onclick="window.location.href='signup.html'">Start Trading</button>
+    </section>
+
+    <!-- Why Section -->
+    <section class="why-section">
+        <div class="section-header">
+            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">WHY OBX PRIME</p>
+            <h2>Everything you need to trade with confidence</h2>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(245, 158, 11, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+            </div>
+            <h3>Instant Execution</h3>
+            <p>Orders fill in under a second — no lag, no requotes, no missed moments.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(16, 185, 129, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10"/>
+                </svg>
+            </div>
+            <h3>Safe & Secure</h3>
+            <p>Bank-grade encryption and segregated accounts keep your funds protected.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+            </div>
+            <h3>100+ Markets</h3>
+            <p>Forex, crypto, stocks, indices and commodities — all under one roof.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(239, 68, 68, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+            </div>
+            <h3>Zero Hidden Fees</h3>
+            <p>No charges on deposits or withdrawals. What you see is what you keep.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(14, 165, 233, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                    <line x1="12" y1="18" x2="12" y2="18"/>
+                </svg>
+            </div>
+            <h3>Built for Mobile</h3>
+            <p>A fast, native-feeling app that fits any screen and any pocket.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background: rgba(168, 85, 247, 0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <h3>Always-On Support</h3>
+            <p>Real people, round the clock, on live chat and email whenever you need.</p>
+        </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps-section">
+        <div class="section-header">
+            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">SIMPLE BY DESIGN</p>
+            <h2>From sign-up to profit in 3 steps</h2>
+        </div>
+        <div class="step-number">1</div>
+        <div class="feature-card" style="text-align: center;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="8.5" cy="7" r="4"/>
+                    <line x1="20" y1="8" x2="20" y2="14"/>
+                    <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+            </div>
+            <h3>Create Account</h3>
+            <p>Sign up free in under a minute — no paperwork to get going.</p>
+        </div>
+        <div class="step-number">2</div>
+        <div class="feature-card" style="text-align: center;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                    <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+            </div>
+            <h3>Add Funds</h3>
+            <p>Top up instantly with BTC, ETH, or USDT, from as little as $10.</p>
+        </div>
+        <div class="step-number">3</div>
+        <div class="feature-card" style="text-align: center;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
+                    <path d="M6 9H2v6h4z"/>
+                    <path d="M18 9h4v6h-4z"/>
+                    <path d="M12 3v18"/>
+                    <path d="M8 14l4 4 4-4"/>
+                </svg>
+            </div>
+            <h3>Trade & Win</h3>
+            <p>Pick an asset, call the direction, and cash in up to 95% profit.</p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="8.5" cy="7" r="4"/>
+                    <line x1="20" y1="8" x2="20" y2="14"/>
+                    <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+                <h3>1M+</h3>
+                <p>Active traders</p>
+            </div>
+            <div class="stat-item">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                <h3>$2B+</h3>
+                <p>Total traded</p>
+            </div>
+            <div class="stat-item">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <h3>150+</h3>
+                <p>Countries</p>
+            </div>
+            <div class="stat-item">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <h3>4.9/5</h3>
+                <p>User rating</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-header">
+            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">TRADER STORIES</p>
+            <h2>Loved by traders everywhere</h2>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"Crypto deposits land instantly and payouts hit my wallet in seconds. OBX PRIME just works."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">BO</div>
+                <div class="author-info">
+                    <h5>Brian O.</h5>
+                    <p>Nairobi</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"Clean, fast, no clutter. I place a trade in two taps and the charts never lag."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">PN</div>
+                <div class="author-info">
+                    <h5>Priya N.</h5>
+                    <p>Dubai</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"Tried a dozen platforms over the years — this one finally feels built for real traders."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">ML</div>
+                <div class="author-info">
+                    <h5>Marcus L.</h5>
+                    <p>Toronto</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"Started on the demo, moved to live in a week. Withdrawals have never let me down."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">AS</div>
+                <div class="author-info">
+                    <h5>Amina S.</h5>
+                    <p>Lagos</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"Execution is genuinely instant. Perfect for the quick in-and-out trades I like."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">DR</div>
+                <div class="author-info">
+                    <h5>Diego R.</h5>
+                    <p>Madrid</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="stars">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote>"The mobile app is beautiful and dead simple. I trade on my commute every morning."</blockquote>
+            <div class="testimonial-author">
+                <div class="author-avatar">GW</div>
+                <div class="author-info">
+                    <h5>Grace W.</h5>
+                    <p>Mombasa</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-card">
+            <h2>Your next trade starts here</h2>
+            <p>Join over a million traders on OBX PRIME. Open your free account in under a minute.</p>
+            <div class="cta-buttons">
+                <button class="btn-white" onclick="window.location.href='signup.html'">
+                    Create Free Account
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+                <button class="btn-outline-white" onclick="window.location.href='dashboard.html'">Try Demo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Download Card -->
+    <section class="app-card">
+        <div class="app-download-card">
+            <div class="phone-mockup">
+                <div class="phone-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </div>
+                <div style="position: absolute; bottom: -10px; right: -10px; background: var(--success-green); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-purple);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="download-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Android App Available
+            </div>
+            <h2>Your market, in your pocket</h2>
+            <p>Get the OBX PRIME app for a faster, smoother trading experience wherever you go.</p>
+            <button class="btn-white" onclick="window.location.href='download.html'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download App
+            </button>
+            <div class="app-features">
+                <span>🔒 Secure</span>
+                <span>⚡ Lightweight</span>
+                <span>🔔 Push Alerts</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            OBX PRIME
+        </div>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="support.html">Support</a>
+        </div>
+        <p>© 2026 OBX PRIME</p>
+    </footer>
+
     <script>
-        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        
-        let obxSupabase;
-        if (typeof window.supabase !== 'undefined' && typeof obxSupabase === 'undefined') {
-            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
-            console.log("✅ OBX Supabase client initialized on index.html");
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
         }
 
-        async function handleSignin() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-
-            if (!email || !password) return alert("Please enter both email and password");
-            if (!obxSupabase) return alert("System error: Supabase not loaded. Refresh page.");
-
-            try {
-                const { data, error } = await obxSupabase.auth.signInWithPassword({ email, password });
-                
-                if (error) {
-                    console.error("Sign in failed:", error);
-                    if (error.message.includes("Email not confirmed")) {
-                        return alert("📧 Email not verified! Check your inbox.");
-                    }
-                    return alert("Login failed: " + error.message);
-                }
-
-                localStorage.setItem('obx_token', data.session.access_token);
-                window.location.href = 'dashboard.html';
-                
-            } catch (err) {
-                console.error("Unexpected sign in error:", err);
-                alert("Unexpected error: " + err.message);
-            }
-        }
+        // Simulate live price updates
+        setInterval(() => {
+            const prices = document.querySelectorAll('.ticker-price h4');
+            prices.forEach(price => {
+                const isPositive = Math.random() > 0.5;
+                const change = (Math.random() * 5).toFixed(2);
+                price.textContent = (isPositive ? '+' : '-') + change + '%';
+                price.style.color = isPositive ? 'var(--success-green)' : 'var(--danger-red)';
+            });
+        }, 5000);
     </script>
 </body>
 </html>
