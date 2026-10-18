@@ -25,12 +25,108 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: auto;
+        }
+
         body {
             background: var(--bg-dark);
             color: var(--text-white);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.5;
-            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+        }
+
+        .auth-card h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .auth-switch a {
+            color: var(--primary-purple);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-white);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* App Banner */
@@ -164,6 +260,7 @@
             font-size: 0.875rem;
             font-weight: 600;
             padding: 0.5rem;
+            cursor: pointer;
         }
 
         .btn-get-started {
@@ -886,6 +983,27 @@
     </style>
 </head>
 <body>
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="authModal">
+        <button class="close-modal" onclick="closeAuthModal()">×</button>
+        <div class="auth-card">
+            <h2 id="authTitle">Sign In</h2>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="authEmail" placeholder="you@example.com">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" id="authSubmitBtn" onclick="handleAuth()">Sign In</button>
+            <div class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <a onclick="toggleAuthMode()">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
     <!-- App Banner -->
     <div class="app-banner" id="appBanner">
         <div class="app-banner-content">
@@ -928,8 +1046,8 @@
             </button>
         </div>
         <div class="nav-right">
-            <a href="signin.html" class="nav-link">Log in</a>
-            <button class="btn-get-started" onclick="window.location.href='signup.html'">Get Started</button>
+            <span class="nav-link" onclick="openAuthModal('signin')">Log in</span>
+            <button class="btn-get-started" onclick="openAuthModal('signup')">Get Started</button>
         </div>
     </nav>
 
@@ -946,7 +1064,7 @@
         <h1>Master the Markets,<br><span>On Your Terms</span></h1>
         <p>Tap into 100+ global markets with instant execution and payouts up to 95%. Fund with crypto and start from just $10.</p>
         <div class="hero-buttons">
-            <button class="btn-primary-cta" onclick="window.location.href='signup.html'">
+            <button class="btn-primary-cta" onclick="openAuthModal('signup')">
                 Get Started — It's Free
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -1206,7 +1324,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn-start-trading" onclick="window.location.href='signup.html'">Start Trading</button>
+        <button class="btn-start-trading" onclick="openAuthModal('signup')">Start Trading</button>
     </section>
 
     <!-- Why Section -->
@@ -1479,7 +1597,7 @@
             <h2>Your next trade starts here</h2>
             <p>Join over a million traders on OBX PRIME. Open your free account in under a minute.</p>
             <div class="cta-buttons">
-                <button class="btn-white" onclick="window.location.href='signup.html'">
+                <button class="btn-white" onclick="openAuthModal('signup')">
                     Create Free Account
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -1549,9 +1667,77 @@
     </footer>
 
     <script>
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        
+        let obxSupabase;
+        if (typeof window.supabase !== 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
+
+        let authMode = 'signin';
+
+        function openAuthModal(mode) {
+            authMode = mode;
+            document.getElementById('authModal').classList.add('active');
+            document.getElementById('authTitle').textContent = mode === 'signin' ? 'Sign In' : 'Sign Up';
+            document.getElementById('authSubmitBtn').textContent = mode === 'signin' ? 'Sign In' : 'Sign Up';
+            document.getElementById('authSwitchText').textContent = mode === 'signin' ? "Don't have an account?" : 'Already have an account?';
+            document.querySelector('.auth-switch a').textContent = mode === 'signin' ? 'Sign Up' : 'Sign In';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function toggleAuthMode() {
+            openAuthModal(authMode === 'signin' ? 'signup' : 'signin');
+        }
+
+        async function handleAuth() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            if (!obxSupabase) {
+                alert('System error: Supabase not loaded. Please refresh the page.');
+                return;
+            }
+
+            try {
+                if (authMode === 'signin') {
+                    const { data, error } = await obxSupabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    
+                    localStorage.setItem('obx_token', data.session.access_token);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const { data, error } = await obxSupabase.auth.signUp({ email, password });
+                    if (error) throw error;
+                    
+                    alert('Account created! Please check your email to verify your account.');
+                    closeAuthModal();
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                alert(error.message);
+            }
+        }
+
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
         }
+
+        // Close modal on outside click
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAuthModal();
+            }
+        });
 
         // Simulate live price updates
         setInterval(() => {
