@@ -42,17 +42,20 @@
         body.dark-theme .chart-wrapper,
         body.dark-theme .notif-dropdown,
         body.dark-theme .notif-modal,
-        body.dark-theme .account-dropdown {
+        body.dark-theme .account-dropdown,
+        body.dark-theme .insufficient-modal {
             box-shadow: none !important;
         }
         body.dark-theme .volatility-item,
         body.dark-theme .notif-item,
-        body.dark-theme .account-option {
+        body.dark-theme .account-option,
+        body.dark-theme .payment-method {
             border-bottom-color: rgba(255, 255, 255, 0.05);
         }
         body.dark-theme .volatility-item:hover,
         body.dark-theme .notif-item:hover,
-        body.dark-theme .account-option:hover {
+        body.dark-theme .account-option:hover,
+        body.dark-theme .payment-method:hover {
             background: rgba(124, 58, 237, 0.15);
         }
         body.dark-theme .volatility-item.active {
@@ -79,7 +82,7 @@
         }
         
         body.has-app-banner .top-header {
-            top: 64px; /* Push down exactly by banner height to prevent overlap */
+            top: 64px;
         }
 
         .header-left {
@@ -140,7 +143,6 @@
         .axis-labels-bottom { position: absolute; left: 16px; right: 60px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-b { font-size: 0.65rem; color: var(--text-gray); }
 
-        /* Keep all your existing styles */
         .icon-btn { 
             background: none; 
             border: none; 
@@ -150,7 +152,7 @@
             align-items: center; 
             justify-content: center; 
             transition: opacity 0.2s;
-            flex-shrink: 0; /* CRITICAL: Prevents icon squishing */
+            flex-shrink: 0;
         }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
@@ -370,8 +372,8 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             transition: all 0.2s;
-            flex-shrink: 0; /* CRITICAL: Prevents squishing */
-            white-space: nowrap; /* CRITICAL: Prevents text wrapping */
+            flex-shrink: 0;
+            white-space: nowrap;
         }
         .account-switcher:hover {
             background: rgba(124, 58, 237, 0.1);
@@ -580,6 +582,173 @@
             width: 16px;
             height: 16px;
             color: white;
+        }
+
+        /* =========================================
+           INSUFFICIENT BALANCE MODAL STYLES
+           ========================================= */
+        .insufficient-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .insufficient-modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .insufficient-modal {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+        }
+        .insufficient-modal-overlay.show .insufficient-modal {
+            transform: translateY(0);
+        }
+        .insufficient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .insufficient-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--danger-red);
+            margin-bottom: 4px;
+        }
+        .insufficient-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        .insufficient-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .insufficient-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .insufficient-close svg {
+            width: 18px;
+            height: 18px;
+            color: white;
+        }
+        .insufficient-alert {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .insufficient-alert svg {
+            width: 20px;
+            height: 20px;
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+        .insufficient-alert-text {
+            color: var(--danger-red);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .payment-method:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary-purple);
+            transform: translateX(4px);
+        }
+        .payment-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.5rem;
+        }
+        .payment-icon.btc { background: #f7931a; }
+        .payment-icon.eth { background: #627eea; }
+        .payment-icon.usdt { background: #26a17b; }
+        .payment-info {
+            flex: 1;
+        }
+        .payment-name {
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        .payment-desc {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+        .payment-arrow {
+            color: var(--text-gray);
+            opacity: 0.6;
+        }
+        .payment-arrow svg {
+            width: 20px;
+            height: 20px;
+        }
+        .insufficient-footer {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-gray);
+            font-size: 0.8rem;
+        }
+        .footer-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--primary-purple);
         }
     </style>
 </head>
@@ -847,8 +1016,8 @@
             <div class="live-pnl positive" id="livePnl">+$0.00</div>
         </div>
         <div class="trade-actions">
-            <button class="btn-trade btn-even" onclick="placeTrade('EVEN')">Even<span class="payout-info">95.2% Payout</span></button>
-            <button class="btn-trade btn-odd" onclick="placeTrade('ODD')">Odd<span class="payout-info">95.2% Payout</span></button>
+            <button class="btn-trade btn-even" onclick="checkBalanceAndTrade('EVEN')">Even<span class="payout-info">95.2% Payout</span></button>
+            <button class="btn-trade btn-odd" onclick="checkBalanceAndTrade('ODD')">Odd<span class="payout-info">95.2% Payout</span></button>
         </div>
     </div>
 
@@ -871,6 +1040,87 @@
             <div class="notif-modal-body" id="modal-body"></div>
             <div class="notif-modal-footer">
                 <button class="notif-modal-btn" onclick="closeNotifModal()">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ INSUFFICIENT BALANCE MODAL -->
+    <div class="insufficient-modal-overlay" id="insufficientModal" onclick="closeInsufficientModal(event)">
+        <div class="insufficient-modal" onclick="event.stopPropagation()">
+            <div class="insufficient-header">
+                <div>
+                    <div class="insufficient-title">Insufficient Balance</div>
+                    <div class="insufficient-subtitle">Top up now to continue trading</div>
+                </div>
+                <button class="insufficient-close" onclick="closeInsufficientModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="insufficient-alert">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"/></svg>
+                <span class="insufficient-alert-text">Insufficient balance. Top up now!</span>
+            </div>
+
+            <div class="payment-methods">
+                <a href="deposit.html#btc" class="payment-method">
+                    <div class="payment-icon btc">₿</div>
+                    <div class="payment-info">
+                        <div class="payment-name">Bitcoin (BTC)</div>
+                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
+                    </div>
+                    <div class="payment-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+
+                <a href="deposit.html#eth" class="payment-method">
+                    <div class="payment-icon eth">Ξ</div>
+                    <div class="payment-info">
+                        <div class="payment-name">Ethereum (ETH)</div>
+                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
+                    </div>
+                    <div class="payment-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+
+                <a href="deposit.html#usdt-trc20" class="payment-method">
+                    <div class="payment-icon usdt"></div>
+                    <div class="payment-info">
+                        <div class="payment-name">USDT (TRC20)</div>
+                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
+                    </div>
+                    <div class="payment-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+
+                <a href="deposit.html#usdt-erc20" class="payment-method">
+                    <div class="payment-icon usdt">₮</div>
+                    <div class="payment-info">
+                        <div class="payment-name">USDT (ERC20)</div>
+                        <div class="payment-desc">Cryptocurrency · auto-credited</div>
+                    </div>
+                    <div class="payment-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+            </div>
+
+            <div class="insufficient-footer">
+                <div class="footer-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Secure</span>
+                </div>
+                <div class="footer-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.03v2.02c4.39.5 7.97 4.08 8.47 8.47h2.02C23.5 6.57 19.43 2.5 13 2.03zm-2 0C4.57 2.5 .5 6.57 .5 12.5h2.02c.5-4.39 4.08-7.97 8.47-8.47V2.03zm0 19.94v-2.02c-4.39-.5-7.97-4.08-8.47-8.47H.5c.5 6.43 4.57 10.5 11 10.97zm2 0c6.43-.47 10.5-4.54 11-10.97h-2.02c-.5 4.39-4.08 7.97-8.47 8.47v2.02z"/></svg>
+                    <span>Instant</span>
+                </div>
+                <div class="footer-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                    <span>24/7 Support</span>
+                </div>
             </div>
         </div>
     </div>
@@ -898,6 +1148,35 @@
             }
         }
         window.addEventListener('load', showAppBanner);
+
+        // ==========================================
+        // ✅ INSUFFICIENT BALANCE MODAL FUNCTIONS
+        // ==========================================
+        function checkBalanceAndTrade(direction) {
+            // Check if user is in Real Account mode with $0 balance
+            if (currentAccount === 'real' && realBalance <= 0) {
+                showInsufficientModal();
+            } else {
+                placeTrade(direction);
+            }
+        }
+
+        function showInsufficientModal() {
+            const modal = document.getElementById('insufficientModal');
+            if (modal) {
+                modal.classList.add('show');
+                playUiSound();
+            }
+        }
+
+        function closeInsufficientModal(event) {
+            if (!event || event.target === document.getElementById('insufficientModal') || event.target.closest('.insufficient-close')) {
+                const modal = document.getElementById('insufficientModal');
+                if (modal) {
+                    modal.classList.remove('show');
+                }
+            }
+        }
 
         // ==========================================
         // ✅ ACCOUNT SWITCHER SYSTEM
