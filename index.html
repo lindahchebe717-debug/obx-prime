@@ -537,6 +537,7 @@
             height: 100%;
             background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0,150 Q50,120 100,140 T200,100 T300,130 T400,80 T500,110 T600,60 T700,90 T800,50 T900,100 T1000,70 T1100,120 T1200,100' fill='none' stroke='%23ef4444' stroke-width='2'/%3E%3C/svg%3E");
             background-size: cover;
+            transition: background 0.3s ease;
         }
 
         .live-trades {
@@ -572,6 +573,18 @@
             justify-content: space-between;
             padding: 0.75rem 0;
             border-bottom: 1px solid var(--border-color);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .trade-left {
@@ -1017,7 +1030,7 @@
         </div>
         <div class="app-banner-actions">
             <button class="app-banner-download">Download</button>
-            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'">✕</button>
+            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'"></button>
         </div>
     </div>
 
@@ -1232,15 +1245,15 @@
                     <span class="live-badge">LIVE</span>
                 </div>
                 <div class="price-right">
-                    <h3>$43,199.69</h3>
-                    <p>-0.13%</p>
+                    <h3 id="btcPrice">$43,199.69</h3>
+                    <p id="btcChange">-0.13%</p>
                 </div>
             </div>
             <div class="chart-placeholder">
-                <div class="chart-line"></div>
+                <div class="chart-line" id="chartLine"></div>
             </div>
         </div>
-        <div class="live-trades">
+        <div class="live-trades" id="liveTrades">
             <h4>
                 <span class="live-dot"></span>
                 LIVE TRADES
@@ -1749,6 +1762,101 @@
                 price.style.color = isPositive ? 'var(--success-green)' : 'var(--danger-red)';
             });
         }, 5000);
+
+        // Live Chart Animation
+        let chartData = [];
+        const maxDataPoints = 50;
+        let currentPrice = 43199.69;
+
+        // Initialize chart data
+        for (let i = 0; i < maxDataPoints; i++) {
+            currentPrice += (Math.random() - 0.5) * 50;
+            chartData.push(currentPrice);
+        }
+
+        function updateChart() {
+            // Add new price point
+            currentPrice += (Math.random() - 0.5) * 50;
+            chartData.push(currentPrice);
+            if (chartData.length > maxDataPoints) {
+                chartData.shift();
+            }
+
+            // Generate SVG path
+            const width = 1200;
+            const height = 300;
+            const minPrice = Math.min(...chartData);
+            const maxPrice = Math.max(...chartData);
+            const range = maxPrice - minPrice;
+            
+            let path = `M0,${height - ((chartData[0] - minPrice) / range) * height}`;
+            for (let i = 1; i < chartData.length; i++) {
+                const x = (i / (maxDataPoints - 1)) * width;
+                const y = height - ((chartData[i] - minPrice) / range) * height;
+                path += ` L${x},${y}`;
+            }
+
+            // Update chart
+            const chartLine = document.getElementById('chartLine');
+            const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width} ${height}' preserveAspectRatio='none'><path d='${path}' fill='none' stroke='%23ef4444' stroke-width='2'/></svg>`;
+            const encodedSvg = encodeURIComponent(svg);
+            chartLine.style.backgroundImage = `url("data:image/svg+xml,${encodedSvg}")`;
+
+            // Update price display
+            const priceElement = document.getElementById('btcPrice');
+            const changeElement = document.getElementById('btcChange');
+            const priceChange = ((currentPrice - 43199.69) / 43199.69 * 100).toFixed(2);
+            
+            priceElement.textContent = '$' + currentPrice.toFixed(2);
+            changeElement.textContent = (priceChange >= 0 ? '+' : '') + priceChange + '%';
+            changeElement.style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
+            priceElement.style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
+        }
+
+        // Update chart every second
+        setInterval(updateChart, 1000);
+
+        // Live Trades Simulation
+        const traderNames = ['Emma', 'Chris', 'Nina', 'David', 'Maria', 'Alex', 'Sarah', 'James', 'Lisa', 'Michael', 'Sophie', 'Daniel'];
+        const tradeAmounts = [5, 10, 15, 20, 25, 50, 100];
+        const timeAgo = ['just now', '1 min ago', '2 min ago', '3 min ago', '5 min ago'];
+
+        function addLiveTrade() {
+            const tradesContainer = document.getElementById('liveTrades');
+            const name = traderNames[Math.floor(Math.random() * traderNames.length)];
+            const amount = tradeAmounts[Math.floor(Math.random() * tradeAmounts.length)];
+            const isHigher = Math.random() > 0.5;
+            const time = timeAgo[Math.floor(Math.random() * timeAgo.length)];
+            
+            const tradeItem = document.createElement('div');
+            tradeItem.className = 'trade-item';
+            tradeItem.innerHTML = `
+                <div class="trade-left">
+                    <div class="trade-avatar ${isHigher ? 'up' : 'down'}">${isHigher ? '↑' : '↓'}</div>
+                    <div class="trade-info">
+                        <h5>${name}</h5>
+                        <p>${time}</p>
+                    </div>
+                </div>
+                <div class="trade-right">
+                    <h5 class="${isHigher ? 'green' : 'red'}">$${amount}</h5>
+                    <p>${isHigher ? 'Higher' : 'Lower'}</p>
+                </div>
+            `;
+
+            // Add new trade at the top
+            tradesContainer.insertBefore(tradeItem, tradesContainer.children[1]);
+
+            // Remove old trades if there are too many
+            while (tradesContainer.children.length > 7) {
+                tradesContainer.removeChild(tradesContainer.lastChild);
+            }
+        }
+
+        // Add new trade every 2-4 seconds
+        setInterval(() => {
+            addLiveTrade();
+        }, 2000 + Math.random() * 2000);
     </script>
 </body>
 </html>
