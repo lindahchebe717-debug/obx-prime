@@ -35,8 +35,9 @@
             background: var(--bg-dark);
             color: var(--text-white);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.5;
+            line-height: 1.4;
             min-height: 100vh;
+            font-size: 14px;
         }
 
         /* Auth Modal */
@@ -61,54 +62,56 @@
         .auth-card {
             background: var(--bg-card);
             border-radius: 1rem;
-            padding: 2rem;
+            padding: 1.5rem;
             max-width: 400px;
             width: 100%;
             border: 1px solid var(--border-color);
         }
 
         .auth-card h2 {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
+            font-size: 1.1rem;
         }
 
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
+            margin-bottom: 0.375rem;
+            font-size: 0.75rem;
             color: var(--text-gray);
         }
 
         .input-group input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.625rem;
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
             background: var(--bg-dark);
             color: var(--text-white);
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
 
         .btn-primary {
             width: 100%;
-            padding: 0.875rem;
+            padding: 0.75rem;
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             color: white;
             border: none;
             border-radius: 0.75rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
         }
 
         .auth-switch {
             text-align: center;
-            margin-top: 1rem;
-            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
             color: var(--text-gray);
         }
 
@@ -125,14 +128,14 @@
             background: none;
             border: none;
             color: var(--text-white);
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             cursor: pointer;
         }
 
         /* App Banner */
         .app-banner {
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -144,64 +147,65 @@
         .app-banner-content {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .app-banner-icon {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2rem;
+            height: 2rem;
             background: rgba(255,255,255,0.2);
-            border-radius: 0.625rem;
+            border-radius: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .app-banner-icon svg {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 1.25rem;
+            height: 1.25rem;
             color: white;
         }
 
         .app-banner-text h4 {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: white;
         }
 
         .app-banner-text p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: rgba(255,255,255,0.85);
         }
 
         .app-banner-actions {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
 
         .app-banner-download {
             background: white;
             color: var(--primary-purple);
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 0.5rem;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             cursor: pointer;
         }
 
         .app-banner-close {
             background: rgba(255,255,255,0.2);
             border: none;
-            width: 1.75rem;
-            height: 1.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             color: white;
+            font-size: 0.875rem;
         }
 
         /* Navigation */
@@ -209,11 +213,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
+            padding: 0.75rem 1rem;
             background: rgba(15, 10, 31, 0.95);
             backdrop-filter: blur(10px);
             position: sticky;
-            top: 48px;
+            top: 40px;
             z-index: 999;
             border-bottom: 1px solid var(--border-color);
         }
@@ -221,14 +225,14 @@
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
+            gap: 0.375rem;
+            font-size: 1rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             -webkit-background-clip: text;
@@ -236,8 +240,8 @@
         }
 
         .logo svg {
-            width: 2rem;
-            height: 2rem;
+            width: 1.5rem;
+            height: 1.5rem;
         }
 
         .theme-toggle {
@@ -245,21 +249,21 @@
             border: none;
             color: var(--text-white);
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 0.375rem;
         }
 
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .nav-link {
             color: var(--text-white);
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            padding: 0.5rem;
+            padding: 0.375rem;
             cursor: pointer;
         }
 
@@ -267,16 +271,16 @@
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             color: white;
             border: none;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.625rem;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             cursor: pointer;
         }
 
         /* Hero Section */
         .hero {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             text-align: center;
             max-width: 900px;
             margin: 0 auto;
@@ -285,22 +289,22 @@
         .trust-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
             background: rgba(124, 58, 237, 0.15);
             border: 1px solid rgba(124, 58, 237, 0.3);
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 2rem;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
 
         .hero h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 800;
             line-height: 1.2;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .hero h1 span {
@@ -310,61 +314,61 @@
         }
 
         .hero p {
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             color: var(--text-gray);
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
         }
 
         .hero-buttons {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+            gap: 0.625rem;
+            margin-bottom: 1.5rem;
         }
 
         .btn-primary-cta {
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             color: white;
             border: none;
-            padding: 1rem;
-            border-radius: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
 
         .btn-secondary-cta {
             background: transparent;
             color: var(--text-white);
             border: 1px solid var(--border-color);
-            padding: 1rem;
-            border-radius: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
 
         .feature-pills {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
+            gap: 0.625rem;
         }
 
         .pill {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            font-size: 0.8rem;
+            padding: 0.625rem;
+            border-radius: 0.625rem;
+            font-size: 0.7rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -373,8 +377,8 @@
         }
 
         .pill svg {
-            width: 1rem;
-            height: 1rem;
+            width: 0.875rem;
+            height: 0.875rem;
             color: var(--primary-purple);
         }
 
@@ -383,7 +387,7 @@
             background: var(--bg-card);
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             overflow: hidden;
         }
 
@@ -395,21 +399,21 @@
         .ticker-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0 1.5rem;
+            gap: 0.5rem;
+            padding: 0 1rem;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         .ticker-icon {
-            width: 2rem;
-            height: 2rem;
+            width: 1.75rem;
+            height: 1.75rem;
             border-radius: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .ticker-icon.btc { background: #f7931a; }
@@ -419,12 +423,12 @@
         .ticker-icon.xrp { background: #23292f; }
 
         .ticker-info h4 {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 700;
         }
 
         .ticker-info p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-gray);
         }
 
@@ -433,12 +437,12 @@
         }
 
         .ticker-price h4 {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 700;
         }
 
         .ticker-price p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--success-green);
         }
 
@@ -449,7 +453,7 @@
 
         /* Live Trading Preview */
         .live-preview {
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -457,50 +461,51 @@
         .price-card {
             background: var(--bg-card);
             border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            padding: 0.875rem;
+            margin-bottom: 0.875rem;
         }
 
         .price-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .price-left {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.625rem;
         }
 
         .asset-icon {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2.25rem;
+            height: 2.25rem;
             border-radius: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             background: #f7931a;
+            font-size: 1rem;
         }
 
         .asset-info h3 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
         }
 
         .asset-info p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-gray);
         }
 
         .live-badge {
             background: rgba(16, 185, 129, 0.2);
             color: var(--success-green);
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 0.375rem;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 700;
         }
 
@@ -509,49 +514,47 @@
         }
 
         .price-right h3 {
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--danger-red);
         }
 
         .price-right p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--danger-red);
         }
 
-        /* Chart Placeholder */
-        .chart-placeholder {
+        /* Chart - FIXED with inline SVG */
+        .chart-container {
             height: 150px;
-            background: linear-gradient(180deg, rgba(239, 68, 68, 0.2), transparent);
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.15), transparent);
             border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             position: relative;
             overflow: hidden;
+            padding: 0;
         }
 
-        .chart-line {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .chart-container svg {
+            width: 100%;
             height: 100%;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0,150 Q50,120 100,140 T200,100 T300,130 T400,80 T500,110 T600,60 T700,90 T800,50 T900,100 T1000,70 T1100,120 T1200,100' fill='none' stroke='%23ef4444' stroke-width='2'/%3E%3C/svg%3E");
-            background-size: cover;
-            transition: background 0.3s ease;
+            display: block;
         }
 
         .live-trades {
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         .live-trades h4 {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-gray);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.625rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .live-dot {
@@ -571,7 +574,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem 0;
+            padding: 0.625rem 0;
             border-bottom: 1px solid var(--border-color);
             animation: slideIn 0.3s ease;
         }
@@ -590,7 +593,7 @@
         .trade-left {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.625rem;
         }
 
         .trade-avatar {
@@ -608,12 +611,12 @@
         .trade-avatar.down { background: var(--danger-red); }
 
         .trade-info h5 {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .trade-info p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-gray);
         }
 
@@ -622,7 +625,7 @@
         }
 
         .trade-right h5 {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
@@ -630,7 +633,7 @@
         .trade-right h5.red { color: var(--danger-red); }
 
         .trade-right p {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-gray);
         }
 
@@ -639,28 +642,28 @@
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             color: white;
             border: none;
-            padding: 1rem;
-            border-radius: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
             font-weight: 700;
-            font-size: 0.95rem;
-            margin-top: 1rem;
+            font-size: 0.85rem;
+            margin-top: 0.875rem;
             cursor: pointer;
         }
 
         /* Why Section */
         .why-section {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .section-header h2 {
-            font-size: 1.75rem;
+            font-size: 1.25rem;
             font-weight: 800;
             line-height: 1.3;
         }
@@ -672,61 +675,61 @@
         .feature-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-icon {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 0.875rem;
+            padding: 1rem;
             margin-bottom: 0.75rem;
         }
 
+        .feature-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.625rem;
+        }
+
         .feature-icon svg {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 1.25rem;
+            height: 1.25rem;
         }
 
         .feature-card h3 {
-            font-size: 1rem;
+            font-size: 0.875rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
         }
 
         .feature-card p {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-gray);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         /* Steps Section */
         .steps-section {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
         .step-number {
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.125rem;
-            margin: 0 auto 1rem;
+            font-size: 1rem;
+            margin: 0 auto 0.75rem;
         }
 
         /* Stats Section */
         .stats-section {
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             background: var(--bg-card);
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
@@ -735,7 +738,7 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 1rem;
             max-width: 400px;
             margin: 0 auto;
         }
@@ -745,19 +748,19 @@
         }
 
         .stat-item h3 {
-            font-size: 1.75rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.125rem;
         }
 
         .stat-item p {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-gray);
         }
 
         /* Testimonials */
         .testimonials {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -765,136 +768,136 @@
         .testimonial-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
+            border-radius: 0.875rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .stars {
             display: flex;
-            gap: 0.25rem;
-            margin-bottom: 0.75rem;
+            gap: 0.125rem;
+            margin-bottom: 0.5rem;
         }
 
         .stars svg {
-            width: 1rem;
-            height: 1rem;
+            width: 0.875rem;
+            height: 0.875rem;
             fill: #fbbf24;
         }
 
         .testimonial-card blockquote {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-gray);
-            margin-bottom: 1rem;
-            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
         }
 
         .testimonial-author {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.625rem;
         }
 
         .author-avatar {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .author-info h5 {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
         }
 
         .author-info p {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-gray);
         }
 
         /* CTA Section */
         .cta-section {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
         .cta-card {
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
-            border-radius: 1.5rem;
-            padding: 2rem 1.5rem;
+            border-radius: 1.25rem;
+            padding: 1.5rem 1.25rem;
             text-align: center;
         }
 
         .cta-card h2 {
-            font-size: 1.75rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .cta-card p {
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             opacity: 0.9;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .cta-buttons {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.625rem;
         }
 
         .btn-white {
             background: white;
             color: var(--primary-purple);
             border: none;
-            padding: 1rem;
-            border-radius: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
 
         .btn-outline-white {
             background: transparent;
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
-            padding: 1rem;
-            border-radius: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             cursor: pointer;
         }
 
         /* App Download Card */
         .app-card {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
         .app-download-card {
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
-            border-radius: 1.5rem;
-            padding: 2rem 1.5rem;
+            border-radius: 1.25rem;
+            padding: 1.5rem 1.25rem;
             text-align: center;
         }
 
         .phone-mockup {
-            width: 120px;
-            height: 240px;
+            width: 100px;
+            height: 200px;
             border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 1.5rem;
-            margin: 0 auto 1rem;
+            border-radius: 1.25rem;
+            margin: 0 auto 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -902,10 +905,10 @@
         }
 
         .phone-icon {
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             background: rgba(255,255,255,0.2);
-            border-radius: 0.75rem;
+            border-radius: 0.625rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -914,41 +917,41 @@
         .download-badge {
             background: rgba(16, 185, 129, 0.2);
             color: var(--success-green);
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 2rem;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 0.375rem;
-            margin-bottom: 1rem;
-        }
-
-        .app-download-card h2 {
-            font-size: 1.5rem;
-            font-weight: 800;
             margin-bottom: 0.75rem;
         }
 
+        .app-download-card h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
         .app-download-card p {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.9;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .app-features {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            font-size: 0.8rem;
+            gap: 0.75rem;
+            font-size: 0.7rem;
             color: rgba(255,255,255,0.7);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         /* Footer */
         footer {
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             text-align: center;
             border-top: 1px solid var(--border-color);
         }
@@ -957,24 +960,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
+            gap: 0.375rem;
+            font-size: 1rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .footer-links {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .footer-links a {
             color: var(--text-gray);
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .footer-links a:hover {
@@ -982,14 +985,14 @@
         }
 
         footer p {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-gray);
         }
 
         /* Responsive */
         @media (min-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .section-header h2 { font-size: 2rem; }
+            .hero h1 { font-size: 1.75rem; }
+            .section-header h2 { font-size: 1.5rem; }
             .feature-pills { grid-template-columns: repeat(4, 1fr); }
             .stats-grid { grid-template-columns: repeat(4, 1fr); }
         }
@@ -1030,7 +1033,7 @@
         </div>
         <div class="app-banner-actions">
             <button class="app-banner-download">Download</button>
-            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'"></button>
+            <button class="app-banner-close" onclick="document.getElementById('appBanner').style.display='none'">✕</button>
         </div>
     </div>
 
@@ -1045,7 +1048,7 @@
                 OBX PRIME
             </div>
             <button class="theme-toggle" onclick="toggleTheme()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
                     <line x1="12" y1="21" x2="12" y2="23"/>
@@ -1067,7 +1070,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="trust-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                 <path d="M2 17l10 5 10-5"/>
                 <path d="M2 12l10 5 10-5"/>
@@ -1079,13 +1082,13 @@
         <div class="hero-buttons">
             <button class="btn-primary-cta" onclick="openAuthModal('signup')">
                 Get Started — It's Free
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="5" y1="12" x2="19" y2="12"/>
                     <polyline points="12 5 19 12 12 19"/>
                 </svg>
             </button>
             <button class="btn-secondary-cta" onclick="window.location.href='dashboard.html'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5 3 19 12 5 21 5 3"/>
                 </svg>
                 Try Demo
@@ -1249,8 +1252,9 @@
                     <p id="btcChange">-0.13%</p>
                 </div>
             </div>
-            <div class="chart-placeholder">
-                <div class="chart-line" id="chartLine"></div>
+            <!-- FIXED: Using inline SVG instead of background image -->
+            <div class="chart-container" id="chartContainer">
+                <svg id="liveChart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
             </div>
         </div>
         <div class="live-trades" id="liveTrades">
@@ -1262,7 +1266,7 @@
                 <div class="trade-left">
                     <div class="trade-avatar up">↑</div>
                     <div class="trade-info">
-                        <h5>Emma</h5>
+                        <h5>Lindah</h5>
                         <p>just now</p>
                     </div>
                 </div>
@@ -1275,8 +1279,8 @@
                 <div class="trade-left">
                     <div class="trade-avatar up">↑</div>
                     <div class="trade-info">
-                        <h5>Chris</h5>
-                        <p>just now</p>
+                        <h5>Samson</h5>
+                        <p>1 min ago</p>
                     </div>
                 </div>
                 <div class="trade-right">
@@ -1288,8 +1292,8 @@
                 <div class="trade-left">
                     <div class="trade-avatar down">↓</div>
                     <div class="trade-info">
-                        <h5>Nina</h5>
-                        <p>just now</p>
+                        <h5>Sharon</h5>
+                        <p>2 min ago</p>
                     </div>
                 </div>
                 <div class="trade-right">
@@ -1301,8 +1305,8 @@
                 <div class="trade-left">
                     <div class="trade-avatar up">↑</div>
                     <div class="trade-info">
-                        <h5>David</h5>
-                        <p>just now</p>
+                        <h5>Laban</h5>
+                        <p>3 min ago</p>
                     </div>
                 </div>
                 <div class="trade-right">
@@ -1314,8 +1318,8 @@
                 <div class="trade-left">
                     <div class="trade-avatar up">↑</div>
                     <div class="trade-info">
-                        <h5>Chris</h5>
-                        <p>just now</p>
+                        <h5>Jayden</h5>
+                        <p>4 min ago</p>
                     </div>
                 </div>
                 <div class="trade-right">
@@ -1327,8 +1331,8 @@
                 <div class="trade-left">
                     <div class="trade-avatar down">↓</div>
                     <div class="trade-info">
-                        <h5>Maria</h5>
-                        <p>just now</p>
+                        <h5>Carolyne</h5>
+                        <p>5 min ago</p>
                     </div>
                 </div>
                 <div class="trade-right">
@@ -1343,7 +1347,7 @@
     <!-- Why Section -->
     <section class="why-section">
         <div class="section-header">
-            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">WHY OBX PRIME</p>
+            <p style="color: var(--primary-purple); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.375rem;">WHY OBX PRIME</p>
             <h2>Everything you need to trade with confidence</h2>
         </div>
         <div class="feature-card">
@@ -1411,12 +1415,12 @@
     <!-- Steps Section -->
     <section class="steps-section">
         <div class="section-header">
-            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">SIMPLE BY DESIGN</p>
+            <p style="color: var(--primary-purple); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.375rem;">SIMPLE BY DESIGN</p>
             <h2>From sign-up to profit in 3 steps</h2>
         </div>
         <div class="step-number">1</div>
         <div class="feature-card" style="text-align: center;">
-            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 0.625rem;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                     <circle cx="8.5" cy="7" r="4"/>
@@ -1429,7 +1433,7 @@
         </div>
         <div class="step-number">2</div>
         <div class="feature-card" style="text-align: center;">
-            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 0.625rem;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                     <line x1="1" y1="10" x2="23" y2="10"/>
@@ -1440,7 +1444,7 @@
         </div>
         <div class="step-number">3</div>
         <div class="feature-card" style="text-align: center;">
-            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 1rem;">
+            <div class="feature-icon" style="background: rgba(124, 58, 237, 0.15); margin: 0 auto 0.625rem;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
                     <path d="M6 9H2v6h4z"/>
                     <path d="M18 9h4v6h-4z"/>
@@ -1457,7 +1461,7 @@
     <section class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.375rem;">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                     <circle cx="8.5" cy="7" r="4"/>
                     <line x1="20" y1="8" x2="20" y2="14"/>
@@ -1467,7 +1471,7 @@
                 <p>Active traders</p>
             </div>
             <div class="stat-item">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.375rem;">
                     <line x1="18" y1="20" x2="18" y2="10"/>
                     <line x1="12" y1="20" x2="12" y2="4"/>
                     <line x1="6" y1="20" x2="6" y2="14"/>
@@ -1476,7 +1480,7 @@
                 <p>Total traded</p>
             </div>
             <div class="stat-item">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.375rem;">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="2" y1="12" x2="22" y2="12"/>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -1485,7 +1489,7 @@
                 <p>Countries</p>
             </div>
             <div class="stat-item">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2" style="margin: 0 auto 0.375rem;">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
                 <h3>4.9/5</h3>
@@ -1497,7 +1501,7 @@
     <!-- Testimonials -->
     <section class="testimonials">
         <div class="section-header">
-            <p style="color: var(--primary-purple); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">TRADER STORIES</p>
+            <p style="color: var(--primary-purple); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.375rem;">TRADER STORIES</p>
             <h2>Loved by traders everywhere</h2>
         </div>
         <div class="testimonial-card">
@@ -1612,7 +1616,7 @@
             <div class="cta-buttons">
                 <button class="btn-white" onclick="openAuthModal('signup')">
                     Create Free Account
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"/>
                         <polyline points="12 5 19 12 12 19"/>
                     </svg>
@@ -1627,12 +1631,12 @@
         <div class="app-download-card">
             <div class="phone-mockup">
                 <div class="phone-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                     </svg>
                 </div>
-                <div style="position: absolute; bottom: -10px; right: -10px; background: var(--success-green); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-purple);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <div style="position: absolute; bottom: -8px; right: -8px; background: var(--success-green); width: 1.75rem; height: 1.75rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-purple);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
@@ -1640,7 +1644,7 @@
                 </div>
             </div>
             <div class="download-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
                 Android App Available
@@ -1648,7 +1652,7 @@
             <h2>Your market, in your pocket</h2>
             <p>Get the OBX PRIME app for a faster, smoother trading experience wherever you go.</p>
             <button class="btn-white" onclick="window.location.href='download.html'">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                     <polyline points="7 10 12 15 17 10"/>
                     <line x1="12" y1="15" x2="12" y2="3"/>
@@ -1666,7 +1670,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-logo">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
             </svg>
             OBX PRIME
@@ -1745,14 +1749,13 @@
             document.body.classList.toggle('light-theme');
         }
 
-        // Close modal on outside click
         document.getElementById('authModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeAuthModal();
             }
         });
 
-        // Simulate live price updates
+        // Ticker price updates
         setInterval(() => {
             const prices = document.querySelectorAll('.ticker-price h4');
             prices.forEach(price => {
@@ -1763,45 +1766,93 @@
             });
         }, 5000);
 
-        // Live Chart Animation
+        // ============================================
+        // FIXED CHART: Using inline SVG that actually renders
+        // ============================================
         let chartData = [];
-        const maxDataPoints = 50;
+        const maxDataPoints = 60;
         let currentPrice = 43199.69;
+        let previousPrice = 43199.69;
 
-        // Initialize chart data
+        // Initialize chart data with realistic movement
         for (let i = 0; i < maxDataPoints; i++) {
-            currentPrice += (Math.random() - 0.5) * 50;
+            currentPrice += (Math.random() - 0.5) * 30;
             chartData.push(currentPrice);
         }
 
+        function drawChart() {
+            const svg = document.getElementById('liveChart');
+            const width = 600;
+            const height = 150;
+            const padding = 5;
+            
+            const minPrice = Math.min(...chartData);
+            const maxPrice = Math.max(...chartData);
+            const range = maxPrice - minPrice || 1;
+            
+            // Build path
+            let pathD = '';
+            const points = [];
+            
+            for (let i = 0; i < chartData.length; i++) {
+                const x = padding + (i / (chartData.length - 1)) * (width - padding * 2);
+                const y = padding + (1 - (chartData[i] - minPrice) / range) * (height - padding * 2);
+                points.push({x, y});
+                
+                if (i === 0) {
+                    pathD += `M ${x} ${y}`;
+                } else {
+                    // Smooth curve using quadratic bezier
+                    const prevX = points[i-1].x;
+                    const prevY = points[i-1].y;
+                    const cpX = (prevX + x) / 2;
+                    pathD += ` Q ${cpX} ${prevY} ${x} ${y}`;
+                }
+            }
+            
+            // Create area fill path
+            const lastPoint = points[points.length - 1];
+            const firstPoint = points[0];
+            const areaPath = `${pathD} L ${lastPoint.x} ${height} L ${firstPoint.x} ${height} Z`;
+            
+            // Determine color based on trend
+            const isUp = chartData[chartData.length - 1] >= chartData[0];
+            const lineColor = isUp ? '#10b981' : '#ef4444';
+            const gradientId = 'chartGradient';
+            
+            svg.innerHTML = `
+                <defs>
+                    <linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                <path d="${areaPath}" fill="url(#${gradientId})"/>
+                <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="3" fill="${lineColor}">
+                    <animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+            `;
+            
+            // Update container background color
+            const container = document.getElementById('chartContainer');
+            container.style.background = `linear-gradient(180deg, ${isUp ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}, transparent)`;
+        }
+
         function updateChart() {
-            // Add new price point
-            currentPrice += (Math.random() - 0.5) * 50;
+            previousPrice = currentPrice;
+            // Realistic small movements
+            const change = (Math.random() - 0.5) * 25;
+            currentPrice += change;
             chartData.push(currentPrice);
+            
             if (chartData.length > maxDataPoints) {
                 chartData.shift();
             }
-
-            // Generate SVG path
-            const width = 1200;
-            const height = 300;
-            const minPrice = Math.min(...chartData);
-            const maxPrice = Math.max(...chartData);
-            const range = maxPrice - minPrice;
             
-            let path = `M0,${height - ((chartData[0] - minPrice) / range) * height}`;
-            for (let i = 1; i < chartData.length; i++) {
-                const x = (i / (maxDataPoints - 1)) * width;
-                const y = height - ((chartData[i] - minPrice) / range) * height;
-                path += ` L${x},${y}`;
-            }
-
-            // Update chart
-            const chartLine = document.getElementById('chartLine');
-            const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width} ${height}' preserveAspectRatio='none'><path d='${path}' fill='none' stroke='%23ef4444' stroke-width='2'/></svg>`;
-            const encodedSvg = encodeURIComponent(svg);
-            chartLine.style.backgroundImage = `url("data:image/svg+xml,${encodedSvg}")`;
-
+            drawChart();
+            
             // Update price display
             const priceElement = document.getElementById('btcPrice');
             const changeElement = document.getElementById('btcChange');
@@ -1813,20 +1864,50 @@
             priceElement.style.color = priceChange >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
         }
 
-        // Update chart every second
-        setInterval(updateChart, 1000);
+        // Initial draw
+        drawChart();
+        // Update chart every 1.5 seconds
+        setInterval(updateChart, 1500);
 
-        // Live Trades Simulation
-        const traderNames = ['Emma', 'Chris', 'Nina', 'David', 'Maria', 'Alex', 'Sarah', 'James', 'Lisa', 'Michael', 'Sophie', 'Daniel'];
-        const tradeAmounts = [5, 10, 15, 20, 25, 50, 100];
-        const timeAgo = ['just now', '1 min ago', '2 min ago', '3 min ago', '5 min ago'];
+        // ============================================
+        // FIXED LIVE TRADES: 30+ diverse names, no repetition
+        // ============================================
+        const traderNames = [
+            'Lindah', 'Sharon', 'Samson', 'Laban', 'Jayden', 'Carolyne', 'Musa',
+            'Faith', 'Brian', 'Esther', 'Joseph', 'Mercy', 'Peter', 'Ruth',
+            'Daniel', 'Naomi', 'Caleb', 'Lydia', 'Isaac', 'Hannah',
+            'Samuel', 'Rebecca', 'David', 'Sarah', 'Michael', 'Grace',
+            'James', 'Martha', 'Paul', 'Deborah', 'John', 'Rachel',
+            'Stephen', 'Abigail', 'Timothy', 'Miriam', 'Andrew', 'Elizabeth'
+        ];
+        
+        const tradeAmounts = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100];
+        const timeLabels = ['just now', 'just now', 'just now', '1 min ago', '1 min ago', '2 min ago', '3 min ago', '4 min ago', '5 min ago'];
+        
+        // Track recently used names to avoid immediate repetition
+        let recentlyUsedNames = [];
+        const recentNamesLimit = 8;
+
+        function getRandomName() {
+            // Filter out recently used names
+            const available = traderNames.filter(name => !recentlyUsedNames.includes(name));
+            const pool = available.length > 0 ? available : traderNames;
+            const name = pool[Math.floor(Math.random() * pool.length)];
+            
+            recentlyUsedNames.push(name);
+            if (recentlyUsedNames.length > recentNamesLimit) {
+                recentlyUsedNames.shift();
+            }
+            
+            return name;
+        }
 
         function addLiveTrade() {
             const tradesContainer = document.getElementById('liveTrades');
-            const name = traderNames[Math.floor(Math.random() * traderNames.length)];
+            const name = getRandomName();
             const amount = tradeAmounts[Math.floor(Math.random() * tradeAmounts.length)];
-            const isHigher = Math.random() > 0.5;
-            const time = timeAgo[Math.floor(Math.random() * timeAgo.length)];
+            const isHigher = Math.random() > 0.45; // Slightly more wins
+            const time = timeLabels[Math.floor(Math.random() * timeLabels.length)];
             
             const tradeItem = document.createElement('div');
             tradeItem.className = 'trade-item';
@@ -1844,19 +1925,30 @@
                 </div>
             `;
 
-            // Add new trade at the top
-            tradesContainer.insertBefore(tradeItem, tradesContainer.children[1]);
+            // Insert after the header (first child)
+            const header = tradesContainer.querySelector('h4');
+            if (header && header.nextSibling) {
+                tradesContainer.insertBefore(tradeItem, header.nextSibling);
+            } else {
+                tradesContainer.appendChild(tradeItem);
+            }
 
-            // Remove old trades if there are too many
-            while (tradesContainer.children.length > 7) {
-                tradesContainer.removeChild(tradesContainer.lastChild);
+            // Keep only 6 trades visible
+            const tradeItems = tradesContainer.querySelectorAll('.trade-item');
+            while (tradeItems.length > 6) {
+                tradesContainer.removeChild(tradeItems[tradeItems.length - 1]);
             }
         }
 
-        // Add new trade every 2-4 seconds
-        setInterval(() => {
-            addLiveTrade();
-        }, 2000 + Math.random() * 2000);
+        // Add new trade every 2-4 seconds (randomized)
+        function scheduleNextTrade() {
+            const delay = 2000 + Math.random() * 2000;
+            setTimeout(() => {
+                addLiveTrade();
+                scheduleNextTrade();
+            }, delay);
+        }
+        scheduleNextTrade();
     </script>
 </body>
 </html>
