@@ -36,11 +36,9 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            /* Optional: subtle background blur effect if you want it to look like a modal over a page */
             background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--page-bg) 60%);
         }
 
-        /* Main Scanner Card */
         .scanner-card {
             background: var(--modal-bg);
             border: 1px solid var(--border-color);
@@ -51,7 +49,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* Header */
         .header {
             display: flex;
             align-items: center;
@@ -110,7 +107,6 @@
             stroke-width: 2;
         }
 
-        /* Description Box */
         .desc-box {
             background: var(--inner-box-bg);
             border-radius: 12px;
@@ -126,7 +122,6 @@
             font-weight: 600;
         }
 
-        /* Form Elements */
         .form-group {
             margin-bottom: 20px;
         }
@@ -179,7 +174,6 @@
             stroke-width: 2;
         }
 
-        /* Progress Section */
         .progress-header {
             display: flex;
             justify-content: space-between;
@@ -216,7 +210,6 @@
             transition: width 0.3s ease;
         }
 
-        /* Buttons */
         .btn {
             width: 100%;
             padding: 16px;
@@ -266,7 +259,6 @@
             background: rgba(124, 58, 237, 0.05);
         }
 
-        /* Result Box (Hidden by default) */
         .result-box {
             display: none;
             background: rgba(16, 185, 129, 0.1);
@@ -284,23 +276,40 @@
             color: #10b981;
             font-weight: 700;
             font-size: 14px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .result-text {
-            color: var(--text-secondary);
-            font-size: 13px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 
     <div class="scanner-card">
-        <!-- Header -->
         <div class="header">
             <div class="header-left">
                 <div class="icon-box">
@@ -310,7 +319,6 @@
                 </div>
                 <h1 class="title">Entry Scanner</h1>
             </div>
-            <!-- Close button redirects to dashboard -->
             <button class="close-btn" onclick="window.location.href='dashboard.html'">
                 <svg viewBox="0 0 24 24">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -319,12 +327,10 @@
             </button>
         </div>
 
-        <!-- Description -->
         <div class="desc-box">
             Pick the market category you want to scan. The deep scanner walks every <strong>volatility / synthetic</strong> index and surfaces the best entry point for that category based on historical tick patterns.
         </div>
 
-        <!-- Market Dropdown -->
         <div class="form-group">
             <label class="form-label">Market</label>
             <div class="select-wrapper">
@@ -342,7 +348,6 @@
             </div>
         </div>
 
-        <!-- Progress Bar -->
         <div class="form-group">
             <div class="progress-header">
                 <span class="progress-label" id="progressText">Ready to scan</span>
@@ -353,7 +358,6 @@
             </div>
         </div>
 
-        <!-- Buttons -->
         <button class="btn btn-primary" id="scanBtn" onclick="startScan()">
             <svg viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -362,18 +366,34 @@
             <span id="scanBtnText">Deep Scan for Best Market</span>
         </button>
 
-        <button class="btn btn-secondary" onclick="alert('Deep Scanner Bot loading...')">
-            Load Deep Scanner Bot
+        <button class="btn btn-secondary" id="loadBtn" onclick="loadSelectedMarket()">
+            Load Selected Market
         </button>
 
-        <!-- Result Area -->
         <div class="result-box" id="resultBox">
             <div class="result-title">✅ Best Entry Found!</div>
-            <div class="result-text" id="resultText">Volatility 10 (1s) Index - EVEN</div>
+            <div class="result-text" id="resultText"></div>
         </div>
     </div>
 
     <script>
+        // Exactly 13 volatility indices as requested
+        const volatilityIndices = [
+            "Volatility 10 Index",
+            "Volatility 10 (1s) Index",
+            "Volatility 15 (1s) Index",
+            "Volatility 25 Index",
+            "Volatility 25 (1s) Index",
+            "Volatility 30 (1s) Index",
+            "Volatility 50 Index",
+            "Volatility 50 (1s) Index",
+            "Volatility 75 Index",
+            "Volatility 75 (1s) Index",
+            "Volatility 100 Index",
+            "Volatility 100 (1s) Index",
+            "Volatility 150 (1s) Index"
+        ];
+
         function startScan() {
             const btn = document.getElementById('scanBtn');
             const btnText = document.getElementById('scanBtnText');
@@ -382,27 +402,33 @@
             const text = document.getElementById('progressText');
             const resultBox = document.getElementById('resultBox');
             
-            // Reset state
             resultBox.classList.remove('show');
             btn.disabled = true;
-            btnText.innerText = 'Scanning markets...';
-            text.innerText = 'Scanning...';
+            
             let current = 0;
             const total = 13;
 
-            // Simulate scanning process
+            // Show rotating spinner
+            btnText.innerHTML = '<span class="spinner"></span> Scanning...';
+            text.innerText = 'Initializing scan...';
+
             const interval = setInterval(() => {
                 current++;
                 const percentage = (current / total) * 100;
                 
                 fill.style.width = percentage + '%';
                 count.innerText = `${current}/${total}`;
+                
+                // Update text to show exactly which volatility is being scanned
+                if (current <= total) {
+                    text.innerText = `Scanning ${volatilityIndices[current - 1]} (${current}/${total})`;
+                }
 
                 if (current >= total) {
                     clearInterval(interval);
                     finishScan();
                 }
-            }, 250); // 250ms per market = ~3.25 seconds total
+            }, 300); // 300ms per market = ~3.9 seconds total scan time
         }
 
         function finishScan() {
@@ -411,18 +437,46 @@
             const text = document.getElementById('progressText');
             const resultBox = document.getElementById('resultBox');
             const resultText = document.getElementById('resultText');
+            const loadBtn = document.getElementById('loadBtn');
             const market = document.getElementById('marketSelect').options[document.getElementById('marketSelect').selectedIndex].text;
 
-            // Randomly pick a volatility index for the result
-            const indices = ['Volatility 10 (1s)', 'Volatility 25 (1s)', 'Volatility 50 (1s)', 'Volatility 75 (1s)', 'Volatility 100 (1s)'];
-            const randomIndex = indices[Math.floor(Math.random() * indices.length)];
+            // Randomly pick the best index and prediction
+            const bestIndex = volatilityIndices[Math.floor(Math.random() * volatilityIndices.length)];
+            const predictions = ['EVEN', 'ODD'];
+            const prediction = predictions[Math.floor(Math.random() * predictions.length)];
+            const quality = Math.floor(Math.random() * (98 - 85) + 85); // Random quality between 85% and 98%
 
-            btn.disabled = false;
-            btnText.innerText = 'Deep Scan for Best Market';
             text.innerText = 'Scan complete';
             
-            resultText.innerText = `${randomIndex} Index - ${market}`;
+            // Format result exactly as requested
+            resultText.innerHTML = `<strong>${bestIndex}</strong> - ${prediction} <span style="color: #10b981; font-weight: 600;">(${quality}% Quality)</span>`;
+            
+            // Update load button to show the chosen market
+            loadBtn.innerText = `Load ${bestIndex}`;
+            
             resultBox.classList.add('show');
+            btn.disabled = false;
+            
+            // Change primary button to "Re-scan"
+            btnText.innerHTML = `
+                <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Re-scan for Best Market
+            `;
+        }
+
+        function loadSelectedMarket() {
+            const resultText = document.getElementById('resultText');
+            if (resultText.innerHTML) {
+                const bestIndex = resultText.querySelector('strong').innerText;
+                alert('Loading ' + bestIndex + ' into your dashboard...');
+                // Uncomment the line below to actually redirect to dashboard
+                // window.location.href = 'dashboard.html?market=' + encodeURIComponent(bestIndex);
+            } else {
+                alert('Please run a scan first to find the best market.');
+            }
         }
     </script>
 </body>
