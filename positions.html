@@ -329,7 +329,10 @@
         let allTrades = [];
         let currentTab = 'open';
 
-        sessionStorage.setItem('sessionStartTime', new Date().toISOString());
+        // Don't reset session on every page load - only if not already set
+        if (!sessionStorage.getItem('sessionStartTime')) {
+            sessionStorage.setItem('sessionStartTime', new Date().toISOString());
+        }
 
         if (typeof window.supabase !== 'undefined') {
             window.obxSupabase = window.supabase.createClient(
@@ -420,21 +423,19 @@
             const tabOpen = document.getElementById('tabOpen');
             const tabClosed = document.getElementById('tabClosed');
 
-            const sessionStart = new Date(sessionStorage.getItem('sessionStartTime'));
-            const sessionTradesList = allTrades.filter(t => new Date(t.created_at) >= sessionStart);
+            // Show ALL trades in bottom stats (not just session)
+            const allWins = allTrades.filter(t => t.status === 'WON').length;
+            const allLosses = allTrades.filter(t => t.status === 'LOST' || t.status === 'CLOSED').length;
             
-            const sessionWins = sessionTradesList.filter(t => t.status === 'WON').length;
-            const sessionLosses = sessionTradesList.filter(t => t.status === 'LOST' || t.status === 'CLOSED').length;
-            
-            let sessionTotalPnl = sessionTradesList.reduce((sum, t) => {
+            let allTotalPnl = allTrades.reduce((sum, t) => {
                 if (t.status === 'WON') return sum + (parseFloat(t.payout || 0) - parseFloat(t.stake || 0));
                 if (t.status === 'LOST' || t.status === 'CLOSED') return sum - parseFloat(t.stake || 0);
                 return sum;
             }, 0);
 
-            tradeCount.innerText = `${sessionTradesList.length} trades (${sessionWins}W / ${sessionLosses}L)`;
-            sessionPnl.innerText = (sessionTotalPnl >= 0 ? '+' : '') + sessionTotalPnl.toFixed(2) + ' USD';
-            sessionPnl.className = 'stat-value ' + (sessionTotalPnl >= 0 ? 'pos' : 'neg');
+            tradeCount.innerText = `${allTrades.length} trades (${allWins}W / ${allLosses}L)`;
+            sessionPnl.innerText = (allTotalPnl >= 0 ? '+' : '') + allTotalPnl.toFixed(2) + ' USD';
+            sessionPnl.className = 'stat-value ' + (allTotalPnl >= 0 ? 'pos' : 'neg');
 
             const openTrades = allTrades.filter(t => t.status === 'OPEN');
             const closedTrades = allTrades.filter(t => t.status !== 'OPEN');
@@ -466,7 +467,17 @@
                                         <span class="dot"></span> ${dir}
                                     </div>
                                 </div>
-                                <div style="text-align:center;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
+                                <div class="card-grid">
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Stake:</span>
+                                        <span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span>
+                                    </div>
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Entry:</span>
+                                        <span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
                             </div>`;
                     });
                     html += '</div>';
@@ -545,13 +556,34 @@
                     const sortedTrades = [...allTrades].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     
                     sortedTrades.forEach(t => {
-                        if (t.status === 'OPEN') return;
-                        
                         const dir = (t.direction || 'EVEN').toUpperCase();
                         const isWin = t.status === 'WON';
+                        const isLoss = t.status === 'LOST' || t.status === 'CLOSED';
                         const assetShort = t.asset ? t.asset.replace('VOL_', 'V') + ' (1s)' : 'V10 (1s)';
                         const dateStr = formatDate(t.created_at);
                         
+                        // Show Stake for ALL trades (including OPEN)
+                        const stake = parseFloat(t.stake || 0);
+                        runningBalance -= stake;
+                        html += `
+                            <div class="tx-item">
+                                <div class="tx-icon stake">
+                                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                                <div class="tx-content">
+                                    <div class="tx-title-row">
+                                        <span class="tx-title stake">Stake</span>
+                                        <span class="tx-badge">${assetShort}</span>
+                                    </div>
+                                    <span class="tx-sub">${dir} • ${dateStr}</span>
+                                </div>
+                                <div class="tx-right">
+                                    <div class="tx-amount stake">-${stake.toFixed(2)}</div>
+                                    <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
+                                </div>
+                            </div>`;
+                        
+                        // Show Closed/Payout only for WON/LOST trades
                         if (isWin) {
                             const payout = parseFloat(t.payout || 0);
                             runningBalance += payout;
@@ -572,23 +604,21 @@
                                         <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
                                     </div>
                                 </div>`;
-                        } else {
-                            const stake = parseFloat(t.stake || 0);
-                            runningBalance -= stake;
+                        } else if (isLoss) {
                             html += `
                                 <div class="tx-item">
-                                    <div class="tx-icon stake">
-                                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    <div class="tx-icon loss">
+                                        <svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg>
                                     </div>
                                     <div class="tx-content">
                                         <div class="tx-title-row">
-                                            <span class="tx-title stake">Stake</span>
+                                            <span class="tx-title loss">Closed</span>
                                             <span class="tx-badge">${assetShort}</span>
                                         </div>
                                         <span class="tx-sub">${dir} • ${dateStr}</span>
                                     </div>
                                     <div class="tx-right">
-                                        <div class="tx-amount stake">-${stake.toFixed(2)}</div>
+                                        <div class="tx-amount loss">-${stake.toFixed(2)}</div>
                                         <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
                                     </div>
                                 </div>`;
