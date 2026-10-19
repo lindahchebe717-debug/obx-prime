@@ -138,15 +138,40 @@
         .theme-toggle.active::after { transform: translateX(20px); }
         .menu-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-gray); text-align: center; }
 
-        .volatility-dropdown { position: absolute; top: 100%; left: 0; margin-top: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); z-index: 100; min-width: 200px; max-height: 320px; overflow-y: auto; display: none; }
+        .volatility-dropdown { 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            margin-top: 6px; 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); 
+            z-index: 100; 
+            min-width: 220px; 
+            max-height: 280px; 
+            overflow-y: auto; 
+            display: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-purple) var(--bg-card);
+        }
+        body.dark-theme .volatility-dropdown {
+            scrollbar-color: var(--primary-purple) var(--inner-box-bg);
+        }
         .volatility-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-        .volatility-item { padding: 8px 12px; cursor: pointer; transition: all 0.15s ease; border-bottom: 1px solid var(--border-color); }
+        .volatility-item { 
+            padding: 8px 12px; 
+            cursor: pointer; 
+            transition: all 0.15s ease; 
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.75rem;
+        }
         .volatility-item:last-child { border-bottom: none; }
         .volatility-item:hover { background: rgba(124, 58, 237, 0.05); }
         .volatility-item.active { background: rgba(124, 58, 237, 0.1); color: var(--primary-purple); }
-        .volatility-item-name { font-size: 11px; font-weight: 600; color: var(--text-white); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .volatility-item-price { font-size: 9px; color: var(--text-gray); }
+        .volatility-item-name { font-size: 0.8rem; font-weight: 600; color: var(--text-white); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .volatility-item-price { font-size: 0.7rem; color: var(--text-gray); }
 
         .notif-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 100; width: 300px; max-height: 400px; overflow-y: auto; display: none; }
         .notif-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
@@ -364,8 +389,18 @@
                 </button>
                 <div id="volatility-dropdown" class="volatility-dropdown">
                     <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)"><div class="volatility-item-name">Volatility 10 (1s) Index</div><div class="volatility-item-price">9607.39 +1.13%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 10 Index', this)"><div class="volatility-item-name">Volatility 10 Index</div><div class="volatility-item-price">9487.35 +0.85%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 15 (1s) Index', this)"><div class="volatility-item-name">Volatility 15 (1s) Index</div><div class="volatility-item-price">8923.67 +0.42%</div></div>
                     <div class="volatility-item" onclick="selectVolatility('Volatility 25 Index', this)"><div class="volatility-item-name">Volatility 25 Index</div><div class="volatility-item-price">7621.45 +0.12%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 25 (1s) Index', this)"><div class="volatility-item-name">Volatility 25 (1s) Index</div><div class="volatility-item-price">7654.89 +0.28%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 30 (1s) Index', this)"><div class="volatility-item-name">Volatility 30 (1s) Index</div><div class="volatility-item-price">6789.23 +0.55%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 50 Index', this)"><div class="volatility-item-name">Volatility 50 Index</div><div class="volatility-item-price">5398.76 +0.33%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 50 (1s) Index', this)"><div class="volatility-item-name">Volatility 50 (1s) Index</div><div class="volatility-item-price">5432.10 +0.47%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 75 Index', this)"><div class="volatility-item-name">Volatility 75 Index</div><div class="volatility-item-price">4567.89 +0.19%</div></div>
                     <div class="volatility-item" onclick="selectVolatility('Volatility 75 (1s) Index', this)"><div class="volatility-item-name">Volatility 75 (1s) Index</div><div class="volatility-item-price">4123.45 +0.31%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 100 Index', this)"><div class="volatility-item-name">Volatility 100 Index</div><div class="volatility-item-price">3456.78 +0.62%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 100 (1s) Index', this)"><div class="volatility-item-name">Volatility 100 (1s) Index</div><div class="volatility-item-price">3234.56 +0.74%</div></div>
+                    <div class="volatility-item" onclick="selectVolatility('Volatility 150 (1s) Index', this)"><div class="volatility-item-name">Volatility 150 (1s) Index</div><div class="volatility-item-price">2345.67 +0.88%</div></div>
                 </div>
             </div>
         </div>
@@ -483,7 +518,7 @@
                 <a href="deposit.html#btc" class="payment-method"><div class="payment-icon btc">₿</div><div class="payment-info"><div class="payment-name">Bitcoin (BTC)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#eth" class="payment-method"><div class="payment-icon eth">Ξ</div><div class="payment-info"><div class="payment-name">Ethereum (ETH)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#usdt-trc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (TRC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
-                <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt">₮</div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
             </div>
             <div class="insufficient-footer">
                 <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Secure</span></div>
@@ -833,7 +868,21 @@
             updateChartForVolatility(name);
         }
         function updateChartForVolatility(volatilityName) {
-            const basePrices = { 'Volatility 10 (1s) Index': 9607.39, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45 };
+            const basePrices = { 
+                'Volatility 10 (1s) Index': 9607.39, 
+                'Volatility 10 Index': 9487.35, 
+                'Volatility 15 (1s) Index': 8923.67, 
+                'Volatility 25 (1s) Index': 7654.89, 
+                'Volatility 25 Index': 7621.45, 
+                'Volatility 30 (1s) Index': 6789.23, 
+                'Volatility 50 (1s) Index': 5432.10, 
+                'Volatility 50 Index': 5398.76, 
+                'Volatility 75 (1s) Index': 4123.45,
+                'Volatility 75 Index': 4567.89,
+                'Volatility 100 Index': 3456.78,
+                'Volatility 100 (1s) Index': 3234.56,
+                'Volatility 150 (1s) Index': 2345.67
+            };
             currentPrice = basePrices[volatilityName] || 9607.39;
             priceData = []; timeData = [];
             for(let i=0; i<MAX_POINTS; i++) { priceData.push(currentPrice + (Math.random() - 0.5) * 10); timeData.push(Math.floor(Date.now() / 1000) - (MAX_POINTS - i)); }
