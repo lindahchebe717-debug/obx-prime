@@ -162,17 +162,20 @@
         .card-grid-value.positive { color: var(--success-green); }
         .card-grid-value.negative { color: var(--danger-red); }
 
-        .tx-list { display: flex; flex-direction: column; }
+        /* FIX 1: Transaction Cards styled like PalOption */
+        .tx-list { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
         .tx-item { 
             display: flex; 
             align-items: center; 
-            gap: 8px; 
-            padding: 8px 6px; 
-            border-bottom: 1px solid var(--border-color); 
+            gap: 10px; 
+            padding: 10px; 
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
         }
         .tx-icon { 
-            width: 28px; 
-            height: 28px; 
+            width: 32px; 
+            height: 32px; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
@@ -182,7 +185,7 @@
         .tx-icon.win { background: rgba(75, 180, 179, 0.2); }
         .tx-icon.stake { background: rgba(245, 158, 11, 0.2); }
         .tx-icon.loss { background: rgba(255, 68, 79, 0.2); }
-        .tx-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+        .tx-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; }
         .tx-icon.win svg { color: var(--success-green); }
         .tx-icon.stake svg { color: var(--warning-orange); }
         .tx-icon.loss svg { color: var(--danger-red); }
@@ -201,12 +204,12 @@
             color: var(--text-gray); 
         }
         .tx-sub { font-size: 9px; color: var(--text-gray); }
-        .tx-right { text-align: right; }
+        .tx-right { text-align: right; display: flex; flex-direction: column; gap: 2px; }
         .tx-amount { font-weight: 700; font-size: 11px; }
         .tx-amount.win { color: var(--success-green); }
         .tx-amount.stake { color: var(--warning-orange); }
         .tx-amount.loss { color: var(--danger-red); }
-        .tx-balance { font-size: 9px; color: var(--text-gray); margin-top: 2px; }
+        .tx-balance { font-size: 9px; color: var(--text-gray); }
 
         .bottom-stats {
             position: fixed;
@@ -329,7 +332,6 @@
         let allTrades = [];
         let currentTab = 'open';
 
-        // Don't reset session on every page load - only if not already set
         if (!sessionStorage.getItem('sessionStartTime')) {
             sessionStorage.setItem('sessionStartTime', new Date().toISOString());
         }
@@ -341,22 +343,15 @@
             );
         }
 
-        function toggleAccountMenu() {
-            document.getElementById('accountDropdown').classList.toggle('show');
-        }
-
+        function toggleAccountMenu() { document.getElementById('accountDropdown').classList.toggle('show'); }
         function switchAccount(type) {
             currentAccount = type;
             localStorage.setItem('obx_account_mode', type);
             document.getElementById('accountDropdown').classList.remove('show');
-            updateTopNav();
-            loadPositions();
+            updateTopNav(); loadPositions();
         }
-
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.account-selector-wrap')) {
-                document.getElementById('accountDropdown').classList.remove('show');
-            }
+            if (!e.target.closest('.account-selector-wrap')) document.getElementById('accountDropdown').classList.remove('show');
         });
 
         function updateTopNav() {
@@ -364,19 +359,12 @@
             const balance = document.getElementById('navAccountBalance');
             const optDemo = document.getElementById('optDemo');
             const optReal = document.getElementById('optReal');
-
             if (currentAccount === 'real') {
-                icon.className = 'account-icon real';
-                icon.innerText = 'R';
-                balance.innerText = '$ ' + realBalance.toFixed(2);
-                optReal.classList.add('active');
-                optDemo.classList.remove('active');
+                icon.className = 'account-icon real'; icon.innerText = 'R'; balance.innerText = '$ ' + realBalance.toFixed(2);
+                optReal.classList.add('active'); optDemo.classList.remove('active');
             } else {
-                icon.className = 'account-icon demo';
-                icon.innerText = 'D';
-                balance.innerText = '$ ' + demoBalance.toFixed(2);
-                optDemo.classList.add('active');
-                optReal.classList.remove('active');
+                icon.className = 'account-icon demo'; icon.innerText = 'D'; balance.innerText = '$ ' + demoBalance.toFixed(2);
+                optDemo.classList.add('active'); optReal.classList.remove('active');
             }
         }
 
@@ -387,111 +375,77 @@
             renderView();
         }
 
+        // FIX 2: Date format matches PalOption (Today 10:46:12 PM)
         function formatDate(dateString) {
             if(!dateString) return 'Today';
             const d = new Date(dateString);
-            return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) + ' • ' + d.toLocaleDateString('en-GB');
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+            const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+            return `${isToday ? 'Today' : d.toLocaleDateString('en-GB')} ${timeStr}`;
         }
 
         function getAssetName(asset) {
             if (!asset) return 'Volatility 10 (1s)';
-            const names = {
-                'VOL_10': 'Volatility 10 (1s)',
-                'VOL_25': 'Volatility 25 (1s)',
-                'VOL_30': 'Volatility 30 (1s)',
-                'VOL_50': 'Volatility 50 (1s)',
-                'VOL_75': 'Volatility 75 (1s)',
-                'VOL_100': 'Volatility 100 (1s)'
-            };
+            const names = { 'VOL_10': 'Volatility 10 (1s)', 'VOL_25': 'Volatility 25 (1s)', 'VOL_30': 'Volatility 30 (1s)', 'VOL_50': 'Volatility 50 (1s)', 'VOL_75': 'Volatility 75 (1s)', 'VOL_100': 'Volatility 100 (1s)' };
             return names[asset] || asset;
         }
 
+        // FIX 4: Case-insensitive Auto detection
         function updateModeLabel() {
-            const mode = localStorage.getItem('obx_trade_mode') || 'MANUAL';
+            const rawMode = localStorage.getItem('obx_trade_mode') || 'MANUAL';
+            const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
             const label = document.getElementById('modeLabel');
-            if (label) {
-                label.innerHTML = '<span class="dot"></span>' + (mode === 'AUTO' ? 'Auto-Trading' : 'Manual');
-            }
+            if (label) label.innerHTML = '<span class="dot"></span>' + (isAuto ? 'Auto-Trading' : 'Manual');
         }
 
         function renderView() {
             updateModeLabel();
-            
             const container = document.getElementById('scrollContainer');
             const sessionPnl = document.getElementById('sessionPnl');
             const tradeCount = document.getElementById('tradeCount');
             const tabOpen = document.getElementById('tabOpen');
             const tabClosed = document.getElementById('tabClosed');
 
-            // Show ALL trades in bottom stats (not just session)
-            const allWins = allTrades.filter(t => t.status === 'WON').length;
-            const allLosses = allTrades.filter(t => t.status === 'LOST' || t.status === 'CLOSED').length;
+            // FIX 3: Session stats only count trades since page load
+            const sessionStart = new Date(sessionStorage.getItem('sessionStartTime'));
+            const sessionTrades = allTrades.filter(t => new Date(t.created_at) >= sessionStart);
             
-            let allTotalPnl = allTrades.reduce((sum, t) => {
+            const sessionWins = sessionTrades.filter(t => t.status === 'WON').length;
+            const sessionLosses = sessionTrades.filter(t => t.status === 'LOST' || t.status === 'CLOSED').length;
+            
+            let sessionTotalPnl = sessionTrades.reduce((sum, t) => {
                 if (t.status === 'WON') return sum + (parseFloat(t.payout || 0) - parseFloat(t.stake || 0));
                 if (t.status === 'LOST' || t.status === 'CLOSED') return sum - parseFloat(t.stake || 0);
                 return sum;
             }, 0);
 
-            tradeCount.innerText = `${allTrades.length} trades (${allWins}W / ${allLosses}L)`;
-            sessionPnl.innerText = (allTotalPnl >= 0 ? '+' : '') + allTotalPnl.toFixed(2) + ' USD';
-            sessionPnl.className = 'stat-value ' + (allTotalPnl >= 0 ? 'pos' : 'neg');
+            tradeCount.innerText = `${sessionTrades.length} trades (${sessionWins}W / ${sessionLosses}L)`;
+            sessionPnl.innerText = (sessionTotalPnl >= 0 ? '+' : '') + sessionTotalPnl.toFixed(2) + ' USD';
+            sessionPnl.className = 'stat-value ' + (sessionTotalPnl >= 0 ? 'pos' : 'neg');
 
             const openTrades = allTrades.filter(t => t.status === 'OPEN');
             const closedTrades = allTrades.filter(t => t.status !== 'OPEN');
-
             tabOpen.innerText = `Open (${openTrades.length})`;
             tabClosed.innerText = `Closed (${closedTrades.length})`;
 
             if (currentTab === 'open') {
                 if (openTrades.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
-                            <h2 class="empty-title">No open positions</h2>
-                            <p class="empty-subtitle">Your active trades will appear here</p>
-                        </div>`;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div><h2 class="empty-title">No open positions</h2><p class="empty-subtitle">Your active trades will appear here</p></div>`;
                 } else {
                     let html = '<div class="trade-list">';
                     openTrades.forEach(t => {
                         const dir = (t.direction || 'EVEN').toUpperCase();
-                        const mode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
-                        html += `
-                            <div class="trade-card">
-                                <div class="card-top">
-                                    <div class="card-asset-group">
-                                        <span class="card-asset">${getAssetName(t.asset)}</span>
-                                        <span class="card-status">Open</span>
-                                    </div>
-                                    <div class="card-direction-badge ${dir}">
-                                        <span class="dot"></span> ${dir}
-                                    </div>
-                                </div>
-                                <div class="card-grid">
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Stake:</span>
-                                        <span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span>
-                                    </div>
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Entry:</span>
-                                        <span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span>
-                                    </div>
-                                </div>
-                                <div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
-                            </div>`;
+                        const rawMode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
+                        const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
+                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-status">Open</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Entry:</span><span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${isAuto ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
                     });
-                    html += '</div>';
-                    container.innerHTML = html;
+                    html += '</div>'; container.innerHTML = html;
                 }
             } 
             else if (currentTab === 'closed') {
                 if (closedTrades.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg></div>
-                            <h2 class="empty-title">No closed positions</h2>
-                            <p class="empty-subtitle">Your completed trades will appear here</p>
-                        </div>`;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg></div><h2 class="empty-title">No closed positions</h2><p class="empty-subtitle">Your completed trades will appear here</p></div>`;
                 } else {
                     let html = '<div class="trade-list">';
                     closedTrades.forEach(t => {
@@ -500,59 +454,19 @@
                         const pnlVal = isWin ? (parseFloat(t.payout || 0) - parseFloat(t.stake || 0)) : -parseFloat(t.stake || 0);
                         const contractValue = isWin ? parseFloat(t.payout || 0) : 0;
                         const potentialPayout = (parseFloat(t.stake || 0) * 1.952).toFixed(2);
-                        const mode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
-                        
-                        html += `
-                            <div class="trade-card">
-                                <div class="card-top">
-                                    <div class="card-asset-group">
-                                        <span class="card-asset">${getAssetName(t.asset)}</span>
-                                        <span class="card-subtitle">Index</span>
-                                        <span class="card-status ${isWin ? 'won' : 'lost'}">Closed</span>
-                                    </div>
-                                    <div class="card-direction-badge ${dir}">
-                                        <span class="dot"></span> ${dir}
-                                    </div>
-                                </div>
-                                <span class="usd-badge">USD</span>
-                                <div class="card-grid">
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Total profit/loss:</span>
-                                        <span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${isWin ? '+' : ''}${pnlVal.toFixed(2)}</span>
-                                    </div>
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Contract value:</span>
-                                        <span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${contractValue.toFixed(2)}</span>
-                                    </div>
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Stake:</span>
-                                        <span class="card-grid-value">${parseFloat(t.stake || 0).toFixed(2)}</span>
-                                    </div>
-                                    <div class="card-grid-item">
-                                        <span class="card-grid-label">Potential payout:</span>
-                                        <span class="card-grid-value">${potentialPayout}</span>
-                                    </div>
-                                </div>
-                                <div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
-                            </div>`;
+                        const rawMode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
+                        const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
+                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-subtitle">Index</span><span class="card-status ${isWin ? 'won' : 'lost'}">Closed</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><span class="usd-badge">USD</span><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Total profit/loss:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${isWin ? '+' : ''}${pnlVal.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Contract value:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${contractValue.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Potential payout:</span><span class="card-grid-value">${potentialPayout}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${isAuto ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
                     });
-                    html += '</div>';
-                    container.innerHTML = html;
+                    html += '</div>'; container.innerHTML = html;
                 }
             } 
             else if (currentTab === 'transactions') {
                 if (allTrades.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
-                            <h2 class="empty-title">No transactions</h2>
-                            <p class="empty-subtitle">Your history will appear here</p>
-                        </div>`;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><h2 class="empty-title">No transactions</h2><p class="empty-subtitle">Your history will appear here</p></div>`;
                 } else {
                     let html = '<div class="tx-list">';
                     let runningBalance = demoBalance;
-                    
-                    // Sort by newest first
                     const sortedTrades = [...allTrades].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     
                     sortedTrades.forEach(t => {
@@ -561,114 +475,35 @@
                         const isLoss = t.status === 'LOST' || t.status === 'CLOSED';
                         const assetShort = t.asset ? t.asset.replace('VOL_', 'V') + ' (1s)' : 'V10 (1s)';
                         const dateStr = formatDate(t.created_at);
-                        
-                        // Show Stake for ALL trades (including OPEN)
                         const stake = parseFloat(t.stake || 0);
-                        runningBalance -= stake;
-                        html += `
-                            <div class="tx-item">
-                                <div class="tx-icon stake">
-                                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                </div>
-                                <div class="tx-content">
-                                    <div class="tx-title-row">
-                                        <span class="tx-title stake">Stake</span>
-                                        <span class="tx-badge">${assetShort}</span>
-                                    </div>
-                                    <span class="tx-sub">${dir} • ${dateStr}</span>
-                                </div>
-                                <div class="tx-right">
-                                    <div class="tx-amount stake">-${stake.toFixed(2)}</div>
-                                    <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
-                                </div>
-                            </div>`;
                         
-                        // Show Closed/Payout only for WON/LOST trades
+                        runningBalance -= stake;
+                        html += `<div class="tx-item"><div class="tx-icon stake"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="tx-content"><div class="tx-title-row"><span class="tx-title stake">Stake</span><span class="tx-badge">${assetShort}</span></div><span class="tx-sub">${dir} • ${dateStr}</span></div><div class="tx-right"><div class="tx-amount stake">-${stake.toFixed(2)}</div><div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div></div></div>`;
+                        
                         if (isWin) {
                             const payout = parseFloat(t.payout || 0);
                             runningBalance += payout;
-                            html += `
-                                <div class="tx-item">
-                                    <div class="tx-icon win">
-                                        <svg viewBox="0 0 24 24"><polyline points="20 6 12 14 4 6"></polyline></svg>
-                                    </div>
-                                    <div class="tx-content">
-                                        <div class="tx-title-row">
-                                            <span class="tx-title win">Closed</span>
-                                            <span class="tx-badge">${assetShort}</span>
-                                        </div>
-                                        <span class="tx-sub">${dir} • ${dateStr}</span>
-                                    </div>
-                                    <div class="tx-right">
-                                        <div class="tx-amount win">+${payout.toFixed(2)}</div>
-                                        <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
-                                    </div>
-                                </div>`;
+                            html += `<div class="tx-item"><div class="tx-icon win"><svg viewBox="0 0 24 24"><polyline points="20 6 12 14 4 6"></polyline></svg></div><div class="tx-content"><div class="tx-title-row"><span class="tx-title win">Closed</span><span class="tx-badge">${assetShort}</span></div><span class="tx-sub">${dir} • ${dateStr}</span></div><div class="tx-right"><div class="tx-amount win">+${payout.toFixed(2)}</div><div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div></div></div>`;
                         } else if (isLoss) {
-                            html += `
-                                <div class="tx-item">
-                                    <div class="tx-icon loss">
-                                        <svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg>
-                                    </div>
-                                    <div class="tx-content">
-                                        <div class="tx-title-row">
-                                            <span class="tx-title loss">Closed</span>
-                                            <span class="tx-badge">${assetShort}</span>
-                                        </div>
-                                        <span class="tx-sub">${dir} • ${dateStr}</span>
-                                    </div>
-                                    <div class="tx-right">
-                                        <div class="tx-amount loss">-${stake.toFixed(2)}</div>
-                                        <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
-                                    </div>
-                                </div>`;
+                            html += `<div class="tx-item"><div class="tx-icon loss"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></div><div class="tx-content"><div class="tx-title-row"><span class="tx-title loss">Closed</span><span class="tx-badge">${assetShort}</span></div><span class="tx-sub">${dir} • ${dateStr}</span></div><div class="tx-right"><div class="tx-amount loss">-${stake.toFixed(2)}</div><div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div></div></div>`;
                         }
                     });
-                    html += '</div>';
-                    container.innerHTML = html;
+                    html += '</div>'; container.innerHTML = html;
                 }
             }
         }
 
         async function loadPositions() {
             updateTopNav();
-            if (!window.obxSupabase) {
-                console.log('No Supabase connection');
-                renderView();
-                return;
-            }
+            if (!window.obxSupabase) { renderView(); return; }
             try {
                 const { data: { user }, error: authError } = await window.obxSupabase.auth.getUser();
-                if (authError || !user) { 
-                    console.log('Auth error or no user:', authError);
-                    renderView(); 
-                    return; 
-                }
-
-                console.log('Fetching trades for user:', user.id, 'account:', currentAccount);
-
-                const { data: trades, error } = await window.obxSupabase
-                    .from('trades')
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .eq('account_type', currentAccount)
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    console.error('Supabase error:', error);
-                } else {
-                    console.log('Loaded trades:', trades ? trades.length : 0);
-                    if (trades) {
-                        allTrades = trades;
-                    }
-                }
+                if (authError || !user) { renderView(); return; }
+                const { data: trades, error } = await window.obxSupabase.from('trades').select('*').eq('user_id', user.id).eq('account_type', currentAccount).order('created_at', { ascending: false });
+                if (!error && trades) allTrades = trades;
                 renderView();
-            } catch (e) {
-                console.error('Error:', e);
-                renderView();
-            }
+            } catch (e) { console.error('Error:', e); renderView(); }
         }
-
         loadPositions();
     </script>
 </body>
