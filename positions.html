@@ -4,27 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Positions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-dark: #0f0a1f;
-            --bg-card: #1a1535;
-            --bg-card-hover: #231d45;
-            --primary-purple: #7c3aed;
-            --primary-pink: #ec4899;
+            --bg-dark: #0e0e0e;
+            --bg-card: #151717;
+            --bg-card-hover: #242828;
+            --primary-purple: #ff444f;
+            --primary-pink: #ff444f;
             --text-white: #ffffff;
-            --text-gray: #9ca3af;
-            --success-green: #10b981;
-            --danger-red: #ef4444;
+            --text-gray: #c2c2c2;
+            --success-green: #4bb4b3;
+            --danger-red: #ff444f;
             --warning-orange: #f59e0b;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: #323738;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             background: var(--bg-dark);
             color: var(--text-white);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
             font-size: 10px;
             height: 100vh;
             display: flex;
@@ -100,7 +103,7 @@
         }
 
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 200px; text-align: center; color: var(--text-gray); }
-        .empty-icon { width: 40px; height: 40px; background: rgba(124, 58, 237, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .empty-icon { width: 40px; height: 40px; background: rgba(255, 68, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
         .empty-icon svg { width: 20px; height: 20px; stroke: var(--text-gray); fill: none; stroke-width: 1.5; }
         .empty-title { font-size: 12px; font-weight: 700; color: white; margin-bottom: 3px; }
         .empty-subtitle { font-size: 9px; }
@@ -138,7 +141,7 @@
         .card-direction-badge.EVEN { color: var(--success-green); }
         
         .usd-badge { 
-            background: rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.08); 
             padding: 2px 6px; 
             border-radius: 3px; 
             font-size: 9px; 
@@ -176,9 +179,9 @@
             justify-content: center; 
             flex-shrink: 0;
         }
-        .tx-icon.win { background: rgba(16, 185, 129, 0.2); }
+        .tx-icon.win { background: rgba(75, 180, 179, 0.2); }
         .tx-icon.stake { background: rgba(245, 158, 11, 0.2); }
-        .tx-icon.loss { background: rgba(239, 68, 68, 0.2); }
+        .tx-icon.loss { background: rgba(255, 68, 79, 0.2); }
         .tx-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
         .tx-icon.win svg { color: var(--success-green); }
         .tx-icon.stake svg { color: var(--warning-orange); }
@@ -240,7 +243,7 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 8px; font-weight: 600; flex: 1; }
         .nav-item.active { color: var(--primary-purple); }
         .nav-icon { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
-        .ai-icon-wrap { width: 30px; height: 30px; background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink)); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: -14px; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.4); }
+        .ai-icon-wrap { width: 30px; height: 30px; background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink)); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: -14px; box-shadow: 0 4px 10px rgba(255, 68, 79, 0.4); }
         .ai-icon { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; }
 
     </style>
@@ -463,7 +466,7 @@
                                         <span class="dot"></span> ${dir}
                                     </div>
                                 </div>
-                                <div style="text-align:center;"><span style="background:rgba(124,58,237,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
+                                <div style="text-align:center;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
                             </div>`;
                     });
                     html += '</div>';
@@ -519,7 +522,7 @@
                                         <span class="card-grid-value">${potentialPayout}</span>
                                     </div>
                                 </div>
-                                <div style="text-align:center;margin-top:6px;"><span style="background:rgba(124,58,237,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
+                                <div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode === 'AUTO' ? 'Auto-Trading' : 'Manual'}</span></div>
                             </div>`;
                     });
                     html += '</div>';
