@@ -162,7 +162,6 @@
         .card-grid-value.positive { color: var(--success-green); }
         .card-grid-value.negative { color: var(--danger-red); }
 
-        /* FIX 1: Transaction Cards styled like PalOption */
         .tx-list { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
         .tx-item { 
             display: flex; 
@@ -248,11 +247,10 @@
         .nav-icon { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
         .ai-icon-wrap { width: 30px; height: 30px; background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink)); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: -14px; box-shadow: 0 4px 10px rgba(255, 68, 79, 0.4); }
         .ai-icon { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; }
-
     </style>
 </head>
 <body>
-
+    <!-- [KEEP ALL YOUR HTML EXACTLY AS IT WAS, from app-banner down to bottom-nav] -->
     <div class="app-banner" id="appBanner">
         <div class="app-banner-content">
             <div class="app-banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
@@ -375,7 +373,6 @@
             renderView();
         }
 
-        // FIX 2: Date format matches PalOption (Today 10:46:12 PM)
         function formatDate(dateString) {
             if(!dateString) return 'Today';
             const d = new Date(dateString);
@@ -391,10 +388,11 @@
             return names[asset] || asset;
         }
 
-        // FIX 4: Case-insensitive Auto detection
         function updateModeLabel() {
-            const rawMode = localStorage.getItem('obx_trade_mode') || 'MANUAL';
-            const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
+            let mode = localStorage.getItem('obx_trade_mode');
+            if (!mode && allTrades.length > 0) mode = allTrades[0].mode;
+            mode = (mode || 'AUTO').toString().toUpperCase();
+            const isAuto = mode.includes('AUTO');
             const label = document.getElementById('modeLabel');
             if (label) label.innerHTML = '<span class="dot"></span>' + (isAuto ? 'Auto-Trading' : 'Manual');
         }
@@ -407,7 +405,6 @@
             const tabOpen = document.getElementById('tabOpen');
             const tabClosed = document.getElementById('tabClosed');
 
-            // FIX 3: Session stats only count trades since page load
             const sessionStart = new Date(sessionStorage.getItem('sessionStartTime'));
             const sessionTrades = allTrades.filter(t => new Date(t.created_at) >= sessionStart);
             
@@ -436,9 +433,8 @@
                     let html = '<div class="trade-list">';
                     openTrades.forEach(t => {
                         const dir = (t.direction || 'EVEN').toUpperCase();
-                        const rawMode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
-                        const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
-                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-status">Open</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Entry:</span><span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${isAuto ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
+                        const mode = (t.mode || 'MANUAL').toString().toUpperCase();
+                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-status">Open</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Entry:</span><span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode.includes('AUTO') ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
                     });
                     html += '</div>'; container.innerHTML = html;
                 }
@@ -454,9 +450,8 @@
                         const pnlVal = isWin ? (parseFloat(t.payout || 0) - parseFloat(t.stake || 0)) : -parseFloat(t.stake || 0);
                         const contractValue = isWin ? parseFloat(t.payout || 0) : 0;
                         const potentialPayout = (parseFloat(t.stake || 0) * 1.952).toFixed(2);
-                        const rawMode = t.mode || localStorage.getItem('obx_trade_mode') || 'MANUAL';
-                        const isAuto = rawMode.toString().toUpperCase().includes('AUTO');
-                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-subtitle">Index</span><span class="card-status ${isWin ? 'won' : 'lost'}">Closed</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><span class="usd-badge">USD</span><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Total profit/loss:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${isWin ? '+' : ''}${pnlVal.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Contract value:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${contractValue.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Potential payout:</span><span class="card-grid-value">${potentialPayout}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${isAuto ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
+                        const mode = (t.mode || 'MANUAL').toString().toUpperCase();
+                        html += `<div class="trade-card"><div class="card-top"><div class="card-asset-group"><span class="card-asset">${getAssetName(t.asset)}</span><span class="card-subtitle">Index</span><span class="card-status ${isWin ? 'won' : 'lost'}">Closed</span></div><div class="card-direction-badge ${dir}"><span class="dot"></span> ${dir}</div></div><span class="usd-badge">USD</span><div class="card-grid"><div class="card-grid-item"><span class="card-grid-label">Total profit/loss:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${isWin ? '+' : ''}${pnlVal.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Contract value:</span><span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${contractValue.toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Stake:</span><span class="card-grid-value">${parseFloat(t.stake || 0).toFixed(2)}</span></div><div class="card-grid-item"><span class="card-grid-label">Potential payout:</span><span class="card-grid-value">${potentialPayout}</span></div></div><div style="text-align:center;margin-top:6px;"><span style="background:rgba(255,68,79,0.15);color:var(--primary-purple);font-size:8px;font-weight:600;padding:2px 6px;border-radius:6px;">${mode.includes('AUTO') ? 'Auto-Trading' : 'Manual'}</span></div></div>`;
                     });
                     html += '</div>'; container.innerHTML = html;
                 }
