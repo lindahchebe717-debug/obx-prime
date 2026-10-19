@@ -28,7 +28,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent body scroll, handle inside containers */
+            overflow: hidden;
         }
 
         /* --- App Banner --- */
@@ -63,7 +63,6 @@
         .menu-btn { background: none; border: none; color: white; cursor: pointer; padding: 4px; }
         .logo-btn { width: 32px; height: 32px; background: var(--primary-purple); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: white; }
         
-        /* Account Selector with Dropdown */
         .account-selector-wrap { position: relative; }
         .account-selector { 
             display: flex; align-items: center; gap: 6px; 
@@ -263,7 +262,7 @@
     <!-- Bottom Stats -->
     <div class="bottom-stats">
         <div class="stat-row">
-            <span class="stat-label">Last Session</span>
+            <span class="stat-label" id="modeLabel">Manual</span>
             <span class="stat-value" id="sessionStats">0 trades</span>
         </div>
         <div class="stat-row">
@@ -280,7 +279,7 @@
         </a>
         <a href="ai.html" class="nav-item">
             <div class="ai-icon-wrap"><svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div>
-            <span>AI</span>
+            <span>AI Scanner</span>
         </a>
         <a href="positions.html" class="nav-item active">
             <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -314,10 +313,9 @@
             localStorage.setItem('obx_account_mode', type);
             document.getElementById('accountDropdown').classList.remove('show');
             updateTopNav();
-            loadPositions(); // Reload data for new account
+            loadPositions();
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.account-selector-wrap')) {
                 document.getElementById('accountDropdown').classList.remove('show');
@@ -355,10 +353,20 @@
         function formatDate(dateString) {
             if(!dateString) return 'Today';
             const d = new Date(dateString);
-            return d.toLocaleDateString('en-GB'); // DD/MM/YYYY
+            return d.toLocaleDateString('en-GB');
+        }
+
+        function updateModeLabel() {
+            const mode = localStorage.getItem('obx_trade_mode') || 'MANUAL';
+            const label = document.getElementById('modeLabel');
+            if (label) {
+                label.innerText = mode === 'AUTO' ? 'Auto-Trading' : 'Manual';
+            }
         }
 
         function renderView() {
+            updateModeLabel(); // Ensure label is correct on render
+            
             const container = document.getElementById('scrollContainer');
             const sessionStats = document.getElementById('sessionStats');
             const sessionPnl = document.getElementById('sessionPnl');
@@ -371,7 +379,6 @@
             tabOpen.innerText = `Open (${openTrades.length})`;
             tabClosed.innerText = `Closed (${closedTrades.length})`;
 
-            // --- OPEN TAB ---
             if (currentTab === 'open') {
                 if (openTrades.length === 0) {
                     sessionStats.innerText = '0 trades';
@@ -407,7 +414,6 @@
                     container.innerHTML = html;
                 }
             } 
-            // --- CLOSED TAB ---
             else if (currentTab === 'closed') {
                 if (closedTrades.length === 0) {
                     sessionStats.innerText = '0 trades';
@@ -452,7 +458,6 @@
                     container.innerHTML = html;
                 }
             } 
-            // --- TRANSACTIONS TAB ---
             else if (currentTab === 'transactions') {
                 if (allTrades.length === 0) {
                     sessionStats.innerText = '0 transactions';
@@ -465,7 +470,6 @@
                             <p class="empty-subtitle">Your history will appear here</p>
                         </div>`;
                 } else {
-                    // Build transaction list (Stakes and Payouts)
                     let txs = [];
                     allTrades.forEach(t => {
                         txs.push({ 
@@ -481,9 +485,6 @@
                             });
                         }
                     });
-                    
-                    // Sort by newest first (assuming created_at is present, else keep order)
-                    // For visual match, we just list them.
 
                     sessionStats.innerText = `${txs.length} transactions`;
                     let totalTx = txs.reduce((sum, tx) => sum + tx.amount, 0);
@@ -512,7 +513,7 @@
         async function loadPositions() {
             updateTopNav();
             if (!window.obxSupabase) {
-                renderView(); // Render empty if no supabase
+                renderView();
                 return;
             }
             try {
@@ -536,7 +537,6 @@
             }
         }
 
-        // Init
         loadPositions();
     </script>
 </body>
