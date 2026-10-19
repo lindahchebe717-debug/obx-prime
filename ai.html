@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | AI Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --page-bg: #0b0914;
+            --modal-bg: #1a162e;
+            --inner-box-bg: #120f21;
+            --border-color: #2d2845;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --primary-purple: #7c3aed;
+            --primary-purple-hover: #6d28d9;
+            --btn-outline: #373056;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--page-bg);
+            color: var(--text-primary);
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            /* Optional: subtle background blur effect if you want it to look like a modal over a page */
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--page-bg) 60%);
+        }
+
+        /* Main Scanner Card */
+        .scanner-card {
+            background: var(--modal-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-box svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--primary-purple);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Description Box */
+        .desc-box {
+            background: var(--inner-box-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .desc-box strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .custom-select {
+            width: 100%;
+            background: var(--inner-box-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+            font-family: inherit;
+            appearance: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .custom-select:focus {
+            border-color: var(--primary-purple);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-secondary);
+        }
+
+        .select-arrow svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Progress Section */
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .progress-count {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: var(--inner-box-bg);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-purple);
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-purple);
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-purple-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--btn-outline);
+            color: var(--primary-purple);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        /* Result Box (Hidden by default) */
+        .result-box {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .result-title {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .result-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanner-card">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
+                    </svg>
+                </div>
+                <h1 class="title">Entry Scanner</h1>
+            </div>
+            <!-- Close button redirects to dashboard -->
+            <button class="close-btn" onclick="window.location.href='dashboard.html'">
+                <svg viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Description -->
+        <div class="desc-box">
+            Pick the market category you want to scan. The deep scanner walks every <strong>volatility / synthetic</strong> index and surfaces the best entry point for that category based on historical tick patterns.
+        </div>
+
+        <!-- Market Dropdown -->
+        <div class="form-group">
+            <label class="form-label">Market</label>
+            <div class="select-wrapper">
+                <select class="custom-select" id="marketSelect">
+                    <option value="even_odd">Even / Odd</option>
+                    <option value="over_under">Over / Under</option>
+                    <option value="matches_differs">Matches / Differs</option>
+                    <option value="rise_fall">Rise / Fall</option>
+                </select>
+                <div class="select-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="form-group">
+            <div class="progress-header">
+                <span class="progress-label" id="progressText">Ready to scan</span>
+                <span class="progress-count" id="progressCount">0/13</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <button class="btn btn-primary" id="scanBtn" onclick="startScan()">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span id="scanBtnText">Deep Scan for Best Market</span>
+        </button>
+
+        <button class="btn btn-secondary" onclick="alert('Deep Scanner Bot loading...')">
+            Load Deep Scanner Bot
+        </button>
+
+        <!-- Result Area -->
+        <div class="result-box" id="resultBox">
+            <div class="result-title">✅ Best Entry Found!</div>
+            <div class="result-text" id="resultText">Volatility 10 (1s) Index - EVEN</div>
+        </div>
+    </div>
+
+    <script>
+        function startScan() {
+            const btn = document.getElementById('scanBtn');
+            const btnText = document.getElementById('scanBtnText');
+            const fill = document.getElementById('progressFill');
+            const count = document.getElementById('progressCount');
+            const text = document.getElementById('progressText');
+            const resultBox = document.getElementById('resultBox');
+            
+            // Reset state
+            resultBox.classList.remove('show');
+            btn.disabled = true;
+            btnText.innerText = 'Scanning markets...';
+            text.innerText = 'Scanning...';
+            let current = 0;
+            const total = 13;
+
+            // Simulate scanning process
+            const interval = setInterval(() => {
+                current++;
+                const percentage = (current / total) * 100;
+                
+                fill.style.width = percentage + '%';
+                count.innerText = `${current}/${total}`;
+
+                if (current >= total) {
+                    clearInterval(interval);
+                    finishScan();
+                }
+            }, 250); // 250ms per market = ~3.25 seconds total
+        }
+
+        function finishScan() {
+            const btn = document.getElementById('scanBtn');
+            const btnText = document.getElementById('scanBtnText');
+            const text = document.getElementById('progressText');
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            const market = document.getElementById('marketSelect').options[document.getElementById('marketSelect').selectedIndex].text;
+
+            // Randomly pick a volatility index for the result
+            const indices = ['Volatility 10 (1s)', 'Volatility 25 (1s)', 'Volatility 50 (1s)', 'Volatility 75 (1s)', 'Volatility 100 (1s)'];
+            const randomIndex = indices[Math.floor(Math.random() * indices.length)];
+
+            btn.disabled = false;
+            btnText.innerText = 'Deep Scan for Best Market';
+            text.innerText = 'Scan complete';
+            
+            resultText.innerText = `${randomIndex} Index - ${market}`;
+            resultBox.classList.add('show');
+        }
+    </script>
+</body>
+</html>
