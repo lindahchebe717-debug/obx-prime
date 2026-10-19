@@ -95,38 +95,110 @@
         .scroll-container {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 120px; /* Space for fixed bottom elements */
+            padding-bottom: 120px;
         }
 
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 250px; text-align: center; color: var(--text-gray); }
-        .empty-icon { width: 40px; height: 40px; background: rgba(124, 58, 237, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-        .empty-icon svg { width: 20px; height: 20px; stroke: var(--text-gray); fill: none; stroke-width: 1.5; }
-        .empty-title { font-size: 12px; font-weight: 700; color: white; margin-bottom: 2px; }
-        .empty-subtitle { font-size: 10px; }
+        .empty-icon { width: 60px; height: 60px; background: rgba(124, 58, 237, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .empty-icon svg { width: 30px; height: 30px; stroke: var(--text-gray); fill: none; stroke-width: 1.5; }
+        .empty-title { font-size: 14px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .empty-subtitle { font-size: 11px; }
 
-        .trade-list { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
-        .trade-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .card-asset { font-weight: 700; font-size: 12px; color: white; }
-        .card-direction { font-weight: 700; font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); text-transform: uppercase; }
-        .card-direction.EVEN { color: var(--success-green); }
-        .card-direction.ODD { color: var(--danger-red); }
+        /* Closed Trade Cards - PalOption Style */
+        .trade-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .trade-card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 12px; 
+        }
+        .card-top { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 10px; 
+        }
+        .card-asset-group { display: flex; flex-direction: column; gap: 2px; }
+        .card-asset { font-weight: 700; font-size: 13px; color: white; }
+        .card-subtitle { font-size: 10px; color: var(--text-gray); }
+        .card-status { font-size: 11px; margin-top: 4px; }
+        .card-status.won { color: var(--success-green); }
+        .card-status.lost { color: var(--danger-red); }
         
-        .card-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
-        .card-row .label { color: var(--text-gray); }
-        .card-row .value { color: white; font-weight: 500; }
+        .card-direction-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            font-size: 11px; 
+            font-weight: 600;
+        }
+        .card-direction-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--danger-red); }
+        .card-direction-badge.EVEN .dot { background: var(--success-green); }
+        .card-direction-badge.ODD { color: var(--danger-red); }
+        .card-direction-badge.EVEN { color: var(--success-green); }
         
-        .card-footer { display: flex; justify-content: center; margin-top: 8px; }
-        .mode-badge { background: rgba(124, 58, 237, 0.15); color: var(--primary-purple); font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
+        .usd-badge { 
+            background: rgba(255,255,255,0.1); 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-size: 10px; 
+            font-weight: 600; 
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .card-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        .card-grid-item { display: flex; flex-direction: column; gap: 2px; }
+        .card-grid-label { font-size: 10px; color: var(--text-gray); }
+        .card-grid-value { font-size: 12px; font-weight: 700; color: white; }
+        .card-grid-value.positive { color: var(--success-green); }
+        .card-grid-value.negative { color: var(--danger-red); }
 
+        /* Transaction Items - PalOption Style */
         .tx-list { display: flex; flex-direction: column; }
-        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; border-bottom: 1px solid var(--border-color); }
-        .tx-left { display: flex; flex-direction: column; gap: 2px; }
-        .tx-title { font-weight: 700; font-size: 11px; color: white; }
+        .tx-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 10px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .tx-icon { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0;
+        }
+        .tx-icon.up { background: rgba(16, 185, 129, 0.15); }
+        .tx-icon.down { background: rgba(245, 158, 11, 0.15); }
+        .tx-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .tx-icon.up svg { color: var(--success-green); }
+        .tx-icon.down svg { color: #f59e0b; }
+        
+        .tx-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .tx-title-row { display: flex; align-items: center; gap: 6px; }
+        .tx-title { font-weight: 700; font-size: 12px; color: white; }
+        .tx-badge { 
+            background: rgba(255,255,255,0.05); 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-size: 9px; 
+            color: var(--text-gray); 
+        }
         .tx-sub { font-size: 10px; color: var(--text-gray); }
-        .tx-amount { font-weight: 700; font-size: 11px; }
+        .tx-amount-row { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+        .tx-amount { font-weight: 700; font-size: 12px; }
         .tx-amount.neg { color: var(--danger-red); }
         .tx-amount.pos { color: var(--success-green); }
+        .tx-balance { font-size: 10px; color: var(--text-gray); }
 
         .bottom-stats {
             position: fixed;
@@ -135,15 +207,17 @@
             right: 0;
             background: var(--bg-card);
             border-top: 1px solid var(--border-color);
-            padding: 8px 12px;
+            padding: 10px 12px;
             z-index: 999;
         }
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .stat-row:last-child { margin-bottom: 0; }
-        .stat-label { font-size: 11px; color: var(--text-gray); }
+        .stat-label { font-size: 11px; color: var(--text-gray); display: flex; align-items: center; gap: 6px; }
+        .stat-label .dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
         .stat-value { font-size: 11px; font-weight: 700; color: white; }
         .stat-value.neg { color: var(--danger-red); }
         .stat-value.pos { color: var(--success-green); }
+        .stat-trade-count { font-size: 10px; color: var(--text-gray); }
 
         .bottom-nav {
             position: fixed;
@@ -216,8 +290,8 @@
 
     <div class="bottom-stats">
         <div class="stat-row">
-            <span class="stat-label" id="modeLabel">Manual</span>
-            <span class="stat-value" id="sessionStats">0 trades</span>
+            <span class="stat-label" id="modeLabel"><span class="dot"></span>Manual</span>
+            <span class="stat-trade-count" id="tradeCount">0 trades (0W / 0L)</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">Session P/L:</span>
@@ -232,7 +306,7 @@
         </a>
         <a href="ai.html" class="nav-item">
             <div class="ai-icon-wrap"><svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div>
-            <span>AI Scanner</span>
+            <span>AI</span>
         </a>
         <a href="positions.html" class="nav-item active">
             <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -247,7 +321,6 @@
         let allTrades = [];
         let currentTab = 'open';
 
-        // Session tracking: Reset on page load so bottom stats ONLY count current session
         sessionStorage.setItem('sessionStartTime', new Date().toISOString());
 
         if (typeof window.supabase !== 'undefined') {
@@ -306,14 +379,14 @@
         function formatDate(dateString) {
             if(!dateString) return 'Today';
             const d = new Date(dateString);
-            return d.toLocaleDateString('en-GB');
+            return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) + ' • ' + d.toLocaleDateString('en-GB');
         }
 
         function updateModeLabel() {
             const mode = localStorage.getItem('obx_trade_mode') || 'MANUAL';
             const label = document.getElementById('modeLabel');
             if (label) {
-                label.innerText = mode === 'AUTO' ? 'Auto-Trading' : 'Manual';
+                label.innerHTML = '<span class="dot"></span>' + (mode === 'AUTO' ? 'Auto-Trading' : 'Manual');
             }
         }
 
@@ -321,27 +394,27 @@
             updateModeLabel();
             
             const container = document.getElementById('scrollContainer');
-            const sessionStats = document.getElementById('sessionStats');
             const sessionPnl = document.getElementById('sessionPnl');
+            const tradeCount = document.getElementById('tradeCount');
             const tabOpen = document.getElementById('tabOpen');
             const tabClosed = document.getElementById('tabClosed');
 
-            // 1. Calculate Session Stats (ONLY current session)
             const sessionStart = new Date(sessionStorage.getItem('sessionStartTime'));
             const sessionTradesList = allTrades.filter(t => new Date(t.created_at) >= sessionStart);
             
-            let sessionTotalTrades = sessionTradesList.length;
+            const sessionWins = sessionTradesList.filter(t => t.status === 'WON').length;
+            const sessionLosses = sessionTradesList.filter(t => t.status === 'LOST' || t.status === 'CLOSED').length;
+            
             let sessionTotalPnl = sessionTradesList.reduce((sum, t) => {
                 if (t.status === 'WON') return sum + (parseFloat(t.payout || 0) - parseFloat(t.stake || 0));
                 if (t.status === 'LOST' || t.status === 'CLOSED') return sum - parseFloat(t.stake || 0);
-                return sum; // OPEN trades don't affect realized P/L yet
+                return sum;
             }, 0);
 
-            sessionStats.innerText = `${sessionTotalTrades} trades`;
-            sessionPnl.innerText = (sessionTotalPnl >= 0 ? '+$' : '-$') + Math.abs(sessionTotalPnl).toFixed(2);
+            tradeCount.innerText = `${sessionTradesList.length} trades (${sessionWins}W / ${sessionLosses}L)`;
+            sessionPnl.innerText = (sessionTotalPnl >= 0 ? '+' : '') + sessionTotalPnl.toFixed(2) + ' USD';
             sessionPnl.className = 'stat-value ' + (sessionTotalPnl >= 0 ? 'pos' : 'neg');
 
-            // 2. Show ALL trades in tabs (no session filtering here)
             const openTrades = allTrades.filter(t => t.status === 'OPEN');
             const closedTrades = allTrades.filter(t => t.status !== 'OPEN');
 
@@ -362,13 +435,28 @@
                         const dir = (t.direction || 'EVEN').toUpperCase();
                         html += `
                             <div class="trade-card">
-                                <div class="card-header">
-                                    <span class="card-asset">${t.asset || 'VOL_10'}</span>
-                                    <span class="card-direction ${dir}">${dir}</span>
+                                <div class="card-top">
+                                    <div class="card-asset-group">
+                                        <span class="card-asset">${t.asset || 'VOL_10'}</span>
+                                        <span class="card-subtitle">Index</span>
+                                        <span class="card-status">Open</span>
+                                    </div>
+                                    <div class="card-direction-badge ${dir}">
+                                        <span class="dot"></span> ${dir}
+                                    </div>
                                 </div>
-                                <div class="card-row"><span class="label">Stake</span><span class="value">$${parseFloat(t.stake || 0).toFixed(2)}</span></div>
-                                <div class="card-row"><span class="label">Entry</span><span class="value">${parseFloat(t.entry_price || 0).toFixed(2)}</span></div>
-                                <div class="card-footer"><span class="mode-badge">${t.mode || 'Manual'}</span></div>
+                                <span class="usd-badge">USD</span>
+                                <div class="card-grid">
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Stake:</span>
+                                        <span class="card-grid-value">$${parseFloat(t.stake || 0).toFixed(2)}</span>
+                                    </div>
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Entry:</span>
+                                        <span class="card-grid-value">${parseFloat(t.entry_price || 0).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <div style="text-align:center;margin-top:10px;"><span class="mode-badge">${t.mode || 'Manual'}</span></div>
                             </div>`;
                     });
                     html += '</div>';
@@ -389,18 +477,40 @@
                         const dir = (t.direction || 'EVEN').toUpperCase();
                         const isWin = t.status === 'WON';
                         const pnlVal = isWin ? (parseFloat(t.payout || 0) - parseFloat(t.stake || 0)) : -parseFloat(t.stake || 0);
-                        const pnlText = (pnlVal >= 0 ? '+$' : '-$') + Math.abs(pnlVal).toFixed(2);
-                        const pnlColor = pnlVal >= 0 ? 'var(--success-green)' : 'var(--danger-red)';
-
+                        const contractValue = isWin ? parseFloat(t.payout || 0) : 0;
+                        const potentialPayout = (parseFloat(t.stake || 0) * 1.952).toFixed(2);
+                        
                         html += `
                             <div class="trade-card">
-                                <div class="card-header">
-                                    <span class="card-asset">${t.asset || 'VOL_10'}</span>
-                                    <span class="card-direction ${dir}">${dir}</span>
+                                <div class="card-top">
+                                    <div class="card-asset-group">
+                                        <span class="card-asset">${t.asset || 'VOL_10'}</span>
+                                        <span class="card-subtitle">Index</span>
+                                        <span class="card-status ${isWin ? 'won' : 'lost'}">${isWin ? 'Closed' : 'Closed'}</span>
+                                    </div>
+                                    <div class="card-direction-badge ${dir}">
+                                        <span class="dot"></span> ${dir}
+                                    </div>
                                 </div>
-                                <div class="card-row"><span class="label">Stake</span><span class="value">$${parseFloat(t.stake || 0).toFixed(2)}</span></div>
-                                <div class="card-row"><span class="label">Profit/Loss</span><span class="value" style="color:${pnlColor}">${pnlText}</span></div>
-                                <div class="card-footer"><span class="mode-badge">${t.mode || 'Manual'}</span></div>
+                                <span class="usd-badge">USD</span>
+                                <div class="card-grid">
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Total profit/loss:</span>
+                                        <span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${isWin ? '+' : ''}${pnlVal.toFixed(2)}</span>
+                                    </div>
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Contract value:</span>
+                                        <span class="card-grid-value ${isWin ? 'positive' : 'negative'}">${contractValue.toFixed(2)}</span>
+                                    </div>
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Stake:</span>
+                                        <span class="card-grid-value">${parseFloat(t.stake || 0).toFixed(2)}</span>
+                                    </div>
+                                    <div class="card-grid-item">
+                                        <span class="card-grid-label">Potential payout:</span>
+                                        <span class="card-grid-value">${potentialPayout}</span>
+                                    </div>
+                                </div>
                             </div>`;
                     });
                     html += '</div>';
@@ -416,34 +526,55 @@
                             <p class="empty-subtitle">Your history will appear here</p>
                         </div>`;
                 } else {
-                    let txs = [];
-                    allTrades.forEach(t => {
-                        txs.push({ 
-                            type: 'Stake', 
-                            sub: `${t.asset || 'VOL_10'} • ${t.direction || 'EVEN'} • ${formatDate(t.created_at)}`, 
-                            amount: -parseFloat(t.stake || 0) 
-                        });
-                        if (t.status === 'WON') {
-                            txs.push({ 
-                                type: 'Payout', 
-                                sub: `${t.asset || 'VOL_10'} • ${t.direction || 'EVEN'} • ${formatDate(t.created_at)}`, 
-                                amount: parseFloat(t.payout || 0) 
-                            });
-                        }
-                    });
-
                     let html = '<div class="tx-list">';
-                    txs.forEach(tx => {
-                        const amtClass = tx.amount < 0 ? 'neg' : 'pos';
-                        const amtText = tx.amount < 0 ? '-$' + Math.abs(tx.amount).toFixed(2) : '+$' + tx.amount.toFixed(2);
-                        html += `
-                            <div class="tx-item">
-                                <div class="tx-left">
-                                    <span class="tx-title">${tx.type}</span>
-                                    <span class="tx-sub">${tx.sub}</span>
-                                </div>
-                                <span class="tx-amount ${amtClass}">${amtText}</span>
-                            </div>`;
+                    let runningBalance = demoBalance;
+                    
+                    allTrades.slice().reverse().forEach(t => {
+                        const dir = (t.direction || 'EVEN').toUpperCase();
+                        const isWin = t.status === 'WON';
+                        
+                        if (t.status === 'OPEN') return;
+                        
+                        if (!isWin) {
+                            runningBalance -= parseFloat(t.stake || 0);
+                            html += `
+                                <div class="tx-item">
+                                    <div class="tx-icon down">
+                                        <svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                                    </div>
+                                    <div class="tx-content">
+                                        <div class="tx-title-row">
+                                            <span class="tx-title">Stake</span>
+                                            <span class="tx-badge">${t.asset || 'V10 (1s)'}</span>
+                                        </div>
+                                        <span class="tx-sub">${dir} • ${formatDate(t.created_at)}</span>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div class="tx-amount neg">-${parseFloat(t.stake || 0).toFixed(2)}</div>
+                                        <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
+                                    </div>
+                                </div>`;
+                        } else {
+                            const payout = parseFloat(t.payout || 0);
+                            runningBalance += payout;
+                            html += `
+                                <div class="tx-item">
+                                    <div class="tx-icon up">
+                                        <svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="19" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                    </div>
+                                    <div class="tx-content">
+                                        <div class="tx-title-row">
+                                            <span class="tx-title" style="color:var(--success-green);">Closed</span>
+                                            <span class="tx-badge">${t.asset || 'V10 (1s)'}</span>
+                                        </div>
+                                        <span class="tx-sub">${dir} • ${formatDate(t.created_at)}</span>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div class="tx-amount pos">+${payout.toFixed(2)}</div>
+                                        <div class="tx-balance">Bal: ${runningBalance.toFixed(2)}</div>
+                                    </div>
+                                </div>`;
+                        }
                     });
                     html += '</div>';
                     container.innerHTML = html;
