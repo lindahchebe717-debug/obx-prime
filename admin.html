@@ -2,395 +2,458 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OBX PRIME | Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #141021; color: white; font-family: system-ui, -apple-system, sans-serif; }
-        .sidebar-link { transition: all 0.2s ease; border-left: 3px solid transparent; }
-        .sidebar-link:hover, .sidebar-link.active { 
-            background-color: rgba(124, 58, 237, 0.1); 
-            border-left-color: #7C3AED; 
-            color: #A78BFA; 
-        }
-        .card { background-color: #1F1936; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
-        .table-row { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
-        .table-row:hover { background-color: rgba(255,255,255,0.02); }
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-completed { background: rgba(16, 185, 129, 0.15); color: #10B981; }
-        .status-pending { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
-        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #141021; }
-        ::-webkit-scrollbar-thumb { background: #2E2447; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+        body { background-color: #0f0a1f; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; }
+        .tab-btn.active { border-bottom: 2px solid #7c3aed; color: #7c3aed; }
+        .status-pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .status-completed { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .status-rejected { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .status-open { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .status-won { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .status-lost { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
-
-    <!-- Sidebar -->
-    <aside class="w-64 bg-[#130f1c] border-r border-white/5 flex flex-col shrink-0">
-        <div class="p-6 flex items-center gap-3 border-b border-white/5">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <span class="font-bold text-lg tracking-tight">OBX ADMIN</span>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-[#1a1535] border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-[#7c3aed] rounded-lg flex items-center justify-center font-bold text-white">A</div>
+            <h1 class="text-xl font-bold">OBX PRIME Admin</h1>
         </div>
-        
-        <nav class="flex-1 py-6 space-y-1 px-3">
-            <a href="#" onclick="switchTab('dashboard')" id="tab-dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                Dashboard
-            </a>
-            <a href="#" onclick="switchTab('users')" id="tab-users" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Users Management
-            </a>
-            <a href="#" onclick="switchTab('deposits')" id="tab-deposits" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                Deposits
-            </a>
-            <a href="#" onclick="switchTab('withdrawals')" id="tab-withdrawals" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                Withdrawals
-            </a>
-            <a href="#" onclick="switchTab('settings')" id="tab-settings" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                Settings
-            </a>
-        </nav>
-
-        <div class="p-4 border-t border-white/5">
-            <a href="index.html" class="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Back to Site
-            </a>
-        </div>
-    </aside>
+        <button onclick="logout()" class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-semibold">Logout</button>
+    </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-8">
-        <!-- Header -->
-        <header class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
-                <p class="text-gray-400 text-sm mt-1">Welcome back, Citra Slamet</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <button class="p-2 rounded-lg bg-[#1F1936] text-gray-400 hover:text-white transition-colors relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
-                <div class="flex items-center gap-3 pl-4 border-l border-white/10">
-                    <div class="w-9 h-9 rounded-full bg-[#7C3AED] flex items-center justify-center text-sm font-bold">CS</div>
-                    <div class="hidden md:block">
-                        <div class="text-sm font-semibold">Citra Slamet</div>
-                        <div class="text-xs text-gray-400">Super Admin</div>
-                    </div>
-                </div>
-            </div>
-        </header>
+    <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <!-- Tabs -->
+        <div class="flex border-b border-white/10 mb-6 overflow-x-auto no-scrollbar">
+            <button onclick="switchTab('users')" id="tab-users" class="tab-btn active px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Users & Balances</button>
+            <button onclick="switchTab('deposits')" id="tab-deposits" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Pending Deposits</button>
+            <button onclick="switchTab('withdrawals')" id="tab-withdrawals" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Pending Withdrawals</button>
+            <button onclick="switchTab('trades')" id="tab-trades" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Recent Trades</button>
+        </div>
 
-        <!-- DASHBOARD TAB -->
-        <div id="content-dashboard" class="space-y-6">
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-gray-400 text-sm">Total Users</span>
-                        <div class="w-10 h-10 rounded-lg bg-[#7C3AED]/20 flex items-center justify-center text-[#A78BFA]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold">1,248</div>
-                    <div class="text-emerald-500 text-xs mt-2 flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                        +12% this week
-                    </div>
-                </div>
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-gray-400 text-sm">Total Deposits</span>
-                        <div class="w-10 h-10 rounded-lg bg-[#10B981]/20 flex items-center justify-center text-[#10B981]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold">$48,290.00</div>
-                    <div class="text-emerald-500 text-xs mt-2 flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                        +8% this week
-                    </div>
-                </div>
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-gray-400 text-sm">Pending Withdrawals</span>
-                        <div class="w-10 h-10 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center text-[#F59E0B]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold">24</div>
-                    <div class="text-gray-500 text-xs mt-2">Requires attention</div>
-                </div>
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-gray-400 text-sm">Active Traders</span>
-                        <div class="w-10 h-10 rounded-lg bg-[#EC4899]/20 flex items-center justify-center text-[#EC4899]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold">842</div>
-                    <div class="text-emerald-500 text-xs mt-2 flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                        +24% today
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity Table -->
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                    <h3 class="font-bold">Recent Transactions</h3>
-                    <button class="text-xs text-[#A78BFA] hover:text-white transition-colors">View All</button>
+        <!-- Content: Users -->
+        <div id="content-users" class="tab-content">
+            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
+                <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                    <h2 class="font-bold text-lg">Registered Users</h2>
+                    <button onclick="loadUsers()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-white/5 text-gray-400 uppercase text-xs">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
                             <tr>
-                                <th class="px-6 py-4 font-medium">User</th>
-                                <th class="px-6 py-4 font-medium">Type</th>
-                                <th class="px-6 py-4 font-medium">Amount</th>
-                                <th class="px-6 py-4 font-medium">Status</th>
-                                <th class="px-6 py-4 font-medium">Date</th>
+                                <th class="px-6 py-3">Email</th>
+                                <th class="px-6 py-3">Real Balance</th>
+                                <th class="px-6 py-3">Demo Balance</th>
+                                <th class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr class="table-row">
-                                <td class="px-6 py-4">john.doe@email.com</td>
-                                <td class="px-6 py-4"><span class="text-emerald-500">Deposit</span></td>
-                                <td class="px-6 py-4 font-mono">$500.00</td>
-                                <td class="px-6 py-4"><span class="status-badge status-completed">Completed</span></td>
-                                <td class="px-6 py-4 text-gray-400">Oct 8, 2026</td>
-                            </tr>
-                            <tr class="table-row">
-                                <td class="px-6 py-4">jane.smith@email.com</td>
-                                <td class="px-6 py-4"><span class="text-red-500">Withdrawal</span></td>
-                                <td class="px-6 py-4 font-mono">$1,200.00</td>
-                                <td class="px-6 py-4"><span class="status-badge status-pending">Pending</span></td>
-                                <td class="px-6 py-4 text-gray-400">Oct 8, 2026</td>
-                            </tr>
-                            <tr class="table-row">
-                                <td class="px-6 py-4">mike.trader@email.com</td>
-                                <td class="px-6 py-4"><span class="text-emerald-500">Deposit</span></td>
-                                <td class="px-6 py-4 font-mono">$50.00</td>
-                                <td class="px-6 py-4"><span class="status-badge status-completed">Completed</span></td>
-                                <td class="px-6 py-4 text-gray-400">Oct 7, 2026</td>
-                            </tr>
+                        <tbody id="users-table-body" class="divide-y divide-white/5">
+                            <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading users...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- USERS TAB (Hidden by default) -->
-        <div id="content-users" class="hidden space-y-6">
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                    <h3 class="font-bold">All Users</h3>
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Search users..." class="bg-[#130f1c] border border-white/10 rounded-lg px-4 py-2 text-sm focus:border-[#7C3AED] outline-none">
-                        <button class="bg-[#7C3AED] hover:bg-[#6D28D9] px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Add User</button>
-                    </div>
+        <!-- Content: Deposits -->
+        <div id="content-deposits" class="tab-content hidden">
+            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
+                <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                    <h2 class="font-bold text-lg">Pending Deposit Requests</h2>
+                    <button onclick="loadDeposits()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-white/5 text-gray-400 uppercase text-xs">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
                             <tr>
-                                <th class="px-6 py-4 font-medium">Name</th>
-                                <th class="px-6 py-4 font-medium">Email</th>
-                                <th class="px-6 py-4 font-medium">Balance</th>
-                                <th class="px-6 py-4 font-medium">Account Type</th>
-                                <th class="px-6 py-4 font-medium">Joined</th>
-                                <th class="px-6 py-4 font-medium">Actions</th>
+                                <th class="px-6 py-3">User</th>
+                                <th class="px-6 py-3">Amount</th>
+                                <th class="px-6 py-3">Method</th>
+                                <th class="px-6 py-3">Date</th>
+                                <th class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr class="table-row">
-                                <td class="px-6 py-4 font-medium">Citra Slamet</td>
-                                <td class="px-6 py-4 text-gray-400">ci***t7@gmail.com</td>
-                                <td class="px-6 py-4 font-mono">$0.00</td>
-                                <td class="px-6 py-4"><span class="text-[#7C3AED]">Real</span></td>
-                                <td class="px-6 py-4 text-gray-400">Sep 24, 2026</td>
-                                <td class="px-6 py-4">
-                                    <button class="text-[#A78BFA] hover:text-white mr-3">Edit</button>
-                                    <button class="text-red-500 hover:text-red-400">Ban</button>
-                                </td>
-                            </tr>
-                            <tr class="table-row">
-                                <td class="px-6 py-4 font-medium">Demo User</td>
-                                <td class="px-6 py-4 text-gray-400">demo@example.com</td>
-                                <td class="px-6 py-4 font-mono">$10,000.00</td>
-                                <td class="px-6 py-4"><span class="text-red-500">Demo</span></td>
-                                <td class="px-6 py-4 text-gray-400">Oct 1, 2026</td>
-                                <td class="px-6 py-4">
-                                    <button class="text-[#A78BFA] hover:text-white mr-3">Edit</button>
-                                    <button class="text-red-500 hover:text-red-400">Ban</button>
-                                </td>
-                            </tr>
+                        <tbody id="deposits-table-body" class="divide-y divide-white/5">
+                            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading deposits...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- DEPOSITS TAB (Hidden by default) -->
-        <div id="content-deposits" class="hidden space-y-6">
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                    <h3 class="font-bold">Deposit Requests</h3>
-                    <div class="flex gap-2">
-                        <select class="bg-[#130f1c] border border-white/10 rounded-lg px-4 py-2 text-sm focus:border-[#7C3AED] outline-none">
-                            <option>All Statuses</option>
-                            <option>Pending</option>
-                            <option>Completed</option>
-                            <option>Rejected</option>
-                        </select>
-                    </div>
+        <!-- Content: Withdrawals -->
+        <div id="content-withdrawals" class="tab-content hidden">
+            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
+                <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                    <h2 class="font-bold text-lg">Pending Withdrawal Requests</h2>
+                    <button onclick="loadWithdrawals()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-white/5 text-gray-400 uppercase text-xs">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
                             <tr>
-                                <th class="px-6 py-4 font-medium">User</th>
-                                <th class="px-6 py-4 font-medium">Method</th>
-                                <th class="px-6 py-4 font-medium">Amount</th>
-                                <th class="px-6 py-4 font-medium">TX Hash</th>
-                                <th class="px-6 py-4 font-medium">Status</th>
-                                <th class="px-6 py-4 font-medium">Actions</th>
+                                <th class="px-6 py-3">User</th>
+                                <th class="px-6 py-3">Amount</th>
+                                <th class="px-6 py-3">Method</th>
+                                <th class="px-6 py-3">Date</th>
+                                <th class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr class="table-row">
-                                <td class="px-6 py-4">john.doe@email.com</td>
-                                <td class="px-6 py-4">USDT (TRC20)</td>
-                                <td class="px-6 py-4 font-mono">$500.00</td>
-                                <td class="px-6 py-4 font-mono text-gray-400 text-xs">TQ9nfb...JMqaM</td>
-                                <td class="px-6 py-4"><span class="status-badge status-completed">Completed</span></td>
-                                <td class="px-6 py-4">
-                                    <button class="text-[#A78BFA] hover:text-white">Details</button>
-                                </td>
-                            </tr>
-                            <tr class="table-row">
-                                <td class="px-6 py-4">new.user@email.com</td>
-                                <td class="px-6 py-4">BTC</td>
-                                <td class="px-6 py-4 font-mono">$1,000.00</td>
-                                <td class="px-6 py-4 font-mono text-gray-400 text-xs">bc1qz8...6ywc</td>
-                                <td class="px-6 py-4"><span class="status-badge status-pending">Pending</span></td>
-                                <td class="px-6 py-4">
-                                    <button class="text-emerald-500 hover:text-emerald-400 mr-3">Approve</button>
-                                    <button class="text-red-500 hover:text-red-400">Reject</button>
-                                </td>
-                            </tr>
+                        <tbody id="withdrawals-table-body" class="divide-y divide-white/5">
+                            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading withdrawals...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- WITHDRAWALS TAB (Hidden by default) -->
-        <div id="content-withdrawals" class="hidden space-y-6">
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                    <h3 class="font-bold">Withdrawal Requests</h3>
-                    <div class="flex gap-2">
-                        <select class="bg-[#130f1c] border border-white/10 rounded-lg px-4 py-2 text-sm focus:border-[#7C3AED] outline-none">
-                            <option>All Statuses</option>
-                            <option>Pending</option>
-                            <option>Processed</option>
-                            <option>Rejected</option>
-                        </select>
-                    </div>
+        <!-- Content: Trades -->
+        <div id="content-trades" class="tab-content hidden">
+            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
+                <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                    <h2 class="font-bold text-lg">Recent Platform Trades</h2>
+                    <button onclick="loadTrades()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-white/5 text-gray-400 uppercase text-xs">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
                             <tr>
-                                <th class="px-6 py-4 font-medium">User</th>
-                                <th class="px-6 py-4 font-medium">Method</th>
-                                <th class="px-6 py-4 font-medium">Amount</th>
-                                <th class="px-6 py-4 font-medium">Wallet Address</th>
-                                <th class="px-6 py-4 font-medium">Status</th>
-                                <th class="px-6 py-4 font-medium">Actions</th>
+                                <th class="px-6 py-3">User</th>
+                                <th class="px-6 py-3">Asset</th>
+                                <th class="px-6 py-3">Direction</th>
+                                <th class="px-6 py-3">Stake</th>
+                                <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3">Payout</th>
+                                <th class="px-6 py-3">Date</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr class="table-row">
-                                <td class="px-6 py-4">jane.smith@email.com</td>
-                                <td class="px-6 py-4">USDT (ERC20)</td>
-                                <td class="px-6 py-4 font-mono">$1,200.00</td>
-                                <td class="px-6 py-4 font-mono text-gray-400 text-xs">0xcAA1...F70FF</td>
-                                <td class="px-6 py-4"><span class="status-badge status-pending">Pending</span></td>
-                                <td class="px-6 py-4">
-                                    <button class="text-emerald-500 hover:text-emerald-400 mr-3">Process</button>
-                                    <button class="text-red-500 hover:text-red-400">Reject</button>
-                                </td>
-                            </tr>
+                        <tbody id="trades-table-body" class="divide-y divide-white/5">
+                            <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading trades...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-        <!-- SETTINGS TAB (Hidden by default) -->
-        <div id="content-settings" class="hidden space-y-6 max-w-2xl">
-            <div class="card p-6">
-                <h3 class="font-bold mb-6">Platform Settings</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Site Name</label>
-                        <input type="text" value="OBX PRIME" class="w-full bg-[#130f1c] border border-white/10 rounded-lg px-4 py-3 focus:border-[#7C3AED] outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Maintenance Mode</label>
-                        <div class="flex items-center gap-3">
-                            <button class="w-12 h-6 rounded-full bg-gray-600 relative transition-colors" onclick="this.classList.toggle('bg-[#7C3AED]'); this.querySelector('div').classList.toggle('translate-x-6')">
-                                <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform"></div>
-                            </button>
-                            <span class="text-sm text-gray-400">Enable maintenance mode</span>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Min Deposit Amount ($)</label>
-                        <input type="number" value="10" class="w-full bg-[#130f1c] border border-white/10 rounded-lg px-4 py-3 focus:border-[#7C3AED] outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Min Withdrawal Amount ($)</label>
-                        <input type="number" value="1" class="w-full bg-[#130f1c] border border-white/10 rounded-lg px-4 py-3 focus:border-[#7C3AED] outline-none">
-                    </div>
-                    <button class="mt-4 bg-[#7C3AED] hover:bg-[#6D28D9] px-6 py-3 rounded-lg font-semibold transition-colors">Save Changes</button>
-                </div>
-            </div>
-        </div>
-
     </main>
 
+    <!-- Balance Adjustment Modal -->
+    <div id="balance-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl">
+            <h3 class="text-xl font-bold mb-4">Adjust User Balance</h3>
+            <p class="text-sm text-gray-400 mb-4" id="balance-modal-user"></p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-1">Account Type</label>
+                    <select id="adjust-account-type" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#7c3aed]">
+                        <option value="real">Real Balance</option>
+                        <option value="demo">Demo Balance</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-1">Amount (Use negative to deduct)</label>
+                    <input type="number" id="adjust-amount" step="0.01" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#7c3aed]" placeholder="e.g., 50 or -20">
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeBalanceModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 transition-colors">Cancel</button>
+                    <button onclick="confirmBalanceAdjustment()" class="flex-1 py-2.5 rounded-lg bg-[#7c3aed] text-white font-semibold hover:bg-[#6d28d9] transition-colors">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function switchTab(tabName) {
-            // Hide all content
-            document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
-            // Show selected content
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            
-            // Update sidebar links
-            document.querySelectorAll('.sidebar-link').forEach(el => {
-                el.classList.remove('active', 'text-white');
-                el.classList.add('text-gray-400');
-            });
-            const activeLink = document.getElementById(`tab-${tabName}`);
-            activeLink.classList.add('active', 'text-white');
-            activeLink.classList.remove('text-gray-400');
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+
+        let currentAdjustUserId = null;
+
+        // Auth Check
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+            }
         }
+        checkAuth();
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            if (tabName === 'users') loadUsers();
+            if (tabName === 'deposits') loadDeposits();
+            if (tabName === 'withdrawals') loadWithdrawals();
+            if (tabName === 'trades') loadTrades();
+        }
+
+        // --- USERS ---
+        async function loadUsers() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
+            
+            const { data, error } = await supabase.from('profiles').select('id, email, balance, demo_balance').order('created_at', { ascending: false });
+            
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(user => `
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="px-6 py-4 font-medium text-white">${user.email || 'N/A'}</td>
+                    <td class="px-6 py-4 text-[#10b981] font-semibold">$${parseFloat(user.balance || 0).toFixed(2)}</td>
+                    <td class="px-6 py-4 text-[#f59e0b] font-semibold">$${parseFloat(user.demo_balance || 0).toFixed(2)}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="openBalanceModal('${user.id}', '${user.email}')" class="px-3 py-1.5 bg-[#7c3aed]/20 text-[#a78bfa] rounded-lg text-xs font-semibold hover:bg-[#7c3aed]/30 transition-colors">Adjust Balance</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openBalanceModal(userId, email) {
+            currentAdjustUserId = userId;
+            document.getElementById('balance-modal-user').innerText = `User: ${email}`;
+            document.getElementById('adjust-amount').value = '';
+            document.getElementById('balance-modal').classList.remove('hidden');
+            document.getElementById('balance-modal').classList.add('flex');
+        }
+
+        function closeBalanceModal() {
+            document.getElementById('balance-modal').classList.add('hidden');
+            document.getElementById('balance-modal').classList.remove('flex');
+            currentAdjustUserId = null;
+        }
+
+        async function confirmBalanceAdjustment() {
+            const amount = parseFloat(document.getElementById('adjust-amount').value);
+            const accountType = document.getElementById('adjust-account-type').value;
+            
+            if (isNaN(amount) || amount === 0) return alert('Please enter a valid amount.');
+            if (!currentAdjustUserId) return;
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            try {
+                const { data: profile, error: fetchError } = await supabase
+                    .from('profiles')
+                    .select(accountType === 'real' ? 'balance' : 'demo_balance')
+                    .eq('id', currentAdjustUserId)
+                    .single();
+                
+                if (fetchError) throw fetchError;
+
+                const currentBal = parseFloat(profile[accountType === 'real' ? 'balance' : 'demo_balance'] || 0);
+                const newBal = currentBal + amount;
+
+                if (newBal < 0) return alert('Balance cannot be negative.');
+
+                const updateData = {};
+                updateData[accountType === 'real' ? 'balance' : 'demo_balance'] = newBal;
+
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update(updateData)
+                    .eq('id', currentAdjustUserId);
+
+                if (updateError) throw updateError;
+
+                alert('✅ Balance updated successfully!');
+                closeBalanceModal();
+                loadUsers();
+            } catch (err) {
+                console.error(err);
+                alert('❌ Failed to update balance: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Changes';
+            }
+        }
+
+        // --- DEPOSITS ---
+        async function loadDeposits() {
+            const tbody = document.getElementById('deposits-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
+            
+            const { data, error } = await supabase
+                .from('deposits')
+                .select('id, user_id, amount, currency, status, created_at, profiles(email)')
+                .eq('status', 'PENDING')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No pending deposits.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(dep => `
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="px-6 py-4 font-medium text-white">${dep.profiles?.email || 'Unknown'}</td>
+                    <td class="px-6 py-4 text-[#10b981] font-bold">$${parseFloat(dep.amount).toFixed(2)}</td>
+                    <td class="px-6 py-4 text-gray-300">${dep.currency}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(dep.created_at).toLocaleString()}</td>
+                    <td class="px-6 py-4 flex gap-2">
+                        <button onclick="approveDeposit('${dep.id}', '${dep.user_id}', ${dep.amount})" class="px-3 py-1.5 bg-[#10b981]/20 text-[#10b981] rounded-lg text-xs font-semibold hover:bg-[#10b981]/30 transition-colors">Approve</button>
+                        <button onclick="rejectDeposit('${dep.id}')" class="px-3 py-1.5 bg-[#ef4444]/20 text-[#ef4444] rounded-lg text-xs font-semibold hover:bg-[#ef4444]/30 transition-colors">Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function approveDeposit(depositId, userId, amount) {
+            if (!confirm(`Approve deposit of $${amount} and credit user balance?`)) return;
+            
+            try {
+                const { data: profile } = await supabase.from('profiles').select('balance').eq('id', userId).single();
+                const newBal = (parseFloat(profile.balance || 0)) + parseFloat(amount);
+
+                await supabase.from('profiles').update({ balance: newBal }).eq('id', userId);
+                await supabase.from('deposits').update({ status: 'COMPLETED' }).eq('id', depositId);
+
+                alert('✅ Deposit approved and balance credited!');
+                loadDeposits();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        async function rejectDeposit(depositId) {
+            if (!confirm('Reject this deposit request?')) return;
+            try {
+                await supabase.from('deposits').update({ status: 'REJECTED' }).eq('id', depositId);
+                alert('✅ Deposit rejected.');
+                loadDeposits();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        // --- WITHDRAWALS ---
+        async function loadWithdrawals() {
+            const tbody = document.getElementById('withdrawals-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
+            
+            const { data, error } = await supabase
+                .from('withdrawals')
+                .select('id, user_id, amount, method, status, created_at, profiles(email)')
+                .eq('status', 'PENDING')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No pending withdrawals.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(wd => `
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="px-6 py-4 font-medium text-white">${wd.profiles?.email || 'Unknown'}</td>
+                    <td class="px-6 py-4 text-[#ef4444] font-bold">$${parseFloat(wd.amount).toFixed(2)}</td>
+                    <td class="px-6 py-4 text-gray-300">${wd.method}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(wd.created_at).toLocaleString()}</td>
+                    <td class="px-6 py-4 flex gap-2">
+                        <button onclick="approveWithdrawal('${wd.id}')" class="px-3 py-1.5 bg-[#10b981]/20 text-[#10b981] rounded-lg text-xs font-semibold hover:bg-[#10b981]/30 transition-colors">Approve</button>
+                        <button onclick="rejectWithdrawal('${wd.id}', '${wd.user_id}', ${wd.amount})" class="px-3 py-1.5 bg-[#ef4444]/20 text-[#ef4444] rounded-lg text-xs font-semibold hover:bg-[#ef4444]/30 transition-colors">Reject & Refund</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function approveWithdrawal(withdrawalId) {
+            if (!confirm('Mark this withdrawal as COMPLETED? (Balance was already deducted)')) return;
+            try {
+                await supabase.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', withdrawalId);
+                alert('✅ Withdrawal marked as completed.');
+                loadWithdrawals();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        async function rejectWithdrawal(withdrawalId, userId, amount) {
+            if (!confirm(`Reject this withdrawal and REFUND $${amount} to the user?`)) return;
+            try {
+                const { data: profile } = await supabase.from('profiles').select('balance').eq('id', userId).single();
+                const newBal = (parseFloat(profile.balance || 0)) + parseFloat(amount);
+
+                await supabase.from('profiles').update({ balance: newBal }).eq('id', userId);
+                await supabase.from('withdrawals').update({ status: 'REJECTED' }).eq('id', withdrawalId);
+
+                alert('✅ Withdrawal rejected and balance refunded!');
+                loadWithdrawals();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        // --- TRADES ---
+        async function loadTrades() {
+            const tbody = document.getElementById('trades-table-body');
+            tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
+            
+            const { data, error } = await supabase
+                .from('trades')
+                .select('id, user_id, asset, direction, stake, status, payout, created_at, profiles(email)')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No recent trades.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(trade => {
+                let statusClass = 'status-open';
+                if (trade.status === 'WON') statusClass = 'status-won';
+                if (trade.status === 'LOST' || trade.status === 'CLOSED') statusClass = 'status-lost';
+
+                return `
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="px-6 py-4 font-medium text-white text-xs">${trade.profiles?.email || 'Unknown'}</td>
+                    <td class="px-6 py-4 text-gray-300">${trade.asset}</td>
+                    <td class="px-6 py-4 text-gray-300">${trade.direction}</td>
+                    <td class="px-6 py-4 text-white font-semibold">$${parseFloat(trade.stake || 0).toFixed(2)}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${statusClass}">${trade.status}</span></td>
+                    <td class="px-6 py-4 text-[#10b981] font-semibold">${trade.payout ? '$' + parseFloat(trade.payout).toFixed(2) : '-'}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(trade.created_at).toLocaleString()}</td>
+                </tr>
+            `}).join('');
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        // Load initial tab
+        switchTab('users');
     </script>
 </body>
 </html>
