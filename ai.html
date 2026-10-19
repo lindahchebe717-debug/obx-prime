@@ -438,11 +438,31 @@
             const resultBox = document.getElementById('resultBox');
             const resultText = document.getElementById('resultText');
             const loadBtn = document.getElementById('loadBtn');
-            const market = document.getElementById('marketSelect').options[document.getElementById('marketSelect').selectedIndex].text;
+            
+            // Get the selected market category
+            const marketValue = document.getElementById('marketSelect').value;
+            
+            // Define specific predictions based on the chosen market
+            let predictions = [];
+            switch(marketValue) {
+                case 'even_odd':
+                    predictions = ['EVEN', 'ODD'];
+                    break;
+                case 'over_under':
+                    predictions = ['OVER 3', 'UNDER 3', 'OVER 5', 'UNDER 5', 'OVER 7', 'UNDER 7'];
+                    break;
+                case 'matches_differs':
+                    predictions = ['MATCHES 5', 'DIFFERS 5', 'MATCHES 7', 'DIFFERS 7'];
+                    break;
+                case 'rise_fall':
+                    predictions = ['RISE', 'FALL'];
+                    break;
+                default:
+                    predictions = ['EVEN', 'ODD'];
+            }
 
-            // Randomly pick the best index and prediction
+            // Randomly pick the best index and a valid prediction for that market
             const bestIndex = volatilityIndices[Math.floor(Math.random() * volatilityIndices.length)];
-            const predictions = ['EVEN', 'ODD'];
             const prediction = predictions[Math.floor(Math.random() * predictions.length)];
             const quality = Math.floor(Math.random() * (98 - 85) + 85); // Random quality between 85% and 98%
 
