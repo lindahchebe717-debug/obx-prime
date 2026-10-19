@@ -440,10 +440,22 @@
         </div>
     </div>
 
+    <!-- ✅ FIXED: AI button now correctly links to ai.html -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>Trade</a>
-        <a href="#" class="nav-item ai-btn"><div class="ai-icon-wrap"><svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div>AI</a>
-        <a href="positions.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>Positions</a>
+        <a href="dashboard.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
+            <span>Trade</span>
+        </a>
+        <a href="ai.html" class="nav-item ai-btn">
+            <div class="ai-icon-wrap">
+                <svg class="ai-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+            </div>
+            <span>AI</span>
+        </a>
+        <a href="positions.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            <span>Positions</span>
+        </a>
     </nav>
 
     <div class="notif-modal-overlay" id="notif-modal-overlay" onclick="closeNotifModal()">
@@ -846,7 +858,7 @@
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             isAutoMode = (mode === 'AUTO');
-            localStorage.setItem('obx_trade_mode', mode); // ✅ This line was missing!
+            localStorage.setItem('obx_trade_mode', mode);
             if (!isAutoMode && isTrading) { stopAutoTrade(); }
             updateAdvancedSettingsVisibility();
         }
@@ -884,12 +896,9 @@
             setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
-        // ✅ FIXED: Made this async and added await placeTrade(direction) so it actually saves to Supabase!
         async function executeTrade(direction) {
-            // 1. Save the trade to the database first
             await placeTrade(direction);
 
-            // 2. Continue with local simulation
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             const lastDigit = Math.floor(currentPrice) % 10;
             const isEven = lastDigit % 2 === 0;
@@ -1008,7 +1017,7 @@
                     stake: stake, 
                     entry_price: entryPrice, 
                     status: 'OPEN',
-                    account_type: currentAccount // ✅ This ensures it saves with the correct account type
+                    account_type: currentAccount
                 });
                 if(error) console.error("Supabase insert error:", error);
             } catch(e) { console.error("Trade error:", e); }
