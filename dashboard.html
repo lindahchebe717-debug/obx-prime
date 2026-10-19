@@ -471,7 +471,7 @@
                 <a href="deposit.html#btc" class="payment-method"><div class="payment-icon btc">₿</div><div class="payment-info"><div class="payment-name">Bitcoin (BTC)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#eth" class="payment-method"><div class="payment-icon eth">Ξ</div><div class="payment-info"><div class="payment-name">Ethereum (ETH)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#usdt-trc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (TRC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
-                <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt">₮</div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
             </div>
             <div class="insufficient-footer">
                 <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Secure</span></div>
@@ -690,11 +690,25 @@
             if (body.classList.contains('dark-theme')) { toggle.classList.add('active'); localStorage.setItem('theme', 'dark'); }
             else { toggle.classList.remove('active'); localStorage.setItem('theme', 'light'); }
         }
+        
+        // ✅ FIXED: Initialize mode from localStorage on page load
         (function initTheme() {
             const savedTheme = localStorage.getItem('theme'), toggle = document.getElementById('themeToggle');
             if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); if(toggle) toggle.classList.add('active'); }
             else { document.body.classList.remove('dark-theme'); if(toggle) toggle.classList.remove('active'); }
             updateSoundIcon(); updateNotifDot(); updateAccountDisplay(); updateAdvancedSettingsVisibility();
+            
+            // Initialize trading mode
+            const savedMode = localStorage.getItem('obx_trade_mode') || 'AUTO';
+            isAutoMode = (savedMode === 'AUTO');
+            const modeBtns = document.querySelectorAll('.mode-btn');
+            if (savedMode === 'AUTO') {
+                modeBtns[0].classList.add('active');
+                modeBtns[1].classList.remove('active');
+            } else {
+                modeBtns[0].classList.remove('active');
+                modeBtns[1].classList.add('active');
+            }
         })();
 
         const digitCounts = new Array(10).fill(0);
@@ -827,10 +841,12 @@
             input.value = Math.max(1, val + delta);
         }
 
+        // ✅ FIXED: Save mode to localStorage when changed
         function setMode(mode, btn) {
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             isAutoMode = (mode === 'AUTO');
+            localStorage.setItem('obx_trade_mode', mode); // ✅ This line was missing!
             if (!isAutoMode && isTrading) { stopAutoTrade(); }
             updateAdvancedSettingsVisibility();
         }
