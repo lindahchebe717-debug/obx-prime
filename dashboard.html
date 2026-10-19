@@ -138,18 +138,19 @@
         .theme-toggle.active::after { transform: translateX(20px); }
         .menu-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-gray); text-align: center; }
 
+        /* ✅ UPDATED: Compact volatility dropdown like PalOption */
         .volatility-dropdown { 
             position: absolute; 
             top: 100%; 
             left: 0; 
-            margin-top: 6px; 
+            margin-top: 4px; 
             background: var(--bg-card); 
             border: 1px solid var(--border-color); 
             border-radius: 8px; 
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
             z-index: 100; 
-            min-width: 220px; 
-            max-height: 280px; 
+            width: 240px; 
+            max-height: 200px; 
             overflow-y: auto; 
             display: none;
             scrollbar-width: thin;
@@ -161,7 +162,7 @@
         .volatility-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
         .volatility-item { 
-            padding: 8px 12px; 
+            padding: 10px 12px; 
             cursor: pointer; 
             transition: all 0.15s ease; 
             border-bottom: 1px solid var(--border-color);
@@ -170,8 +171,8 @@
         .volatility-item:last-child { border-bottom: none; }
         .volatility-item:hover { background: rgba(124, 58, 237, 0.05); }
         .volatility-item.active { background: rgba(124, 58, 237, 0.1); color: var(--primary-purple); }
-        .volatility-item-name { font-size: 0.8rem; font-weight: 600; color: var(--text-white); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .volatility-item-price { font-size: 0.7rem; color: var(--text-gray); }
+        .volatility-item-name { font-size: 0.85rem; font-weight: 600; color: var(--text-white); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .volatility-item-price { font-size: 0.75rem; color: var(--text-gray); }
 
         .notif-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 100; width: 300px; max-height: 400px; overflow-y: auto; display: none; }
         .notif-dropdown.show { display: block; animation: slideDown 0.2s ease-out; }
