@@ -108,11 +108,43 @@
         .ai-icon { width: 18px; height: 18px; }
         .controls-panel { padding: 12px; padding-bottom: 90px; background: var(--bg-main); }
         
-        .asset-tabs { display: flex; gap: 6px; padding: 0 12px 6px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; }
+        /* ✅ UPDATED: Asset tabs EXACTLY like PalOption */
+        .asset-tabs { 
+            display: flex; 
+            gap: 8px; 
+            padding: 8px 12px; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+            align-items: center; 
+            background: #181329; /* Dark purple background like PalOption */
+            margin: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07); /* Subtle bottom border */
+        }
         .asset-tabs::-webkit-scrollbar { display: none; }
-        .asset-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 5px 10px; border-radius: 16px; font-size: 0.7rem; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .asset-tab svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
-        .asset-tab.active { background: rgba(124, 58, 237, 0.1); border-color: var(--primary-purple); color: var(--primary-purple); font-weight: 600; }
+        .asset-tab { 
+            background: transparent; 
+            border: 1px solid rgba(255, 255, 255, 0.07); 
+            color: var(--text-gray); 
+            padding: 6px 12px; /* px-3 py-1.5 */
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem; /* text-sm (14px) */
+            font-weight: 500;
+            white-space: nowrap; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: all 0.2s; 
+            flex-shrink: 0; 
+        }
+        .asset-tab svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.7; }
+        .asset-tab.active { 
+            background: #1F1936; /* Active background */
+            border-color: rgba(255, 255, 255, 0.07); 
+            color: white; 
+            font-weight: 600; 
+        }
         .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
 
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
