@@ -138,7 +138,6 @@
         .theme-toggle.active::after { transform: translateX(20px); }
         .menu-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-gray); text-align: center; }
 
-        /* ✅ UPDATED: Compact volatility dropdown like PalOption */
         .volatility-dropdown { 
             position: absolute; 
             top: 100%; 
@@ -366,10 +365,11 @@
         </div>
     </header>
 
+    <!-- ✅ UPDATED: Added onclick handlers to switch markets -->
     <div class="asset-tabs">
-        <button class="asset-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs</button>
-        <button class="asset-tab active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd</button>
-        <button class="asset-tab"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
+        <button class="asset-tab" onclick="selectMarket('matches_differs', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs</button>
+        <button class="asset-tab active" onclick="selectMarket('even_odd', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd</button>
+        <button class="asset-tab" onclick="selectMarket('over_under', this)"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
     </div>
 
     <div class="chart-wrapper">
@@ -464,19 +464,20 @@
             <div class="live-left"><div class="live-dot"></div><span class="live-label">LIVE</span><span class="live-stats" id="liveStatsText">0T · 0W · 0L</span></div>
             <div class="live-pnl positive" id="livePnl">+$0.00</div>
         </div>
+        
+        <!-- ✅ UPDATED: Renamed IDs to btnTrade1 and btnTrade2 for dynamic updating -->
         <div class="trade-actions" id="tradeActions">
-            <button class="btn-trade btn-even" id="btnEven" onclick="checkBalanceAndTrade('EVEN')">
+            <button class="btn-trade btn-even" id="btnTrade1" onclick="checkBalanceAndTrade('EVEN')">
                 <span class="btn-text">Even</span>
                 <span class="payout-info">95.2% Payout</span>
             </button>
-            <button class="btn-trade btn-odd" id="btnOdd" onclick="checkBalanceAndTrade('ODD')">
+            <button class="btn-trade btn-odd" id="btnTrade2" onclick="checkBalanceAndTrade('ODD')">
                 <span class="btn-text">Odd</span>
                 <span class="payout-info">95.2% Payout</span>
             </button>
         </div>
     </div>
 
-    <!-- ✅ FIXED: AI button now correctly links to ai.html -->
     <nav class="bottom-nav">
         <a href="dashboard.html" class="nav-item active">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
@@ -537,6 +538,7 @@
         let isAutoMode = true;
         let currentTradeDirection = null;
         let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
+        let currentMarket = 'even_odd'; // ✅ NEW: Track selected market
 
         function closeAppBanner() {
             const banner = document.getElementById('appDownloadBanner');
@@ -739,14 +741,12 @@
             else { toggle.classList.remove('active'); localStorage.setItem('theme', 'light'); }
         }
         
-        // ✅ FIXED: Initialize mode from localStorage on page load
         (function initTheme() {
             const savedTheme = localStorage.getItem('theme'), toggle = document.getElementById('themeToggle');
             if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); if(toggle) toggle.classList.add('active'); }
             else { document.body.classList.remove('dark-theme'); if(toggle) toggle.classList.remove('active'); }
             updateSoundIcon(); updateNotifDot(); updateAccountDisplay(); updateAdvancedSettingsVisibility();
             
-            // Initialize trading mode
             const savedMode = localStorage.getItem('obx_trade_mode') || 'AUTO';
             isAutoMode = (savedMode === 'AUTO');
             const modeBtns = document.querySelectorAll('.mode-btn');
@@ -870,19 +870,10 @@
         }
         function updateChartForVolatility(volatilityName) {
             const basePrices = { 
-                'Volatility 10 (1s) Index': 9607.39, 
-                'Volatility 10 Index': 9487.35, 
-                'Volatility 15 (1s) Index': 8923.67, 
-                'Volatility 25 (1s) Index': 7654.89, 
-                'Volatility 25 Index': 7621.45, 
-                'Volatility 30 (1s) Index': 6789.23, 
-                'Volatility 50 (1s) Index': 5432.10, 
-                'Volatility 50 Index': 5398.76, 
-                'Volatility 75 (1s) Index': 4123.45,
-                'Volatility 75 Index': 4567.89,
-                'Volatility 100 Index': 3456.78,
-                'Volatility 100 (1s) Index': 3234.56,
-                'Volatility 150 (1s) Index': 2345.67
+                'Volatility 10 (1s) Index': 9607.39, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 
+                'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 
+                'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45,
+                'Volatility 75 Index': 4567.89, 'Volatility 100 Index': 3456.78, 'Volatility 100 (1s) Index': 3234.56, 'Volatility 150 (1s) Index': 2345.67
             };
             currentPrice = basePrices[volatilityName] || 9607.39;
             priceData = []; timeData = [];
@@ -903,7 +894,6 @@
             input.value = Math.max(1, val + delta);
         }
 
-        // ✅ FIXED: Save mode to localStorage when changed
         function setMode(mode, btn) {
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -915,8 +905,36 @@
 
         function updateAdvancedSettingsVisibility() {
             const advancedSettings = document.getElementById('advancedSettings');
-            if (advancedSettings) {
-                advancedSettings.classList.add('show');
+            if (advancedSettings) advancedSettings.classList.add('show');
+        }
+
+        // ✅ NEW: Function to dynamically update bottom buttons based on selected tab
+        function selectMarket(market, btnElement) {
+            currentMarket = market;
+            document.querySelectorAll('.asset-tab').forEach(tab => tab.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            const btn1 = document.getElementById('btnTrade1');
+            const btn2 = document.getElementById('btnTrade2');
+            
+            btn1.className = 'btn-trade btn-even';
+            btn2.className = 'btn-trade btn-odd';
+            
+            if (market === 'even_odd') {
+                btn1.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
+                btn1.onclick = () => checkBalanceAndTrade('EVEN');
+                btn2.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
+                btn2.onclick = () => checkBalanceAndTrade('ODD');
+            } else if (market === 'matches_differs') {
+                btn1.innerHTML = '<span class="btn-text">Matches</span><span class="payout-info">95.2% Payout</span>';
+                btn1.onclick = () => checkBalanceAndTrade('MATCHES');
+                btn2.innerHTML = '<span class="btn-text">Differs</span><span class="payout-info">95.2% Payout</span>';
+                btn2.onclick = () => checkBalanceAndTrade('DIFFERS');
+            } else if (market === 'over_under') {
+                btn1.innerHTML = '<span class="btn-text">Over</span><span class="payout-info">95.2% Payout</span>';
+                btn1.onclick = () => checkBalanceAndTrade('OVER');
+                btn2.innerHTML = '<span class="btn-text">Under</span><span class="payout-info">95.2% Payout</span>';
+                btn2.onclick = () => checkBalanceAndTrade('UNDER');
             }
         }
 
@@ -924,8 +942,8 @@
             if (isTrading) return;
             isTrading = true;
             currentTradeDirection = direction;
-            const btnEven = document.getElementById('btnEven');
-            const btnOdd = document.getElementById('btnOdd');
+            const btn1 = document.getElementById('btnTrade1');
+            const btn2 = document.getElementById('btnTrade2');
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             
             if (currentAccount === 'demo') {
@@ -934,25 +952,34 @@
                 updateAccountDisplay();
             }
             
-            if (direction === 'EVEN') {
-                btnEven.className = 'btn-trade btn-starting';
-                btnEven.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
-                btnOdd.className = 'btn-trade btn-grayed';
-            } else {
-                btnOdd.className = 'btn-trade btn-starting';
-                btnOdd.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
-                btnEven.className = 'btn-trade btn-grayed';
-            }
+            const isBtn1 = ['EVEN', 'MATCHES', 'OVER'].includes(direction);
+            const activeBtn = isBtn1 ? btn1 : btn2;
+            const inactiveBtn = isBtn1 ? btn2 : btn1;
+            
+            activeBtn.className = 'btn-trade btn-starting';
+            activeBtn.innerHTML = '<div class="btn-starting-content"><span class="spinner"></span><span class="btn-text">Starting...</span></div>';
+            inactiveBtn.className = 'btn-trade btn-grayed';
+            
             setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
         async function executeTrade(direction) {
             await placeTrade(direction);
-
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             const lastDigit = Math.floor(currentPrice) % 10;
-            const isEven = lastDigit % 2 === 0;
-            const tradeWon = (direction === 'EVEN' && isEven) || (direction === 'ODD' && !isEven);
+            
+            // ✅ UPDATED: Win/loss logic now supports all 3 market types
+            let tradeWon = false;
+            if (currentMarket === 'even_odd') {
+                const isEven = lastDigit % 2 === 0;
+                tradeWon = (direction === 'EVEN' && isEven) || (direction === 'ODD' && !isEven);
+            } else if (currentMarket === 'matches_differs') {
+                const target = 5; // Example target digit for Matches/Differs
+                tradeWon = (direction === 'MATCHES' && lastDigit === target) || (direction === 'DIFFERS' && lastDigit !== target);
+            } else if (currentMarket === 'over_under') {
+                const target = 5; // Example target digit for Over/Under
+                tradeWon = (direction === 'OVER' && lastDigit > target) || (direction === 'UNDER' && lastDigit < target);
+            }
             
             if (tradeWon) {
                 stats.wins++;
@@ -978,7 +1005,10 @@
                 const stopLoss = parseFloat(document.getElementById('stopLossInput').value) || 999999;
                 if (stats.pnl >= targetProfit || Math.abs(stats.pnl) >= stopLoss) { stopAutoTrade(); return; }
                 
-                const activeBtn = direction === 'EVEN' ? document.getElementById('btnEven') : document.getElementById('btnOdd');
+                const btn1 = document.getElementById('btnTrade1');
+                const btn2 = document.getElementById('btnTrade2');
+                const activeBtn = ['EVEN', 'MATCHES', 'OVER'].includes(direction) ? btn1 : btn2;
+                
                 activeBtn.className = 'btn-trade btn-stop';
                 activeBtn.innerHTML = '<span class="btn-text">■ STOP</span>';
                 activeBtn.style.pointerEvents = 'auto';
@@ -1005,16 +1035,11 @@
         }
 
         function resetTradeButtons() {
-            const btnEven = document.getElementById('btnEven');
-            const btnOdd = document.getElementById('btnOdd');
-            btnEven.className = 'btn-trade btn-even';
-            btnEven.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
-            btnEven.style.pointerEvents = 'auto';
-            btnEven.onclick = () => checkBalanceAndTrade('EVEN');
-            btnOdd.className = 'btn-trade btn-odd';
-            btnOdd.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
-            btnOdd.style.pointerEvents = 'auto';
-            btnOdd.onclick = () => checkBalanceAndTrade('ODD');
+            const activeTab = document.querySelector('.asset-tab.active');
+            if (activeTab) {
+                const market = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+                selectMarket(market, activeTab);
+            }
         }
 
         function updateLiveStats() {
@@ -1067,7 +1092,8 @@
                     stake: stake, 
                     entry_price: entryPrice, 
                     status: 'OPEN',
-                    account_type: currentAccount
+                    account_type: currentAccount,
+                    mode: isAutoMode ? 'AUTO' : 'MANUAL'
                 });
                 if(error) console.error("Supabase insert error:", error);
             } catch(e) { console.error("Trade error:", e); }
