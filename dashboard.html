@@ -9,29 +9,33 @@
     
     <style>
         :root {
-            /* ✅ UPDATED: Dark background like PalOption */
-            --bg-main: #1a1a2e;
-            --bg-card: #16213e;
-            --text-white: #ffffff;
-            --text-gray: #a0a0a0;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-white: #1e293b;
+            --text-gray: #64748b;
             --primary-purple: #7c3aed;
             --danger-red: #ef4444;
             --success-green: #10b981;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(0, 0, 0, 0.08);
         }
 
         body.dark-theme {
-            --bg-main: #1a1a2e;
-            --bg-card: #16213e;
+            --bg-main: #141021;
+            --bg-card: #1e1b4b;
             --text-white: #ffffff;
-            --text-gray: #a0a0a0;
+            --text-gray: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.1);
         }
+        body.dark-theme .digit-row, body.dark-theme .qs-btn, body.dark-theme .live-stats-bar, body.dark-theme .mode-toggle, body.dark-theme .asset-tab, body.dark-theme .stake-box, body.dark-theme .volatility-dropdown, body.dark-theme .chart-wrapper, body.dark-theme .notif-dropdown, body.dark-theme .notif-modal, body.dark-theme .account-dropdown, body.dark-theme .insufficient-modal { box-shadow: none !important; }
+        body.dark-theme .volatility-item, body.dark-theme .notif-item, body.dark-theme .account-option, body.dark-theme .payment-method { border-bottom-color: rgba(255, 255, 255, 0.05); }
+        body.dark-theme .volatility-item:hover, body.dark-theme .notif-item:hover, body.dark-theme .account-option:hover, body.dark-theme .payment-method:hover { background: rgba(124, 58, 237, 0.15); }
+        body.dark-theme .volatility-item.active { background: rgba(124, 58, 237, 0.25); }
 
         body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
 
         .top-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: top 0.3s ease; }
-        body.has-app-banner .top-header { top: 40px; }
+        /* ✅ UPDATED: Reduced top offset to match the much smaller banner */
+        body.has-app-banner .top-header { top: 40px; } 
         .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .deposit-btn { flex-shrink: 0; white-space: nowrap; padding: 6px 12px; background: var(--primary-purple); color: white; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
@@ -39,6 +43,7 @@
         .notif-wrapper { position: relative; flex-shrink: 0; }
 
         #chartCanvas { width: 100%; height: 100%; display: block; }
+        /* ✅ UPDATED: Increased chart height and reduced margin */
         .chart-wrapper { position: relative; height: 340px; padding: 0 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin: 8px 12px; overflow: hidden; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
         .axis-labels-right { position: absolute; right: 12px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 45px; }
@@ -53,12 +58,12 @@
         .bell-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
         .sound-btn svg { stroke: var(--primary-purple); }
         
+        /* ✅ UPDATED: Squeezed spacing for a tighter, cuter layout */
         .stake-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .stake-adjust-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .stake-box { flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 12px; text-align: center; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        /* ✅ UPDATED: Stake label inside the box like PalOption */
-        .stake-label { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); color: var(--primary-purple); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; }
-        .stake-input { background: transparent; border: none; color: var(--text-white); font-size: 1.4rem; font-weight: 800; text-align: center; width: 100%; outline: none; margin-top: 8px; }
+        .stake-label { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--bg-main); padding: 0 6px; color: var(--primary-purple); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; }
+        .stake-input { background: transparent; border: none; color: var(--text-white); font-size: 1.4rem; font-weight: 800; text-align: center; width: 100%; outline: none; }
         .stake-currency { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--primary-purple); font-weight: 700; font-size: 0.9rem; }
         .quick-stakes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 8px; }
         .qs-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 6px 0; border-radius: 6px; font-size: 0.65rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
@@ -84,7 +89,6 @@
         .digit-arrow.show { display: block; }
         
         .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        /* ✅ UPDATED: Even/Odd buttons with payout like PalOption */
         .btn-trade { border: none; padding: 12px 8px; border-radius: 12px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.2s; min-height: 55px; justify-content: center; }
         .btn-even { background: var(--success-green); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
         .btn-odd { background: var(--danger-red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
@@ -104,13 +108,12 @@
         .ai-icon { width: 18px; height: 18px; }
         .controls-panel { padding: 12px; padding-bottom: 90px; background: var(--bg-main); }
         
-        /* ✅ UPDATED: Asset tabs more visible like PalOption */
-        .asset-tabs { display: flex; gap: 6px; padding: 8px 12px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; background: var(--bg-card); margin: 0 12px 8px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .asset-tabs { display: flex; gap: 6px; padding: 0 12px 6px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; }
         .asset-tabs::-webkit-scrollbar { display: none; }
-        .asset-tab { background: transparent; border: 1px solid var(--border-color); color: var(--text-gray); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; flex-shrink: 0; }
+        .asset-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 5px 10px; border-radius: 16px; font-size: 0.7rem; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .asset-tab svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
-        .asset-tab.active { background: var(--primary-purple); border-color: var(--primary-purple); color: white; font-weight: 600; }
-        .asset-tab.active svg { opacity: 1; fill: white; }
+        .asset-tab.active { background: rgba(124, 58, 237, 0.1); border-color: var(--primary-purple); color: var(--primary-purple); font-weight: 600; }
+        .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
 
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
@@ -219,7 +222,7 @@
         .reset-demo-btn:hover { background: rgba(239, 68, 68, 0.2); }
         .reset-demo-btn svg { width: 16px; height: 16px; }
 
-        /* ✅ UPDATED: Much smaller, compact download banner like PalOption */
+        /* ✅ UPDATED: Much smaller, compact download banner */
         .app-download-banner { position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: slideDownBanner 0.3s ease-out; }
         @keyframes slideDownBanner { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .app-banner-content { display: flex; align-items: center; gap: 8px; flex: 1; }
@@ -268,8 +271,8 @@
         .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
         .btn-starting-content { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        .advanced-settings { display: none; margin-bottom: 8px; }
-        .advanced-settings.show { display: flex; gap: 6px; }
+        .advanced-settings { display: none; margin-bottom: 12px; }
+        .advanced-settings.show { display: flex; gap: 8px; }
     </style>
 </head>
 <body>
@@ -445,17 +448,17 @@
         </div>
 
         <div class="advanced-settings" id="advancedSettings">
-            <div class="stake-box" style="flex: 1; padding: 6px 4px;">
+            <div class="stake-box" style="flex: 1; padding: 8px 4px;">
                 <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: var(--success-green);">TARGET PROFIT</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">$</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="200" id="targetProfitInput">
             </div>
-            <div class="stake-box" style="flex: 1; padding: 6px 4px;">
+            <div class="stake-box" style="flex: 1; padding: 8px 4px;">
                 <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: var(--danger-red);">STOP LOSS</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">$</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="999" id="stopLossInput">
             </div>
-            <div class="stake-box" style="flex: 1; padding: 6px 4px;">
+            <div class="stake-box" style="flex: 1; padding: 8px 4px;">
                 <div class="stake-label" style="font-size: 0.55rem; letter-spacing: 0.5px; color: #f59e0b;">MULTIPLIER</div>
                 <span class="stake-currency" style="font-size: 0.8rem; left: 8px;">x</span>
                 <input type="number" class="stake-input" style="font-size: 1.1rem;" value="2" id="multiplierInput">
@@ -470,11 +473,11 @@
         <div class="trade-actions" id="tradeActions">
             <button class="btn-trade btn-even" id="btnTrade1" onclick="checkBalanceAndTrade('EVEN')">
                 <span class="btn-text">Even</span>
-                <span class="payout-info">$19.52 • 95.2% Payout</span>
+                <span class="payout-info">95.2% Payout</span>
             </button>
             <button class="btn-trade btn-odd" id="btnTrade2" onclick="checkBalanceAndTrade('ODD')">
                 <span class="btn-text">Odd</span>
-                <span class="payout-info">$19.52 • 95.2% Payout</span>
+                <span class="payout-info">95.2% Payout</span>
             </button>
         </div>
     </div>
@@ -929,26 +932,24 @@
             
             const btn1 = document.getElementById('btnTrade1');
             const btn2 = document.getElementById('btnTrade2');
-            const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
-            const payout = (stake * 0.952).toFixed(2);
             
             btn1.className = 'btn-trade btn-even';
             btn2.className = 'btn-trade btn-odd';
             
             if (market === 'even_odd') {
-                btn1.innerHTML = `<span class="btn-text">Even</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn1.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('EVEN');
-                btn2.innerHTML = `<span class="btn-text">Odd</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn2.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('ODD');
             } else if (market === 'matches_differs') {
-                btn1.innerHTML = `<span class="btn-text">Matches</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn1.innerHTML = '<span class="btn-text">Matches</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('MATCHES');
-                btn2.innerHTML = `<span class="btn-text">Differs</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn2.innerHTML = '<span class="btn-text">Differs</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('DIFFERS');
             } else if (market === 'over_under') {
-                btn1.innerHTML = `<span class="btn-text">Over</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn1.innerHTML = '<span class="btn-text">Over</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('OVER');
-                btn2.innerHTML = `<span class="btn-text">Under</span><span class="payout-info">$${payout} • 95.2% Payout</span>`;
+                btn2.innerHTML = '<span class="btn-text">Under</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('UNDER');
             }
         }
