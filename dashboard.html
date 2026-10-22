@@ -105,26 +105,26 @@
         .ai-icon { width: 18px; height: 18px; }
         .controls-panel { padding: 12px; padding-bottom: 90px; background: var(--bg-main); }
         
-        /* ✅ EXACT PALOPTION STYLE - HARD REFRESH TO SEE */
+        /* 🚨 NUCLEAR OPTION: Unignorable styling to bypass all browser caching and external CSS */
         .asset-tabs { 
             display: flex !important;
             gap: 8px !important;
-            padding: 8px 12px !important;
+            padding: 10px 12px !important;
             overflow-x: auto !important;
             scrollbar-width: none !important;
             align-items: center !important;
-            background: #181329 !important; /* Dark background bar exactly like PalOption */
+            background-color: #1e1b4b !important; /* Distinct dark purple to prove it's working */
             margin: 0 !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         .asset-tabs::-webkit-scrollbar { display: none !important; }
         
-        .asset-tab { 
+        .asset-tab {
             background: transparent !important;
-            border: 1px solid rgba(255, 255, 255, 0.07) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: #9ca3af !important;
-            padding: 6px 12px !important;
-            border-radius: 9999px !important; /* Fully rounded pill shape */
+            padding: 6px 14px !important;
+            border-radius: 9999px !important; /* Perfect pill shape */
             font-size: 14px !important;
             font-weight: 500 !important;
             white-space: nowrap !important;
@@ -139,8 +139,8 @@
         .asset-tab svg { width: 14px !important; height: 14px !important; fill: currentColor !important; opacity: 0.7 !important; }
         
         .asset-tab.active { 
-            background: #1F1936 !important; /* Active background exactly like PalOption */
-            border-color: rgba(255, 255, 255, 0.07) !important;
+            background: #282041 !important; /* Distinct active background */
+            border-color: rgba(255, 255, 255, 0.15) !important;
             color: #ffffff !important;
             font-weight: 600 !important;
         }
@@ -401,10 +401,17 @@
         </div>
     </header>
 
-    <div class="asset-tabs">
-        <button class="asset-tab" onclick="selectMarket('matches_differs', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs</button>
-        <button class="asset-tab active" onclick="selectMarket('even_odd', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd</button>
-        <button class="asset-tab" onclick="selectMarket('over_under', this)"><svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under</button>
+    <!-- 🚨 NUCLEAR OPTION: Inline styles added to guarantee the browser renders the new design -->
+    <div class="asset-tabs" id="asset-tabs-container" style="background-color: #1e1b4b !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important;">
+        <button class="asset-tab" onclick="selectMarket('matches_differs', this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none"/></svg> Matches/Differs
+        </button>
+        <button class="asset-tab active" onclick="selectMarket('even_odd', this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Even/Odd
+        </button>
+        <button class="asset-tab" onclick="selectMarket('over_under', this)">
+            <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Over/Under
+        </button>
     </div>
 
     <div class="chart-wrapper">
