@@ -34,7 +34,6 @@
         body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
 
         .top-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: top 0.3s ease; }
-        /* ✅ UPDATED: Reduced top offset to match the much smaller banner */
         body.has-app-banner .top-header { top: 40px; } 
         .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -43,7 +42,6 @@
         .notif-wrapper { position: relative; flex-shrink: 0; }
 
         #chartCanvas { width: 100%; height: 100%; display: block; }
-        /* ✅ UPDATED: Increased chart height and reduced margin */
         .chart-wrapper { position: relative; height: 340px; padding: 0 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin: 8px 12px; overflow: hidden; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
         .axis-labels-right { position: absolute; right: 12px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 45px; }
@@ -58,7 +56,6 @@
         .bell-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
         .sound-btn svg { stroke: var(--primary-purple); }
         
-        /* ✅ UPDATED: Squeezed spacing for a tighter, cuter layout */
         .stake-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .stake-adjust-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .stake-box { flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 12px; text-align: center; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
@@ -108,44 +105,46 @@
         .ai-icon { width: 18px; height: 18px; }
         .controls-panel { padding: 12px; padding-bottom: 90px; background: var(--bg-main); }
         
-        /* ✅ UPDATED: Asset tabs EXACTLY like PalOption */
+        /* ✅ EXACT PALOPTION STYLE - HARD REFRESH TO SEE */
         .asset-tabs { 
-            display: flex; 
-            gap: 8px; 
-            padding: 8px 12px; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
-            -ms-overflow-style: none; 
-            align-items: center; 
-            background: #181329; /* Dark purple background like PalOption */
-            margin: 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07); /* Subtle bottom border */
+            display: flex !important;
+            gap: 8px !important;
+            padding: 8px 12px !important;
+            overflow-x: auto !important;
+            scrollbar-width: none !important;
+            align-items: center !important;
+            background: #181329 !important; /* Dark background bar exactly like PalOption */
+            margin: 0 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
         }
-        .asset-tabs::-webkit-scrollbar { display: none; }
+        .asset-tabs::-webkit-scrollbar { display: none !important; }
+        
         .asset-tab { 
-            background: transparent; 
-            border: 1px solid rgba(255, 255, 255, 0.07); 
-            color: var(--text-gray); 
-            padding: 6px 12px; /* px-3 py-1.5 */
-            border-radius: 9999px; /* rounded-full */
-            font-size: 0.875rem; /* text-sm (14px) */
-            font-weight: 500;
-            white-space: nowrap; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            transition: all 0.2s; 
-            flex-shrink: 0; 
+            background: transparent !important;
+            border: 1px solid rgba(255, 255, 255, 0.07) !important;
+            color: #9ca3af !important;
+            padding: 6px 12px !important;
+            border-radius: 9999px !important; /* Fully rounded pill shape */
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            white-space: nowrap !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            transition: all 0.2s !important;
+            flex-shrink: 0 !important;
+            box-shadow: none !important;
         }
-        .asset-tab svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.7; }
+        .asset-tab svg { width: 14px !important; height: 14px !important; fill: currentColor !important; opacity: 0.7 !important; }
+        
         .asset-tab.active { 
-            background: #1F1936; /* Active background */
-            border-color: rgba(255, 255, 255, 0.07); 
-            color: white; 
-            font-weight: 600; 
+            background: #1F1936 !important; /* Active background exactly like PalOption */
+            border-color: rgba(255, 255, 255, 0.07) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
         }
-        .asset-tab.active svg { opacity: 1; fill: var(--primary-purple); }
+        .asset-tab.active svg { opacity: 1 !important; fill: var(--primary-purple) !important; }
 
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
@@ -254,7 +253,6 @@
         .reset-demo-btn:hover { background: rgba(239, 68, 68, 0.2); }
         .reset-demo-btn svg { width: 16px; height: 16px; }
 
-        /* ✅ UPDATED: Much smaller, compact download banner */
         .app-download-banner { position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: slideDownBanner 0.3s ease-out; }
         @keyframes slideDownBanner { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .app-banner-content { display: flex; align-items: center; gap: 8px; flex: 1; }
