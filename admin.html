@@ -457,7 +457,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Admin Support Email</label>
-                                <input type="email" value="Mnangatsamm1999@gmail.com" class="input-dark">
+                                <input type="email" value="obxprimesupport@gmail.com" class="input-dark">
                             </div>
                             <button onclick="alert('Site settings saved successfully!')" class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Site Settings</button>
                         </div>
@@ -537,19 +537,38 @@
         </main>
     </div>
 
+    <!-- ADD FUNDS MODAL -->
+    <div id="add-funds-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl">
+            <h3 class="text-lg font-bold mb-4">Add Funds to User</h3>
+            <p class="text-sm text-gray-400 mb-4" id="fund-user-email"></p>
+            <div class="space-y-4">
+                <select id="fund-acc-type" class="input-dark">
+                    <option value="balance">Real Balance</option>
+                    <option value="demo_balance">Demo Balance</option>
+                </select>
+                <input type="number" id="fund-amount" class="input-dark" placeholder="Amount to add">
+                <div class="flex gap-3">
+                    <button onclick="closeAddFundsModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5">Cancel</button>
+                    <button onclick="confirmAddFunds()" class="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700">Add Funds</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ✅ 1. CHECK IF USER IS LOGGED IN AND GET THEIR EMAIL
+        let currentFundUserId = null;
+
         async function checkAdminAuth() {
             const { data: { user }, error } = await supabaseClient.auth.getUser();
             if (error || !user) {
                 window.location.href = 'index.html';
                 return;
             }
-            // Display the actual logged-in email
             document.getElementById('admin-email').innerText = user.email;
         }
 
@@ -588,6 +607,7 @@
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
             const { data, error } = await supabaseClient.from('profiles').select('*');
             if(error) { tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
+            
             tbody.innerHTML = data.map(u => {
                 const status = u.status || 'Pending';
                 const statusColor = status === 'Verified' ? 'text-emerald-400' : (status === 'Rejected' ? 'text-red-400' : 'text-amber-400');
@@ -596,9 +616,60 @@
                     <td class="text-emerald-400 font-medium">$${parseFloat(u.balance || 0).toFixed(2)}</td>
                     <td class="text-amber-400 font-medium">$${parseFloat(u.demo_balance || 0).toFixed(2)}</td>
                     <td class="${statusColor} text-xs font-bold uppercase">${status}</td>
-                    <td><button onclick="alert('Manage user: ${u.email}')" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded hover:bg-purple-500/30 cursor-pointer font-medium">Manage</button></td>
+                    <td class="flex gap-2 flex-wrap">
+                        <button onclick="viewUser('${u.id}', '${u.email}', ${u.balance || 0}, ${u.demo_balance || 0}, '${status}')" class="btn-info px-2 py-1 rounded text-xs">View</button>
+                        <button onclick="openAddFundsModal('${u.id}', '${u.email}')" class="btn-success px-2 py-1 rounded text-xs">Add Funds</button>
+                        <button onclick="updateUserStatus('${u.id}', 'Verified')" class="btn-primary px-2 py-1 rounded text-xs">Verify</button>
+                        <button onclick="updateUserStatus('${u.id}', 'Rejected')" class="btn-danger px-2 py-1 rounded text-xs">Reject</button>
+                    </td>
                 </tr>`;
             }).join('');
+        }
+
+        function viewUser(id, email, realBal, demoBal, status) {
+            alert(`User Details:\nEmail: ${email}\nID: ${id}\nReal Balance: $${realBal}\nDemo Balance: $${demoBal}\nStatus: ${status}`);
+        }
+
+        async function updateUserStatus(userId, newStatus) {
+            if(!confirm(`Are you sure you want to mark this user as ${newStatus}?`)) return;
+            const { error } = await supabaseClient.from('profiles').update({ status: newStatus }).eq('id', userId);
+            if(error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert(`User successfully ${newStatus}!`);
+                loadUsers();
+            }
+        }
+
+        function openAddFundsModal(userId, email) {
+            currentFundUserId = userId;
+            document.getElementById('fund-user-email').innerText = `Adding funds to: ${email}`;
+            document.getElementById('fund-amount').value = '';
+            document.getElementById('add-funds-modal').classList.remove('hidden');
+            document.getElementById('add-funds-modal').classList.add('flex');
+        }
+
+        function closeAddFundsModal() {
+            document.getElementById('add-funds-modal').classList.add('hidden');
+            document.getElementById('add-funds-modal').classList.remove('flex');
+        }
+
+        async function confirmAddFunds() {
+            const amount = parseFloat(document.getElementById('fund-amount').value);
+            const accType = document.getElementById('fund-acc-type').value;
+            if(isNaN(amount) || amount <= 0) return alert('Please enter a valid amount');
+            
+            const { data: profile } = await supabaseClient.from('profiles').select(accType).eq('id', currentFundUserId).single();
+            const newBal = (parseFloat(profile[accType] || 0)) + amount;
+            
+            const { error } = await supabaseClient.from('profiles').update({ [accType]: newBal }).eq('id', currentFundUserId);
+            if(error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('Funds added successfully!');
+                closeAddFundsModal();
+                loadUsers();
+            }
         }
 
         async function loadDeposits() {
@@ -658,7 +729,6 @@
             }
             document.getElementById('finance-table-body').innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No transactions found.</td></tr>';
             
-            // Update summary cards with REAL data
             const { data: allDeps } = await supabaseClient.from('deposits').select('amount, status');
             const { data: allWds } = await supabaseClient.from('withdrawals').select('amount, status');
             
@@ -751,7 +821,6 @@
             window.location.href = 'index.html';
         }
 
-        // Init
         checkAdminAuth().then(() => {
             loadDashboardStats();
         });
