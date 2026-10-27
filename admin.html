@@ -126,7 +126,6 @@
             <!-- DASHBOARD SECTION -->
             <section id="section-dashboard" class="space-y-6">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <!-- ✅ MADE CLICKABLE -->
                     <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('users')">
                         <p class="text-sm text-gray-400 mb-1">Total Users</p>
                         <h3 class="text-2xl font-bold text-white" id="stat-users">0</h3>
@@ -363,7 +362,7 @@
                 </div>
             </section>
 
-            <!-- ✅ UPDATED: KYC SECTION with View Button -->
+            <!-- KYC SECTION -->
             <section id="section-kyc" class="hidden space-y-6">
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
@@ -379,7 +378,7 @@
                 </div>
             </section>
 
-            <!-- ✅ UPDATED: SUPPORT SECTION -->
+            <!-- SUPPORT SECTION -->
             <section id="section-support" class="hidden space-y-6">
                 <div class="flex flex-wrap gap-2 mb-4">
                     <button class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 text-sm font-medium">All Tickets</button>
@@ -568,13 +567,13 @@
         </main>
     </div>
 
-    <!-- USER DETAILS MODAL -->
+    <!-- ✅ UPDATED: USER DETAILS MODAL (Now includes KYC Images) -->
     <div id="user-details-modal" class="modal">
-        <div class="bg-gradient-to-br from-blue-900 to-cyan-600 rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl relative">
+        <div class="bg-gradient-to-br from-blue-900 to-cyan-600 rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeUserDetailsModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
             <h3 class="text-xl font-bold text-white mb-6">User Details</h3>
             
-            <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="grid grid-cols-2 gap-4 mb-6 bg-white/10 p-4 rounded-lg">
                 <div>
                     <div class="user-detail-label">Email</div>
                     <div class="user-detail-value" id="modal-email">-</div>
@@ -611,6 +610,25 @@
                 </div>
             </div>
 
+            <!-- ✅ NEW: KYC Images Section (Hidden by default, shown via JS if available) -->
+            <div id="modal-kyc-images-section" class="hidden mb-6">
+                <h4 class="text-lg font-semibold text-white mb-3 border-t border-white/20 pt-4">Submitted KYC Documents</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-black/20 p-2 rounded-lg">
+                        <p class="text-xs text-gray-300 mb-2 text-center">Front Image</p>
+                        <img id="modal-kyc-img-front" src="" class="w-full h-32 object-cover rounded bg-black/40 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')" title="Click to view full size">
+                    </div>
+                    <div class="bg-black/20 p-2 rounded-lg">
+                        <p class="text-xs text-gray-300 mb-2 text-center">Back Image</p>
+                        <img id="modal-kyc-img-back" src="" class="w-full h-32 object-cover rounded bg-black/40 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')" title="Click to view full size">
+                    </div>
+                    <div class="bg-black/20 p-2 rounded-lg">
+                        <p class="text-xs text-gray-300 mb-2 text-center">Selfie</p>
+                        <img id="modal-kyc-img-selfie" src="" class="w-full h-32 object-cover rounded bg-black/40 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')" title="Click to view full size">
+                    </div>
+                </div>
+            </div>
+
             <div class="flex gap-3 pt-4 border-t border-white/20">
                 <button onclick="openAddFundsFromModal()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
@@ -621,7 +639,7 @@
         </div>
     </div>
 
-    <!-- ✅ NEW: KYC DETAILS MODAL -->
+    <!-- KYC DETAILS MODAL (For the dedicated KYC tab) -->
     <div id="kyc-details-modal" class="modal">
         <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeKycModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
@@ -646,15 +664,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-[#141021] p-2 rounded-lg">
                     <p class="text-xs text-gray-400 mb-2 text-center">Front Image</p>
-                    <img id="kyc-img-front" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                    <img id="kyc-img-front" src="" class="w-full h-32 object-cover rounded bg-black/20 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')">
                 </div>
                 <div class="bg-[#141021] p-2 rounded-lg">
                     <p class="text-xs text-gray-400 mb-2 text-center">Back Image</p>
-                    <img id="kyc-img-back" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                    <img id="kyc-img-back" src="" class="w-full h-32 object-cover rounded bg-black/20 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')">
                 </div>
                 <div class="bg-[#141021] p-2 rounded-lg">
                     <p class="text-xs text-gray-400 mb-2 text-center">Selfie</p>
-                    <img id="kyc-img-selfie" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                    <img id="kyc-img-selfie" src="" class="w-full h-32 object-cover rounded bg-black/20 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')">
                 </div>
             </div>
 
@@ -702,7 +720,6 @@
             document.getElementById('admin-email').innerText = user.email;
         }
 
-        // ✅ NEW: Helper to navigate from dashboard cards
         function navigateTo(sectionId) {
             const navItem = document.querySelector(`.nav-item[onclick*="'${sectionId}'"]`);
             showSection(sectionId, navItem);
@@ -749,7 +766,6 @@
             document.getElementById('stat-open-tickets').innerText = ticketCount || 0;
         }
 
-        // ✅ UPDATED: Load KYC with View button
         async function loadKYC() {
             const tbody = document.getElementById('kyc-table-body');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
@@ -775,59 +791,41 @@
             `).join('');
         }
 
-        // ✅ NEW: View KYC Details
         async function viewKYC(userId) {
             const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
-            if (error) {
-                alert('Error loading KYC details: ' + error.message);
-                return;
-            }
+            if (error) { alert('Error loading KYC details: ' + error.message); return; }
             
             document.getElementById('kyc-modal-email').innerText = user.email || '-';
             document.getElementById('kyc-modal-doctype').innerText = user.kyc_document_type || 'Not specified';
             document.getElementById('kyc-modal-date').innerText = user.created_at ? new Date(user.created_at).toLocaleString() : '-';
             
-            // Display images if columns exist, otherwise show placeholder
-            document.getElementById('kyc-img-front').src = user.kyc_front || user.kyc_front_url || 'https://via.placeholder.com/300x200?text=No+Front+Image';
-            document.getElementById('kyc-img-back').src = user.kyc_back || user.kyc_back_url || 'https://via.placeholder.com/300x200?text=No+Back+Image';
-            document.getElementById('kyc-img-selfie').src = user.kyc_selfie || user.kyc_selfie_url || 'https://via.placeholder.com/300x200?text=No+Selfie+Image';
+            document.getElementById('kyc-img-front').src = user.kyc_front_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
+            document.getElementById('kyc-img-back').src = user.kyc_back_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
+            document.getElementById('kyc-img-selfie').src = user.kyc_selfie_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
 
             window.currentKycUserId = userId;
             document.getElementById('kyc-details-modal').classList.add('active');
         }
 
-        function closeKycModal() {
-            document.getElementById('kyc-details-modal').classList.remove('active');
-        }
+        function closeKycModal() { document.getElementById('kyc-details-modal').classList.remove('active'); }
 
         async function approveKYC(userId) {
             if(!confirm('Approve this KYC submission? The user will be marked as Verified.')) return;
             const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Verified' }).eq('id', userId);
-            if(error) {
-                alert('Error: ' + error.message);
-            } else {
-                alert('✅ KYC Approved successfully!');
-                loadKYC();
-                loadDashboardStats();
-            }
+            if(error) { alert('Error: ' + error.message); } 
+            else { alert('✅ KYC Approved successfully!'); loadKYC(); loadDashboardStats(); }
         }
 
         async function rejectKYC(userId) {
             if(!confirm('Reject this KYC submission? The user will be marked as Rejected.')) return;
             const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Rejected' }).eq('id', userId);
-            if(error) {
-                alert('Error: ' + error.message);
-            } else {
-                alert('❌ KYC Rejected.');
-                loadKYC();
-                loadDashboardStats();
-            }
+            if(error) { alert('Error: ' + error.message); } 
+            else { alert('❌ KYC Rejected.'); loadKYC(); loadDashboardStats(); }
         }
 
         async function loadTickets() {
             const tbody = document.getElementById('tickets-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
-            
             try {
                 const { data, error } = await supabaseClient.from('support_tickets').select('id, user_id, subject, status, created_at').eq('status', 'Open');
                 if (error || !data || data.length === 0) {
@@ -857,9 +855,7 @@
                 alert('✅ Ticket resolved!');
                 loadTickets();
                 loadDashboardStats();
-            } catch(e) {
-                alert('Error: ' + e.message);
-            }
+            } catch(e) { alert('Error: ' + e.message); }
         }
 
         async function loadUsers() {
@@ -886,10 +882,12 @@
             }).join('');
         }
 
+        // ✅ UPDATED: Now fetches and displays KYC images if they exist
         async function viewUserDetails(userId) {
             const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
             if (error) { alert('Error loading user details: ' + error.message); return; }
             currentUserDetails = user;
+            
             document.getElementById('modal-email').innerText = user.email || '-';
             document.getElementById('modal-fullname').innerText = user.full_name || user.username || '-';
             document.getElementById('modal-phone').innerText = user.phone || 'Not provided';
@@ -901,7 +899,18 @@
             const kycStatus = user.kyc_status || 'unverified';
             const kycEl = document.getElementById('modal-kyc');
             kycEl.innerText = kycStatus;
-            kycEl.className = `px-2 py-0.5 rounded text-xs ${kycStatus === 'Verified' ? 'bg-emerald-500' : 'bg-white/20'}`;
+            kycEl.className = `px-2 py-0.5 rounded text-xs ${kycStatus === 'Verified' ? 'bg-emerald-500' : (kycStatus === 'Pending Review' ? 'bg-amber-500' : 'bg-white/20')}`;
+            
+            // ✅ NEW: Show KYC images section only if URLs exist
+            const kycSection = document.getElementById('modal-kyc-images-section');
+            if (user.kyc_front_url || user.kyc_back_url || user.kyc_selfie_url) {
+                kycSection.classList.remove('hidden');
+                document.getElementById('modal-kyc-img-front').src = user.kyc_front_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
+                document.getElementById('modal-kyc-img-back').src = user.kyc_back_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
+                document.getElementById('modal-kyc-img-selfie').src = user.kyc_selfie_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
+            } else {
+                kycSection.classList.add('hidden');
+            }
             
             document.getElementById('user-details-modal').classList.add('active');
         }
