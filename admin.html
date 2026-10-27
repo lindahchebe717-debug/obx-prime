@@ -22,6 +22,8 @@
         .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
         .btn-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); cursor: pointer; }
         .btn-success:hover { background: rgba(16, 185, 129, 0.2); }
+        .btn-info { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); cursor: pointer; }
+        .btn-info:hover { background: rgba(59, 130, 246, 0.2); }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px 16px; font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid rgba(255,255,255,0.05); background: #141021; }
         td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e5e7eb; }
@@ -54,17 +56,25 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Finance
             </a>
+            <a href="javascript:void(0)" onclick="showSection('live-chart', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                Live Chart
+            </a>
             <a href="javascript:void(0)" onclick="showSection('kyc', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 KYC Verifications
+            </a>
+            <a href="javascript:void(0)" onclick="showSection('security', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Security
             </a>
             <a href="javascript:void(0)" onclick="showSection('agents', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 Agents & Referrals
             </a>
-            <a href="javascript:void(0)" onclick="showSection('marketing', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
-                Marketing
+            <a href="javascript:void(0)" onclick="showSection('settings', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Settings
             </a>
         </nav>
 
@@ -92,32 +102,15 @@
             </div>
         </header>
 
-        <!-- Scrollable Content Area -->
         <main class="flex-1 overflow-y-auto p-6 bg-[#0f0a1f]">
             
             <!-- DASHBOARD SECTION -->
             <section id="section-dashboard" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="card p-5">
-                        <p class="text-sm text-gray-400 mb-1">Total Users</p>
-                        <h3 class="text-2xl font-bold text-white" id="stat-users">0</h3>
-                    </div>
-                    <div class="card p-5">
-                        <p class="text-sm text-gray-400 mb-1">Total Deposits</p>
-                        <h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3>
-                    </div>
-                    <div class="card p-5">
-                        <p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p>
-                        <h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3>
-                    </div>
-                    <div class="card p-5">
-                        <p class="text-sm text-gray-400 mb-1">Total Trades</p>
-                        <h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3>
-                    </div>
-                </div>
-                <div class="card p-6">
-                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
-                    <p class="text-gray-400 text-sm">System is running smoothly. Check the Transactions tab for pending approvals.</p>
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Users</p><h3 class="text-2xl font-bold text-white" id="stat-users">0</h3></div>
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Deposits</p><h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3></div>
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p><h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3></div>
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Trades</p><h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3></div>
                 </div>
             </section>
 
@@ -135,11 +128,12 @@
                                     <th>Email / ID</th>
                                     <th>Real Balance</th>
                                     <th>Demo Balance</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="users-table-body">
-                                <tr><td colspan="4" class="text-center py-8 text-gray-500">Loading users...</td></tr>
+                                <tr><td colspan="5" class="text-center py-8 text-gray-500">Loading users...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -152,7 +146,6 @@
                     <button onclick="switchTransTab('deposits')" id="btn-trans-deposits" class="text-sm font-medium text-purple-400 border-b-2 border-purple-500 pb-2 px-2 cursor-pointer">Deposits</button>
                     <button onclick="switchTransTab('withdrawals')" id="btn-trans-withdrawals" class="text-sm font-medium text-gray-400 hover:text-white pb-2 px-2 cursor-pointer">Withdrawals</button>
                 </div>
-                
                 <div id="trans-deposits-view" class="card overflow-hidden">
                     <div class="overflow-x-auto">
                         <table>
@@ -161,7 +154,6 @@
                         </table>
                     </div>
                 </div>
-
                 <div id="trans-withdrawals-view" class="card overflow-hidden hidden">
                     <div class="overflow-x-auto">
                         <table>
@@ -176,17 +168,51 @@
             <section id="section-finance" class="hidden space-y-6">
                 <h3 class="text-lg font-semibold">Financial Overview</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card p-6 text-center">
-                        <p class="text-gray-400 text-sm mb-2">Total Inflow (Deposits)</p>
-                        <h4 class="text-2xl font-bold text-emerald-400" id="fin-inflow">$0.00</h4>
+                    <div class="card p-6 text-center"><p class="text-gray-400 text-sm mb-2">Total Inflow</p><h4 class="text-2xl font-bold text-emerald-400" id="fin-inflow">$0.00</h4></div>
+                    <div class="card p-6 text-center"><p class="text-gray-400 text-sm mb-2">Total Outflow</p><h4 class="text-2xl font-bold text-red-400" id="fin-outflow">$0.00</h4></div>
+                    <div class="card p-6 text-center"><p class="text-gray-400 text-sm mb-2">Net Revenue</p><h4 class="text-2xl font-bold text-purple-400" id="fin-net">$0.00</h4></div>
+                </div>
+            </section>
+
+            <!-- LIVE CHART SECTION -->
+            <section id="section-live-chart" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Live Client Monitoring & Replies</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+                    <!-- Active Clients List -->
+                    <div class="card overflow-hidden flex flex-col">
+                        <div class="p-4 border-b border-white/5 font-semibold">Active Clients</div>
+                        <div class="flex-1 overflow-y-auto p-2 space-y-2">
+                            <div class="p-3 bg-[#141021] rounded-lg cursor-pointer hover:bg-[#1e163a] transition-colors border border-transparent hover:border-purple-500/30">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">client_8842...</span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                </div>
+                                <p class="text-xs text-gray-400">Trading: Volatility 10 (1s)</p>
+                            </div>
+                            <div class="p-3 bg-[#141021] rounded-lg cursor-pointer hover:bg-[#1e163a] transition-colors border border-transparent hover:border-purple-500/30">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">trader_991...</span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                </div>
+                                <p class="text-xs text-gray-400">Trading: Even/Odd</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card p-6 text-center">
-                        <p class="text-gray-400 text-sm mb-2">Total Outflow (Withdrawals)</p>
-                        <h4 class="text-2xl font-bold text-red-400" id="fin-outflow">$0.00</h4>
-                    </div>
-                    <div class="card p-6 text-center">
-                        <p class="text-gray-400 text-sm mb-2">Net Platform Revenue</p>
-                        <h4 class="text-2xl font-bold text-purple-400" id="fin-net">$0.00</h4>
+                    <!-- Chart & Reply Area -->
+                    <div class="lg:col-span-2 card flex flex-col">
+                        <div class="p-4 border-b border-white/5 flex justify-between items-center">
+                            <span class="font-semibold">Live Chart View</span>
+                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live</span>
+                        </div>
+                        <div class="flex-1 bg-[#141021] relative flex items-center justify-center">
+                            <p class="text-gray-500 text-sm">Live chart canvas / monitoring view loads here</p>
+                        </div>
+                        <div class="p-4 border-t border-white/5">
+                            <div class="flex gap-2">
+                                <input type="text" placeholder="Type a message to the client..." class="flex-1 bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+                                <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Send</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -196,7 +222,16 @@
                 <h3 class="text-lg font-semibold">KYC Verifications</h3>
                 <div class="card p-8 text-center">
                     <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    <p class="text-gray-400">KYC module is ready. User verification documents will appear here once the KYC upload feature is enabled on the user dashboard.</p>
+                    <p class="text-gray-400">KYC module is ready. User verification documents will appear here.</p>
+                </div>
+            </section>
+
+            <!-- SECURITY SECTION -->
+            <section id="section-security" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Security & Logs</h3>
+                <div class="card p-6">
+                    <h4 class="font-medium mb-4">Recent Admin Actions</h4>
+                    <p class="text-gray-400 text-sm">Security logs, login attempts, and admin action history will be displayed here.</p>
                 </div>
             </section>
 
@@ -205,40 +240,81 @@
                 <h3 class="text-lg font-semibold">Agents & Referrals</h3>
                 <div class="card p-6">
                     <h4 class="font-medium mb-4">Top Referrers</h4>
-                    <p class="text-gray-400 text-sm">Referral tracking is active. Agent commission payouts will be calculated here based on the 'referred_by' column in the profiles table.</p>
+                    <p class="text-gray-400 text-sm">Referral tracking is active. Agent commission payouts will be calculated here.</p>
                 </div>
             </section>
 
-            <!-- MARKETING SECTION -->
-            <section id="section-marketing" class="hidden space-y-6">
-                <h3 class="text-lg font-semibold">Marketing & Announcements</h3>
-                <div class="card p-6 max-w-2xl">
-                    <h4 class="font-medium mb-4">Send Platform Notification</h4>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="Notification Title" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500">
-                        <textarea placeholder="Message body..." rows="4" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"></textarea>
-                        <button class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Send to All Users</button>
+            <!-- SETTINGS SECTION -->
+            <section id="section-settings" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Platform Settings</h3>
+                <div class="card p-6 max-w-2xl space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Platform Name</label>
+                        <input type="text" value="OBX PRIME" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Maintenance Mode</label>
+                        <select class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500">
+                            <option>Disabled</option>
+                            <option>Enabled</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary px-6 py-2 rounded-lg text-sm font-medium mt-4">Save Settings</button>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- Balance Modal -->
-    <div id="balance-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <!-- USER MANAGEMENT MODAL -->
+    <div id="user-manage-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Manage User</h3>
+                <button onclick="closeUserModal()" class="text-gray-400 hover:text-white">&times;</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><p class="text-gray-400">User ID</p><p class="font-mono text-xs" id="modal-user-id">---</p></div>
+                    <div><p class="text-gray-400">Email</p><p id="modal-user-email">---</p></div>
+                    <div><p class="text-gray-400">Real Balance</p><p class="text-emerald-400 font-bold" id="modal-user-real">$0.00</p></div>
+                    <div><p class="text-gray-400">Demo Balance</p><p class="text-amber-400 font-bold" id="modal-user-demo">$0.00</p></div>
+                </div>
+                
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-sm font-medium mb-3">Actions</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="openAddFundsSubModal()" class="btn-success px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Add Funds
+                        </button>
+                        <button onclick="verifyCurrentUser()" class="btn-info px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Verify
+                        </button>
+                        <button onclick="rejectCurrentUser()" class="btn-danger px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 col-span-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            Reject / Suspend
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD FUNDS SUB-MODAL -->
+    <div id="add-funds-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[60] p-4 backdrop-blur-sm">
         <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl">
-            <h3 class="text-xl font-bold mb-4">Adjust User Balance</h3>
-            <p class="text-sm text-gray-400 mb-4" id="modal-user-id"></p>
+            <h3 class="text-lg font-bold mb-4">Add Funds</h3>
             <div class="space-y-4">
-                <select id="modal-acc-type" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white">
+                <select id="fund-acc-type" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white">
                     <option value="balance">Real Balance</option>
                     <option value="demo_balance">Demo Balance</option>
                 </select>
-                <input type="number" id="modal-amount" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white" placeholder="Amount (use - for deduction)">
+                <input type="number" id="fund-amount" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white" placeholder="Amount to add">
                 <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5">Cancel</button>
-                    <button onclick="saveBalance()" class="flex-1 py-2.5 rounded-lg bg-[#7c3aed] text-white font-semibold hover:bg-[#6d28d9]">Save</button>
+                    <button onclick="closeAddFundsModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5">Cancel</button>
+                    <button onclick="confirmAddFunds()" class="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700">Add Funds</button>
                 </div>
             </div>
         </div>
@@ -247,61 +323,44 @@
     <script>
         const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        
-        // FIXED: Use supabaseClient instead of supabase to avoid conflict
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentEditUserId = null;
+        let currentManageUserId = null;
+        let currentManageUserData = null;
 
-        // --- NAVIGATION (FIXED) ---
         function showSection(sectionId, element) {
-            // Debug alert to confirm clicks are working
-            // alert('Clicked: ' + sectionId); // Uncomment to test
-            
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${sectionId}`).classList.remove('hidden');
-            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (element) element.classList.add('active');
-            
-            document.getElementById('page-title').innerText = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
-            
+            document.getElementById('page-title').innerText = sectionId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
             if(window.innerWidth < 768) toggleSidebar();
-
             if(sectionId === 'dashboard') loadDashboardStats();
             if(sectionId === 'users') loadUsers();
             if(sectionId === 'transactions') { loadDeposits(); loadWithdrawals(); }
             if(sectionId === 'finance') loadFinance();
         }
 
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            sb.classList.toggle('-translate-x-full');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
 
         function switchTransTab(tab) {
             document.getElementById('trans-deposits-view').classList.add('hidden');
             document.getElementById('trans-withdrawals-view').classList.add('hidden');
             document.getElementById(`trans-${tab}-view`).classList.remove('hidden');
-            
             document.getElementById('btn-trans-deposits').classList.remove('text-purple-400', 'border-b-2', 'border-purple-500');
             document.getElementById('btn-trans-withdrawals').classList.remove('text-purple-400', 'border-b-2', 'border-purple-500');
             document.getElementById('btn-trans-deposits').classList.add('text-gray-400');
             document.getElementById('btn-trans-withdrawals').classList.add('text-gray-400');
-            
             document.getElementById(`btn-trans-${tab}`).classList.add('text-purple-400', 'border-b-2', 'border-purple-500');
             document.getElementById(`btn-trans-${tab}`).classList.remove('text-gray-400');
         }
 
-        // --- DATA LOADING ---
         async function loadDashboardStats() {
             const { count: userCount } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true });
             const { count: tradeCount } = await supabaseClient.from('trades').select('*', { count: 'exact', head: true });
             const { count: wdCount } = await supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
-            
             const { data: deps } = await supabaseClient.from('deposits').select('amount').eq('status', 'COMPLETED');
             const totalDeps = deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0;
-
             document.getElementById('stat-users').innerText = userCount || 0;
             document.getElementById('stat-trades').innerText = tradeCount || 0;
             document.getElementById('stat-withdrawals').innerText = wdCount || 0;
@@ -310,18 +369,72 @@
 
         async function loadUsers() {
             const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
             const { data, error } = await supabaseClient.from('profiles').select('*');
-            if(error) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
-            
-            tbody.innerHTML = data.map(u => `
+            if(error) { tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
+            tbody.innerHTML = data.map(u => {
+                const status = u.status || 'Pending';
+                const statusColor = status === 'Verified' ? 'text-emerald-400' : (status === 'Rejected' ? 'text-red-400' : 'text-amber-400');
+                return `
                 <tr>
                     <td class="text-xs text-gray-300">${u.email || u.id.substring(0,8)+'...'}</td>
                     <td class="text-emerald-400 font-medium">$${parseFloat(u.balance || 0).toFixed(2)}</td>
                     <td class="text-amber-400 font-medium">$${parseFloat(u.demo_balance || 0).toFixed(2)}</td>
-                    <td><button onclick="openBalanceModal('${u.id}', '${u.email || 'User'}')" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded hover:bg-purple-500/30 cursor-pointer">Adjust</button></td>
-                </tr>
-            `).join('');
+                    <td class="${statusColor} text-xs font-bold uppercase">${status}</td>
+                    <td><button onclick="openUserManageModal('${u.id}')" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded hover:bg-purple-500/30 cursor-pointer font-medium">Manage</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openUserManageModal(userId) {
+            currentManageUserId = userId;
+            supabaseClient.from('profiles').select('*').eq('id', userId).single().then(({ data }) => {
+                currentManageUserData = data;
+                document.getElementById('modal-user-id').innerText = data.id;
+                document.getElementById('modal-user-email').innerText = data.email || 'N/A';
+                document.getElementById('modal-user-real').innerText = '$' + parseFloat(data.balance || 0).toFixed(2);
+                document.getElementById('modal-user-demo').innerText = '$' + parseFloat(data.demo_balance || 0).toFixed(2);
+                document.getElementById('user-manage-modal').classList.remove('hidden');
+                document.getElementById('user-manage-modal').classList.add('flex');
+            });
+        }
+        function closeUserModal() {
+            document.getElementById('user-manage-modal').classList.add('hidden');
+            document.getElementById('user-manage-modal').classList.remove('flex');
+        }
+        function openAddFundsSubModal() {
+            document.getElementById('add-funds-modal').classList.remove('hidden');
+            document.getElementById('add-funds-modal').classList.add('flex');
+        }
+        function closeAddFundsModal() {
+            document.getElementById('add-funds-modal').classList.add('hidden');
+            document.getElementById('add-funds-modal').classList.remove('flex');
+            document.getElementById('fund-amount').value = '';
+        }
+        async function confirmAddFunds() {
+            const amt = parseFloat(document.getElementById('fund-amount').value);
+            const col = document.getElementById('fund-acc-type').value;
+            if(isNaN(amt) || amt <= 0) return alert('Invalid amount');
+            const newBal = (parseFloat(currentManageUserData[col] || 0)) + amt;
+            await supabaseClient.from('profiles').update({ [col]: newBal }).eq('id', currentManageUserId);
+            alert('Funds added successfully!');
+            closeAddFundsModal();
+            openUserManageModal(currentManageUserId); // Refresh modal data
+            loadUsers();
+        }
+        async function verifyCurrentUser() {
+            if(!confirm('Mark this user as Verified?')) return;
+            await supabaseClient.from('profiles').update({ status: 'Verified' }).eq('id', currentManageUserId);
+            alert('User verified!');
+            closeUserModal();
+            loadUsers();
+        }
+        async function rejectCurrentUser() {
+            if(!confirm('Reject/Suspend this user?')) return;
+            await supabaseClient.from('profiles').update({ status: 'Rejected' }).eq('id', currentManageUserId);
+            alert('User rejected/suspended!');
+            closeUserModal();
+            loadUsers();
         }
 
         async function loadDeposits() {
@@ -338,8 +451,7 @@
                         <button onclick="approveDep('${d.id}', '${d.user_id}', ${d.amount})" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
                         <button onclick="deleteRec('deposits', '${d.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`).join('');
         }
 
         async function loadWithdrawals() {
@@ -356,8 +468,7 @@
                         <button onclick="approveWd('${w.id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
                         <button onclick="deleteRec('withdrawals', '${w.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`).join('');
         }
 
         async function loadFinance() {
@@ -370,49 +481,22 @@
             document.getElementById('fin-net').innerText = '$' + (totalIn - totalOut).toFixed(2);
         }
 
-        // --- ACTIONS ---
-        function openBalanceModal(id, email) {
-            currentEditUserId = id;
-            document.getElementById('modal-user-id').innerText = `User: ${email}`;
-            document.getElementById('modal-amount').value = '';
-            document.getElementById('balance-modal').classList.remove('hidden');
-            document.getElementById('balance-modal').classList.add('flex');
-        }
-        function closeModal() {
-            document.getElementById('balance-modal').classList.add('hidden');
-            document.getElementById('balance-modal').classList.remove('flex');
-        }
-        async function saveBalance() {
-            const amt = parseFloat(document.getElementById('modal-amount').value);
-            const col = document.getElementById('modal-acc-type').value;
-            if(isNaN(amt)) return alert('Invalid amount');
-            const { data: profile } = await supabaseClient.from('profiles').select(col).eq('id', currentEditUserId).single();
-            const newBal = (parseFloat(profile[col] || 0)) + amt;
-            if(newBal < 0) return alert('Balance cannot be negative');
-            await supabaseClient.from('profiles').update({ [col]: newBal }).eq('id', currentEditUserId);
-            alert('Balance updated!');
-            closeModal();
-            loadUsers();
-        }
-
         async function approveDep(id, uid, amt) {
-            if(!confirm('Credit this deposit to the user?')) return;
+            if(!confirm('Credit this deposit?')) return;
             const { data: p } = await supabaseClient.from('profiles').select('balance').eq('id', uid).single();
             await supabaseClient.from('profiles').update({ balance: (parseFloat(p.balance||0) + parseFloat(amt)) }).eq('id', uid);
             await supabaseClient.from('deposits').update({ status: 'COMPLETED' }).eq('id', id);
-            alert('Deposit approved and balance credited!');
-            loadDeposits(); loadDashboardStats();
+            alert('Approved!'); loadDeposits(); loadDashboardStats();
         }
         async function approveWd(id) {
-            if(!confirm('Mark this withdrawal as paid/completed?')) return;
+            if(!confirm('Mark as paid?')) return;
             await supabaseClient.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', id);
-            alert('Withdrawal marked as completed!');
-            loadWithdrawals();
+            alert('Completed!'); loadWithdrawals();
         }
         async function deleteRec(table, id) {
-            if(!confirm('Permanently delete this record?')) return;
+            if(!confirm('Permanently delete?')) return;
             await supabaseClient.from(table).delete().eq('id', id);
-            alert('Record deleted!');
+            alert('Deleted!');
             if(table === 'deposits') loadDeposits(); else loadWithdrawals();
         }
 
@@ -421,7 +505,6 @@
             window.location.href = 'index.html';
         }
 
-        // Init
         loadDashboardStats();
     </script>
 </body>
