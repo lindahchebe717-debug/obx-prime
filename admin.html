@@ -2,449 +2,416 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBX PRIME | Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #0f0a1f; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; }
-        .tab-btn.active { border-bottom: 2px solid #7c3aed; color: #7c3aed; }
-        .status-pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
-        .status-completed { color: #10b981; background: rgba(16, 185, 129, 0.1); }
-        .status-rejected { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .status-open { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-        .status-won { color: #10b981; background: rgba(16, 185, 129, 0.1); }
-        .status-lost { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f0a1f; color: #ffffff; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1535; }
+        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6d28d9; }
+
+        .nav-item.active { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border-right: 3px solid #7c3aed; }
+        .nav-item:hover { background: rgba(124, 58, 237, 0.05); color: #ffffff; }
+        
+        .card { background: #1a1535; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
+        .btn-primary { background: #7c3aed; color: white; transition: all 0.2s; }
+        .btn-primary:hover { background: #6d28d9; }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .btn-success:hover { background: rgba(16, 185, 129, 0.2); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid rgba(255,255,255,0.05); background: #141021; }
+        td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e5e7eb; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-[#1a1535] border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-[#7c3aed] rounded-lg flex items-center justify-center font-bold text-white">A</div>
-            <h1 class="text-xl font-bold">OBX PRIME Admin</h1>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-[#130f1c] border-r border-white/5 flex flex-col fixed h-full z-40 transition-transform transform -translate-x-full md:translate-x-0">
+        <div class="p-6 flex items-center gap-3 border-b border-white/5">
+            <div class="w-8 h-8 rounded-lg bg-[#7c3aed] flex items-center justify-center font-bold text-white">A</div>
+            <h1 class="text-lg font-bold tracking-tight">OBX Admin</h1>
         </div>
-        <button onclick="logout()" class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-semibold">Logout</button>
-    </header>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <a onclick="showSection('dashboard')" class="nav-item active flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </a>
+            <a onclick="showSection('users')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Users
+            </a>
+            <a onclick="showSection('transactions')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                Transactions
+            </a>
+            <a onclick="showSection('finance')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Finance
+            </a>
+            <a onclick="showSection('kyc')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                KYC Verifications
+            </a>
+            <a onclick="showSection('agents')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Agents & Referrals
+            </a>
+            <a onclick="showSection('marketing')" class="nav-item flex items-center gap-3 px-6 py-3 cursor-pointer text-sm font-medium text-gray-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                Marketing
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-white/5">
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </button>
+        </div>
+    </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
-        <!-- Tabs -->
-        <div class="flex border-b border-white/10 mb-6 overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('users')" id="tab-users" class="tab-btn active px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Users & Balances</button>
-            <button onclick="switchTab('deposits')" id="tab-deposits" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Pending Deposits</button>
-            <button onclick="switchTab('withdrawals')" id="tab-withdrawals" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Pending Withdrawals</button>
-            <button onclick="switchTab('trades')" id="tab-trades" class="tab-btn px-6 py-3 text-sm font-semibold text-gray-400 hover:text-white transition-colors whitespace-nowrap">Recent Trades</button>
-        </div>
-
-        <!-- Content: Users -->
-        <div id="content-users" class="tab-content">
-            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                    <h2 class="font-bold text-lg">Registered Users</h2>
-                    <button onclick="loadUsers()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
+    <div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden">
+        <!-- Top Header -->
+        <header class="h-16 bg-[#130f1c]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30">
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <h2 id="page-title" class="text-lg font-semibold text-white">Dashboard</h2>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-gray-400">Logged in as</p>
+                    <p class="text-sm font-medium text-white" id="admin-email">Admin</p>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
-                            <tr>
-                                <th class="px-6 py-3">Email</th>
-                                <th class="px-6 py-3">Real Balance</th>
-                                <th class="px-6 py-3">Demo Balance</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body" class="divide-y divide-white/5">
-                            <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading users...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="w-9 h-9 rounded-full bg-[#7c3aed] flex items-center justify-center text-sm font-bold">A</div>
             </div>
-        </div>
+        </header>
 
-        <!-- Content: Deposits -->
-        <div id="content-deposits" class="tab-content hidden">
-            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                    <h2 class="font-bold text-lg">Pending Deposit Requests</h2>
-                    <button onclick="loadDeposits()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
+        <!-- Scrollable Content Area -->
+        <main class="flex-1 overflow-y-auto p-6 bg-[#0f0a1f]">
+            
+            <!-- DASHBOARD SECTION -->
+            <section id="section-dashboard" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card p-5">
+                        <p class="text-sm text-gray-400 mb-1">Total Users</p>
+                        <h3 class="text-2xl font-bold text-white" id="stat-users">0</h3>
+                    </div>
+                    <div class="card p-5">
+                        <p class="text-sm text-gray-400 mb-1">Total Deposits</p>
+                        <h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3>
+                    </div>
+                    <div class="card p-5">
+                        <p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p>
+                        <h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3>
+                    </div>
+                    <div class="card p-5">
+                        <p class="text-sm text-gray-400 mb-1">Total Trades</p>
+                        <h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
-                            <tr>
-                                <th class="px-6 py-3">User</th>
-                                <th class="px-6 py-3">Amount</th>
-                                <th class="px-6 py-3">Method</th>
-                                <th class="px-6 py-3">Date</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="deposits-table-body" class="divide-y divide-white/5">
-                            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading deposits...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                    <p class="text-gray-400 text-sm">System is running smoothly. Check the Transactions tab for pending approvals.</p>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Content: Withdrawals -->
-        <div id="content-withdrawals" class="tab-content hidden">
-            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                    <h2 class="font-bold text-lg">Pending Withdrawal Requests</h2>
-                    <button onclick="loadWithdrawals()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
+            <!-- USERS SECTION -->
+            <section id="section-users" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold">User Management</h3>
+                    <button onclick="loadUsers()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Refresh Data</button>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
-                            <tr>
-                                <th class="px-6 py-3">User</th>
-                                <th class="px-6 py-3">Amount</th>
-                                <th class="px-6 py-3">Method</th>
-                                <th class="px-6 py-3">Date</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawals-table-body" class="divide-y divide-white/5">
-                            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading withdrawals...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Email / ID</th>
+                                    <th>Real Balance</th>
+                                    <th>Demo Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr><td colspan="4" class="text-center py-8 text-gray-500">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Content: Trades -->
-        <div id="content-trades" class="tab-content hidden">
-            <div class="bg-[#1a1535] rounded-xl border border-white/10 overflow-hidden">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                    <h2 class="font-bold text-lg">Recent Platform Trades</h2>
-                    <button onclick="loadTrades()" class="text-sm text-[#7c3aed] hover:underline">Refresh</button>
+            <!-- TRANSACTIONS SECTION -->
+            <section id="section-transactions" class="hidden space-y-6">
+                <div class="flex gap-4 border-b border-white/10 pb-2">
+                    <button onclick="switchTransTab('deposits')" id="btn-trans-deposits" class="text-sm font-medium text-purple-400 border-b-2 border-purple-500 pb-2 px-2">Deposits</button>
+                    <button onclick="switchTransTab('withdrawals')" id="btn-trans-withdrawals" class="text-sm font-medium text-gray-400 hover:text-white pb-2 px-2">Withdrawals</button>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-400 uppercase bg-[#141021]">
-                            <tr>
-                                <th class="px-6 py-3">User</th>
-                                <th class="px-6 py-3">Asset</th>
-                                <th class="px-6 py-3">Direction</th>
-                                <th class="px-6 py-3">Stake</th>
-                                <th class="px-6 py-3">Status</th>
-                                <th class="px-6 py-3">Payout</th>
-                                <th class="px-6 py-3">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trades-table-body" class="divide-y divide-white/5">
-                            <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading trades...</td></tr>
-                        </tbody>
-                    </table>
+                
+                <div id="trans-deposits-view" class="card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>User ID</th><th>Amount</th><th>Method</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="deposits-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <!-- Balance Adjustment Modal -->
+                <div id="trans-withdrawals-view" class="card overflow-hidden hidden">
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>User ID</th><th>Amount</th><th>Method</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="withdrawals-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FINANCE SECTION -->
+            <section id="section-finance" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Financial Overview</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card p-6 text-center">
+                        <p class="text-gray-400 text-sm mb-2">Total Inflow (Deposits)</p>
+                        <h4 class="text-2xl font-bold text-emerald-400" id="fin-inflow">$0.00</h4>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-gray-400 text-sm mb-2">Total Outflow (Withdrawals)</p>
+                        <h4 class="text-2xl font-bold text-red-400" id="fin-outflow">$0.00</h4>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-gray-400 text-sm mb-2">Net Platform Revenue</p>
+                        <h4 class="text-2xl font-bold text-purple-400" id="fin-net">$0.00</h4>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KYC SECTION -->
+            <section id="section-kyc" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">KYC Verifications</h3>
+                <div class="card p-8 text-center">
+                    <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <p class="text-gray-400">KYC module is ready. User verification documents will appear here once the KYC upload feature is enabled on the user dashboard.</p>
+                </div>
+            </section>
+
+            <!-- AGENTS SECTION -->
+            <section id="section-agents" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Agents & Referrals</h3>
+                <div class="card p-6">
+                    <h4 class="font-medium mb-4">Top Referrers</h4>
+                    <p class="text-gray-400 text-sm">Referral tracking is active. Agent commission payouts will be calculated here based on the 'referred_by' column in the profiles table.</p>
+                </div>
+            </section>
+
+            <!-- MARKETING SECTION -->
+            <section id="section-marketing" class="hidden space-y-6">
+                <h3 class="text-lg font-semibold">Marketing & Announcements</h3>
+                <div class="card p-6 max-w-2xl">
+                    <h4 class="font-medium mb-4">Send Platform Notification</h4>
+                    <div class="space-y-4">
+                        <input type="text" placeholder="Notification Title" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500">
+                        <textarea placeholder="Message body..." rows="4" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"></textarea>
+                        <button class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Send to All Users</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Balance Modal -->
     <div id="balance-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl">
             <h3 class="text-xl font-bold mb-4">Adjust User Balance</h3>
-            <p class="text-sm text-gray-400 mb-4" id="balance-modal-user"></p>
+            <p class="text-sm text-gray-400 mb-4" id="modal-user-id"></p>
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-1">Account Type</label>
-                    <select id="adjust-account-type" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#7c3aed]">
-                        <option value="real">Real Balance</option>
-                        <option value="demo">Demo Balance</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-1">Amount (Use negative to deduct)</label>
-                    <input type="number" id="adjust-amount" step="0.01" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#7c3aed]" placeholder="e.g., 50 or -20">
-                </div>
-                <div class="flex gap-3 mt-6">
-                    <button onclick="closeBalanceModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 transition-colors">Cancel</button>
-                    <button onclick="confirmBalanceAdjustment()" class="flex-1 py-2.5 rounded-lg bg-[#7c3aed] text-white font-semibold hover:bg-[#6d28d9] transition-colors">Save Changes</button>
+                <select id="modal-acc-type" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white">
+                    <option value="balance">Real Balance</option>
+                    <option value="demo_balance">Demo Balance</option>
+                </select>
+                <input type="number" id="modal-amount" class="w-full bg-[#141021] border border-white/10 rounded-lg px-4 py-2.5 text-white" placeholder="Amount (use - for deduction)">
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5">Cancel</button>
+                    <button onclick="saveBalance()" class="flex-1 py-2.5 rounded-lg bg-[#7c3aed] text-white font-semibold hover:bg-[#6d28d9]">Save</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
-        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentAdjustUserId = null;
+        let currentEditUserId = null;
 
-        // Auth Check
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'index.html';
-            }
-        }
-        checkAuth();
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+        // --- NAVIGATION ---
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${sectionId}`).classList.remove('hidden');
             
-            if (tabName === 'users') loadUsers();
-            if (tabName === 'deposits') loadDeposits();
-            if (tabName === 'withdrawals') loadWithdrawals();
-            if (tabName === 'trades') loadTrades();
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            document.getElementById('page-title').innerText = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+            
+            if(window.innerWidth < 768) toggleSidebar();
+
+            if(sectionId === 'dashboard') loadDashboardStats();
+            if(sectionId === 'users') loadUsers();
+            if(sectionId === 'transactions') { loadDeposits(); loadWithdrawals(); }
+            if(sectionId === 'finance') loadFinance();
         }
 
-        // --- USERS ---
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('-translate-x-full');
+        }
+
+        function switchTransTab(tab) {
+            document.getElementById('trans-deposits-view').classList.add('hidden');
+            document.getElementById('trans-withdrawals-view').classList.add('hidden');
+            document.getElementById(`trans-${tab}-view`).classList.remove('hidden');
+            
+            document.getElementById('btn-trans-deposits').classList.remove('text-purple-400', 'border-b-2', 'border-purple-500');
+            document.getElementById('btn-trans-withdrawals').classList.remove('text-purple-400', 'border-b-2', 'border-purple-500');
+            document.getElementById('btn-trans-deposits').classList.add('text-gray-400');
+            document.getElementById('btn-trans-withdrawals').classList.add('text-gray-400');
+            
+            document.getElementById(`btn-trans-${tab}`).classList.add('text-purple-400', 'border-b-2', 'border-purple-500');
+            document.getElementById(`btn-trans-${tab}`).classList.remove('text-gray-400');
+        }
+
+        // --- DATA LOADING ---
+        async function loadDashboardStats() {
+            const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+            const { count: tradeCount } = await supabase.from('trades').select('*', { count: 'exact', head: true });
+            const { count: wdCount } = await supabase.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
+            
+            const { data: deps } = await supabase.from('deposits').select('amount').eq('status', 'COMPLETED');
+            const totalDeps = deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0;
+
+            document.getElementById('stat-users').innerText = userCount || 0;
+            document.getElementById('stat-trades').innerText = tradeCount || 0;
+            document.getElementById('stat-withdrawals').innerText = wdCount || 0;
+            document.getElementById('stat-deposits').innerText = '$' + totalDeps.toFixed(2);
+        }
+
         async function loadUsers() {
             const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
+            const { data, error } = await supabase.from('profiles').select('*');
+            if(error) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
             
-            const { data, error } = await supabase.from('profiles').select('id, email, balance, demo_balance').order('created_at', { ascending: false });
-            
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
-                return;
-            }
+            tbody.innerHTML = data.map(u => `
+                <tr>
+                    <td class="text-xs text-gray-300">${u.email || u.id.substring(0,8)+'...'}</td>
+                    <td class="text-emerald-400 font-medium">$${parseFloat(u.balance || 0).toFixed(2)}</td>
+                    <td class="text-amber-400 font-medium">$${parseFloat(u.demo_balance || 0).toFixed(2)}</td>
+                    <td><button onclick="openBalanceModal('${u.id}', '${u.email || 'User'}')" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded hover:bg-purple-500/30">Adjust</button></td>
+                </tr>
+            `).join('');
+        }
 
-            tbody.innerHTML = data.map(user => `
-                <tr class="hover:bg-white/5 transition-colors">
-                    <td class="px-6 py-4 font-medium text-white">${user.email || 'N/A'}</td>
-                    <td class="px-6 py-4 text-[#10b981] font-semibold">$${parseFloat(user.balance || 0).toFixed(2)}</td>
-                    <td class="px-6 py-4 text-[#f59e0b] font-semibold">$${parseFloat(user.demo_balance || 0).toFixed(2)}</td>
-                    <td class="px-6 py-4">
-                        <button onclick="openBalanceModal('${user.id}', '${user.email}')" class="px-3 py-1.5 bg-[#7c3aed]/20 text-[#a78bfa] rounded-lg text-xs font-semibold hover:bg-[#7c3aed]/30 transition-colors">Adjust Balance</button>
+        async function loadDeposits() {
+            const tbody = document.getElementById('deposits-table-body');
+            const { data } = await supabase.from('deposits').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
+            if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending deposits.</td></tr>'; return; }
+            tbody.innerHTML = data.map(d => `
+                <tr>
+                    <td class="text-xs text-gray-300">${d.user_id.substring(0,8)}...</td>
+                    <td class="text-emerald-400 font-bold">$${parseFloat(d.amount).toFixed(2)}</td>
+                    <td class="text-gray-400 text-xs">${d.currency || 'Crypto'}</td>
+                    <td class="text-gray-500 text-xs">${new Date(d.created_at).toLocaleDateString()}</td>
+                    <td class="flex gap-2">
+                        <button onclick="approveDep('${d.id}', '${d.user_id}', ${d.amount})" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                        <button onclick="deleteRec('deposits', '${d.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function openBalanceModal(userId, email) {
-            currentAdjustUserId = userId;
-            document.getElementById('balance-modal-user').innerText = `User: ${email}`;
-            document.getElementById('adjust-amount').value = '';
+        async function loadWithdrawals() {
+            const tbody = document.getElementById('withdrawals-table-body');
+            const { data } = await supabase.from('withdrawals').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
+            if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending withdrawals.</td></tr>'; return; }
+            tbody.innerHTML = data.map(w => `
+                <tr>
+                    <td class="text-xs text-gray-300">${w.user_id.substring(0,8)}...</td>
+                    <td class="text-red-400 font-bold">$${parseFloat(w.amount).toFixed(2)}</td>
+                    <td class="text-gray-400 text-xs">${w.method || 'Crypto'}</td>
+                    <td class="text-gray-500 text-xs">${new Date(w.created_at).toLocaleDateString()}</td>
+                    <td class="flex gap-2">
+                        <button onclick="approveWd('${w.id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                        <button onclick="deleteRec('withdrawals', '${w.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadFinance() {
+            const { data: deps } = await supabase.from('deposits').select('amount').eq('status', 'COMPLETED');
+            const { data: wds } = await supabase.from('withdrawals').select('amount').eq('status', 'COMPLETED');
+            const totalIn = deps ? deps.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
+            const totalOut = wds ? wds.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
+            document.getElementById('fin-inflow').innerText = '$' + totalIn.toFixed(2);
+            document.getElementById('fin-outflow').innerText = '$' + totalOut.toFixed(2);
+            document.getElementById('fin-net').innerText = '$' + (totalIn - totalOut).toFixed(2);
+        }
+
+        // --- ACTIONS ---
+        function openBalanceModal(id, email) {
+            currentEditUserId = id;
+            document.getElementById('modal-user-id').innerText = `User: ${email}`;
+            document.getElementById('modal-amount').value = '';
             document.getElementById('balance-modal').classList.remove('hidden');
             document.getElementById('balance-modal').classList.add('flex');
         }
-
-        function closeBalanceModal() {
+        function closeModal() {
             document.getElementById('balance-modal').classList.add('hidden');
             document.getElementById('balance-modal').classList.remove('flex');
-            currentAdjustUserId = null;
+        }
+        async function saveBalance() {
+            const amt = parseFloat(document.getElementById('modal-amount').value);
+            const col = document.getElementById('modal-acc-type').value;
+            if(isNaN(amt)) return alert('Invalid amount');
+            const { data: profile } = await supabase.from('profiles').select(col).eq('id', currentEditUserId).single();
+            const newBal = (parseFloat(profile[col] || 0)) + amt;
+            if(newBal < 0) return alert('Balance cannot be negative');
+            await supabase.from('profiles').update({ [col]: newBal }).eq('id', currentEditUserId);
+            alert('Balance updated!');
+            closeModal();
+            loadUsers();
         }
 
-        async function confirmBalanceAdjustment() {
-            const amount = parseFloat(document.getElementById('adjust-amount').value);
-            const accountType = document.getElementById('adjust-account-type').value;
-            
-            if (isNaN(amount) || amount === 0) return alert('Please enter a valid amount.');
-            if (!currentAdjustUserId) return;
-
-            const btn = event.target;
-            btn.disabled = true;
-            btn.innerText = 'Saving...';
-
-            try {
-                const { data: profile, error: fetchError } = await supabase
-                    .from('profiles')
-                    .select(accountType === 'real' ? 'balance' : 'demo_balance')
-                    .eq('id', currentAdjustUserId)
-                    .single();
-                
-                if (fetchError) throw fetchError;
-
-                const currentBal = parseFloat(profile[accountType === 'real' ? 'balance' : 'demo_balance'] || 0);
-                const newBal = currentBal + amount;
-
-                if (newBal < 0) return alert('Balance cannot be negative.');
-
-                const updateData = {};
-                updateData[accountType === 'real' ? 'balance' : 'demo_balance'] = newBal;
-
-                const { error: updateError } = await supabase
-                    .from('profiles')
-                    .update(updateData)
-                    .eq('id', currentAdjustUserId);
-
-                if (updateError) throw updateError;
-
-                alert('✅ Balance updated successfully!');
-                closeBalanceModal();
-                loadUsers();
-            } catch (err) {
-                console.error(err);
-                alert('❌ Failed to update balance: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Save Changes';
-            }
+        async function approveDep(id, uid, amt) {
+            if(!confirm('Credit this deposit?')) return;
+            const { data: p } = await supabase.from('profiles').select('balance').eq('id', uid).single();
+            await supabase.from('profiles').update({ balance: (parseFloat(p.balance||0) + parseFloat(amt)) }).eq('id', uid);
+            await supabase.from('deposits').update({ status: 'COMPLETED' }).eq('id', id);
+            loadDeposits(); loadDashboardStats();
         }
-
-        // --- DEPOSITS ---
-        async function loadDeposits() {
-            const tbody = document.getElementById('deposits-table-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
-            
-            const { data, error } = await supabase
-                .from('deposits')
-                .select('id, user_id, amount, currency, status, created_at, profiles(email)')
-                .eq('status', 'PENDING')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
-                return;
-            }
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No pending deposits.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(dep => `
-                <tr class="hover:bg-white/5 transition-colors">
-                    <td class="px-6 py-4 font-medium text-white">${dep.profiles?.email || 'Unknown'}</td>
-                    <td class="px-6 py-4 text-[#10b981] font-bold">$${parseFloat(dep.amount).toFixed(2)}</td>
-                    <td class="px-6 py-4 text-gray-300">${dep.currency}</td>
-                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(dep.created_at).toLocaleString()}</td>
-                    <td class="px-6 py-4 flex gap-2">
-                        <button onclick="approveDeposit('${dep.id}', '${dep.user_id}', ${dep.amount})" class="px-3 py-1.5 bg-[#10b981]/20 text-[#10b981] rounded-lg text-xs font-semibold hover:bg-[#10b981]/30 transition-colors">Approve</button>
-                        <button onclick="rejectDeposit('${dep.id}')" class="px-3 py-1.5 bg-[#ef4444]/20 text-[#ef4444] rounded-lg text-xs font-semibold hover:bg-[#ef4444]/30 transition-colors">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
+        async function approveWd(id) {
+            if(!confirm('Mark withdrawal as paid?')) return;
+            await supabase.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', id);
+            loadWithdrawals();
         }
-
-        async function approveDeposit(depositId, userId, amount) {
-            if (!confirm(`Approve deposit of $${amount} and credit user balance?`)) return;
-            
-            try {
-                const { data: profile } = await supabase.from('profiles').select('balance').eq('id', userId).single();
-                const newBal = (parseFloat(profile.balance || 0)) + parseFloat(amount);
-
-                await supabase.from('profiles').update({ balance: newBal }).eq('id', userId);
-                await supabase.from('deposits').update({ status: 'COMPLETED' }).eq('id', depositId);
-
-                alert('✅ Deposit approved and balance credited!');
-                loadDeposits();
-            } catch (err) {
-                alert('❌ Error: ' + err.message);
-            }
-        }
-
-        async function rejectDeposit(depositId) {
-            if (!confirm('Reject this deposit request?')) return;
-            try {
-                await supabase.from('deposits').update({ status: 'REJECTED' }).eq('id', depositId);
-                alert('✅ Deposit rejected.');
-                loadDeposits();
-            } catch (err) {
-                alert('❌ Error: ' + err.message);
-            }
-        }
-
-        // --- WITHDRAWALS ---
-        async function loadWithdrawals() {
-            const tbody = document.getElementById('withdrawals-table-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
-            
-            const { data, error } = await supabase
-                .from('withdrawals')
-                .select('id, user_id, amount, method, status, created_at, profiles(email)')
-                .eq('status', 'PENDING')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
-                return;
-            }
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No pending withdrawals.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(wd => `
-                <tr class="hover:bg-white/5 transition-colors">
-                    <td class="px-6 py-4 font-medium text-white">${wd.profiles?.email || 'Unknown'}</td>
-                    <td class="px-6 py-4 text-[#ef4444] font-bold">$${parseFloat(wd.amount).toFixed(2)}</td>
-                    <td class="px-6 py-4 text-gray-300">${wd.method}</td>
-                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(wd.created_at).toLocaleString()}</td>
-                    <td class="px-6 py-4 flex gap-2">
-                        <button onclick="approveWithdrawal('${wd.id}')" class="px-3 py-1.5 bg-[#10b981]/20 text-[#10b981] rounded-lg text-xs font-semibold hover:bg-[#10b981]/30 transition-colors">Approve</button>
-                        <button onclick="rejectWithdrawal('${wd.id}', '${wd.user_id}', ${wd.amount})" class="px-3 py-1.5 bg-[#ef4444]/20 text-[#ef4444] rounded-lg text-xs font-semibold hover:bg-[#ef4444]/30 transition-colors">Reject & Refund</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function approveWithdrawal(withdrawalId) {
-            if (!confirm('Mark this withdrawal as COMPLETED? (Balance was already deducted)')) return;
-            try {
-                await supabase.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', withdrawalId);
-                alert('✅ Withdrawal marked as completed.');
-                loadWithdrawals();
-            } catch (err) {
-                alert('❌ Error: ' + err.message);
-            }
-        }
-
-        async function rejectWithdrawal(withdrawalId, userId, amount) {
-            if (!confirm(`Reject this withdrawal and REFUND $${amount} to the user?`)) return;
-            try {
-                const { data: profile } = await supabase.from('profiles').select('balance').eq('id', userId).single();
-                const newBal = (parseFloat(profile.balance || 0)) + parseFloat(amount);
-
-                await supabase.from('profiles').update({ balance: newBal }).eq('id', userId);
-                await supabase.from('withdrawals').update({ status: 'REJECTED' }).eq('id', withdrawalId);
-
-                alert('✅ Withdrawal rejected and balance refunded!');
-                loadWithdrawals();
-            } catch (err) {
-                alert('❌ Error: ' + err.message);
-            }
-        }
-
-        // --- TRADES ---
-        async function loadTrades() {
-            const tbody = document.getElementById('trades-table-body');
-            tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>';
-            
-            const { data, error } = await supabase
-                .from('trades')
-                .select('id, user_id, asset, direction, stake, status, payout, created_at, profiles(email)')
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-400">Error: ${error.message}</td></tr>`;
-                return;
-            }
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No recent trades.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(trade => {
-                let statusClass = 'status-open';
-                if (trade.status === 'WON') statusClass = 'status-won';
-                if (trade.status === 'LOST' || trade.status === 'CLOSED') statusClass = 'status-lost';
-
-                return `
-                <tr class="hover:bg-white/5 transition-colors">
-                    <td class="px-6 py-4 font-medium text-white text-xs">${trade.profiles?.email || 'Unknown'}</td>
-                    <td class="px-6 py-4 text-gray-300">${trade.asset}</td>
-                    <td class="px-6 py-4 text-gray-300">${trade.direction}</td>
-                    <td class="px-6 py-4 text-white font-semibold">$${parseFloat(trade.stake || 0).toFixed(2)}</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${statusClass}">${trade.status}</span></td>
-                    <td class="px-6 py-4 text-[#10b981] font-semibold">${trade.payout ? '$' + parseFloat(trade.payout).toFixed(2) : '-'}</td>
-                    <td class="px-6 py-4 text-gray-400 text-xs">${new Date(trade.created_at).toLocaleString()}</td>
-                </tr>
-            `}).join('');
+        async function deleteRec(table, id) {
+            if(!confirm('Permanently delete this record?')) return;
+            await supabase.from(table).delete().eq('id', id);
+            if(table === 'deposits') loadDeposits(); else loadWithdrawals();
         }
 
         async function logout() {
@@ -452,8 +419,8 @@
             window.location.href = 'index.html';
         }
 
-        // Load initial tab
-        switchTab('users');
+        // Init
+        loadDashboardStats();
     </script>
 </body>
 </html>
