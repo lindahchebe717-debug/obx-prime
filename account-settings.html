@@ -467,6 +467,7 @@
             }, 800);
         }
 
+        // ✅ UPDATED: Actually uploads files to Supabase Storage and saves URLs
         async function submitKYC() {
             const docType = document.getElementById('kyc-doc-type').value;
             if (!docType) return alert('Please select a Document Type.');
@@ -474,19 +475,53 @@
 
             const btn = document.getElementById('submit-kyc-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Submitting...';
+            btn.innerHTML = '<span class="spinner"></span> Uploading Documents...';
 
             try {
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                let frontUrl = '';
+                let backUrl = '';
+                let selfieUrl = '';
 
+                // 1. Upload Front ID
+                if (kycFiles.front) {
+                    const frontExt = kycFiles.front.name.split('.').pop();
+                    const frontFileName = `${currentUser.id}/front_${Date.now()}.${frontExt}`;
+                    const { error: frontError } = await obxSupabase.storage.from('kyc_documents').upload(frontFileName, kycFiles.front);
+                    if (frontError) throw frontError;
+                    frontUrl = obxSupabase.storage.from('kyc_documents').getPublicUrl(frontFileName).data.publicUrl;
+                }
+
+                // 2. Upload Back ID (Optional)
+                if (kycFiles.back) {
+                    const backExt = kycFiles.back.name.split('.').pop();
+                    const backFileName = `${currentUser.id}/back_${Date.now()}.${backExt}`;
+                    const { error: backError } = await obxSupabase.storage.from('kyc_documents').upload(backFileName, kycFiles.back);
+                    if (backError) throw backError;
+                    backUrl = obxSupabase.storage.from('kyc_documents').getPublicUrl(backFileName).data.publicUrl;
+                }
+
+                // 3. Upload Selfie
+                if (kycFiles.selfie) {
+                    const selfieExt = kycFiles.selfie.name.split('.').pop();
+                    const selfieFileName = `${currentUser.id}/selfie_${Date.now()}.${selfieExt}`;
+                    const { error: selfieError } = await obxSupabase.storage.from('kyc_documents').upload(selfieFileName, kycFiles.selfie);
+                    if (selfieError) throw selfieError;
+                    selfieUrl = obxSupabase.storage.from('kyc_documents').getPublicUrl(selfieFileName).data.publicUrl;
+                }
+
+                btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+                // 4. Update Profile with URLs and Status
                 const { error } = await obxSupabase.from('profiles').update({ 
                     kyc_status: 'Pending Review',
-                    kyc_document_type: docType
+                    kyc_document_type: docType,
+                    kyc_front_url: frontUrl,
+                    kyc_back_url: backUrl,
+                    kyc_selfie_url: selfieUrl
                 }).eq('id', currentUser.id);
 
                 if (error) throw error;
 
-                // ✅ UPDATED: Simple success message
                 alert('✅ Successfully submitted, waiting for verification.');
                 
                 fetchKYCStatus();
