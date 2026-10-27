@@ -86,7 +86,7 @@
             <input type="file" id="file-input-gallery" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
         </label>
 
-        <!-- ✅ NEW: Camera Button -->
+        <!-- Camera Button -->
         <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative shrink-0" title="Camera">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             <input type="file" id="file-input-camera" class="hidden" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
@@ -97,12 +97,12 @@
         </div>
 
         <!-- Send Button -->
-        <button id="send-btn" onclick="sendMessage()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition shrink-0">
+        <button id="send-btn" onclick="sendMessage()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition shrink-0 hidden">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
         
-        <!-- ✅ Voice Note Button (Press and Hold) -->
-        <button id="mic-btn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition hidden shrink-0" title="Hold to record">
+        <!-- Voice Note Button (Press and Hold) -->
+        <button id="mic-btn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition shrink-0" title="Hold to record">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
         </button>
     </footer>
@@ -110,7 +110,7 @@
     <!-- Emoji Picker -->
     <div id="emoji-picker" class="hidden fixed bottom-24 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto"></div>
 
-    <!-- ✅ UPDATED: Image Preview Modal with View Once Toggle -->
+    <!-- Image Preview Modal with View Once Toggle -->
     <div id="preview-modal" class="hidden fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center p-4">
         <img id="preview-img" src="" class="max-h-[60vh] rounded-lg mb-4">
         
@@ -171,6 +171,7 @@
 
         window.toggleTheme = function() { document.body.classList.toggle('light-theme'); };
 
+        // ✅ FIXED: Manually trigger input event to swap mic button back
         window.sendMessage = async function() {
             const input = document.getElementById('msg-input');
             const text = input.value.trim();
@@ -181,6 +182,10 @@
                 content: text, type: 'text', reply_to_id: replyToId
             });
             input.value = '';
+            
+            // ✅ This forces the browser to re-check the input and bring the mic button back
+            input.dispatchEvent(new Event('input'));
+            
             cancelReply();
             
             const { data: room } = await supabaseClient.from('support_rooms').select('status').eq('id', currentRoomId).single();
@@ -189,20 +194,17 @@
             }
         };
 
-        // ✅ UPDATED: Handle file select from Gallery or Camera
         window.handleFileSelect = function(e) {
             const file = e.target.files[0];
             if (file) {
                 selectedFile = file;
                 document.getElementById('preview-img').src = URL.createObjectURL(file);
-                document.getElementById('view-once-checkbox').checked = false; // Reset checkbox
+                document.getElementById('view-once-checkbox').checked = false;
                 document.getElementById('preview-modal').classList.remove('hidden');
-                // Reset the input so the same file can be selected again if canceled
                 e.target.value = ''; 
             }
         };
 
-        // ✅ UPDATED: Send image with View Once support
         window.sendImage = async function() {
             if (!selectedFile || !currentRoomId) return;
             
@@ -232,7 +234,6 @@
             }
         };
 
-        // ✅ Voice Note Recording
         window.startRecording = function() {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 mediaRecorder = new MediaRecorder(stream);
@@ -266,10 +267,9 @@
                 } catch (err) {
                     alert("Failed to send voice note: " + err.message);
                 } finally {
-                    // Reset UI
                     sendBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>';
-                    document.getElementById('send-btn').classList.remove('hidden');
-                    document.getElementById('mic-btn').classList.add('hidden');
+                    document.getElementById('send-btn').classList.add('hidden');
+                    document.getElementById('mic-btn').classList.remove('hidden');
                     document.getElementById('mic-btn').classList.remove('animate-pulse', 'bg-red-500');
                 }
             };
@@ -296,6 +296,9 @@
         window.cancelReply = function() {
             replyToId = null;
             document.getElementById('reply-bar').classList.add('hidden');
+            // ✅ Ensure mic button shows up if input is empty after canceling reply
+            const input = document.getElementById('msg-input');
+            input.dispatchEvent(new Event('input'));
         };
 
         window.revealViewOnce = async function(el, msgId) {
