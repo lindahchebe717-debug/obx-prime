@@ -431,19 +431,16 @@
             }
         }
 
-        // ✅ IMPROVED KYC FILE HANDLING (No more strict filename checks)
         function handleFileSelect(type, input) {
             const file = input.files[0];
             if (!file) return;
 
-            // 1. Basic Validation: File Size
             if (file.size > 5 * 1024 * 1024) {
                 alert('File is too large. Maximum size is 5MB.');
                 input.value = '';
                 return;
             }
 
-            // 2. Basic Validation: File Type
             const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
             if (!validTypes.includes(file.type)) {
                 alert('Invalid file type. Please upload a JPG, PNG, or WEBP image.');
@@ -458,11 +455,7 @@
                 return;
             }
 
-            // 3. Simulated AI Scan (Visual feedback only, accepts the file)
-            // In a real app, this is where you'd send the image to a backend AI service.
-            // For now, we accept any valid image file and let the Admin verify it manually.
             const label = document.getElementById(`label-${type}`);
-            const originalText = label.innerText;
             label.innerText = 'Scanning...';
             label.classList.add('text-[#A78BFA]');
             
@@ -471,7 +464,7 @@
                 label.innerText = file.name;
                 label.classList.remove('text-gray-400', 'text-[#A78BFA]');
                 label.classList.add('text-[#10B981]');
-            }, 800); // 800ms simulated scan delay
+            }, 800);
         }
 
         async function submitKYC() {
@@ -481,13 +474,11 @@
 
             const btn = document.getElementById('submit-kyc-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Running AI Verification & Submitting...';
+            btn.innerHTML = '<span class="spinner"></span> Submitting...';
 
             try {
-                // Simulate AI Processing Delay
-                await new Promise(resolve => setTimeout(resolve, 2500));
+                await new Promise(resolve => setTimeout(resolve, 1500));
 
-                // Update Profile Status to Pending
                 const { error } = await obxSupabase.from('profiles').update({ 
                     kyc_status: 'Pending Review',
                     kyc_document_type: docType
@@ -495,11 +486,11 @@
 
                 if (error) throw error;
 
-                alert('✅ Submitted for review!\n\nYour documents have passed initial checks. Your account will show as "Verified" once manually approved by our admin team.');
+                // ✅ UPDATED: Simple success message
+                alert('✅ Successfully submitted, waiting for verification.');
                 
                 fetchKYCStatus();
                 
-                // Reset form
                 kycFiles = { front: null, back: null, selfie: null };
                 document.getElementById('file-front').value = '';
                 document.getElementById('file-back').value = '';
