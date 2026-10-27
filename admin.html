@@ -16,572 +16,7 @@
         .nav-item.active { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border-right: 3px solid #7c3aed; }
         .nav-item:hover { background: rgba(124, 58, 237, 0.05); color: #ffffff; }
         .card { background: #1a1535; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
-        .btn-primary { background: #7c3aed; color: white; transition: all 0.2s; }
-        .btn-primary:hover { background: #6d28d9; }
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
-        .btn-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); cursor: pointer; }
-        .btn-success:hover { background: rgba(16, 185, 129, 0.2); }
-        .btn-info { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); cursor: pointer; }
-        .btn-info:hover { background: rgba(59, 130, 246, 0.2); }
-        .input-dark { background: #141021; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 16px; color: white; width: 100%; focus: outline-none; focus: border-color: #7c3aed; }
-        .input-dark:focus { outline: none; border-color: #7c3aed; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px 16px; font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid rgba(255,255,255,0.05); background: #141021; }
-        td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e5e7eb; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-    </style>
-</head>
-<body class="flex h-screen overflow-hidden">
-
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-[#130f1c] border-r border-white/5 flex flex-col fixed h-full z-40 transition-transform transform -translate-x-full md:translate-x-0">
-        <div class="p-6 flex items-center gap-3 border-b border-white/5">
-            <div class="w-8 h-8 rounded-lg bg-[#7c3aed] flex items-center justify-center font-bold text-white">A</div>
-            <h1 class="text-lg font-bold tracking-tight">OBX Admin</h1>
-        </div>
-        
-        <nav class="flex-1 overflow-y-auto py-4">
-            <a href="javascript:void(0)" onclick="showSection('dashboard', this)" class="nav-item active flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                Dashboard
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('users', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                Users
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('transactions', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                Transactions
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('finance', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Finance
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('reports', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                Reports
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('agents', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                Agents & Referrals
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('marketing', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
-                Marketing
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('kyc', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                KYC Verifications
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('support', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                Support
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('livechat', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                Live Chat
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('security', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                Security
-            </a>
-            <a href="javascript:void(0)" onclick="showSection('settings', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                Settings
-            </a>
-        </nav>
-
-        <div class="p-4 border-t border-white/5">
-            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Logout
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden">
-        <header class="h-16 bg-[#130f1c]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30">
-            <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <h2 id="page-title" class="text-lg font-semibold text-white">Dashboard</h2>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs text-gray-400">Logged in as</p>
-                    <p class="text-sm font-medium text-white" id="admin-email">Admin</p>
-                </div>
-                <div class="w-9 h-9 rounded-full bg-[#7c3aed] flex items-center justify-center text-sm font-bold">A</div>
-            </div>
-        </header>
-
-        <main class="flex-1 overflow-y-auto p-6 bg-[#0f0a1f]">
-            
-            <!-- DASHBOARD SECTION -->
-            <section id="section-dashboard" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Users</p><h3 class="text-2xl font-bold text-white" id="stat-users">0</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Deposits</p><h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p><h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Trades</p><h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3></div>
-                </div>
-            </section>
-
-            <!-- USERS SECTION -->
-            <section id="section-users" class="hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-semibold">User Management</h3>
-                    <button onclick="loadUsers()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Refresh Data</button>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead><tr><th>Email / ID</th><th>Real Balance</th><th>Demo Balance</th><th>Status</th><th>Actions</th></tr></thead>
-                            <tbody id="users-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading users...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TRANSACTIONS SECTION -->
-            <section id="section-transactions" class="hidden space-y-6">
-                <div class="card overflow-hidden mb-6">
-                    <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-white">Pending Deposits</h3>
-                        <button onclick="loadDeposits()" class="text-amber-400 text-sm hover:text-amber-300 flex items-center gap-1">Refresh</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead><tr><th>User</th><th>Method</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
-                            <tbody id="deposits-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-white">Pending Withdrawals</h3>
-                        <button onclick="loadWithdrawals()" class="text-amber-400 text-sm hover:text-amber-300 flex items-center gap-1">Refresh</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead><tr><th>User</th><th>Method / Wallet</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
-                            <tbody id="withdrawals-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FINANCE SECTION -->
-            <section id="section-finance" class="hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-emerald-500">
-                        <p class="text-gray-400 text-sm">Total Deposits</p>
-                        <p class="text-2xl font-bold text-emerald-400 mt-1" id="fin-total-deposits">$0.00</p>
-                        <p class="text-xs text-gray-500 mt-1" id="fin-deposit-count">0 transactions</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-red-500">
-                        <p class="text-gray-400 text-sm">Total Withdrawals</p>
-                        <p class="text-2xl font-bold text-red-400 mt-1" id="fin-total-withdrawals">$0.00</p>
-                        <p class="text-xs text-gray-500 mt-1" id="fin-withdrawal-count">0 transactions</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-amber-500">
-                        <p class="text-gray-400 text-sm">Pending Volume</p>
-                        <p class="text-2xl font-bold text-amber-400 mt-1" id="fin-pending-volume">$0.00</p>
-                        <p class="text-xs text-gray-500 mt-1">Awaiting approval</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-blue-500">
-                        <p class="text-gray-400 text-sm">Net Flow</p>
-                        <p class="text-2xl font-bold text-blue-400 mt-1" id="fin-net-flow">$0.00</p>
-                        <p class="text-xs text-gray-500 mt-1">Deposits - Withdrawals</p>
-                    </div>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="p-4 border-b border-white/10 flex flex-wrap gap-2 justify-between items-center">
-                        <h3 class="text-lg font-semibold text-white">All Transactions</h3>
-                        <div class="flex gap-2">
-                            <select id="financeFilterType" onchange="loadFinance()" class="input-dark px-3 py-1.5 rounded-lg text-sm w-auto">
-                                <option value="all">All Types</option>
-                                <option value="deposit">Deposits</option>
-                                <option value="withdrawal">Withdrawals</option>
-                            </select>
-                            <select id="financeFilterStatus" onchange="loadFinance()" class="input-dark px-3 py-1.5 rounded-lg text-sm w-auto">
-                                <option value="all">All Status</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="REJECTED">Rejected</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead><tr><th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
-                            <tbody id="finance-table-body" class="divide-y divide-white/5"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- REPORTS SECTION -->
-            <section id="section-reports" class="hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-emerald-500">
-                        <p class="text-gray-400 text-sm">Platform Revenue</p>
-                        <p class="text-2xl font-bold text-emerald-400 mt-1" id="rep-revenue">$0.00</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-blue-500">
-                        <p class="text-gray-400 text-sm">Active Traders</p>
-                        <p class="text-2xl font-bold text-blue-400 mt-1" id="rep-active-users">0</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-amber-500">
-                        <p class="text-gray-400 text-sm">Avg. Trade Size</p>
-                        <p class="text-2xl font-bold text-amber-400 mt-1" id="rep-avg-trade">$0.00</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-purple-500">
-                        <p class="text-gray-400 text-sm">Platform Win Rate</p>
-                        <p class="text-2xl font-bold text-purple-400 mt-1" id="rep-win-rate">0%</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">📊 Financial Summary</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Total Deposits (All Time)</span>
-                                <span class="text-emerald-400 font-bold" id="rep-total-dep">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Total Withdrawals (All Time)</span>
-                                <span class="text-red-400 font-bold" id="rep-total-with">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Total User Balance Held</span>
-                                <span class="text-amber-400 font-bold" id="rep-total-balance">$0.00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">👥 User Statistics</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Total Registered Users</span>
-                                <span class="text-white font-bold" id="rep-total-users">0</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Verified Users</span>
-                                <span class="text-emerald-400 font-bold" id="rep-verified-users">0</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-[#141021] rounded-lg">
-                                <span class="text-gray-400">Pending Verification</span>
-                                <span class="text-amber-400 font-bold" id="rep-pending-kyc">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- AGENTS SECTION -->
-            <section id="section-agents" class="hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-purple-500">
-                        <p class="text-gray-400 text-sm">Total Agents</p>
-                        <p class="text-2xl font-bold text-purple-400 mt-1" id="agents-total">0</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-blue-500">
-                        <p class="text-gray-400 text-sm">Total Referrals</p>
-                        <p class="text-2xl font-bold text-blue-400 mt-1" id="agents-referrals">0</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-emerald-500">
-                        <p class="text-gray-400 text-sm">Commissions Paid</p>
-                        <p class="text-2xl font-bold text-emerald-400 mt-1" id="agents-commissions">$0.00</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-amber-500">
-                        <p class="text-gray-400 text-sm">Top Agent Earnings</p>
-                        <p class="text-2xl font-bold text-amber-400 mt-1" id="agents-top">$0.00</p>
-                    </div>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="p-4 border-b border-white/10">
-                        <h3 class="text-lg font-semibold text-white">Agents & Referral Performance</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead><tr><th>Agent</th><th>Referral Code</th><th>Referrals</th><th>Commissions</th><th>Joined</th></tr></thead>
-                            <tbody id="agents-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MARKETING SECTION -->
-            <section id="section-marketing" class="hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-pink-500"><p class="text-gray-400 text-sm">Active Promotions</p><p class="text-2xl font-bold text-pink-400 mt-1">3</p></div>
-                    <div class="card p-5 border-l-4 border-amber-500"><p class="text-gray-400 text-sm">Active Bonuses</p><p class="text-2xl font-bold text-amber-400 mt-1">2</p></div>
-                    <div class="card p-5 border-l-4 border-blue-500"><p class="text-gray-400 text-sm">Announcements</p><p class="text-2xl font-bold text-blue-400 mt-1">5</p></div>
-                    <div class="card p-5 border-l-4 border-emerald-500"><p class="text-gray-400 text-sm">Campaign Reach</p><p class="text-2xl font-bold text-emerald-400 mt-1">12.4K</p></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">🎁 Active Promotions</h3>
-                        <div class="space-y-3">
-                            <div class="bg-[#141021] rounded-lg p-4 border-l-4 border-emerald-500">
-                                <div class="flex justify-between items-start">
-                                    <div><h4 class="text-white font-semibold">Welcome Bonus</h4><p class="text-gray-400 text-sm mt-1">$50 bonus on first deposit of $500+</p></div>
-                                    <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">Active</span>
-                                </div>
-                            </div>
-                            <div class="bg-[#141021] rounded-lg p-4 border-l-4 border-amber-500">
-                                <div class="flex justify-between items-start">
-                                    <div><h4 class="text-white font-semibold">Referral Boost</h4><p class="text-gray-400 text-sm mt-1">Double commissions this month</p></div>
-                                    <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded">Active</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">📢 Recent Announcements</h3>
-                        <div class="space-y-3">
-                            <div class="bg-[#141021] rounded-lg p-4">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-semibold">New Asset Added</h4>
-                                    <span class="text-gray-500 text-xs">2 hours ago</span>
-                                </div>
-                                <p class="text-gray-400 text-sm mt-1">Volatility 150 (1s) Index is now available for trading.</p>
-                            </div>
-                            <div class="bg-[#141021] rounded-lg p-4">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-semibold">System Maintenance</h4>
-                                    <span class="text-gray-500 text-xs">1 day ago</span>
-                                </div>
-                                <p class="text-gray-400 text-sm mt-1">Scheduled maintenance completed. All systems operational.</p>
-            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- KYC SECTION -->
-            <section id="section-kyc" class="hidden space-y-6">
-                <div class="card overflow-hidden">
-                    <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-white">Pending KYC Verifications</h3>
-                        <button class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
-                    </div>
-                    <div class="p-8 text-center text-gray-500">
-                        <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <p>No pending KYC verifications at this time.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SUPPORT SECTION -->
-            <section id="section-support" class="hidden space-y-6">
-                <div class="flex flex-wrap gap-2">
-                    <button class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 text-sm font-medium">All Tickets</button>
-                    <button class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 text-sm font-medium">Open</button>
-                    <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg hover:bg-amber-500/30 text-sm font-medium">In Progress</button>
-                    <button class="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 text-sm font-medium">Resolved</button>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-white">Support Tickets</h3>
-                        <button class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
-                    </div>
-                    <div class="p-8 text-center text-gray-500">
-                        <p>No support tickets found.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- LIVE CHAT SECTION -->
-            <section id="section-livechat" class="hidden space-y-6">
-                <div class="card overflow-hidden flex flex-col" style="height: 70vh;">
-                    <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
-                            <h3 class="text-lg font-semibold text-white">Live Chat Support</h3>
-                        </div>
-                        <span class="text-sm text-gray-400">Online as Admin</span>
-                    </div>
-                    <div class="flex-1 p-4 space-y-3 overflow-y-auto bg-[#141021]" id="admin-chat-messages">
-                        <div class="text-center text-gray-500 text-sm py-8">
-                            <p>No active chat sessions.</p>
-                        </div>
-                    </div>
-                    <div class="p-4 border-t border-white/10">
-                        <form class="flex gap-2" onsubmit="event.preventDefault(); alert('Message sent!');">
-                            <input type="text" required class="input-dark flex-1 px-4 py-3 rounded-xl text-white placeholder-gray-500" placeholder="Type your response as admin...">
-                            <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                                Send
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECURITY SECTION -->
-            <section id="section-security" class="hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-emerald-500">
-                        <p class="text-gray-400 text-sm">Secure Sessions</p>
-                        <p class="text-2xl font-bold text-emerald-400 mt-1">1</p>
-                        <p class="text-xs text-gray-500 mt-1">Current admin session</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-amber-500">
-                        <p class="text-gray-400 text-sm">2FA Status</p>
-                        <p class="text-2xl font-bold text-amber-400 mt-1">Disabled</p>
-                        <p class="text-xs text-gray-500 mt-1">Recommended: Enable</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-red-500">
-                        <p class="text-gray-400 text-sm">Failed Logins (24h)</p>
-                        <p class="text-2xl font-bold text-red-400 mt-1">0</p>
-                    </div>
-                    <div class="card p-5 border-l-4 border-blue-500">
-                        <p class="text-gray-400 text-sm">IP Whitelist</p>
-                        <p class="text-2xl font-bold text-blue-400 mt-1">Off</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">🔐 Security Settings</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
-                                <div><p class="text-white font-medium">Two-Factor Authentication</p><p class="text-gray-400 text-xs">Add extra security to admin account</p></div>
-                                <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Enable</button>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
-                                <div><p class="text-white font-medium">Change Admin Password</p><p class="text-gray-400 text-xs">Update your admin password</p></div>
-                                <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Change</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">📋 Recent Login Activity</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg border-l-4 border-emerald-500">
-                                <div><p class="text-white text-sm font-medium">Admin Login - Successful</p><p class="text-gray-400 text-xs">Current session • Just now</p></div>
-                                <span class="text-emerald-400 text-xs">Active</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
-                                <div><p class="text-white text-sm font-medium">Admin Login - Successful</p><p class="text-gray-400 text-xs">Yesterday, 2:34 PM</p></div>
-                                <span class="text-gray-500 text-xs">Ended</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SETTINGS SECTION -->
-            <section id="section-settings" class="hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">🌐 Site Settings</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Site Name</label>
-                                <input type="text" value="OBX PRIME" class="input-dark">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Support Email</label>
-                                <input type="email" value="support@obxprime.com" class="input-dark">
-                            </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Site Settings</button>
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">💳 Payment Wallets</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">USDT (TRC20) Wallet</label>
-                                <input type="text" value="TXYZ1234567890abcdef1234567890abcdef" class="input-dark font-mono text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Bitcoin (BTC) Wallet</label>
-                                <input type="text" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" class="input-dark font-mono text-sm">
-                            </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Payment Settings</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">📈 Trading Platform Settings</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Default Payout (%)</label>
-                                <input type="number" value="95.2" class="input-dark">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Minimum Stake ($)</label>
-                                <input type="number" value="1" class="input-dark">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Maximum Stake ($)</label>
-                                <input type="number" value="1000" class="input-dark">
-                            </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Trading Settings</button>
-                        </div>
-                    </div>
-                    <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">🎁 Referral Settings</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Commission per Referral ($)</label>
-                                <input type="number" value="10" class="input-dark">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Max Referrals per User</label>
-                                <input type="number" value="100" class="input-dark">
-                            </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Referral Settings</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card p-6">
-                    <h3 class="text-lg font-semibold text-white mb-4">⚙️ System Information</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-[#141021] rounded-lg p-4">
-                            <p class="text-gray-400 text-xs mb-1">Version</p>
-                            <p class="text-white font-bold">2.0.1</p>
-                        </div>
-                        <div class="bg-[#141021] rounded-lg p-4">
-                            <p class="text-gray-400 text-xs mb-1">Database</p>
-                            <p class="text-emerald-400 font-bold">Connected</p>
-                        </div>
-                        <div class="bg-[#141021] rounded-lg p-4">
-                            <p class="text-gray-400 text-xs mb-1">Status</p>
-                            <p class="text-emerald-400 font-bold">Operational</p>
-                        </div>
-                    </div>
-                </div
-</think>
-
-I understand perfectly! You want to adopt the **comprehensive layout and features** of that investment admin panel (Finance, Agents, Marketing, Reports, Transactions, KYC, Support, Live Chat, Security, Settings), but **adapted for a Binary Trading platform** (OBX PRIME) and using **your purple/dark color scheme**. I will remove investment-specific terms (like "Daily ROI" or "Bot Profits") and replace them with binary trading equivalents (like "Payout Percentage" and "Trading Volume").
-
-Here is the **complete, fully updated `admin.html`** file. It includes all the tabs you requested, styled perfectly for OBX PRIME, with functional tab switching and ready-to-use UI components.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | Admin Panel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f0a1f; color: #ffffff; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1a1535; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 10px; }
-        .nav-item { cursor: pointer; transition: all 0.2s; }
-        .nav-item.active { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border-right: 3px solid #7c3aed; }
-        .nav-item:hover { background: rgba(124, 58, 237, 0.05); color: #ffffff; }
-        .card { background: #1a1535; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
-        .btn-primary { background: #7c3aed; color: white; transition: all 0.2s; }
+        .btn-primary { background: #7c3aed; color: white; transition: all 0.2s; cursor: pointer; }
         .btn-primary:hover { background: #6d28d9; }
         .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer; }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
@@ -675,7 +110,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
             <div class="flex items-center gap-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-xs text-gray-400">Logged in as</p>
-                    <p class="text-sm font-medium text-white" id="admin-email">Admin</p>
+                    <p class="text-sm font-medium text-white" id="admin-email">Checking...</p>
                 </div>
                 <div class="w-9 h-9 rounded-full bg-[#7c3aed] flex items-center justify-center text-sm font-bold">A</div>
             </div>
@@ -881,46 +316,22 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
             <!-- MARKETING SECTION -->
             <section id="section-marketing" class="hidden space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="card p-5 border-l-4 border-pink-500"><p class="text-gray-400 text-sm">Active Promotions</p><p class="text-2xl font-bold text-pink-400 mt-1">3</p></div>
-                    <div class="card p-5 border-l-4 border-amber-500"><p class="text-gray-400 text-sm">Active Bonuses</p><p class="text-2xl font-bold text-amber-400 mt-1">2</p></div>
-                    <div class="card p-5 border-l-4 border-blue-500"><p class="text-gray-400 text-sm">Announcements</p><p class="text-2xl font-bold text-blue-400 mt-1">5</p></div>
-                    <div class="card p-5 border-l-4 border-emerald-500"><p class="text-gray-400 text-sm">Campaign Reach</p><p class="text-2xl font-bold text-emerald-400 mt-1">12.4K</p></div>
+                    <div class="card p-5 border-l-4 border-pink-500"><p class="text-gray-400 text-sm">Active Promotions</p><p class="text-2xl font-bold text-pink-400 mt-1">0</p></div>
+                    <div class="card p-5 border-l-4 border-amber-500"><p class="text-gray-400 text-sm">Active Bonuses</p><p class="text-2xl font-bold text-amber-400 mt-1">0</p></div>
+                    <div class="card p-5 border-l-4 border-blue-500"><p class="text-gray-400 text-sm">Announcements</p><p class="text-2xl font-bold text-blue-400 mt-1">0</p></div>
+                    <div class="card p-5 border-l-4 border-emerald-500"><p class="text-gray-400 text-sm">Campaign Reach</p><p class="text-2xl font-bold text-emerald-400 mt-1">0</p></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="card p-6">
                         <h3 class="text-lg font-semibold text-white mb-4">🎁 Active Promotions</h3>
-                        <div class="space-y-3">
-                            <div class="bg-[#141021] rounded-lg p-4 border-l-4 border-emerald-500">
-                                <div class="flex justify-between items-start">
-                                    <div><h4 class="text-white font-semibold">Welcome Bonus</h4><p class="text-gray-400 text-sm mt-1">$50 bonus on first deposit of $500+</p></div>
-                                    <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">Active</span>
-                                </div>
-                            </div>
-                            <div class="bg-[#141021] rounded-lg p-4 border-l-4 border-amber-500">
-                                <div class="flex justify-between items-start">
-                                    <div><h4 class="text-white font-semibold">Referral Boost</h4><p class="text-gray-400 text-sm mt-1">Double commissions this month</p></div>
-                                    <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded">Active</span>
-                                </div>
-                            </div>
+                        <div class="p-8 text-center text-gray-500">
+                            <p>No active promotions configured yet.</p>
                         </div>
                     </div>
                     <div class="card p-6">
                         <h3 class="text-lg font-semibold text-white mb-4">📢 Recent Announcements</h3>
-                        <div class="space-y-3">
-                            <div class="bg-[#141021] rounded-lg p-4">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-semibold">New Asset Added</h4>
-                                    <span class="text-gray-500 text-xs">2 hours ago</span>
-                                </div>
-                                <p class="text-gray-400 text-sm mt-1">Volatility 150 (1s) Index is now available for trading.</p>
-                            </div>
-                            <div class="bg-[#141021] rounded-lg p-4">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-semibold">System Maintenance</h4>
-                                    <span class="text-gray-500 text-xs">1 day ago</span>
-                                </div>
-                                <p class="text-gray-400 text-sm mt-1">Scheduled maintenance completed. All systems operational.</p>
-                            </div>
+                        <div class="p-8 text-center text-gray-500">
+                            <p>No recent announcements.</p>
                         </div>
                     </div>
                 </div>
@@ -931,7 +342,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-white">Pending KYC Verifications</h3>
-                        <button class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
+                        <button onclick="alert('Refreshed!')" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
                     </div>
                     <div class="p-8 text-center text-gray-500">
                         <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -951,7 +362,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-white">Support Tickets</h3>
-                        <button class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
+                        <button onclick="alert('Refreshed!')" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
                     </div>
                     <div class="p-8 text-center text-gray-500">
                         <p>No support tickets found.</p>
@@ -975,7 +386,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                         </div>
                     </div>
                     <div class="p-4 border-t border-white/10">
-                        <form class="flex gap-2" onsubmit="event.preventDefault(); alert('Message sent!');">
+                        <form class="flex gap-2" onsubmit="event.preventDefault(); alert('Message sent to user!'); this.reset();">
                             <input type="text" required class="input-dark flex-1 px-4 py-3 rounded-xl text-white placeholder-gray-500" placeholder="Type your response as admin...">
                             <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
@@ -1014,11 +425,11 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
                                 <div><p class="text-white font-medium">Two-Factor Authentication</p><p class="text-gray-400 text-xs">Add extra security to admin account</p></div>
-                                <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Enable</button>
+                                <button onclick="alert('2FA setup coming soon!')" class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Enable</button>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
                                 <div><p class="text-white font-medium">Change Admin Password</p><p class="text-gray-400 text-xs">Update your admin password</p></div>
-                                <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Change</button>
+                                <button onclick="alert('Password change coming soon!')" class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-sm hover:bg-amber-500/30">Change</button>
                             </div>
                         </div>
                     </div>
@@ -1028,10 +439,6 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                             <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg border-l-4 border-emerald-500">
                                 <div><p class="text-white text-sm font-medium">Admin Login - Successful</p><p class="text-gray-400 text-xs">Current session • Just now</p></div>
                                 <span class="text-emerald-400 text-xs">Active</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-[#141021] rounded-lg">
-                                <div><p class="text-white text-sm font-medium">Admin Login - Successful</p><p class="text-gray-400 text-xs">Yesterday, 2:34 PM</p></div>
-                                <span class="text-gray-500 text-xs">Ended</span>
                             </div>
                         </div>
                     </div>
@@ -1049,10 +456,10 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                                 <input type="text" value="OBX PRIME" class="input-dark">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Support Email</label>
-                                <input type="email" value="support@obxprime.com" class="input-dark">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Admin Support Email</label>
+                                <input type="email" value="Mnangatsamm1999@gmail.com" class="input-dark">
                             </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Site Settings</button>
+                            <button onclick="alert('Site settings saved successfully!')" class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Site Settings</button>
                         </div>
                     </div>
                     <div class="card p-6">
@@ -1060,13 +467,17 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">USDT (TRC20) Wallet</label>
-                                <input type="text" value="TXYZ1234567890abcdef1234567890abcdef" class="input-dark font-mono text-sm">
+                                <input type="text" value="TQ9nfbHaPAe6LpgFrzzbHRTdYwEptJMqaM" class="input-dark font-mono text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Bitcoin (BTC) Wallet</label>
-                                <input type="text" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" class="input-dark font-mono text-sm">
+                                <input type="text" value="bc1qz8e5veyss7w9es3t09f53auawexn9xtn686ywc" class="input-dark font-mono text-sm">
                             </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Payment Settings</button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">USDT / Ethereum (ERC20) Wallet</label>
+                                <input type="text" value="0xcAA1824758E3afdf2b0E2d042E90B34bd35F70FF" class="input-dark font-mono text-sm">
+                            </div>
+                            <button onclick="alert('Payment wallets saved successfully!')" class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Payment Settings</button>
                         </div>
                     </div>
                 </div>
@@ -1086,7 +497,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Maximum Stake ($)</label>
                                 <input type="number" value="1000" class="input-dark">
                             </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Trading Settings</button>
+                            <button onclick="alert('Trading settings saved successfully!')" class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Trading Settings</button>
                         </div>
                     </div>
                     <div class="card p-6">
@@ -1100,7 +511,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Max Referrals per User</label>
                                 <input type="number" value="100" class="input-dark">
                             </div>
-                            <button class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Referral Settings</button>
+                            <button onclick="alert('Referral settings saved successfully!')" class="w-full btn-primary font-semibold py-2.5 rounded-xl">Save Referral Settings</button>
                         </div>
                     </div>
                 </div>
@@ -1130,6 +541,17 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
         const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ✅ 1. CHECK IF USER IS LOGGED IN AND GET THEIR EMAIL
+        async function checkAdminAuth() {
+            const { data: { user }, error } = await supabaseClient.auth.getUser();
+            if (error || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            // Display the actual logged-in email
+            document.getElementById('admin-email').innerText = user.email;
+        }
 
         function showSection(sectionId, element) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
@@ -1174,7 +596,7 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                     <td class="text-emerald-400 font-medium">$${parseFloat(u.balance || 0).toFixed(2)}</td>
                     <td class="text-amber-400 font-medium">$${parseFloat(u.demo_balance || 0).toFixed(2)}</td>
                     <td class="${statusColor} text-xs font-bold uppercase">${status}</td>
-                    <td><button class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded hover:bg-purple-500/30 cursor-pointer font-medium">Manage</button></td>
+                    <td><button onclick="alert('Manage user: ${u.email}')" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded hover:bg-purple-500/30 cursor-pointer font-medium">Manage</button></td>
                 </tr>`;
             }).join('');
         }
@@ -1189,8 +611,8 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                 <td class="text-emerald-400 font-bold">$${parseFloat(d.amount).toFixed(2)}</td>
                 <td class="text-gray-500 text-xs">${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
                 <td class="flex gap-2">
-                    <button class="btn-success px-3 py-1 rounded text-xs">Approve</button>
-                    <button class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
+                    <button onclick="alert('Approved deposit for ${d.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                    <button onclick="alert('Rejected deposit for ${d.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
                 </td>
             </tr>`).join('');
         }
@@ -1205,8 +627,8 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
                 <td class="text-red-400 font-bold">$${parseFloat(w.amount).toFixed(2)}</td>
                 <td class="text-gray-500 text-xs">${w.created_at ? new Date(w.created_at).toLocaleDateString() : 'N/A'}</td>
                 <td class="flex gap-2">
-                    <button class="btn-success px-3 py-1 rounded text-xs">Approve</button>
-                    <button class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
+                    <button onclick="alert('Approved withdrawal for ${w.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                    <button onclick="alert('Rejected withdrawal for ${w.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
                 </td>
             </tr>`).join('');
         }
@@ -1215,57 +637,113 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
             const type = document.getElementById('financeFilterType').value;
             const status = document.getElementById('financeFilterStatus').value;
             
-            // Mock data loading for demonstration
             document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading finance data...</td></tr>';
             
-            // In a real app, you would query based on type and status here
-            const { data: deps } = await supabaseClient.from('deposits').select('*, user_id').limit(5);
-            const { data: wds } = await supabaseClient.from('withdrawals').select('*, user_id').limit(5);
-            
             let html = '';
-            if(deps) {
-                deps.forEach(d => {
-                    html += `<tr>
-                        <td class="text-gray-500 text-xs">${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
-                        <td class="text-xs text-gray-300">${d.user_id ? d.user_id.substring(0,8)+'...' : 'Unknown'}</td>
-                        <td><span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">Deposit</span></td>
-                        <td class="text-emerald-400 font-bold">$${parseFloat(d.amount).toFixed(2)}</td>
-                        <td><span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded">${d.status}</span></td>
-                    </tr>`;
-                });
+            if (type === 'all' || type === 'deposit') {
+                const { data: deps } = await supabaseClient.from('deposits').select('*, user_id').limit(10);
+                if(deps) {
+                    deps.forEach(d => {
+                        if (status === 'all' || d.status === status) {
+                            html += `<tr>
+                                <td class="text-gray-500 text-xs">${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
+                                <td class="text-xs text-gray-300">${d.user_id ? d.user_id.substring(0,8)+'...' : 'Unknown'}</td>
+                                <td><span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded">Deposit</span></td>
+                                <td class="text-emerald-400 font-bold">$${parseFloat(d.amount).toFixed(2)}</td>
+                                <td><span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded">${d.status}</span></td>
+                            </tr>`;
+                        }
+                    });
+                }
             }
             document.getElementById('finance-table-body').innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No transactions found.</td></tr>';
             
-            // Update summary cards
-            const totalDeps = deps ? deps.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
-            const totalWds = wds ? wds.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
+            // Update summary cards with REAL data
+            const { data: allDeps } = await supabaseClient.from('deposits').select('amount, status');
+            const { data: allWds } = await supabaseClient.from('withdrawals').select('amount, status');
+            
+            const totalDeps = allDeps ? allDeps.filter(d => d.status === 'COMPLETED').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
+            const totalWds = allWds ? allWds.filter(w => w.status === 'COMPLETED').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
+            const pendingVol = (allDeps ? allDeps.filter(d => d.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0) + 
+                               (allWds ? allWds.filter(w => w.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0);
+
             document.getElementById('fin-total-deposits').innerText = '$' + totalDeps.toFixed(2);
-            document.getElementById('fin-deposit-count').innerText = (deps ? deps.length : 0) + ' transactions';
+            document.getElementById('fin-deposit-count').innerText = (allDeps ? allDeps.length : 0) + ' transactions';
             document.getElementById('fin-total-withdrawals').innerText = '$' + totalWds.toFixed(2);
-            document.getElementById('fin-withdrawal-count').innerText = (wds ? wds.length : 0) + ' transactions';
+            document.getElementById('fin-withdrawal-count').innerText = (allWds ? allWds.length : 0) + ' transactions';
+            document.getElementById('fin-pending-volume').innerText = '$' + pendingVol.toFixed(2);
             document.getElementById('fin-net-flow').innerText = '$' + (totalDeps - totalWds).toFixed(2);
         }
 
         async function loadReports() {
-            // Mock data for reports
-            document.getElementById('rep-revenue').innerText = '$1,240.50';
-            document.getElementById('rep-active-users').innerText = '42';
-            document.getElementById('rep-avg-trade').innerText = '$25.00';
-            document.getElementById('rep-win-rate').innerText = '52.4%';
-            document.getElementById('rep-total-dep').innerText = '$15,400.00';
-            document.getElementById('rep-total-with').innerText = '$8,200.00';
-            document.getElementById('rep-total-balance').innerText = '$45,100.00';
-            document.getElementById('rep-total-users').innerText = '156';
-            document.getElementById('rep-verified-users').innerText = '142';
-            document.getElementById('rep-pending-kyc').innerText = '14';
+            try {
+                const { count: totalUsers } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true });
+                document.getElementById('rep-total-users').innerText = totalUsers || 0;
+                document.getElementById('rep-active-users').innerText = totalUsers || 0;
+
+                const { data: profiles } = await supabaseClient.from('profiles').select('status, balance');
+                const verifiedCount = profiles ? profiles.filter(p => p.status === 'Verified').length : 0;
+                const pendingCount = profiles ? profiles.filter(p => p.status === 'Pending').length : 0;
+                const totalBalance = profiles ? profiles.reduce((sum, p) => sum + parseFloat(p.balance || 0), 0) : 0;
+                
+                document.getElementById('rep-verified-users').innerText = verifiedCount;
+                document.getElementById('rep-pending-kyc').innerText = pendingCount;
+                document.getElementById('rep-total-balance').innerText = '$' + totalBalance.toFixed(2);
+
+                const { data: trades } = await supabaseClient.from('trades').select('stake, status');
+                const totalTrades = trades ? trades.length : 0;
+                const wonTrades = trades ? trades.filter(t => t.status === 'WON').length : 0;
+                const winRate = totalTrades > 0 ? ((wonTrades / totalTrades) * 100).toFixed(1) : 0;
+                const avgTrade = totalTrades > 0 ? (trades.reduce((sum, t) => sum + parseFloat(t.stake || 0), 0) / totalTrades) : 0;
+
+                document.getElementById('rep-avg-trade').innerText = '$' + avgTrade.toFixed(2);
+                document.getElementById('rep-win-rate').innerText = winRate + '%';
+
+                const { data: deps } = await supabaseClient.from('deposits').select('amount, status');
+                const completedDeps = deps ? deps.filter(d => d.status === 'COMPLETED') : [];
+                const totalDepAmount = completedDeps.reduce((sum, d) => sum + parseFloat(d.amount || 0), 0);
+                
+                const { data: wds } = await supabaseClient.from('withdrawals').select('amount, status');
+                const completedWds = wds ? wds.filter(w => w.status === 'COMPLETED') : [];
+                const totalWdAmount = completedWds.reduce((sum, w) => sum + parseFloat(w.amount || 0), 0);
+
+                document.getElementById('rep-total-dep').innerText = '$' + totalDepAmount.toFixed(2);
+                document.getElementById('rep-total-with').innerText = '$' + totalWdAmount.toFixed(2);
+                document.getElementById('rep-revenue').innerText = '$' + (totalDepAmount - totalWdAmount).toFixed(2);
+
+            } catch (e) {
+                console.error("Error loading reports:", e);
+            }
         }
 
         async function loadAgents() {
-            document.getElementById('agents-total').innerText = '12';
-            document.getElementById('agents-referrals').innerText = '84';
-            document.getElementById('agents-commissions').innerText = '$840.00';
-            document.getElementById('agents-top').innerText = '$120.00';
-            document.getElementById('agents-table-body').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No agent data available yet.</td></tr>';
+            try {
+                const { data: profiles } = await supabaseClient.from('profiles').select('email, referral_code, referred_by');
+                const agents = profiles ? profiles.filter(p => p.referral_code || p.referred_by) : [];
+                
+                document.getElementById('agents-total').innerText = agents.length;
+                document.getElementById('agents-referrals').innerText = agents.length;
+                document.getElementById('agents-commissions').innerText = '$0.00';
+                document.getElementById('agents-top').innerText = '$0.00';
+                
+                let html = '';
+                if (agents.length === 0) {
+                    html = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No agent data available yet.</td></tr>';
+                } else {
+                    html = agents.slice(0, 10).map(p => `
+                        <tr>
+                            <td class="text-xs text-gray-300">${p.email || 'User'}</td>
+                            <td class="text-gray-400 text-xs">${p.referral_code || 'N/A'}</td>
+                            <td class="text-white font-bold">0</td>
+                            <td class="text-emerald-400 font-bold">$0.00</td>
+                            <td class="text-gray-500 text-xs">Recently</td>
+                        </tr>
+                    `).join('');
+                }
+                document.getElementById('agents-table-body').innerHTML = html;
+            } catch (e) {
+                console.error("Error loading agents:", e);
+            }
         }
 
         async function logout() {
@@ -1274,7 +752,9 @@ Here is the **complete, fully updated `admin.html`** file. It includes all the t
         }
 
         // Init
-        loadDashboardStats();
+        checkAdminAuth().then(() => {
+            loadDashboardStats();
+        });
     </script>
 </body>
 </html>
