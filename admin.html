@@ -126,14 +126,31 @@
             <!-- DASHBOARD SECTION -->
             <section id="section-dashboard" class="space-y-6">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Users</p><h3 class="text-2xl font-bold text-white" id="stat-users">0</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Deposits</p><h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p><h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3></div>
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Trades</p><h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3></div>
-                    <!-- ✅ ADDED: Pending KYC Stat -->
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending KYC</p><h3 class="text-2xl font-bold text-blue-400" id="stat-pending-kyc">0</h3></div>
-                    <!-- ✅ ADDED: Open Tickets Stat -->
-                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Open Tickets</p><h3 class="text-2xl font-bold text-pink-400" id="stat-open-tickets">0</h3></div>
+                    <!-- ✅ MADE CLICKABLE -->
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('users')">
+                        <p class="text-sm text-gray-400 mb-1">Total Users</p>
+                        <h3 class="text-2xl font-bold text-white" id="stat-users">0</h3>
+                    </div>
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('transactions')">
+                        <p class="text-sm text-gray-400 mb-1">Total Deposits</p>
+                        <h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3>
+                    </div>
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('transactions')">
+                        <p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p>
+                        <h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3>
+                    </div>
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('reports')">
+                        <p class="text-sm text-gray-400 mb-1">Total Trades</p>
+                        <h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3>
+                    </div>
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('kyc')">
+                        <p class="text-sm text-gray-400 mb-1">Pending KYC</p>
+                        <h3 class="text-2xl font-bold text-blue-400" id="stat-pending-kyc">0</h3>
+                    </div>
+                    <div class="card p-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="navigateTo('support')">
+                        <p class="text-sm text-gray-400 mb-1">Open Tickets</p>
+                        <h3 class="text-2xl font-bold text-pink-400" id="stat-open-tickets">0</h3>
+                    </div>
                 </div>
             </section>
 
@@ -346,7 +363,7 @@
                 </div>
             </section>
 
-            <!-- ✅ UPDATED: KYC SECTION (Fully Functional) -->
+            <!-- ✅ UPDATED: KYC SECTION with View Button -->
             <section id="section-kyc" class="hidden space-y-6">
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
@@ -362,7 +379,7 @@
                 </div>
             </section>
 
-            <!-- ✅ UPDATED: SUPPORT SECTION (Fully Functional) -->
+            <!-- ✅ UPDATED: SUPPORT SECTION -->
             <section id="section-support" class="hidden space-y-6">
                 <div class="flex flex-wrap gap-2 mb-4">
                     <button class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 text-sm font-medium">All Tickets</button>
@@ -604,6 +621,51 @@
         </div>
     </div>
 
+    <!-- ✅ NEW: KYC DETAILS MODAL -->
+    <div id="kyc-details-modal" class="modal">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeKycModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
+            <h3 class="text-xl font-bold text-white mb-4">KYC Submission Details</h3>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6 bg-[#141021] p-4 rounded-lg">
+                <div>
+                    <div class="user-detail-label">User Email</div>
+                    <div class="user-detail-value" id="kyc-modal-email">-</div>
+                </div>
+                <div>
+                    <div class="user-detail-label">Document Type</div>
+                    <div class="user-detail-value" id="kyc-modal-doctype">-</div>
+                </div>
+                <div class="col-span-2">
+                    <div class="user-detail-label">Submission Date</div>
+                    <div class="user-detail-value" id="kyc-modal-date">-</div>
+                </div>
+            </div>
+
+            <h4 class="text-lg font-semibold text-white mb-3">Uploaded Documents</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-[#141021] p-2 rounded-lg">
+                    <p class="text-xs text-gray-400 mb-2 text-center">Front Image</p>
+                    <img id="kyc-img-front" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                </div>
+                <div class="bg-[#141021] p-2 rounded-lg">
+                    <p class="text-xs text-gray-400 mb-2 text-center">Back Image</p>
+                    <img id="kyc-img-back" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                </div>
+                <div class="bg-[#141021] p-2 rounded-lg">
+                    <p class="text-xs text-gray-400 mb-2 text-center">Selfie</p>
+                    <img id="kyc-img-selfie" src="" class="w-full h-32 object-cover rounded bg-black/20">
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t border-white/10">
+                <button onclick="approveKYC(window.currentKycUserId); closeKycModal();" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Approve</button>
+                <button onclick="rejectKYC(window.currentKycUserId); closeKycModal();" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Reject</button>
+                <button onclick="closeKycModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2.5 rounded-lg transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ADD FUNDS MODAL -->
     <div id="add-funds-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-md p-6 shadow-2xl">
@@ -640,6 +702,12 @@
             document.getElementById('admin-email').innerText = user.email;
         }
 
+        // ✅ NEW: Helper to navigate from dashboard cards
+        function navigateTo(sectionId) {
+            const navItem = document.querySelector(`.nav-item[onclick*="'${sectionId}'"]`);
+            showSection(sectionId, navItem);
+        }
+
         function showSection(sectionId, element) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${sectionId}`).classList.remove('hidden');
@@ -654,8 +722,8 @@
             if(sectionId === 'finance') loadFinance();
             if(sectionId === 'reports') loadReports();
             if(sectionId === 'agents') loadAgents();
-            if(sectionId === 'kyc') loadKYC(); // ✅ ADDED
-            if(sectionId === 'support') loadTickets(); // ✅ ADDED
+            if(sectionId === 'kyc') loadKYC();
+            if(sectionId === 'support') loadTickets();
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
@@ -665,11 +733,8 @@
             const { count: tradeCount } = await supabaseClient.from('trades').select('*', { count: 'exact', head: true });
             const { count: wdCount } = await supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
             const { data: deps } = await supabaseClient.from('deposits').select('amount').eq('status', 'COMPLETED');
-            
-            // ✅ ADDED: Fetch Pending KYC count
             const { count: kycCount } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_status', 'Pending Review');
             
-            // ✅ ADDED: Fetch Open Tickets count (fallback to 0 if table doesn't exist yet)
             let ticketCount = 0;
             try {
                 const { count } = await supabaseClient.from('support_tickets').select('*', { count: 'exact', head: true }).eq('status', 'Open');
@@ -680,11 +745,11 @@
             document.getElementById('stat-trades').innerText = tradeCount || 0;
             document.getElementById('stat-withdrawals').innerText = wdCount || 0;
             document.getElementById('stat-deposits').innerText = '$' + (deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0).toFixed(2);
-            document.getElementById('stat-pending-kyc').innerText = kycCount || 0; // ✅ ADDED
-            document.getElementById('stat-open-tickets').innerText = ticketCount || 0; // ✅ ADDED
+            document.getElementById('stat-pending-kyc').innerText = kycCount || 0;
+            document.getElementById('stat-open-tickets').innerText = ticketCount || 0;
         }
 
-        // ✅ ADDED: Load KYC Submissions
+        // ✅ UPDATED: Load KYC with View button
         async function loadKYC() {
             const tbody = document.getElementById('kyc-table-body');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
@@ -702,6 +767,7 @@
                     <td class="text-gray-400 text-xs">${u.kyc_document_type || 'Not specified'}</td>
                     <td class="text-gray-500 text-xs">${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</td>
                     <td class="flex gap-2">
+                        <button onclick="viewKYC('${u.id}')" class="btn-info px-3 py-1 rounded text-xs font-bold">View</button>
                         <button onclick="approveKYC('${u.id}')" class="btn-success px-3 py-1 rounded text-xs font-bold">Approve</button>
                         <button onclick="rejectKYC('${u.id}')" class="btn-danger px-3 py-1 rounded text-xs font-bold">Reject</button>
                     </td>
@@ -709,7 +775,31 @@
             `).join('');
         }
 
-        // ✅ ADDED: Approve KYC
+        // ✅ NEW: View KYC Details
+        async function viewKYC(userId) {
+            const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
+            if (error) {
+                alert('Error loading KYC details: ' + error.message);
+                return;
+            }
+            
+            document.getElementById('kyc-modal-email').innerText = user.email || '-';
+            document.getElementById('kyc-modal-doctype').innerText = user.kyc_document_type || 'Not specified';
+            document.getElementById('kyc-modal-date').innerText = user.created_at ? new Date(user.created_at).toLocaleString() : '-';
+            
+            // Display images if columns exist, otherwise show placeholder
+            document.getElementById('kyc-img-front').src = user.kyc_front || user.kyc_front_url || 'https://via.placeholder.com/300x200?text=No+Front+Image';
+            document.getElementById('kyc-img-back').src = user.kyc_back || user.kyc_back_url || 'https://via.placeholder.com/300x200?text=No+Back+Image';
+            document.getElementById('kyc-img-selfie').src = user.kyc_selfie || user.kyc_selfie_url || 'https://via.placeholder.com/300x200?text=No+Selfie+Image';
+
+            window.currentKycUserId = userId;
+            document.getElementById('kyc-details-modal').classList.add('active');
+        }
+
+        function closeKycModal() {
+            document.getElementById('kyc-details-modal').classList.remove('active');
+        }
+
         async function approveKYC(userId) {
             if(!confirm('Approve this KYC submission? The user will be marked as Verified.')) return;
             const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Verified' }).eq('id', userId);
@@ -722,7 +812,6 @@
             }
         }
 
-        // ✅ ADDED: Reject KYC
         async function rejectKYC(userId) {
             if(!confirm('Reject this KYC submission? The user will be marked as Rejected.')) return;
             const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Rejected' }).eq('id', userId);
@@ -735,7 +824,6 @@
             }
         }
 
-        // ✅ ADDED: Load Support Tickets
         async function loadTickets() {
             const tbody = document.getElementById('tickets-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
@@ -800,13 +888,8 @@
 
         async function viewUserDetails(userId) {
             const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
-            if (error) {
-                alert('Error loading user details: ' + error.message);
-                return;
-            }
-            
+            if (error) { alert('Error loading user details: ' + error.message); return; }
             currentUserDetails = user;
-            
             document.getElementById('modal-email').innerText = user.email || '-';
             document.getElementById('modal-fullname').innerText = user.full_name || user.username || '-';
             document.getElementById('modal-phone').innerText = user.phone || 'Not provided';
@@ -829,10 +912,7 @@
         }
 
         function openAddFundsFromModal() {
-            if (currentUserDetails) {
-                closeUserDetailsModal();
-                openAddFundsModal(currentUserDetails.id, currentUserDetails.email);
-            }
+            if (currentUserDetails) { closeUserDetailsModal(); openAddFundsModal(currentUserDetails.id, currentUserDetails.email); }
         }
 
         function openAddFundsModal(userId, email) {
@@ -852,29 +932,18 @@
             const amount = parseFloat(document.getElementById('fund-amount').value);
             const accType = document.getElementById('fund-acc-type').value;
             if(isNaN(amount) || amount <= 0) return alert('Please enter a valid amount');
-            
             const { data: profile } = await supabaseClient.from('profiles').select(accType).eq('id', currentFundUserId).single();
             const newBal = (parseFloat(profile[accType] || 0)) + amount;
-            
             const { error } = await supabaseClient.from('profiles').update({ [accType]: newBal }).eq('id', currentFundUserId);
-            if(error) {
-                alert('Error: ' + error.message);
-            } else {
-                alert('Funds added successfully!');
-                closeAddFundsModal();
-                loadUsers();
-            }
+            if(error) { alert('Error: ' + error.message); } 
+            else { alert('Funds added successfully!'); closeAddFundsModal(); loadUsers(); }
         }
 
         async function updateUserStatus(userId, newStatus) {
             if(!confirm(`Are you sure you want to mark this user as ${newStatus}?`)) return;
             const { error } = await supabaseClient.from('profiles').update({ kyc_status: newStatus }).eq('id', userId);
-            if(error) {
-                alert('Error: ' + error.message);
-            } else {
-                alert(`User successfully ${newStatus}!`);
-                loadUsers();
-            }
+            if(error) { alert('Error: ' + error.message); } 
+            else { alert(`User successfully ${newStatus}!`); loadUsers(); }
         }
 
         async function loadDeposits() {
@@ -912,9 +981,7 @@
         async function loadFinance() {
             const type = document.getElementById('financeFilterType').value;
             const status = document.getElementById('financeFilterStatus').value;
-            
             document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading finance data...</td></tr>';
-            
             let html = '';
             if (type === 'all' || type === 'deposit') {
                 const { data: deps } = await supabaseClient.from('deposits').select('*, user_id').limit(10);
@@ -933,15 +1000,11 @@
                 }
             }
             document.getElementById('finance-table-body').innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No transactions found.</td></tr>';
-            
             const { data: allDeps } = await supabaseClient.from('deposits').select('amount, status');
             const { data: allWds } = await supabaseClient.from('withdrawals').select('amount, status');
-            
             const totalDeps = allDeps ? allDeps.filter(d => d.status === 'COMPLETED').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
             const totalWds = allWds ? allWds.filter(w => w.status === 'COMPLETED').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
-            const pendingVol = (allDeps ? allDeps.filter(d => d.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0) + 
-                               (allWds ? allWds.filter(w => w.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0);
-
+            const pendingVol = (allDeps ? allDeps.filter(d => d.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0) + (allWds ? allWds.filter(w => w.status === 'PENDING').reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0);
             document.getElementById('fin-total-deposits').innerText = '$' + totalDeps.toFixed(2);
             document.getElementById('fin-deposit-count').innerText = (allDeps ? allDeps.length : 0) + ' transactions';
             document.getElementById('fin-total-withdrawals').innerText = '$' + totalWds.toFixed(2);
@@ -955,52 +1018,40 @@
                 const { count: totalUsers } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true });
                 document.getElementById('rep-total-users').innerText = totalUsers || 0;
                 document.getElementById('rep-active-users').innerText = totalUsers || 0;
-
                 const { data: profiles } = await supabaseClient.from('profiles').select('kyc_status, balance');
                 const verifiedCount = profiles ? profiles.filter(p => p.kyc_status === 'Verified').length : 0;
                 const pendingCount = profiles ? profiles.filter(p => p.kyc_status === 'Pending Review').length : 0;
                 const totalBalance = profiles ? profiles.reduce((sum, p) => sum + parseFloat(p.balance || 0), 0) : 0;
-                
                 document.getElementById('rep-verified-users').innerText = verifiedCount;
                 document.getElementById('rep-pending-kyc').innerText = pendingCount;
                 document.getElementById('rep-total-balance').innerText = '$' + totalBalance.toFixed(2);
-
                 const { data: trades } = await supabaseClient.from('trades').select('stake, status');
                 const totalTrades = trades ? trades.length : 0;
                 const wonTrades = trades ? trades.filter(t => t.status === 'WON').length : 0;
                 const winRate = totalTrades > 0 ? ((wonTrades / totalTrades) * 100).toFixed(1) : 0;
                 const avgTrade = totalTrades > 0 ? (trades.reduce((sum, t) => sum + parseFloat(t.stake || 0), 0) / totalTrades) : 0;
-
                 document.getElementById('rep-avg-trade').innerText = '$' + avgTrade.toFixed(2);
                 document.getElementById('rep-win-rate').innerText = winRate + '%';
-
                 const { data: deps } = await supabaseClient.from('deposits').select('amount, status');
                 const completedDeps = deps ? deps.filter(d => d.status === 'COMPLETED') : [];
                 const totalDepAmount = completedDeps.reduce((sum, d) => sum + parseFloat(d.amount || 0), 0);
-                
                 const { data: wds } = await supabaseClient.from('withdrawals').select('amount, status');
                 const completedWds = wds ? wds.filter(w => w.status === 'COMPLETED') : [];
                 const totalWdAmount = completedWds.reduce((sum, w) => sum + parseFloat(w.amount || 0), 0);
-
                 document.getElementById('rep-total-dep').innerText = '$' + totalDepAmount.toFixed(2);
                 document.getElementById('rep-total-with').innerText = '$' + totalWdAmount.toFixed(2);
                 document.getElementById('rep-revenue').innerText = '$' + (totalDepAmount - totalWdAmount).toFixed(2);
-
-            } catch (e) {
-                console.error("Error loading reports:", e);
-            }
+            } catch (e) { console.error("Error loading reports:", e); }
         }
 
         async function loadAgents() {
             try {
                 const { data: profiles } = await supabaseClient.from('profiles').select('email, referral_code, referred_by');
                 const agents = profiles ? profiles.filter(p => p.referral_code || p.referred_by) : [];
-                
                 document.getElementById('agents-total').innerText = agents.length;
                 document.getElementById('agents-referrals').innerText = agents.length;
                 document.getElementById('agents-commissions').innerText = '$0.00';
                 document.getElementById('agents-top').innerText = '$0.00';
-                
                 let html = '';
                 if (agents.length === 0) {
                     html = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No agent data available yet.</td></tr>';
@@ -1016,9 +1067,7 @@
                     `).join('');
                 }
                 document.getElementById('agents-table-body').innerHTML = html;
-            } catch (e) {
-                console.error("Error loading agents:", e);
-            }
+            } catch (e) { console.error("Error loading agents:", e); }
         }
 
         async function logout() {
@@ -1026,9 +1075,7 @@
             window.location.href = 'index.html';
         }
 
-        checkAdminAuth().then(() => {
-            loadDashboardStats();
-        });
+        checkAdminAuth().then(() => { loadDashboardStats(); });
     </script>
 </body>
 </html>
