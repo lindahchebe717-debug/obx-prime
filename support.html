@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Support</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-main: #f8fafc; --bg-card: #ffffff; --text-white: #1e293b;
+            --text-gray: #64748b; --primary-purple: #7c3aed; --border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.dark-theme {
+            --bg-main: #141021; --bg-card: #1e1b4b; --text-white: #ffffff;
+            --text-gray: #9ca3af; --border-color: rgba(255, 255, 255, 0.1);
+        }
+        body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
+        .header-title { font-size: 1.25rem; font-weight: 700; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; color: var(--text-white); }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .email-box { display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(124, 58, 237, 0.1); border-radius: 12px; margin-bottom: 24px; text-decoration: none; color: var(--primary-purple); font-weight: 600; transition: background 0.2s; }
+        .email-box:hover { background: rgba(124, 58, 237, 0.15); }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-gray); }
+        .form-input, .form-textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-main); color: var(--text-white); font-size: 0.95rem; box-sizing: border-box; font-family: inherit; }
+        .form-textarea { min-height: 150px; resize: vertical; }
+        .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary-purple); }
+        .submit-btn { width: 100%; padding: 14px; background: var(--primary-purple); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: opacity 0.2s; }
+        .submit-btn:hover { opacity: 0.9; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; }
+        .nav-item.active { color: var(--primary-purple); }
+        .nav-icon { width: 20px; height: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="header-title">Support Center</div>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <div class="container">
+        <a href="mailto:obxprimesupport@gmail.com" class="email-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>obxprimesupport@gmail.com</span>
+        </a>
+
+        <div class="card">
+            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.2rem;">Open a Support Ticket</h2>
+            <form id="supportForm" onsubmit="submitTicket(event)">
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-input" id="ticketSubject" placeholder="e.g., Withdrawal issue, Account verification" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-textarea" id="ticketMessage" placeholder="Please describe your issue in detail..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
+            <span>Trade</span>
+        </a>
+        <a href="ai.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+            <span>AI</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        let obxSupabase;
+        if (typeof window.supabase !== 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        async function submitTicket(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const subject = document.getElementById('ticketSubject').value;
+            const message = document.getElementById('ticketMessage').value;
+
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            try {
+                const { data: { user } } = await obxSupabase.auth.getUser();
+                if (!user) {
+                    alert('Please log in to submit a ticket.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const { error } = await obxSupabase.from('support_tickets').insert({
+                    user_id: user.id,
+                    subject: subject,
+                    message: message,
+                    status: 'Open',
+                    created_at: new Date().toISOString()
+                });
+
+                if (error) throw error;
+
+                alert('✅ Support ticket submitted successfully! We will reply shortly.');
+                document.getElementById('supportForm').reset();
+            } catch (err) {
+                console.error('Error submitting ticket:', err);
+                alert('❌ Failed to submit ticket. Please try again or email us directly.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Ticket';
+            }
+        }
+    </script>
+</body>
+</html>
