@@ -34,10 +34,10 @@
         .view-once-blur.revealed { filter: blur(0); }
     </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden">
+<body class="h-[100dvh] flex flex-col overflow-hidden"> <!-- ✅ FIXED: 100dvh works better on mobile -->
 
     <!-- Header -->
-    <header class="bg-[#1f2c34] px-4 py-3 flex items-center justify-between z-10 border-b border-black/20 shrink-0">
+    <header class="bg-[#1f2c34] px-4 py-3 flex items-center justify-between z-30 border-b border-black/20 shrink-0">
         <div class="flex items-center gap-3">
             <a href="dashboard.html" class="text-gray-400 hover:text-white"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></a>
             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center font-bold text-white">OBX</div>
@@ -50,16 +50,17 @@
     </header>
 
     <!-- Quick Replies (FAQ) -->
-    <div id="quick-replies" class="bg-[#111b21] border-b border-black/20 p-3 flex gap-2 overflow-x-auto no-scrollbar z-10 shrink-0">
+    <div id="quick-replies" class="bg-[#111b21] border-b border-black/20 p-3 flex gap-2 overflow-x-auto no-scrollbar z-20 shrink-0">
         <button onclick="sendFaq('trading')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">📈 Trading</button>
         <button onclick="sendFaq('deposit')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">💰 Deposit</button>
         <button onclick="sendFaq('withdraw')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">💸 Withdraw</button>
         <button onclick="sendFaq('refer')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">🎁 Refer</button>
-        <button onclick="connectToAgent()" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#00a884] text-white text-sm font-bold">👨‍💼 Live Agent</button>
+        <button onclick="connectToAgent()" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#00a884] text-white text-sm font-bold">👨💼 Live Agent</button>
     </div>
 
     <!-- Chat Area -->
-    <main class="flex-1 relative overflow-y-auto p-4 flex flex-col gap-2 z-10" id="chat-container">
+    <!-- ✅ FIXED: Added pb-24 so messages don't get hidden behind the fixed footer -->
+    <main class="flex-1 relative overflow-y-auto p-4 flex flex-col gap-2 z-10 pb-24" id="chat-container">
         <div class="chat-bg"></div>
         <div class="text-center my-4 z-10">
             <span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span>
@@ -68,7 +69,7 @@
     </main>
 
     <!-- Reply Preview Bar (Hidden by default) -->
-    <div id="reply-bar" class="hidden bg-[#111b21] border-l-4 border-[#00a884] p-3 mx-2 mb-2 rounded flex justify-between items-center z-10 shrink-0">
+    <div id="reply-bar" class="hidden fixed bottom-20 left-2 right-2 bg-[#111b21] border-l-4 border-[#00a884] p-3 rounded flex justify-between items-center z-40 shadow-lg">
         <div>
             <p class="text-[#00a884] text-xs font-bold mb-1">Replying to...</p>
             <p id="reply-text" class="text-gray-400 text-sm truncate max-w-[250px]"></p>
@@ -76,8 +77,8 @@
         <button onclick="cancelReply()" class="text-gray-500 hover:text-white"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
 
-    <!-- Input Area (Footer) -->
-    <footer class="bg-[#1f2c34] p-2 flex items-center gap-2 z-20 shrink-0 border-t border-black/20">
+    <!-- ✅ FIXED: Input Area is now fixed to the bottom of the screen -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#1f2c34] p-2 flex items-center gap-2 z-50 border-t border-black/20 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <button onclick="toggleEmoji()" class="p-2 text-gray-400 hover:text-white shrink-0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
         
         <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative shrink-0">
@@ -101,7 +102,7 @@
     </footer>
 
     <!-- Emoji Picker -->
-    <div id="emoji-picker" class="hidden absolute bottom-20 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto"></div>
+    <div id="emoji-picker" class="hidden fixed bottom-24 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto"></div>
 
     <!-- Image Preview Modal -->
     <div id="preview-modal" class="hidden fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center p-4">
@@ -113,10 +114,8 @@
     </div>
 
     <script>
-        // --- SUPABASE CONFIG ---
-        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co'; // ✅ FIXED URL
+        const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
@@ -128,15 +127,15 @@
         let audioChunks = [];
 
         const botResponses = {
-            trading: "📈 **Trading:** We offer synthetic indices like Volatility 10, 25, 50, 75, and 100. You can trade Even/Odd, Over/Under, and Matches/Differs. Payouts are up to 95.2%!",
+            trading: " **Trading:** We offer synthetic indices like Volatility 10, 25, 50, 75, and 100. You can trade Even/Odd, Over/Under, and Matches/Differs. Payouts are up to 95.2%!",
             deposit: "💰 **Deposits:** We exclusively support crypto! You can deposit via BTC, ETH, or USDT (ERC20). Go to Menu > Deposit to get your unique wallet address.",
             withdraw: "💸 **Withdrawals:** Crypto withdrawals are processed within 10-45 minutes depending on network congestion. Minimum withdrawal is $10.",
             refer: "🎁 **Refer & Earn:** Share your unique link! You earn 10% of your referral's net trading losses daily. Commissions are paid out automatically."
         };
 
-        // --- GLOBAL FUNCTIONS FOR HTML ONCLICK ---
+        // --- GLOBAL FUNCTIONS ---
         window.sendFaq = async function(type) {
-            if (!currentRoomId) { alert("Chat is still initializing, please wait a moment..."); return; }
+            if (!currentRoomId) { alert("Chat is still initializing, please wait..."); return; }
             await supabaseClient.from('support_messages').insert({
                 room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
                 content: type.toUpperCase(), type: 'text'
@@ -155,9 +154,7 @@
             sendBotMessage("🕒 Please hold on. A live support agent will join this chat shortly.");
         };
 
-        window.toggleTheme = function() { 
-            document.body.classList.toggle('light-theme'); 
-        };
+        window.toggleTheme = function() { document.body.classList.toggle('light-theme'); };
 
         window.sendMessage = async function() {
             const input = document.getElementById('msg-input');
@@ -265,7 +262,7 @@
         };
 
         window.setupEmojis = function() {
-            const emojis = ['😀','😂','😍','🥰','😎','🤔','👍','👎','🔥','💯','🚀','💰','📈','📉','❤️','🤝','👨‍💼','⏳','✅','❌'];
+            const emojis = ['😀','😂','😍','🥰','','🤔','👍','','🔥','💯','','💰','📈','📉','❤️','🤝','👨💼','⏳','✅',''];
             const picker = document.getElementById('emoji-picker');
             picker.innerHTML = '';
             emojis.forEach(e => {
@@ -280,35 +277,18 @@
         // --- CORE FUNCTIONS ---
         async function init() {
             try {
-                console.log("Initializing chat...");
                 const { data: { user }, error } = await supabaseClient.auth.getUser();
-                if (error || !user) { 
-                    console.error("Auth error:", error);
-                    window.location.href = 'signin.html'; 
-                    return; 
-                }
+                if (error || !user) { window.location.href = 'signin.html'; return; }
                 currentUser = user;
-                console.log("User logged in:", user.email);
                 
-                // Load or Create Room
                 const { data: room, error: roomError } = await supabaseClient.from('support_rooms').select('*').eq('user_id', user.id).neq('status', 'closed').order('created_at', { ascending: false }).limit(1).single();
-                
-                if (roomError && roomError.code !== 'PGRST116') {
-                    console.error("Room fetch error:", roomError);
-                }
                 
                 if (room) {
                     currentRoomId = room.id;
-                    console.log("Using existing room:", currentRoomId);
                 } else {
                     const { data: newRoom, error: insertError } = await supabaseClient.from('support_rooms').insert({ user_id: user.id, status: 'waiting' }).select().single();
-                    if (insertError) {
-                        console.error("Room creation error:", insertError);
-                        alert("Failed to create chat room. Please check console.");
-                        return;
-                    }
+                    if (insertError) { alert("Failed to create chat room."); return; }
                     currentRoomId = newRoom.id;
-                    console.log("Created new room:", currentRoomId);
                     setTimeout(() => sendBotMessage("👋 Welcome to OBX PRIME Support! Tap a quick reply below or ask a question."), 500);
                 }
 
@@ -316,25 +296,21 @@
                 listenForNewMessages();
                 setupInputListeners();
                 setupEmojis();
-            } catch (err) {
-                console.error("Init error:", err);
-                alert("Failed to initialize chat: " + err.message);
-            }
+            } catch (err) { console.error("Init error:", err); }
         }
 
         async function loadMessages() {
-            try {
-                const { data, error } = await supabaseClient.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
-                if (error) { console.error("Load messages error:", error); return; }
-                
-                const container = document.getElementById('chat-container');
-                container.innerHTML = '<div class="chat-bg"></div><div class="text-center my-4 z-10"><span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span></div>';
-                
-                if (data && data.length > 0) {
-                    data.forEach(msg => renderMessage(msg));
-                    scrollToBottom();
-                }
-            } catch (err) { console.error("Load messages error:", err); }
+            const { data, error } = await supabaseClient.from('support_messages').select('*').eq('room_id', currentRoomId).order('created_at', { ascending: true });
+            if (error) return;
+            
+            const container = document.getElementById('chat-container');
+            // Keep the background and date, clear messages
+            container.innerHTML = '<div class="chat-bg"></div><div class="text-center my-4 z-10"><span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span></div>';
+            
+            if (data && data.length > 0) {
+                data.forEach(msg => renderMessage(msg));
+                scrollToBottom();
+            }
         }
 
         function listenForNewMessages() {
@@ -348,7 +324,8 @@
 
         function renderMessage(msg) {
             const container = document.getElementById('chat-container');
-            const isMe = msg.sender_id === currentUser.id;
+            // ✅ FIXED: Bot messages now appear on the LEFT (received), user messages on the RIGHT (sent)
+            const isMe = msg.sender_id === currentUser.id && msg.sender_type !== 'bot';
             const div = document.createElement('div');
             div.className = `flex w-full z-10 ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
             
@@ -405,7 +382,6 @@
             });
         }
 
-        // Initialize on load
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
