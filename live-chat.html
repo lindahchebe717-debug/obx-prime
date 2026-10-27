@@ -34,7 +34,7 @@
         .view-once-blur.revealed { filter: blur(0); }
     </style>
 </head>
-<body class="h-[100dvh] flex flex-col overflow-hidden"> <!-- ✅ FIXED: 100dvh works better on mobile -->
+<body class="h-[100dvh] flex flex-col overflow-hidden">
 
     <!-- Header -->
     <header class="bg-[#1f2c34] px-4 py-3 flex items-center justify-between z-30 border-b border-black/20 shrink-0">
@@ -55,11 +55,10 @@
         <button onclick="sendFaq('deposit')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">💰 Deposit</button>
         <button onclick="sendFaq('withdraw')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">💸 Withdraw</button>
         <button onclick="sendFaq('refer')" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#2a3942] text-[#8696a0] text-sm hover:bg-[#00a884] hover:text-white transition">🎁 Refer</button>
-        <button onclick="connectToAgent()" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#00a884] text-white text-sm font-bold">👨💼 Live Agent</button>
+        <button onclick="connectToAgent()" class="whitespace-nowrap px-4 py-1.5 rounded-full bg-[#00a884] text-white text-sm font-bold">👨‍💼 Live Agent</button>
     </div>
 
     <!-- Chat Area -->
-    <!-- ✅ FIXED: Added pb-24 so messages don't get hidden behind the fixed footer -->
     <main class="flex-1 relative overflow-y-auto p-4 flex flex-col gap-2 z-10 pb-24" id="chat-container">
         <div class="chat-bg"></div>
         <div class="text-center my-4 z-10">
@@ -77,26 +76,33 @@
         <button onclick="cancelReply()" class="text-gray-500 hover:text-white"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
 
-    <!-- ✅ FIXED: Input Area is now fixed to the bottom of the screen -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-[#1f2c34] p-2 flex items-center gap-2 z-50 border-t border-black/20 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        <button onclick="toggleEmoji()" class="p-2 text-gray-400 hover:text-white shrink-0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+    <!-- Input Area -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#1f2c34] p-2 flex items-center gap-1 z-50 border-t border-black/20 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+        <button onclick="toggleEmoji()" class="p-2 text-gray-400 hover:text-white shrink-0" title="Emoji"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
         
-        <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative shrink-0">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
+        <!-- Gallery Button -->
+        <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative shrink-0" title="Gallery">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <input type="file" id="file-input-gallery" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
+        </label>
+
+        <!-- ✅ NEW: Camera Button -->
+        <label class="p-2 text-gray-400 hover:text-white cursor-pointer relative shrink-0" title="Camera">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <input type="file" id="file-input-camera" class="hidden" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
         </label>
 
         <div class="flex-1 bg-[#2a3942] rounded-lg flex items-center px-4 py-2 min-w-0">
             <input type="text" id="msg-input" placeholder="Type a message..." class="bg-transparent w-full outline-none text-white placeholder-gray-400 text-sm" onkeypress="handleEnter(event)">
-            <button id="view-once-btn" onclick="toggleViewOnce()" class="text-gray-500 hover:text-[#00a884] ml-2 hidden shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
         </div>
 
+        <!-- Send Button -->
         <button id="send-btn" onclick="sendMessage()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition shrink-0">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
-        <button id="mic-btn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition hidden shrink-0">
+        
+        <!-- ✅ Voice Note Button (Press and Hold) -->
+        <button id="mic-btn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()" class="p-3 bg-[#00a884] rounded-full text-white hover:bg-[#008f72] transition hidden shrink-0" title="Hold to record">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
         </button>
     </footer>
@@ -104,12 +110,22 @@
     <!-- Emoji Picker -->
     <div id="emoji-picker" class="hidden fixed bottom-24 left-2 bg-[#1f2c34] border border-black/20 rounded-xl p-3 grid grid-cols-8 gap-2 z-50 shadow-2xl max-h-48 overflow-y-auto"></div>
 
-    <!-- Image Preview Modal -->
+    <!-- ✅ UPDATED: Image Preview Modal with View Once Toggle -->
     <div id="preview-modal" class="hidden fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center p-4">
-        <img id="preview-img" src="" class="max-h-[70vh] rounded-lg mb-4">
+        <img id="preview-img" src="" class="max-h-[60vh] rounded-lg mb-4">
+        
+        <!-- View Once Checkbox -->
+        <label class="flex items-center gap-2 mb-4 cursor-pointer bg-[#2a3942] px-4 py-2 rounded-full border border-gray-600">
+            <input type="checkbox" id="view-once-checkbox" class="w-5 h-5 rounded border-gray-500 text-[#00a884] focus:ring-[#00a884] bg-gray-700">
+            <span class="text-white text-sm font-medium flex items-center gap-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                View Once
+            </span>
+        </label>
+
         <div class="flex gap-4">
-            <button onclick="closePreview()" class="px-6 py-2 bg-gray-700 rounded-full text-white">Cancel</button>
-            <button onclick="sendImage()" class="px-6 py-2 bg-[#00a884] rounded-full text-white font-bold">Send</button>
+            <button onclick="closePreview()" class="px-6 py-2 bg-gray-700 rounded-full text-white hover:bg-gray-600 transition">Cancel</button>
+            <button id="send-image-btn" onclick="sendImage()" class="px-6 py-2 bg-[#00a884] rounded-full text-white font-bold hover:bg-[#008f72] transition">Send</button>
         </div>
     </div>
 
@@ -121,13 +137,12 @@
         let currentUser = null;
         let currentRoomId = null;
         let replyToId = null;
-        let isViewOnce = false;
         let selectedFile = null;
         let mediaRecorder = null;
         let audioChunks = [];
 
         const botResponses = {
-            trading: " **Trading:** We offer synthetic indices like Volatility 10, 25, 50, 75, and 100. You can trade Even/Odd, Over/Under, and Matches/Differs. Payouts are up to 95.2%!",
+            trading: "📈 **Trading:** We offer synthetic indices like Volatility 10, 25, 50, 75, and 100. You can trade Even/Odd, Over/Under, and Matches/Differs. Payouts are up to 95.2%!",
             deposit: "💰 **Deposits:** We exclusively support crypto! You can deposit via BTC, ETH, or USDT (ERC20). Go to Menu > Deposit to get your unique wallet address.",
             withdraw: "💸 **Withdrawals:** Crypto withdrawals are processed within 10-45 minutes depending on network congestion. Minimum withdrawal is $10.",
             refer: "🎁 **Refer & Earn:** Share your unique link! You earn 10% of your referral's net trading losses daily. Commissions are paid out automatically."
@@ -174,30 +189,50 @@
             }
         };
 
+        // ✅ UPDATED: Handle file select from Gallery or Camera
         window.handleFileSelect = function(e) {
             const file = e.target.files[0];
             if (file) {
                 selectedFile = file;
                 document.getElementById('preview-img').src = URL.createObjectURL(file);
+                document.getElementById('view-once-checkbox').checked = false; // Reset checkbox
                 document.getElementById('preview-modal').classList.remove('hidden');
-                document.getElementById('view-once-btn').classList.remove('hidden');
+                // Reset the input so the same file can be selected again if canceled
+                e.target.value = ''; 
             }
         };
 
+        // ✅ UPDATED: Send image with View Once support
         window.sendImage = async function() {
             if (!selectedFile || !currentRoomId) return;
-            const fileName = `${currentUser.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`;
-            const { data, error } = await supabaseClient.storage.from('chat_uploads').upload(fileName, selectedFile);
-            if (error) { alert("Upload failed: " + error.message); return; }
             
-            const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
-            await supabaseClient.from('support_messages').insert({
-                room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
-                content: publicUrl, type: 'image', view_once: isViewOnce, reply_to_id: replyToId
-            });
-            closePreview();
+            const isViewOnce = document.getElementById('view-once-checkbox').checked;
+            const fileName = `${currentUser.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`;
+            
+            const sendBtn = document.getElementById('send-image-btn');
+            const originalText = sendBtn.innerText;
+            sendBtn.innerText = 'Sending...';
+            sendBtn.disabled = true;
+
+            try {
+                const { data, error } = await supabaseClient.storage.from('chat_uploads').upload(fileName, selectedFile);
+                if (error) { alert("Upload failed: " + error.message); return; }
+                
+                const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
+                await supabaseClient.from('support_messages').insert({
+                    room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
+                    content: publicUrl, type: 'image', view_once: isViewOnce, reply_to_id: replyToId
+                });
+            } catch (err) {
+                alert("Failed to send image: " + err.message);
+            } finally {
+                sendBtn.innerText = originalText;
+                sendBtn.disabled = false;
+                closePreview();
+            }
         };
 
+        // ✅ Voice Note Recording
         window.startRecording = function() {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 mediaRecorder = new MediaRecorder(stream);
@@ -207,7 +242,7 @@
                 document.getElementById('send-btn').classList.add('hidden');
                 document.getElementById('mic-btn').classList.remove('hidden');
                 document.getElementById('mic-btn').classList.add('animate-pulse', 'bg-red-500');
-            }).catch(err => alert("Microphone access denied: " + err.message));
+            }).catch(err => alert("Microphone access denied. Please allow microphone permissions."));
         };
 
         window.stopRecording = async function() {
@@ -216,25 +251,37 @@
             mediaRecorder.onstop = async () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 const fileName = `${currentUser.id}/voice_${Date.now()}.webm`;
-                const { data } = await supabaseClient.storage.from('chat_uploads').upload(fileName, audioBlob);
-                const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
+                
+                const sendBtn = document.getElementById('mic-btn');
+                sendBtn.innerHTML = '<span class="text-xs">Uploading...</span>';
 
-                await supabaseClient.from('support_messages').insert({
-                    room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
-                    content: publicUrl, type: 'voice'
-                });
+                try {
+                    const { data } = await supabaseClient.storage.from('chat_uploads').upload(fileName, audioBlob);
+                    const { data: { publicUrl } } = supabaseClient.storage.from('chat_uploads').getPublicUrl(data.path);
+
+                    await supabaseClient.from('support_messages').insert({
+                        room_id: currentRoomId, sender_id: currentUser.id, sender_type: 'user',
+                        content: publicUrl, type: 'voice'
+                    });
+                } catch (err) {
+                    alert("Failed to send voice note: " + err.message);
+                } finally {
+                    // Reset UI
+                    sendBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>';
+                    document.getElementById('send-btn').classList.remove('hidden');
+                    document.getElementById('mic-btn').classList.add('hidden');
+                    document.getElementById('mic-btn').classList.remove('animate-pulse', 'bg-red-500');
+                }
             };
-            document.getElementById('send-btn').classList.remove('hidden');
-            document.getElementById('mic-btn').classList.add('hidden');
-            document.getElementById('mic-btn').classList.remove('animate-pulse', 'bg-red-500');
         };
 
         window.toggleEmoji = function() { document.getElementById('emoji-picker').classList.toggle('hidden'); };
+        
         window.closePreview = function() { 
             document.getElementById('preview-modal').classList.add('hidden'); 
-            selectedFile = null; isViewOnce = false; 
-            document.getElementById('view-once-btn').classList.add('hidden'); 
+            selectedFile = null; 
         };
+        
         window.handleEnter = function(e) { if (e.key === 'Enter') sendMessage(); };
         window.scrollToBottom = function() { const c = document.getElementById('chat-container'); c.scrollTop = c.scrollHeight; };
         window.formatText = function(t) { return t.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); };
@@ -251,18 +298,13 @@
             document.getElementById('reply-bar').classList.add('hidden');
         };
 
-        window.toggleViewOnce = function() {
-            isViewOnce = !isViewOnce;
-            document.getElementById('view-once-btn').classList.toggle('text-[#00a884]');
-        };
-
         window.revealViewOnce = async function(el, msgId) {
             el.classList.add('revealed');
             await supabaseClient.from('support_messages').update({ is_viewed: true }).eq('id', msgId);
         };
 
         window.setupEmojis = function() {
-            const emojis = ['😀','😂','😍','🥰','','🤔','👍','','🔥','💯','','💰','📈','📉','❤️','🤝','👨💼','⏳','✅',''];
+            const emojis = ['😀','😂','😍','🥰','😎','🤔','👍','👎','🔥','💯','🚀','💰','📈','📉','❤️','🤝','👨‍💼','⏳','✅','❌'];
             const picker = document.getElementById('emoji-picker');
             picker.innerHTML = '';
             emojis.forEach(e => {
@@ -304,7 +346,6 @@
             if (error) return;
             
             const container = document.getElementById('chat-container');
-            // Keep the background and date, clear messages
             container.innerHTML = '<div class="chat-bg"></div><div class="text-center my-4 z-10"><span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg shadow">Today</span></div>';
             
             if (data && data.length > 0) {
@@ -324,7 +365,6 @@
 
         function renderMessage(msg) {
             const container = document.getElementById('chat-container');
-            // ✅ FIXED: Bot messages now appear on the LEFT (received), user messages on the RIGHT (sent)
             const isMe = msg.sender_id === currentUser.id && msg.sender_type !== 'bot';
             const div = document.createElement('div');
             div.className = `flex w-full z-10 ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
