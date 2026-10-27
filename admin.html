@@ -393,7 +393,7 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table>
-                            <thead><tr><th>User</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                            <thead><tr><th>User Email</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                             <tbody id="tickets-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
                         </table>
                     </div>
@@ -567,50 +567,23 @@
         </main>
     </div>
 
-    <!-- ✅ UPDATED: USER DETAILS MODAL (Now includes KYC Images) -->
+    <!-- USER DETAILS MODAL -->
     <div id="user-details-modal" class="modal">
         <div class="bg-gradient-to-br from-blue-900 to-cyan-600 rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeUserDetailsModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
             <h3 class="text-xl font-bold text-white mb-6">User Details</h3>
             
             <div class="grid grid-cols-2 gap-4 mb-6 bg-white/10 p-4 rounded-lg">
-                <div>
-                    <div class="user-detail-label">Email</div>
-                    <div class="user-detail-value" id="modal-email">-</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Full Name</div>
-                    <div class="user-detail-value" id="modal-fullname">-</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Phone</div>
-                    <div class="user-detail-value" id="modal-phone">Not provided</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Date of Birth</div>
-                    <div class="user-detail-value" id="modal-dob">Not provided</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Gender</div>
-                    <div class="user-detail-value" id="modal-gender">Not Provided</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Country</div>
-                    <div class="user-detail-value" id="modal-country">Not provided</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Balance</div>
-                    <div class="user-detail-value text-emerald-300" id="modal-balance">$0.00</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">KYC Status</div>
-                    <div class="user-detail-value">
-                        <span id="modal-kyc" class="px-2 py-0.5 bg-white/20 rounded text-xs">unverified</span>
-                    </div>
-                </div>
+                <div><div class="user-detail-label">Email</div><div class="user-detail-value" id="modal-email">-</div></div>
+                <div><div class="user-detail-label">Full Name</div><div class="user-detail-value" id="modal-fullname">-</div></div>
+                <div><div class="user-detail-label">Phone</div><div class="user-detail-value" id="modal-phone">Not provided</div></div>
+                <div><div class="user-detail-label">Date of Birth</div><div class="user-detail-value" id="modal-dob">Not provided</div></div>
+                <div><div class="user-detail-label">Gender</div><div class="user-detail-value" id="modal-gender">Not Provided</div></div>
+                <div><div class="user-detail-label">Country</div><div class="user-detail-value" id="modal-country">Not provided</div></div>
+                <div><div class="user-detail-label">Balance</div><div class="user-detail-value text-emerald-300" id="modal-balance">$0.00</div></div>
+                <div><div class="user-detail-label">KYC Status</div><div class="user-detail-value"><span id="modal-kyc" class="px-2 py-0.5 bg-white/20 rounded text-xs">unverified</span></div></div>
             </div>
 
-            <!-- ✅ NEW: KYC Images Section (Hidden by default, shown via JS if available) -->
             <div id="modal-kyc-images-section" class="hidden mb-6">
                 <h4 class="text-lg font-semibold text-white mb-3 border-t border-white/20 pt-4">Submitted KYC Documents</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -639,27 +612,16 @@
         </div>
     </div>
 
-    <!-- KYC DETAILS MODAL (For the dedicated KYC tab) -->
+    <!-- KYC DETAILS MODAL -->
     <div id="kyc-details-modal" class="modal">
         <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeKycModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
             <h3 class="text-xl font-bold text-white mb-4">KYC Submission Details</h3>
-            
             <div class="grid grid-cols-2 gap-4 mb-6 bg-[#141021] p-4 rounded-lg">
-                <div>
-                    <div class="user-detail-label">User Email</div>
-                    <div class="user-detail-value" id="kyc-modal-email">-</div>
-                </div>
-                <div>
-                    <div class="user-detail-label">Document Type</div>
-                    <div class="user-detail-value" id="kyc-modal-doctype">-</div>
-                </div>
-                <div class="col-span-2">
-                    <div class="user-detail-label">Submission Date</div>
-                    <div class="user-detail-value" id="kyc-modal-date">-</div>
-                </div>
+                <div><div class="user-detail-label">User Email</div><div class="user-detail-value" id="kyc-modal-email">-</div></div>
+                <div><div class="user-detail-label">Document Type</div><div class="user-detail-value" id="kyc-modal-doctype">-</div></div>
+                <div class="col-span-2"><div class="user-detail-label">Submission Date</div><div class="user-detail-value" id="kyc-modal-date">-</div></div>
             </div>
-
             <h4 class="text-lg font-semibold text-white mb-3">Uploaded Documents</h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-[#141021] p-2 rounded-lg">
@@ -675,11 +637,24 @@
                     <img id="kyc-img-selfie" src="" class="w-full h-32 object-cover rounded bg-black/20 cursor-pointer hover:opacity-80 transition" onclick="window.open(this.src, '_blank')">
                 </div>
             </div>
-
             <div class="flex gap-3 pt-4 border-t border-white/10">
                 <button onclick="approveKYC(window.currentKycUserId); closeKycModal();" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Approve</button>
                 <button onclick="rejectKYC(window.currentKycUserId); closeKycModal();" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Reject</button>
                 <button onclick="closeKycModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2.5 rounded-lg transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NEW: TICKET MESSAGE MODAL -->
+    <div id="ticket-message-modal" class="modal">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative">
+            <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
+            <h3 class="text-xl font-bold text-white mb-2" id="ticket-modal-subject">Subject</h3>
+            <div class="bg-[#141021] p-4 rounded-lg mb-4 max-h-60 overflow-y-auto">
+                <p class="text-gray-300 whitespace-pre-wrap" id="ticket-modal-message">Message goes here...</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeTicketModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2.5 rounded-lg transition-colors">Close</button>
             </div>
         </div>
     </div>
@@ -713,10 +688,7 @@
 
         async function checkAdminAuth() {
             const { data: { user }, error } = await supabaseClient.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'index.html';
-                return;
-            }
+            if (error || !user) { window.location.href = 'index.html'; return; }
             document.getElementById('admin-email').innerText = user.email;
         }
 
@@ -769,14 +741,11 @@
         async function loadKYC() {
             const tbody = document.getElementById('kyc-table-body');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
-            
             const { data, error } = await supabaseClient.from('profiles').select('id, email, kyc_document_type, created_at').eq('kyc_status', 'Pending Review');
-            
             if (error || !data || data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">No pending KYC verifications at this time.</td></tr>';
                 return;
             }
-
             tbody.innerHTML = data.map(u => `
                 <tr>
                     <td class="text-xs text-gray-300">${u.email || u.id.substring(0,8)+'...'}</td>
@@ -794,15 +763,12 @@
         async function viewKYC(userId) {
             const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
             if (error) { alert('Error loading KYC details: ' + error.message); return; }
-            
             document.getElementById('kyc-modal-email').innerText = user.email || '-';
             document.getElementById('kyc-modal-doctype').innerText = user.kyc_document_type || 'Not specified';
             document.getElementById('kyc-modal-date').innerText = user.created_at ? new Date(user.created_at).toLocaleString() : '-';
-            
             document.getElementById('kyc-img-front').src = user.kyc_front_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
             document.getElementById('kyc-img-back').src = user.kyc_back_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
             document.getElementById('kyc-img-selfie').src = user.kyc_selfie_url || 'https://via.placeholder.com/300x200?text=Not+Uploaded';
-
             window.currentKycUserId = userId;
             document.getElementById('kyc-details-modal').classList.add('active');
         }
@@ -823,29 +789,54 @@
             else { alert('❌ KYC Rejected.'); loadKYC(); loadDashboardStats(); }
         }
 
+        // ✅ UPDATED: Fetches user emails and adds a "View" button for the message
         async function loadTickets() {
             const tbody = document.getElementById('tickets-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
             try {
-                const { data, error } = await supabaseClient.from('support_tickets').select('id, user_id, subject, status, created_at').eq('status', 'Open');
-                if (error || !data || data.length === 0) {
+                const { data: tickets, error } = await supabaseClient.from('support_tickets').select('id, user_id, subject, message, status, created_at').order('created_at', { ascending: false });
+                if (error || !tickets || tickets.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No open support tickets found.</td></tr>';
                     return;
                 }
-                tbody.innerHTML = data.map(t => `
+                
+                // Fetch user emails to map user_id to email
+                const userIds = [...new Set(tickets.map(t => t.user_id))];
+                const { data: profiles } = await supabaseClient.from('profiles').select('id, email').in('id', userIds);
+                const emailMap = {};
+                if (profiles) { profiles.forEach(p => { emailMap[p.id] = p.email; }); }
+
+                tbody.innerHTML = tickets.map(t => {
+                    const userEmail = emailMap[t.user_id] || (t.user_id ? t.user_id.substring(0,8)+'...' : 'Unknown');
+                    const safeSubject = (t.subject || 'No Subject').replace(/'/g, "\\'");
+                    const safeMessage = (t.message || 'No message').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+                    return `
                     <tr>
-                        <td class="text-xs text-gray-300">${t.user_id ? t.user_id.substring(0,8)+'...' : 'Unknown'}</td>
+                        <td class="text-xs text-gray-300">${userEmail}</td>
                         <td class="text-gray-400 text-xs">${t.subject || 'No Subject'}</td>
                         <td class="text-amber-400 text-xs font-bold">${t.status}</td>
                         <td class="text-gray-500 text-xs">${t.created_at ? new Date(t.created_at).toLocaleDateString() : 'N/A'}</td>
                         <td class="flex gap-2">
+                            <button onclick="viewTicketMessage('${t.id}', '${safeSubject}', '${safeMessage}')" class="btn-info px-3 py-1 rounded text-xs font-bold">View</button>
                             <button onclick="resolveTicket('${t.id}')" class="btn-success px-3 py-1 rounded text-xs font-bold">Resolve</button>
                         </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } catch (e) {
+                console.error(e);
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Support tickets table not found or not configured yet.</td></tr>';
             }
+        }
+
+        // ✅ NEW: Functions to handle the ticket message modal
+        function viewTicketMessage(id, subject, message) {
+            document.getElementById('ticket-modal-subject').innerText = subject || 'No Subject';
+            const unescapedMessage = message.replace(/\\n/g, '\n').replace(/\\'/g, "'");
+            document.getElementById('ticket-modal-message').innerText = unescapedMessage || 'No message content.';
+            document.getElementById('ticket-message-modal').classList.add('active');
+        }
+        function closeTicketModal() {
+            document.getElementById('ticket-message-modal').classList.remove('active');
         }
 
         async function resolveTicket(ticketId) {
@@ -882,7 +873,6 @@
             }).join('');
         }
 
-        // ✅ UPDATED: Now fetches and displays KYC images if they exist
         async function viewUserDetails(userId) {
             const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
             if (error) { alert('Error loading user details: ' + error.message); return; }
@@ -901,7 +891,6 @@
             kycEl.innerText = kycStatus;
             kycEl.className = `px-2 py-0.5 rounded text-xs ${kycStatus === 'Verified' ? 'bg-emerald-500' : (kycStatus === 'Pending Review' ? 'bg-amber-500' : 'bg-white/20')}`;
             
-            // ✅ NEW: Show KYC images section only if URLs exist
             const kycSection = document.getElementById('modal-kyc-images-section');
             if (user.kyc_front_url || user.kyc_back_url || user.kyc_selfie_url) {
                 kycSection.classList.remove('hidden');
@@ -911,7 +900,6 @@
             } else {
                 kycSection.classList.add('hidden');
             }
-            
             document.getElementById('user-details-modal').classList.add('active');
         }
 
@@ -955,34 +943,50 @@
             else { alert(`User successfully ${newStatus}!`); loadUsers(); }
         }
 
+        // ✅ UPDATED: Fetches and displays user emails instead of just IDs
         async function loadDeposits() {
             const tbody = document.getElementById('deposits-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
             const { data } = await supabaseClient.from('deposits').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
             if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending deposits.</td></tr>'; return; }
+            
+            const userIds = [...new Set(data.map(d => d.user_id))];
+            const { data: profiles } = await supabaseClient.from('profiles').select('id, email').in('id', userIds);
+            const emailMap = {};
+            if (profiles) profiles.forEach(p => { emailMap[p.id] = p.email; });
+
             tbody.innerHTML = data.map(d => `<tr>
-                <td class="text-xs text-gray-300">${d.user_id ? d.user_id.substring(0,8)+'...' : 'Unknown'}</td>
+                <td class="text-xs text-gray-300">${emailMap[d.user_id] || (d.user_id ? d.user_id.substring(0,8)+'...' : 'Unknown')}</td>
                 <td class="text-gray-400 text-xs">${d.currency || 'Crypto'}</td>
                 <td class="text-emerald-400 font-bold">$${parseFloat(d.amount).toFixed(2)}</td>
                 <td class="text-gray-500 text-xs">${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
                 <td class="flex gap-2">
-                    <button onclick="alert('Approved deposit for ${d.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
-                    <button onclick="alert('Rejected deposit for ${d.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
+                    <button onclick="alert('Approved deposit for ${emailMap[d.user_id] || d.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                    <button onclick="alert('Rejected deposit for ${emailMap[d.user_id] || d.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
                 </td>
             </tr>`).join('');
         }
 
+        // ✅ UPDATED: Fetches and displays user emails instead of just IDs
         async function loadWithdrawals() {
             const tbody = document.getElementById('withdrawals-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
             const { data } = await supabaseClient.from('withdrawals').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
             if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending withdrawals.</td></tr>'; return; }
+            
+            const userIds = [...new Set(data.map(w => w.user_id))];
+            const { data: profiles } = await supabaseClient.from('profiles').select('id, email').in('id', userIds);
+            const emailMap = {};
+            if (profiles) profiles.forEach(p => { emailMap[p.id] = p.email; });
+
             tbody.innerHTML = data.map(w => `<tr>
-                <td class="text-xs text-gray-300">${w.user_id ? w.user_id.substring(0,8)+'...' : 'Unknown'}</td>
+                <td class="text-xs text-gray-300">${emailMap[w.user_id] || (w.user_id ? w.user_id.substring(0,8)+'...' : 'Unknown')}</td>
                 <td class="text-gray-400 text-xs">${w.method || 'Crypto'}</td>
                 <td class="text-red-400 font-bold">$${parseFloat(w.amount).toFixed(2)}</td>
                 <td class="text-gray-500 text-xs">${w.created_at ? new Date(w.created_at).toLocaleDateString() : 'N/A'}</td>
                 <td class="flex gap-2">
-                    <button onclick="alert('Approved withdrawal for ${w.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
-                    <button onclick="alert('Rejected withdrawal for ${w.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
+                    <button onclick="alert('Approved withdrawal for ${emailMap[w.user_id] || w.user_id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                    <button onclick="alert('Rejected withdrawal for ${emailMap[w.user_id] || w.user_id}')" class="btn-danger px-3 py-1 rounded text-xs">Reject</button>
                 </td>
             </tr>`).join('');
         }
