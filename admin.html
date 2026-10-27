@@ -9,25 +9,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0f0a1f; color: #ffffff; }
-        
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1a1535; }
         ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #6d28d9; }
-
-        .nav-item { cursor: pointer; }
+        .nav-item { cursor: pointer; transition: all 0.2s; }
         .nav-item.active { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border-right: 3px solid #7c3aed; }
         .nav-item:hover { background: rgba(124, 58, 237, 0.05); color: #ffffff; }
-        
         .card { background: #1a1535; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
         .btn-primary { background: #7c3aed; color: white; transition: all 0.2s; }
         .btn-primary:hover { background: #6d28d9; }
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer; }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
-        .btn-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .btn-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); cursor: pointer; }
         .btn-success:hover { background: rgba(16, 185, 129, 0.2); }
-
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px 16px; font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid rgba(255,255,255,0.05); background: #141021; }
         td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e5e7eb; }
@@ -44,31 +38,31 @@
         </div>
         
         <nav class="flex-1 overflow-y-auto py-4">
-            <a href="javascript:void(0)" onclick="showSection('dashboard', this)" class="nav-item active flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('dashboard', this)" class="nav-item active flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 Dashboard
             </a>
-            <a href="javascript:void(0)" onclick="showSection('users', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('users', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 Users
             </a>
-            <a href="javascript:void(0)" onclick="showSection('transactions', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('transactions', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                 Transactions
             </a>
-            <a href="javascript:void(0)" onclick="showSection('finance', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('finance', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Finance
             </a>
-            <a href="javascript:void(0)" onclick="showSection('kyc', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('kyc', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 KYC Verifications
             </a>
-            <a href="javascript:void(0)" onclick="showSection('agents', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('agents', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 Agents & Referrals
             </a>
-            <a href="javascript:void(0)" onclick="showSection('marketing', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400 transition-colors">
+            <a href="javascript:void(0)" onclick="showSection('marketing', this)" class="nav-item flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
                 Marketing
             </a>
@@ -84,7 +78,6 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden">
-        <!-- Top Header -->
         <header class="h-16 bg-[#130f1c]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30">
             <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -254,12 +247,17 @@
     <script>
         const SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // FIXED: Use supabaseClient instead of supabase to avoid conflict
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentEditUserId = null;
 
         // --- NAVIGATION (FIXED) ---
         function showSection(sectionId, element) {
+            // Debug alert to confirm clicks are working
+            // alert('Clicked: ' + sectionId); // Uncomment to test
+            
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${sectionId}`).classList.remove('hidden');
             
@@ -297,11 +295,11 @@
 
         // --- DATA LOADING ---
         async function loadDashboardStats() {
-            const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-            const { count: tradeCount } = await supabase.from('trades').select('*', { count: 'exact', head: true });
-            const { count: wdCount } = await supabase.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
+            const { count: userCount } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true });
+            const { count: tradeCount } = await supabaseClient.from('trades').select('*', { count: 'exact', head: true });
+            const { count: wdCount } = await supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
             
-            const { data: deps } = await supabase.from('deposits').select('amount').eq('status', 'COMPLETED');
+            const { data: deps } = await supabaseClient.from('deposits').select('amount').eq('status', 'COMPLETED');
             const totalDeps = deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0;
 
             document.getElementById('stat-users').innerText = userCount || 0;
@@ -313,7 +311,7 @@
         async function loadUsers() {
             const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
-            const { data, error } = await supabase.from('profiles').select('*');
+            const { data, error } = await supabaseClient.from('profiles').select('*');
             if(error) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
             
             tbody.innerHTML = data.map(u => `
@@ -328,7 +326,7 @@
 
         async function loadDeposits() {
             const tbody = document.getElementById('deposits-table-body');
-            const { data } = await supabase.from('deposits').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
+            const { data } = await supabaseClient.from('deposits').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
             if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending deposits.</td></tr>'; return; }
             tbody.innerHTML = data.map(d => `
                 <tr>
@@ -337,8 +335,8 @@
                     <td class="text-gray-400 text-xs">${d.currency || 'Crypto'}</td>
                     <td class="text-gray-500 text-xs">${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
                     <td class="flex gap-2">
-                        <button onclick="approveDep('${d.id}', '${d.user_id}', ${d.amount})" class="btn-success px-3 py-1 rounded text-xs cursor-pointer">Approve</button>
-                        <button onclick="deleteRec('deposits', '${d.id}')" class="btn-danger px-3 py-1 rounded text-xs cursor-pointer">Delete</button>
+                        <button onclick="approveDep('${d.id}', '${d.user_id}', ${d.amount})" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                        <button onclick="deleteRec('deposits', '${d.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
                     </td>
                 </tr>
             `).join('');
@@ -346,7 +344,7 @@
 
         async function loadWithdrawals() {
             const tbody = document.getElementById('withdrawals-table-body');
-            const { data } = await supabase.from('withdrawals').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
+            const { data } = await supabaseClient.from('withdrawals').select('*').eq('status', 'PENDING').order('created_at', {ascending: false});
             if(!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No pending withdrawals.</td></tr>'; return; }
             tbody.innerHTML = data.map(w => `
                 <tr>
@@ -355,16 +353,16 @@
                     <td class="text-gray-400 text-xs">${w.method || 'Crypto'}</td>
                     <td class="text-gray-500 text-xs">${w.created_at ? new Date(w.created_at).toLocaleDateString() : 'N/A'}</td>
                     <td class="flex gap-2">
-                        <button onclick="approveWd('${w.id}')" class="btn-success px-3 py-1 rounded text-xs cursor-pointer">Approve</button>
-                        <button onclick="deleteRec('withdrawals', '${w.id}')" class="btn-danger px-3 py-1 rounded text-xs cursor-pointer">Delete</button>
+                        <button onclick="approveWd('${w.id}')" class="btn-success px-3 py-1 rounded text-xs">Approve</button>
+                        <button onclick="deleteRec('withdrawals', '${w.id}')" class="btn-danger px-3 py-1 rounded text-xs">Delete</button>
                     </td>
                 </tr>
             `).join('');
         }
 
         async function loadFinance() {
-            const { data: deps } = await supabase.from('deposits').select('amount').eq('status', 'COMPLETED');
-            const { data: wds } = await supabase.from('withdrawals').select('amount').eq('status', 'COMPLETED');
+            const { data: deps } = await supabaseClient.from('deposits').select('amount').eq('status', 'COMPLETED');
+            const { data: wds } = await supabaseClient.from('withdrawals').select('amount').eq('status', 'COMPLETED');
             const totalIn = deps ? deps.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
             const totalOut = wds ? wds.reduce((s, i) => s + parseFloat(i.amount||0), 0) : 0;
             document.getElementById('fin-inflow').innerText = '$' + totalIn.toFixed(2);
@@ -388,10 +386,10 @@
             const amt = parseFloat(document.getElementById('modal-amount').value);
             const col = document.getElementById('modal-acc-type').value;
             if(isNaN(amt)) return alert('Invalid amount');
-            const { data: profile } = await supabase.from('profiles').select(col).eq('id', currentEditUserId).single();
+            const { data: profile } = await supabaseClient.from('profiles').select(col).eq('id', currentEditUserId).single();
             const newBal = (parseFloat(profile[col] || 0)) + amt;
             if(newBal < 0) return alert('Balance cannot be negative');
-            await supabase.from('profiles').update({ [col]: newBal }).eq('id', currentEditUserId);
+            await supabaseClient.from('profiles').update({ [col]: newBal }).eq('id', currentEditUserId);
             alert('Balance updated!');
             closeModal();
             loadUsers();
@@ -399,27 +397,27 @@
 
         async function approveDep(id, uid, amt) {
             if(!confirm('Credit this deposit to the user?')) return;
-            const { data: p } = await supabase.from('profiles').select('balance').eq('id', uid).single();
-            await supabase.from('profiles').update({ balance: (parseFloat(p.balance||0) + parseFloat(amt)) }).eq('id', uid);
-            await supabase.from('deposits').update({ status: 'COMPLETED' }).eq('id', id);
+            const { data: p } = await supabaseClient.from('profiles').select('balance').eq('id', uid).single();
+            await supabaseClient.from('profiles').update({ balance: (parseFloat(p.balance||0) + parseFloat(amt)) }).eq('id', uid);
+            await supabaseClient.from('deposits').update({ status: 'COMPLETED' }).eq('id', id);
             alert('Deposit approved and balance credited!');
             loadDeposits(); loadDashboardStats();
         }
         async function approveWd(id) {
             if(!confirm('Mark this withdrawal as paid/completed?')) return;
-            await supabase.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', id);
+            await supabaseClient.from('withdrawals').update({ status: 'COMPLETED' }).eq('id', id);
             alert('Withdrawal marked as completed!');
             loadWithdrawals();
         }
         async function deleteRec(table, id) {
             if(!confirm('Permanently delete this record?')) return;
-            await supabase.from(table).delete().eq('id', id);
+            await supabaseClient.from(table).delete().eq('id', id);
             alert('Record deleted!');
             if(table === 'deposits') loadDeposits(); else loadWithdrawals();
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = 'index.html';
         }
 
