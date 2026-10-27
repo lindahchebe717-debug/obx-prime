@@ -71,7 +71,6 @@
             
             <div class="flex flex-col items-center mb-6">
                 <div class="relative">
-                    <!-- Profile Avatar (Can be text or image) -->
                     <div id="profile-avatar-container" class="w-24 h-24 rounded-full bg-[#7C3AED] flex items-center justify-center text-3xl font-bold text-white border-4 border-[#141021] shadow-lg overflow-hidden">
                         <span id="profile-avatar-text">?</span>
                         <img id="profile-avatar-img" src="" class="w-full h-full object-cover hidden">
@@ -255,7 +254,7 @@
                         <p>• No glare or flash reflections on the ID.</p>
                         <p>• The selfie must clearly show your face matching the ID.</p>
                         <p>• Accepted formats: JPG, PNG, WEBP (Max 5MB).</p>
-                        <p class="text-[#ff444f]">• AI Detection: Random images will be strictly rejected.</p>
+                        <p class="text-[#F59E0B]">• Note: All uploads are reviewed manually by our admin team for security.</p>
                     </div>
                 </details>
 
@@ -303,7 +302,6 @@
                 document.getElementById('profile-avatar-text').innerText = initial;
             }
 
-            // Fetch KYC Status
             fetchKYCStatus();
         }
 
@@ -341,7 +339,6 @@
             document.getElementById('2fa-setup').classList.toggle('hidden', !isChecked);
         }
 
-        // ✅ LIVE PROFILE PICTURE PREVIEW
         function previewProfilePicture(input) {
             if (input.files && input.files[0]) {
                 selectedAvatarFile = input.files[0];
@@ -356,7 +353,6 @@
             }
         }
 
-        // ✅ SAVE PROFILE (Including Avatar Upload to Supabase Storage)
         async function saveProfile() {
             const btn = document.getElementById('save-profile-btn');
             const fullName = document.getElementById('full-name').value.trim();
@@ -369,7 +365,6 @@
             try {
                 let avatarUrl = currentUser.user_metadata?.avatar_url || '';
                 
-                // Upload new avatar if selected
                 if (selectedAvatarFile) {
                     const fileExt = selectedAvatarFile.name.split('.').pop();
                     const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
@@ -394,7 +389,7 @@
                 if (error) throw error;
                 
                 alert('✅ Profile updated successfully!');
-                selectedAvatarFile = null; // Reset
+                selectedAvatarFile = null;
                 
             } catch (err) {
                 console.error("Profile update error:", err);
@@ -405,7 +400,6 @@
             }
         }
 
-        // ✅ UPDATE PASSWORD
         async function updatePassword() {
             const btn = document.getElementById('update-pass-btn');
             const currentPass = document.getElementById('current-pass').value;
@@ -420,7 +414,6 @@
             btn.innerHTML = '<span class="spinner"></span> Updating...';
             
             try {
-                // Supabase handles password updates securely
                 const { error } = await obxSupabase.auth.updateUser({ password: newPass });
                 if (error) throw error;
                 
@@ -438,54 +431,49 @@
             }
         }
 
-        // ✅ STRICT KYC FILE HANDLING & AI MOCK DETECTION
+        // ✅ IMPROVED KYC FILE HANDLING (No more strict filename checks)
         function handleFileSelect(type, input) {
             const file = input.files[0];
             if (!file) return;
 
-            // 1. Basic Validation
+            // 1. Basic Validation: File Size
             if (file.size > 5 * 1024 * 1024) {
                 alert('File is too large. Maximum size is 5MB.');
                 input.value = '';
                 return;
             }
 
+            // 2. Basic Validation: File Type
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type. Please upload a JPG, PNG, or WEBP image.');
+                input.value = '';
+                return;
+            }
+
             const docType = document.getElementById('kyc-doc-type').value;
             if (!docType) {
-                alert('Please select a Document Type first.');
+                alert('Please select a Document Type first from the dropdown.');
                 input.value = '';
                 return;
             }
 
-            // 2. Simulated AI Document Detection (Client-side heuristic)
-            // In a real production app, this would be an API call to AWS Rekognition or Google Vision.
-            // Here, we strictly check file naming/extension patterns to simulate AI rejection of random images.
-            const lowerName = file.name.toLowerCase();
-            const validKeywords = {
-                'National ID Card': ['id', 'card', 'national', 'identity', 'idcard'],
-                'Passport': ['passport', 'pp', 'travel', 'passportphoto'],
-                'Driver\'s License': ['license', 'licence', 'dl', 'driver', 'driving'],
-                'Add Others': ['document', 'doc', 'verification', 'other']
-            };
-            
-            const keywords = validKeywords[docType] || [];
-            const matchesKeyword = keywords.some(kw => lowerName.includes(kw));
-
-            if (!matchesKeyword) {
-                alert(`🚫 AI Detection Failed:\nThe uploaded image does not appear to be a valid ${docType}.\n\nFor security, our system strictly rejects random images. Please ensure the file name clearly indicates the document type (e.g., "my_passport.jpg").`);
-                input.value = '';
-                return;
-            }
-
-            // Passed "AI" check
-            kycFiles[type] = file;
+            // 3. Simulated AI Scan (Visual feedback only, accepts the file)
+            // In a real app, this is where you'd send the image to a backend AI service.
+            // For now, we accept any valid image file and let the Admin verify it manually.
             const label = document.getElementById(`label-${type}`);
-            label.innerText = file.name;
-            label.classList.remove('text-gray-400');
-            label.classList.add('text-[#10B981]');
+            const originalText = label.innerText;
+            label.innerText = 'Scanning...';
+            label.classList.add('text-[#A78BFA]');
+            
+            setTimeout(() => {
+                kycFiles[type] = file;
+                label.innerText = file.name;
+                label.classList.remove('text-gray-400', 'text-[#A78BFA]');
+                label.classList.add('text-[#10B981]');
+            }, 800); // 800ms simulated scan delay
         }
 
-        // ✅ SUBMIT KYC
         async function submitKYC() {
             const docType = document.getElementById('kyc-doc-type').value;
             if (!docType) return alert('Please select a Document Type.');
@@ -507,9 +495,8 @@
 
                 if (error) throw error;
 
-                alert('✅ Submitted for review!\n\nYour documents have passed initial AI checks. Your account will show as "Verified" once manually approved by our admin team.');
+                alert('✅ Submitted for review!\n\nYour documents have passed initial checks. Your account will show as "Verified" once manually approved by our admin team.');
                 
-                // Refresh status badge
                 fetchKYCStatus();
                 
                 // Reset form
