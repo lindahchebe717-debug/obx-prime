@@ -153,7 +153,9 @@
         .menu-title { font-size: 1.2rem; font-weight: 800; color: var(--text-white); }
         .menu-close { background: none; border: none; color: var(--text-white); cursor: pointer; padding: 4px; }
         .menu-lang { font-size: 0.85rem; font-weight: 700; color: var(--text-white); margin-left: 12px; }
-        .menu-profile { display: flex; align-items: center; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border-color); }
+        /* ✅ UPDATED: Made clickable */
+        .menu-profile { display: flex; align-items: center; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+        .menu-profile:hover { background: rgba(124, 58, 237, 0.05); }
         .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-purple); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: white; flex-shrink: 0; }
         .profile-info { display: flex; flex-direction: column; gap: 2px; }
         .profile-name { font-size: 1rem; font-weight: 700; color: var(--text-white); }
@@ -332,7 +334,8 @@
             </div>
             <span class="menu-lang">EN</span>
         </div>
-        <div class="menu-profile">
+        <!-- ✅ UPDATED: Made clickable to go to profile.html -->
+        <div class="menu-profile" onclick="window.location.href='profile.html'" style="cursor: pointer;">
             <div class="profile-avatar" id="profileAvatar">?</div>
             <div class="profile-info">
                 <div class="profile-name" id="profileName">Loading...</div>
@@ -787,7 +790,6 @@
             } catch(e) { console.error("Profile load error:", e); }
         }
 
-        // ✅ NEW: Fetch real balance from Supabase on load so admin additions show up!
         async function loadUserBalances() {
             if (!obxSupabase) return;
             try {
@@ -835,7 +837,6 @@
                 modeBtns[1].classList.add('active');
             }
             
-            // Load balances on page load
             loadUserBalances();
         })();
 
@@ -1068,7 +1069,6 @@
                     localStorage.setItem('obx_demo_balance', demoBalance);
                     updateAccountDisplay();
                 } else {
-                    // ✅ FIX: Update real balance in Supabase when a real trade is won
                     const { data: { user } } = await obxSupabase.auth.getUser();
                     if (user) {
                         const newBal = realBalance + stake + payout;
@@ -1082,7 +1082,6 @@
                 stats.losses++;
                 stats.pnl -= stake;
                 if (currentAccount === 'real') {
-                    // ✅ FIX: Update real balance in Supabase when a real trade is lost
                     const { data: { user } } = await obxSupabase.auth.getUser();
                     if (user) {
                         const newBal = realBalance - stake;
