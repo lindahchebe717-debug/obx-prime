@@ -31,7 +31,6 @@
         td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e5e7eb; }
         tr:hover td { background: rgba(255,255,255,0.02); }
         
-        /* Modal Styles */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
         .user-detail-label { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
@@ -126,11 +125,15 @@
             
             <!-- DASHBOARD SECTION -->
             <section id="section-dashboard" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Users</p><h3 class="text-2xl font-bold text-white" id="stat-users">0</h3></div>
                     <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Deposits</p><h3 class="text-2xl font-bold text-emerald-400" id="stat-deposits">$0.00</h3></div>
                     <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending Withdrawals</p><h3 class="text-2xl font-bold text-amber-400" id="stat-withdrawals">0</h3></div>
                     <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Total Trades</p><h3 class="text-2xl font-bold text-purple-400" id="stat-trades">0</h3></div>
+                    <!-- ✅ ADDED: Pending KYC Stat -->
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Pending KYC</p><h3 class="text-2xl font-bold text-blue-400" id="stat-pending-kyc">0</h3></div>
+                    <!-- ✅ ADDED: Open Tickets Stat -->
+                    <div class="card p-5"><p class="text-sm text-gray-400 mb-1">Open Tickets</p><h3 class="text-2xl font-bold text-pink-400" id="stat-open-tickets">0</h3></div>
                 </div>
             </section>
 
@@ -343,23 +346,25 @@
                 </div>
             </section>
 
-            <!-- KYC SECTION -->
+            <!-- ✅ UPDATED: KYC SECTION (Fully Functional) -->
             <section id="section-kyc" class="hidden space-y-6">
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-white">Pending KYC Verifications</h3>
-                        <button onclick="alert('Refreshed!')" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
+                        <button onclick="loadKYC()" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
                     </div>
-                    <div class="p-8 text-center text-gray-500">
-                        <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <p>No pending KYC verifications at this time.</p>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>User Email</th><th>Document Type</th><th>Submitted</th><th>Actions</th></tr></thead>
+                            <tbody id="kyc-table-body"><tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- SUPPORT SECTION -->
+            <!-- ✅ UPDATED: SUPPORT SECTION (Fully Functional) -->
             <section id="section-support" class="hidden space-y-6">
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-4">
                     <button class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 text-sm font-medium">All Tickets</button>
                     <button class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 text-sm font-medium">Open</button>
                     <button class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg hover:bg-amber-500/30 text-sm font-medium">In Progress</button>
@@ -368,10 +373,13 @@
                 <div class="card overflow-hidden">
                     <div class="p-4 border-b border-white/10 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-white">Support Tickets</h3>
-                        <button onclick="alert('Refreshed!')" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
+                        <button onclick="loadTickets()" class="text-amber-400 text-sm hover:text-amber-300">Refresh</button>
                     </div>
-                    <div class="p-8 text-center text-gray-500">
-                        <p>No support tickets found.</p>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>User</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="tickets-table-body"><tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -646,6 +654,8 @@
             if(sectionId === 'finance') loadFinance();
             if(sectionId === 'reports') loadReports();
             if(sectionId === 'agents') loadAgents();
+            if(sectionId === 'kyc') loadKYC(); // ✅ ADDED
+            if(sectionId === 'support') loadTickets(); // ✅ ADDED
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
@@ -655,11 +665,113 @@
             const { count: tradeCount } = await supabaseClient.from('trades').select('*', { count: 'exact', head: true });
             const { count: wdCount } = await supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'PENDING');
             const { data: deps } = await supabaseClient.from('deposits').select('amount').eq('status', 'COMPLETED');
-            const totalDeps = deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0;
+            
+            // ✅ ADDED: Fetch Pending KYC count
+            const { count: kycCount } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_status', 'Pending Review');
+            
+            // ✅ ADDED: Fetch Open Tickets count (fallback to 0 if table doesn't exist yet)
+            let ticketCount = 0;
+            try {
+                const { count } = await supabaseClient.from('support_tickets').select('*', { count: 'exact', head: true }).eq('status', 'Open');
+                ticketCount = count || 0;
+            } catch(e) {}
+
             document.getElementById('stat-users').innerText = userCount || 0;
             document.getElementById('stat-trades').innerText = tradeCount || 0;
             document.getElementById('stat-withdrawals').innerText = wdCount || 0;
-            document.getElementById('stat-deposits').innerText = '$' + totalDeps.toFixed(2);
+            document.getElementById('stat-deposits').innerText = '$' + (deps ? deps.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) : 0).toFixed(2);
+            document.getElementById('stat-pending-kyc').innerText = kycCount || 0; // ✅ ADDED
+            document.getElementById('stat-open-tickets').innerText = ticketCount || 0; // ✅ ADDED
+        }
+
+        // ✅ ADDED: Load KYC Submissions
+        async function loadKYC() {
+            const tbody = document.getElementById('kyc-table-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">Loading...</td></tr>';
+            
+            const { data, error } = await supabaseClient.from('profiles').select('id, email, kyc_document_type, created_at').eq('kyc_status', 'Pending Review');
+            
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">No pending KYC verifications at this time.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(u => `
+                <tr>
+                    <td class="text-xs text-gray-300">${u.email || u.id.substring(0,8)+'...'}</td>
+                    <td class="text-gray-400 text-xs">${u.kyc_document_type || 'Not specified'}</td>
+                    <td class="text-gray-500 text-xs">${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td class="flex gap-2">
+                        <button onclick="approveKYC('${u.id}')" class="btn-success px-3 py-1 rounded text-xs font-bold">Approve</button>
+                        <button onclick="rejectKYC('${u.id}')" class="btn-danger px-3 py-1 rounded text-xs font-bold">Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ✅ ADDED: Approve KYC
+        async function approveKYC(userId) {
+            if(!confirm('Approve this KYC submission? The user will be marked as Verified.')) return;
+            const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Verified' }).eq('id', userId);
+            if(error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('✅ KYC Approved successfully!');
+                loadKYC();
+                loadDashboardStats();
+            }
+        }
+
+        // ✅ ADDED: Reject KYC
+        async function rejectKYC(userId) {
+            if(!confirm('Reject this KYC submission? The user will be marked as Rejected.')) return;
+            const { error } = await supabaseClient.from('profiles').update({ kyc_status: 'Rejected' }).eq('id', userId);
+            if(error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('❌ KYC Rejected.');
+                loadKYC();
+                loadDashboardStats();
+            }
+        }
+
+        // ✅ ADDED: Load Support Tickets
+        async function loadTickets() {
+            const tbody = document.getElementById('tickets-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
+            
+            try {
+                const { data, error } = await supabaseClient.from('support_tickets').select('id, user_id, subject, status, created_at').eq('status', 'Open');
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No open support tickets found.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(t => `
+                    <tr>
+                        <td class="text-xs text-gray-300">${t.user_id ? t.user_id.substring(0,8)+'...' : 'Unknown'}</td>
+                        <td class="text-gray-400 text-xs">${t.subject || 'No Subject'}</td>
+                        <td class="text-amber-400 text-xs font-bold">${t.status}</td>
+                        <td class="text-gray-500 text-xs">${t.created_at ? new Date(t.created_at).toLocaleDateString() : 'N/A'}</td>
+                        <td class="flex gap-2">
+                            <button onclick="resolveTicket('${t.id}')" class="btn-success px-3 py-1 rounded text-xs font-bold">Resolve</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Support tickets table not found or not configured yet.</td></tr>';
+            }
+        }
+
+        async function resolveTicket(ticketId) {
+            if(!confirm('Mark this ticket as Resolved?')) return;
+            try {
+                await supabaseClient.from('support_tickets').update({ status: 'Resolved' }).eq('id', ticketId);
+                alert('✅ Ticket resolved!');
+                loadTickets();
+                loadDashboardStats();
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
         }
 
         async function loadUsers() {
@@ -669,7 +781,7 @@
             if(error) { tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400">Error: ${error.message}</td></tr>`; return; }
             
             tbody.innerHTML = data.map(u => {
-                const status = u.status || 'Pending';
+                const status = u.kyc_status || 'Pending';
                 const statusColor = status === 'Verified' ? 'text-emerald-400' : (status === 'Rejected' ? 'text-red-400' : 'text-amber-400');
                 return `<tr>
                     <td class="text-xs text-gray-300">${u.email || u.id.substring(0,8)+'...'}</td>
@@ -703,7 +815,7 @@
             document.getElementById('modal-country').innerText = user.country || 'Not provided';
             document.getElementById('modal-balance').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
             
-            const kycStatus = user.status || 'unverified';
+            const kycStatus = user.kyc_status || 'unverified';
             const kycEl = document.getElementById('modal-kyc');
             kycEl.innerText = kycStatus;
             kycEl.className = `px-2 py-0.5 rounded text-xs ${kycStatus === 'Verified' ? 'bg-emerald-500' : 'bg-white/20'}`;
@@ -756,7 +868,7 @@
 
         async function updateUserStatus(userId, newStatus) {
             if(!confirm(`Are you sure you want to mark this user as ${newStatus}?`)) return;
-            const { error } = await supabaseClient.from('profiles').update({ status: newStatus }).eq('id', userId);
+            const { error } = await supabaseClient.from('profiles').update({ kyc_status: newStatus }).eq('id', userId);
             if(error) {
                 alert('Error: ' + error.message);
             } else {
@@ -844,9 +956,9 @@
                 document.getElementById('rep-total-users').innerText = totalUsers || 0;
                 document.getElementById('rep-active-users').innerText = totalUsers || 0;
 
-                const { data: profiles } = await supabaseClient.from('profiles').select('status, balance');
-                const verifiedCount = profiles ? profiles.filter(p => p.status === 'Verified').length : 0;
-                const pendingCount = profiles ? profiles.filter(p => p.status === 'Pending').length : 0;
+                const { data: profiles } = await supabaseClient.from('profiles').select('kyc_status, balance');
+                const verifiedCount = profiles ? profiles.filter(p => p.kyc_status === 'Verified').length : 0;
+                const pendingCount = profiles ? profiles.filter(p => p.kyc_status === 'Pending Review').length : 0;
                 const totalBalance = profiles ? profiles.reduce((sum, p) => sum + parseFloat(p.balance || 0), 0) : 0;
                 
                 document.getElementById('rep-verified-users').innerText = verifiedCount;
