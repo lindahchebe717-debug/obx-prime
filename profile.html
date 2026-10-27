@@ -2,49 +2,470 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBX PRIME | My Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { background-color: #141021; color: white; font-family: system-ui; }</style>
-</head>
-<body class="min-h-screen p-4 flex items-center justify-center">
-    <div class="w-full max-w-md bg-[#1F1936] rounded-2xl p-6 border border-white/10 shadow-2xl">
-        <div class="text-center mb-8">
-            <div id="profile-avatar" class="w-24 h-24 rounded-full bg-[#7C3AED] mx-auto flex items-center justify-center text-4xl font-bold mb-4 shadow-lg shadow-purple-900/50">U</div>
-            <h1 id="profile-name" class="text-2xl font-bold">Loading...</h1>
-            <p id="profile-email" class="text-gray-400 mt-1">Loading...</p>
-        </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OBX PRIME | Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-white: #1e293b;
+            --text-gray: #64748b;
+            --primary-purple: #7c3aed;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+            --border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.dark-theme {
+            --bg-main: #141021;
+            --bg-card: #1e1b4b;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        body { background-color: var(--bg-main); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
         
-        <div class="space-y-3">
-            <button onclick="window.location.href='dashboard.html'" class="w-full py-3.5 bg-[#7C3AED] hover:bg-[#6D28D9] rounded-xl font-semibold transition shadow-lg shadow-purple-900/30">Back to Trading</button>
-            <button onclick="logoutUser()" class="w-full py-3.5 border border-red-500/50 text-red-400 hover:bg-red-500/10 rounded-xl font-semibold transition">Log Out</button>
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
+        .header-title { font-size: 1.25rem; font-weight: 700; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; color: var(--text-white); }
+        
+        .settings-container { max-width: 600px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        
+        .profile-header { background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .profile-picture-container { position: relative; width: 100px; height: 100px; margin: 0 auto 16px; }
+        .profile-picture { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-purple); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: white; overflow: hidden; cursor: pointer; }
+        .profile-picture img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-badge { position: absolute; bottom: 0; right: 0; background: var(--primary-purple); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid var(--bg-card); }
+        .upload-badge svg { width: 16px; height: 16px; color: white; }
+        .profile-name-display { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .profile-email-display { color: var(--text-gray); font-size: 0.9rem; }
+        
+        .settings-section { background: var(--bg-card); border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border-color); overflow: hidden; }
+        .settings-item { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid var(--border-color); }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item:hover { background: rgba(124, 58, 237, 0.05); }
+        .settings-item-left { display: flex; align-items: center; gap: 12px; }
+        .settings-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--primary-purple); }
+        .settings-icon svg { width: 20px; height: 20px; }
+        .settings-label { font-weight: 600; font-size: 0.95rem; }
+        .settings-value { color: var(--text-gray); font-size: 0.85rem; }
+        .chevron { color: var(--text-gray); opacity: 0.5; }
+        .chevron svg { width: 20px; height: 20px; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; }
+        .modal-close { background: none; border: none; cursor: pointer; padding: 4px; color: var(--text-gray); }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-gray); }
+        .form-input, .form-select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-main); color: var(--text-white); font-size: 0.95rem; box-sizing: border-box; }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary-purple); }
+        .save-btn { width: 100%; padding: 14px; background: var(--primary-purple); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+        
+        .referral-box { background: rgba(124, 58, 237, 0.1); border: 1px dashed var(--primary-purple); border-radius: 8px; padding: 12px; margin-top: 8px; }
+        .referral-link { font-family: monospace; font-size: 0.9rem; color: var(--primary-purple); word-break: break-all; }
+        .copy-btn { background: var(--primary-purple); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; }
+        .nav-item.active { color: var(--primary-purple); }
+        .nav-icon { width: 20px; height: 20px; }
+        
+        .toggle-switch { width: 44px; height: 24px; border-radius: 12px; background: #cbd5e1; position: relative; cursor: pointer; transition: background 0.3s; }
+        .toggle-switch.active { background: var(--primary-purple); }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform 0.3s; }
+        .toggle-switch.active::after { transform: translateX(20px); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="header-title">Profile Settings</div>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <div class="settings-container">
+        <div class="profile-header">
+            <div class="profile-picture-container">
+                <div class="profile-picture" id="profilePicture" onclick="document.getElementById('profilePicInput').click()">
+                    <span id="profileInitial">?</span>
+                    <img id="profileImage" src="" style="display: none;">
+                </div>
+                <div class="upload-badge" onclick="document.getElementById('profilePicInput').click()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="handleProfilePicUpload(event)">
+            </div>
+            <div class="profile-name-display" id="displayName">Loading...</div>
+            <div class="profile-email-display" id="displayEmail">...</div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-item" onclick="openModal('editProfile')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div><div class="settings-label">Edit Profile</div><div class="settings-value">Update your personal information</div></div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+            <div class="settings-item" onclick="openModal('referral')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+                    <div><div class="settings-label">Referral Program</div><div class="settings-value">Earn 10% commission</div></div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-item" onclick="openModal('appearance')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+                    <div class="settings-label">Appearance</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+            <div class="settings-item" onclick="openModal('notifications')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                    <div class="settings-label">Notifications</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+            <div class="settings-item" onclick="openModal('performance')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                    <div class="settings-label">Performance</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-item" onclick="openModal('risk')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                    <div class="settings-label">Risk Disclaimer</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+            <div class="settings-item" onclick="openModal('privacy')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                    <div class="settings-label">Privacy & Cookies</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-item" onclick="openModal('language')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                    <div class="settings-label">Language</div>
+                </div>
+                <div class="settings-value">English</div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+            <div class="settings-item" onclick="openModal('timezone')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                    <div class="settings-label">Timezone</div>
+                </div>
+                <div class="settings-value">GMT</div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-item" onclick="openModal('info')">
+                <div class="settings-item-left">
+                    <div class="settings-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+                    <div class="settings-label">Website Info</div>
+                </div>
+                <div class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
+            <span>Trade</span>
+        </a>
+        <a href="ai.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+            <span>AI</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal-content" id="editProfileModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header">
+                <div class="modal-title">Edit Profile</div>
+                <button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </div>
+            <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="firstName" placeholder="Enter first name"></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="lastName" placeholder="Enter last name"></div>
+            <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input" id="username" placeholder="Choose username"></div>
+            <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="phoneNumber" placeholder="+1 234 567 890"></div>
+            <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="dateOfBirth"></div>
+            <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="gender">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Country of Residence</label>
+                <select class="form-select" id="country">
+                    <option value="">Select country</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+        </div>
+
+        <div class="modal-content" id="referralModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header">
+                <div class="modal-title">Referral Program</div>
+                <button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-gray);">Invite friends and earn 10% commission on their trades!</p>
+            <div class="referral-box">
+                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;">Your Referral Link:</div>
+                <div class="referral-link" id="referralLink">https://obxprime.com/register?ref=YOUR_CODE</div>
+                <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
+            </div>
+            <div style="margin-top: 20px; padding: 16px; background: rgba(124, 58, 237, 0.05); border-radius: 8px;">
+                <div style="font-weight: 700; margin-bottom: 8px;">How it works:</div>
+                <ol style="margin: 0; padding-left: 20px; color: var(--text-gray); font-size: 0.9rem; line-height: 1.6;">
+                    <li>Share your unique referral link</li>
+                    <li>Your friend signs up and verifies</li>
+                    <li>You earn 10% on their trades automatically</li>
+                    <li>Withdraw your earnings anytime</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="modal-content" id="appearanceModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header">
+                <div class="modal-title">Appearance</div>
+                <button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </div>
+            <div class="settings-item" onclick="toggleTheme()" style="border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px;">
+                <div class="settings-item-left"><div class="settings-label">Dark Theme</div></div>
+                <div class="toggle-switch" id="themeToggle"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Font Size</label>
+                <select class="form-select" id="fontSize" onchange="changeFontSize()">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-content" id="notificationsModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <p style="color: var(--text-gray);">Notification settings coming soon...</p>
+        </div>
+
+        <div class="modal-content" id="performanceModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Performance</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <p style="color: var(--text-gray);">Trading performance stats coming soon...</p>
+        </div>
+
+        <div class="modal-content" id="riskModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Risk Disclaimer</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <div style="color: var(--text-gray); line-height: 1.6; font-size: 0.9rem;">
+                <p><strong>Trading involves risk.</strong> You should only trade with money you can afford to lose.</p>
+                <p style="margin-top: 12px;">Past performance is not indicative of future results. The value of investments can go down as well as up.</p>
+            </div>
+        </div>
+
+        <div class="modal-content" id="privacyModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Privacy & Cookies</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <p style="color: var(--text-gray);">Privacy policy and cookie settings coming soon...</p>
+        </div>
+
+        <div class="modal-content" id="languageModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Language</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <select class="form-select" onchange="changeLanguage(this.value)">
+                <option value="en" selected>English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+            </select>
+        </div>
+
+        <div class="modal-content" id="timezoneModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Timezone</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <select class="form-select" onchange="changeTimezone(this.value)">
+                <option value="GMT" selected>GMT (London)</option>
+                <option value="EST">EST (New York)</option>
+                <option value="PST">PST (Los Angeles)</option>
+                <option value="CET">CET (Paris)</option>
+                <option value="JST">JST (Tokyo)</option>
+            </select>
+        </div>
+
+        <div class="modal-content" id="infoModal" onclick="event.stopPropagation()" style="display: none;">
+            <div class="modal-header"><div class="modal-title">Website Info</div><button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+            <div style="color: var(--text-gray);">
+                <p><strong>OBX PRIME</strong></p>
+                <p style="margin-top: 8px;">Version: 2.0.1</p>
+                <p>© 2024 OBX PRIME. All rights reserved.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // Load profile data immediately
-        document.addEventListener('DOMContentLoaded', () => {
-            const name = localStorage.getItem('userName');
-            const email = localStorage.getItem('userEmail');
-            
-            // Fallback if data is missing
-            const displayName = name || 'Guest User';
-            const displayEmail = email || 'No email found';
-            
-            document.getElementById('profile-name').innerText = displayName;
-            document.getElementById('profile-email').innerText = displayEmail;
-            document.getElementById('profile-avatar').innerText = displayName.charAt(0).toUpperCase();
-            
-            // Security check
-            if(localStorage.getItem('isLoggedIn') !== 'true') {
-                window.location.href = 'signin.html';
-            }
+        const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
+        const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
+        let obxSupabase;
+        let currentUser = null;
+
+        if (typeof window.supabase !== 'undefined') {
+            obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
+        }
+
+        window.addEventListener('load', async () => {
+            await loadUserProfile();
+            loadTheme();
         });
 
-        function logoutUser() {
-            localStorage.clear();
-            window.location.href = 'signin.html';
+        async function loadUserProfile() {
+            if (!obxSupabase) return;
+            try {
+                const { data: { user } } = await obxSupabase.auth.getUser();
+                if (user) {
+                    currentUser = user;
+                    const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Trader';
+                    const email = user.email || '';
+                    const avatarUrl = user.user_metadata?.avatar_url || '';
+                    
+                    document.getElementById('displayName').innerText = displayName;
+                    document.getElementById('displayEmail').innerText = email;
+                    document.getElementById('profileInitial').innerText = displayName.charAt(0).toUpperCase();
+                    
+                    if (avatarUrl) {
+                        document.getElementById('profileImage').src = avatarUrl;
+                        document.getElementById('profileImage').style.display = 'block';
+                        document.getElementById('profileInitial').style.display = 'none';
+                    }
+
+                    const { data: profile } = await obxSupabase.from('profiles').select('*').eq('id', user.id).single();
+                    if (profile) {
+                        document.getElementById('firstName').value = profile.first_name || '';
+                        document.getElementById('lastName').value = profile.last_name || '';
+                        document.getElementById('username').value = profile.username || '';
+                        document.getElementById('phoneNumber').value = profile.phone || '';
+                        document.getElementById('dateOfBirth').value = profile.date_of_birth || '';
+                        document.getElementById('gender').value = profile.gender || '';
+                        document.getElementById('country').value = profile.country || '';
+                        document.getElementById('referralLink').innerText = `https://obxprime.com/register?ref=${user.id}`;
+                    }
+                }
+            } catch (e) { console.error('Error loading profile:', e); }
         }
+
+        function openModal(modalName) {
+            document.querySelectorAll('.modal-content').forEach(m => m.style.display = 'none');
+            document.getElementById(modalName + 'Modal').style.display = 'block';
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'modalOverlay') {
+                document.getElementById('modalOverlay').classList.remove('show');
+                setTimeout(() => { document.querySelectorAll('.modal-content').forEach(m => m.style.display = 'none'); }, 300);
+            }
+        }
+
+        async function handleProfilePicUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !currentUser) return;
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
+                const { error: uploadError } = await obxSupabase.storage.from('profile_pictures').upload(fileName, file, { upsert: true });
+                if (uploadError) throw uploadError;
+                
+                const { data: { publicUrl } } = obxSupabase.storage.from('profile_pictures').getPublicUrl(fileName);
+                await obxSupabase.auth.updateUser({ data: { avatar_url: publicUrl } });
+                
+                document.getElementById('profileImage').src = publicUrl;
+                document.getElementById('profileImage').style.display = 'block';
+                document.getElementById('profileInitial').style.display = 'none';
+                alert('Profile picture updated successfully!');
+            } catch (err) { alert('Error uploading picture: ' + err.message); }
+        }
+
+        async function saveProfile() {
+            if (!currentUser) return alert('Please login first');
+            const profileData = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                username: document.getElementById('username').value,
+                phone: document.getElementById('phoneNumber').value,
+                date_of_birth: document.getElementById('dateOfBirth').value,
+                gender: document.getElementById('gender').value,
+                country: document.getElementById('country').value
+            };
+            try {
+                const { error } = await obxSupabase.from('profiles').update(profileData).eq('id', currentUser.id);
+                if (error) throw error;
+                alert('Profile updated successfully!');
+                closeModal();
+                loadUserProfile();
+            } catch (err) { alert('Error saving profile: ' + err.message); }
+        }
+
+        function copyReferralLink() {
+            const link = document.getElementById('referralLink').innerText;
+            navigator.clipboard.writeText(link).then(() => alert('Referral link copied to clipboard!'));
+        }
+
+        function toggleTheme() {
+            const toggle = document.getElementById('themeToggle');
+            document.body.classList.toggle('dark-theme');
+            toggle.classList.toggle('active');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const toggle = document.getElementById('themeToggle');
+            if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); toggle.classList.add('active'); }
+        }
+
+        function changeFontSize() {
+            const size = document.getElementById('fontSize').value;
+            document.body.style.fontSize = size === 'small' ? '14px' : size === 'large' ? '18px' : '16px';
+            localStorage.setItem('fontSize', size);
+        }
+
+        function changeLanguage(lang) { alert('Language changed to: ' + lang); localStorage.setItem('language', lang); }
+        function changeTimezone(tz) { alert('Timezone changed to: ' + tz); localStorage.setItem('timezone', tz); }
     </script>
 </body>
 </html>
