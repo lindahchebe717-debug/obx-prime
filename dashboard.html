@@ -153,7 +153,6 @@
         .menu-title { font-size: 1.2rem; font-weight: 800; color: var(--text-white); }
         .menu-close { background: none; border: none; color: var(--text-white); cursor: pointer; padding: 4px; }
         .menu-lang { font-size: 0.85rem; font-weight: 700; color: var(--text-white); margin-left: 12px; }
-        /* ✅ UPDATED: Made clickable */
         .menu-profile { display: flex; align-items: center; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
         .menu-profile:hover { background: rgba(124, 58, 237, 0.05); }
         .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-purple); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: white; flex-shrink: 0; }
@@ -334,8 +333,7 @@
             </div>
             <span class="menu-lang">EN</span>
         </div>
-        <!-- ✅ UPDATED: Made clickable to go to profile.html -->
-        <div class="menu-profile" onclick="window.location.href='profile.html'" style="cursor: pointer;">
+        <div class="menu-profile" onclick="window.location.href='profile.html'">
             <div class="profile-avatar" id="profileAvatar">?</div>
             <div class="profile-info">
                 <div class="profile-name" id="profileName">Loading...</div>
@@ -1044,8 +1042,39 @@
             setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
+        // ✅ UPDATED: Returns the trade record so we can update it later
+        async function placeTrade(direction) {
+            if (!obxSupabase) return null;
+            const stakeInput = document.getElementById('stakeAmount');
+            const stake = parseFloat(stakeInput ? stakeInput.value : 10);
+            const entryPrice = currentPrice;
+            try {
+                const { data: { user } } = await obxSupabase.auth.getUser();
+                if(!user) return null;
+                const { data, error } = await obxSupabase.from('trades').insert({ 
+                    user_id: user.id, 
+                    asset: 'VOL_10', 
+                    direction: direction, 
+                    stake: stake, 
+                    entry_price: entryPrice, 
+                    status: 'OPEN',
+                    account_type: currentAccount,
+                    mode: isAutoMode ? 'AUTO' : 'MANUAL',
+                    payout: 0
+                }).select();
+                if(error) {
+                    console.error("Supabase insert error:", error);
+                    return null;
+                }
+                return data ? data[0] : null;
+            } catch(e) { 
+                console.error("Trade error:", e); 
+                return null;
+            }
+        }
+
         async function executeTrade(direction) {
-            await placeTrade(direction);
+            const tradeRecord = await placeTrade(direction);
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
             const lastDigit = Math.floor(currentPrice) % 10;
             
@@ -1061,6 +1090,18 @@
                 tradeWon = (direction === 'OVER' && lastDigit > target) || (direction === 'UNDER' && lastDigit < target);
             }
             
+            const newStatus = tradeWon ? 'WON' : 'LOST';
+            const payoutAmount = tradeWon ? (stake * 1.952) : 0;
+
+            // ✅ UPDATE THE TRADE IN DATABASE SO IT SHOWS IN POSITIONS
+            if (tradeRecord) {
+                await obxSupabase.from('trades').update({
+                    status: newStatus,
+                    payout: payoutAmount,
+                    exit_price: currentPrice
+                }).eq('id', tradeRecord.id);
+            }
+
             if (tradeWon) {
                 stats.wins++;
                 const payout = stake * 0.952;
@@ -1172,28 +1213,6 @@
                 gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
                 osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.3);
             } catch (e) {}
-        }
-
-        async function placeTrade(direction) {
-            if (!obxSupabase) return alert("System error: Supabase not loaded.");
-            const stakeInput = document.getElementById('stakeAmount');
-            const stake = parseFloat(stakeInput ? stakeInput.value : 10);
-            const entryPrice = currentPrice;
-            try {
-                const { data: { user } } = await obxSupabase.auth.getUser();
-                if(!user) return alert("Please login first via index.html");
-                const { error } = await obxSupabase.from('trades').insert({ 
-                    user_id: user.id, 
-                    asset: 'VOL_10', 
-                    direction: direction, 
-                    stake: stake, 
-                    entry_price: entryPrice, 
-                    status: 'OPEN',
-                    account_type: currentAccount,
-                    mode: isAutoMode ? 'AUTO' : 'MANUAL'
-                });
-                if(error) console.error("Supabase insert error:", error);
-            } catch(e) { console.error("Trade error:", e); }
         }
     </script>
 </body>
