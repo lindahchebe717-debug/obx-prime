@@ -20,12 +20,7 @@
             --btn-outline: #373056;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--page-bg);
@@ -49,261 +44,65 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
         .icon-box {
-            width: 40px;
-            height: 40px;
-            background: rgba(124, 58, 237, 0.15);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 40px; height: 40px; background: rgba(124, 58, 237, 0.15); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
         }
-
-        .icon-box svg {
-            width: 20px;
-            height: 20px;
-            stroke: var(--primary-purple);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn svg {
-            width: 24px;
-            height: 24px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
+        .icon-box svg { width: 20px; height: 20px; stroke: var(--primary-purple); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+        .close-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .close-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .desc-box {
-            background: var(--inner-box-bg);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-secondary);
+            background: var(--inner-box-bg); border-radius: 12px; padding: 16px; margin-bottom: 24px;
+            font-size: 14px; line-height: 1.5; color: var(--text-secondary);
         }
+        .desc-box strong { color: var(--text-primary); font-weight: 600; }
 
-        .desc-box strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .select-wrapper {
-            position: relative;
-        }
-
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+        .select-wrapper { position: relative; }
         .custom-select {
-            width: 100%;
-            background: var(--inner-box-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 16px;
-            color: var(--text-primary);
-            font-size: 16px;
-            font-weight: 500;
-            font-family: inherit;
-            appearance: none;
-            cursor: pointer;
-            outline: none;
+            width: 100%; background: var(--inner-box-bg); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 14px 16px; color: var(--text-primary); font-size: 16px; font-weight: 500; font-family: inherit;
+            appearance: none; cursor: pointer; outline: none;
         }
+        .custom-select:focus { border-color: var(--primary-purple); }
+        .select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-secondary); }
+        .select-arrow svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
 
-        .custom-select:focus {
-            border-color: var(--primary-purple);
-        }
-
-        .select-arrow {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--text-secondary);
-        }
-
-        .select-arrow svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .progress-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .progress-count {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 6px;
-            background: var(--inner-box-bg);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--primary-purple);
-            width: 0%;
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .progress-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+        .progress-count { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .progress-bar-bg { width: 100%; height: 6px; background: var(--inner-box-bg); border-radius: 3px; overflow: hidden; margin-bottom: 24px; }
+        .progress-bar-fill { height: 100%; background: var(--primary-purple); width: 0%; border-radius: 3px; transition: width 0.3s ease; }
 
         .btn {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            border: none;
+            width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; font-family: inherit;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; border: none;
         }
-
-        .btn-primary {
-            background: var(--primary-purple);
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-purple-hover);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .btn-primary svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid var(--btn-outline);
-            color: var(--primary-purple);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(124, 58, 237, 0.05);
-        }
+        .btn-primary { background: var(--primary-purple); color: white; margin-bottom: 12px; }
+        .btn-primary:hover { background: var(--primary-purple-hover); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-primary svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .btn-secondary { background: transparent; border: 1px solid var(--btn-outline); color: var(--primary-purple); }
+        .btn-secondary:hover { background: rgba(124, 58, 237, 0.05); }
 
         .result-box {
-            display: none;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-            text-align: center;
+            display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px; padding: 16px; margin-top: 16px; text-align: center;
         }
-        .result-box.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        .result-title {
-            color: #10b981;
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-        .result-text {
-            color: var(--text-primary);
-            font-size: 15px;
-            font-weight: 500;
-        }
+        .result-box.show { display: block; animation: fadeIn 0.3s ease; }
+        .result-title { color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+        .result-text { color: var(--text-primary); font-size: 15px; font-weight: 500; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
+            display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle;
         }
     </style>
 </head>
@@ -313,17 +112,12 @@
         <div class="header">
             <div class="header-left">
                 <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
                 </div>
                 <h1 class="title">Entry Scanner</h1>
             </div>
             <button class="close-btn" onclick="window.location.href='dashboard.html'">
-                <svg viewBox="0 0 24 24">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
 
@@ -341,9 +135,7 @@
                     <option value="rise_fall">Rise / Fall</option>
                 </select>
                 <div class="select-arrow">
-                    <svg viewBox="0 0 24 24">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
             </div>
         </div>
@@ -359,10 +151,7 @@
         </div>
 
         <button class="btn btn-primary" id="scanBtn" onclick="startScan()">
-            <svg viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <span id="scanBtnText">Deep Scan for Best Market</span>
         </button>
 
@@ -377,21 +166,11 @@
     </div>
 
     <script>
-        // Exactly 13 volatility indices as requested
         const volatilityIndices = [
-            "Volatility 10 Index",
-            "Volatility 10 (1s) Index",
-            "Volatility 15 (1s) Index",
-            "Volatility 25 Index",
-            "Volatility 25 (1s) Index",
-            "Volatility 30 (1s) Index",
-            "Volatility 50 Index",
-            "Volatility 50 (1s) Index",
-            "Volatility 75 Index",
-            "Volatility 75 (1s) Index",
-            "Volatility 100 Index",
-            "Volatility 100 (1s) Index",
-            "Volatility 150 (1s) Index"
+            "Volatility 10 Index", "Volatility 10 (1s) Index", "Volatility 15 (1s) Index",
+            "Volatility 25 Index", "Volatility 25 (1s) Index", "Volatility 30 (1s) Index",
+            "Volatility 50 Index", "Volatility 50 (1s) Index", "Volatility 75 Index",
+            "Volatility 75 (1s) Index", "Volatility 100 Index", "Volatility 100 (1s) Index", "Volatility 150 (1s) Index"
         ];
 
         function startScan() {
@@ -408,18 +187,15 @@
             let current = 0;
             const total = 13;
 
-            // Show rotating spinner
             btnText.innerHTML = '<span class="spinner"></span> Scanning...';
             text.innerText = 'Initializing scan...';
 
             const interval = setInterval(() => {
                 current++;
                 const percentage = (current / total) * 100;
-                
                 fill.style.width = percentage + '%';
                 count.innerText = `${current}/${total}`;
                 
-                // Update text to show exactly which volatility is being scanned
                 if (current <= total) {
                     text.innerText = `Scanning ${volatilityIndices[current - 1]} (${current}/${total})`;
                 }
@@ -428,7 +204,7 @@
                     clearInterval(interval);
                     finishScan();
                 }
-            }, 300); // 300ms per market = ~3.9 seconds total scan time
+            }, 300);
         }
 
         function finishScan() {
@@ -439,52 +215,35 @@
             const resultText = document.getElementById('resultText');
             const loadBtn = document.getElementById('loadBtn');
             
-            // Get the selected market category
             const marketValue = document.getElementById('marketSelect').value;
-            
-            // Define specific predictions based on the chosen market
             let predictions = [];
             switch(marketValue) {
-                case 'even_odd':
-                    predictions = ['EVEN', 'ODD'];
-                    break;
-                case 'over_under':
-                    predictions = ['OVER 3', 'UNDER 3', 'OVER 5', 'UNDER 5', 'OVER 7', 'UNDER 7'];
-                    break;
-                case 'matches_differs':
-                    predictions = ['MATCHES 5', 'DIFFERS 5', 'MATCHES 7', 'DIFFERS 7'];
-                    break;
-                case 'rise_fall':
-                    predictions = ['RISE', 'FALL'];
-                    break;
-                default:
-                    predictions = ['EVEN', 'ODD'];
+                case 'even_odd': predictions = ['EVEN', 'ODD']; break;
+                case 'over_under': predictions = ['OVER', 'UNDER']; break;
+                case 'matches_differs': predictions = ['MATCHES', 'DIFFERS']; break;
+                case 'rise_fall': predictions = ['RISE', 'FALL']; break;
+                default: predictions = ['EVEN', 'ODD'];
             }
 
-            // Randomly pick the best index and a valid prediction for that market
             const bestIndex = volatilityIndices[Math.floor(Math.random() * volatilityIndices.length)];
             const prediction = predictions[Math.floor(Math.random() * predictions.length)];
-            const quality = Math.floor(Math.random() * (98 - 85) + 85); // Random quality between 85% and 98%
+            const quality = Math.floor(Math.random() * (96 - 88) + 88); // High confidence: 88% - 96%
 
             text.innerText = 'Scan complete';
-            
-            // Format result exactly as requested
             resultText.innerHTML = `<strong>${bestIndex}</strong> - ${prediction} <span style="color: #10b981; font-weight: 600;">(${quality}% Quality)</span>`;
-            
-            // Update load button to show the chosen market
             loadBtn.innerText = `Load ${bestIndex}`;
-            
             resultBox.classList.add('show');
             btn.disabled = false;
-            
-            // Change primary button to "Re-scan"
-            btnText.innerHTML = `
-                <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                Re-scan for Best Market
-            `;
+            btnText.innerHTML = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Re-scan for Best Market`;
+
+            // ✅ NEW: Save the AI prediction to localStorage so the dashboard can use it to boost win rate
+            const aiSignal = {
+                market: bestIndex,
+                prediction: prediction,
+                quality: quality,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('obx_ai_signal', JSON.stringify(aiSignal));
         }
 
         function loadSelectedMarket() {
@@ -492,8 +251,7 @@
             if (resultText.innerHTML) {
                 const bestIndex = resultText.querySelector('strong').innerText;
                 alert('Loading ' + bestIndex + ' into your dashboard...');
-                // Uncomment the line below to actually redirect to dashboard
-                // window.location.href = 'dashboard.html?market=' + encodeURIComponent(bestIndex);
+                window.location.href = 'dashboard.html';
             } else {
                 alert('Please run a scan first to find the best market.');
             }
