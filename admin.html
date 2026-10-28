@@ -640,23 +640,22 @@
         </div>
     </div>
 
-    <!-- ✅ UPDATED: TICKET MESSAGE MODAL WITH REPLY BOX -->
+    <!-- ✅ UPDATED: TICKET MESSAGE MODAL WITH CHAT THREAD -->
     <div id="ticket-message-modal" class="modal">
-        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
             <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
-            <h3 class="text-xl font-bold text-white mb-2" id="ticket-modal-subject">Subject</h3>
+            <h3 class="text-xl font-bold text-white mb-4" id="ticket-modal-subject">Subject</h3>
             
-            <!-- Original Message -->
-            <div class="bg-[#141021] p-4 rounded-lg mb-4">
-                <p class="text-xs text-gray-500 mb-1">Original Message:</p>
-                <p class="text-gray-300 whitespace-pre-wrap" id="ticket-modal-message">Message goes here...</p>
+            <!-- Chat Thread -->
+            <div id="ticket-chat-thread" class="flex-1 overflow-y-auto mb-4 space-y-3 max-h-[50vh] pr-2">
+                <!-- Messages will be injected here -->
             </div>
 
-            <!-- ✅ NEW: Reply Section -->
-            <div class="border-t border-white/10 pt-4 mt-4">
+            <!-- Reply Section -->
+            <div class="border-t border-white/10 pt-4 mt-auto">
                 <h4 class="text-sm font-semibold text-white mb-2">Reply to User</h4>
                 <textarea id="admin-reply-text" class="input-dark w-full h-24 resize-none mb-2" placeholder="Type your reply here..."></textarea>
-                <button onclick="sendAdminReply(currentTicketId)" class="btn-primary w-full py-2.5 rounded-lg font-semibold">Send Reply</button>
+                <button id="send-reply-btn" onclick="sendAdminReply(currentTicketId)" class="btn-primary w-full py-2.5 rounded-lg font-semibold">Send Reply</button>
             </div>
         </div>
     </div>
@@ -687,7 +686,7 @@
 
         let currentFundUserId = null;
         let currentUserDetails = null;
-        let currentTicketId = null; // ✅ NEW: Track current ticket for replies
+        let currentTicketId = null;
 
         async function checkAdminAuth() {
             const { data: { user }, error } = await supabaseClient.auth.getUser();
@@ -810,7 +809,6 @@
                 tbody.innerHTML = tickets.map(t => {
                     const userEmail = emailMap[t.user_id] || (t.user_id ? t.user_id.substring(0,8)+'...' : 'Unknown');
                     const safeSubject = (t.subject || 'No Subject').replace(/'/g, "\\'");
-                    const safeMessage = (t.message || 'No message').replace(/'/g, "\\'").replace(/\n/g, '\\n');
                     return `
                     <tr>
                         <td class="text-xs text-gray-300">${userEmail}</td>
@@ -818,7 +816,7 @@
                         <td class="text-amber-400 text-xs font-bold">${t.status}</td>
                         <td class="text-gray-500 text-xs">${t.created_at ? new Date(t.created_at).toLocaleDateString() : 'N/A'}</td>
                         <td class="flex gap-2">
-                            <button onclick="viewTicketMessage('${t.id}', '${safeSubject}', '${safeMessage}')" class="btn-info px-3 py-1 rounded text-xs font-bold">View</button>
+                            <button onclick="viewTicketMessage('${t.id}', '${safeSubject}')" class="btn-info px-3 py-1 rounded text-xs font-bold">View</button>
                             <button onclick="resolveTicket('${t.id}')" class="btn-success px-3 py-1 rounded text-xs font-bold">Resolve</button>
                         </td>
                     </tr>
@@ -830,13 +828,68 @@
         }
 
         // ✅ UPDATED: Functions to handle the ticket message modal AND replies
-        function viewTicketMessage(id, subject, message) {
-            currentTicketId = id; // ✅ Store ID for replying
+        async function viewTicketMessage(id, subject) {
+            currentTicketId = id;
             document.getElementById('ticket-modal-subject').innerText = subject || 'No Subject';
-            const unescapedMessage = message.replace(/\\n/g, '\n').replace(/\\'/g, "'");
-            document.getElementById('ticket-modal-message').innerText = unescapedMessage || 'No message content.';
-            document.getElementById('admin-reply-text').value = ''; // Clear previous reply
+            document.getElementById('admin-reply-text').value = '';
+            
+            const threadContainer = document.getElementById('ticket-chat-thread');
+            threadContainer.innerHTML = '<p class="text-gray-400 text-center text-sm">Loading conversation...</p>';
             document.getElementById('ticket-message-modal').classList.add('active');
+
+            try {
+                // 1. Get original ticket message
+                const { data: ticket } = await supabaseClient.from('support_tickets').select('message, created_at').eq('id', id).single();
+                
+                // 2. Get all replies
+                const { data: replies } = await supabaseClient.from('ticket_replies')
+                    .select('sender_role, message, created_at')
+                    .eq('ticket_id', id)
+                    .order('created_at', { ascending: true });
+
+                threadContainer.innerHTML = '';
+
+                // Add original message
+                appendChatBubble('client', ticket.message, ticket.created_at);
+
+                // Add replies
+                if (replies) {
+                    replies.forEach(r => {
+                        appendChatBubble(r.sender_role, r.message, r.created_at);
+                    });
+                }
+
+                // Scroll to bottom
+                setTimeout(() => {
+                    threadContainer.scrollTop = threadContainer.scrollHeight;
+                }, 100);
+
+            } catch (e) {
+                console.error(e);
+                threadContainer.innerHTML = '<p class="text-red-400 text-center text-sm">Failed to load conversation.</p>';
+            }
+        }
+
+        function appendChatBubble(role, message, timestamp) {
+            const threadContainer = document.getElementById('ticket-chat-thread');
+            const bubble = document.createElement('div');
+            
+            const isAdmin = role === 'admin';
+            bubble.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'}`;
+            
+            const timeStr = new Date(timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const senderLabel = isAdmin ? 'You (Admin)' : 'Client';
+            const bubbleColor = isAdmin ? 'bg-[#7c3aed] text-white' : 'bg-[#141021] text-gray-300 border border-white/10';
+            const borderRadius = isAdmin ? 'rounded-l-2xl rounded-tr-2xl rounded-br-sm' : 'rounded-r-2xl rounded-tl-2xl rounded-bl-sm';
+
+            bubble.innerHTML = `
+                <div class="max-w-[85%] ${bubbleColor} ${borderRadius} p-3 shadow-sm">
+                    <div class="text-[10px] font-bold opacity-70 mb-1">${senderLabel}</div>
+                    <div class="text-sm whitespace-pre-wrap break-words">${message}</div>
+                    <div class="text-[10px] opacity-60 text-right mt-1">${timeStr}</div>
+                </div>
+            `;
+            threadContainer.appendChild(bubble);
         }
 
         function closeTicketModal() {
@@ -850,6 +903,11 @@
             const replyText = document.getElementById('admin-reply-text').value.trim();
             if (!replyText) return alert('Please type a reply.');
             
+            const btn = document.getElementById('send-reply-btn');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+            
             try {
                 // 1. Insert reply into ticket_replies table
                 const { error: replyError } = await supabaseClient.from('ticket_replies').insert({
@@ -860,15 +918,26 @@
                 });
                 if (replyError) throw replyError;
                 
-                // 2. Update ticket status to 'In Progress'
-                await supabaseClient.from('support_tickets').update({ status: 'In Progress' }).eq('id', ticketId);
+                // 2. Update ticket status to 'In Progress' if it was Open
+                const { data: ticket } = await supabaseClient.from('support_tickets').select('status').eq('id', ticketId).single();
+                if (ticket && ticket.status === 'Open') {
+                    await supabaseClient.from('support_tickets').update({ status: 'In Progress' }).eq('id', ticketId);
+                }
                 
-                alert('✅ Reply sent successfully!');
-                closeTicketModal();
-                loadTickets(); // Refresh the list to show new status
+                document.getElementById('admin-reply-text').value = '';
+                
+                // Reload the thread to show the new message
+                const subject = document.getElementById('ticket-modal-subject').innerText;
+                await viewTicketMessage(ticketId, subject);
+                
+                // Refresh the list in background
+                loadTickets();
             } catch (e) {
                 console.error(e);
                 alert('❌ Error sending reply: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
             }
         }
 
