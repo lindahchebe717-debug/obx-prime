@@ -558,7 +558,7 @@
                 <span class="insufficient-alert-text">Insufficient balance. Top up now!</span>
             </div>
             <div class="payment-methods">
-                <a href="deposit.html#btc" class="payment-method"><div class="payment-icon btc">₿</div><div class="payment-info"><div class="payment-name">Bitcoin (BTC)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+                <a href="deposit.html#btc" class="payment-method"><div class="payment-icon btc"></div><div class="payment-info"><div class="payment-name">Bitcoin (BTC)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#eth" class="payment-method"><div class="payment-icon eth">Ξ</div><div class="payment-info"><div class="payment-name">Ethereum (ETH)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#usdt-trc20" class="payment-method"><div class="payment-icon usdt"></div><div class="payment-info"><div class="payment-name">USDT (TRC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
                 <a href="deposit.html#usdt-erc20" class="payment-method"><div class="payment-icon usdt">₮</div><div class="payment-info"><div class="payment-name">USDT (ERC20)</div><div class="payment-desc">Cryptocurrency · auto-credited</div></div><div class="payment-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
@@ -1058,7 +1058,7 @@
                     stake: stake, 
                     entry_price: entryPrice, 
                     status: 'OPEN',
-                    account_type: currentAccount,
+                    account_type: currentAccount, // ✅ This will now save 'real' or 'demo' correctly
                     mode: isAutoMode ? 'AUTO' : 'MANUAL',
                     payout: 0
                 }).select();
