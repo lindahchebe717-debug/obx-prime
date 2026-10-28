@@ -34,6 +34,30 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); text-decoration: none; font-size: 0.6rem; font-weight: 600; flex: 1; height: 100%; justify-content: center; }
         .nav-item.active { color: var(--primary-purple); }
         .nav-icon { width: 20px; height: 20px; }
+
+        /* ✅ NEW: Ticket List & Chat Thread Styles */
+        .ticket-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: background 0.2s; background: var(--bg-card); }
+        .ticket-item:hover { background: rgba(124, 58, 237, 0.05); }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .status-open { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .status-progress { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-resolved { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: var(--bg-card); width: 100%; max-width: 600px; max-height: 85vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .chat-thread { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; position: relative; }
+        .chat-bubble.client { background: var(--primary-purple); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-bubble.admin { background: var(--bg-main); color: var(--text-white); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
+        .chat-meta { font-size: 0.7rem; opacity: 0.7; margin-top: 6px; text-align: right; }
+        .chat-bubble.admin .chat-meta { text-align: left; }
+        .reply-box { padding: 16px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; align-items: flex-end; }
+        .reply-input { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 20px; background: var(--bg-main); color: var(--text-white); resize: none; min-height: 44px; max-height: 120px; }
+        .reply-input:focus { outline: none; border-color: var(--primary-purple); }
+        .send-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-purple); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -51,8 +75,17 @@
             <span>obxprimesupport@gmail.com</span>
         </a>
 
+        <!-- ✅ NEW: My Tickets List -->
         <div class="card">
-            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.2rem;">Open a Support Ticket</h2>
+            <h2 style="margin-top: 0; margin-bottom: 16px; font-size: 1.2rem;">My Tickets</h2>
+            <div id="my-tickets-list">
+                <p style="text-align: center; color: var(--text-gray); padding: 20px;">Loading your tickets...</p>
+            </div>
+        </div>
+
+        <!-- New Ticket Form -->
+        <div class="card">
+            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.2rem;">Open a New Support Ticket</h2>
             <form id="supportForm" onsubmit="submitTicket(event)">
                 <div class="form-group">
                     <label class="form-label">Subject</label>
@@ -67,6 +100,32 @@
         </div>
     </div>
 
+    <!-- ✅ NEW: Ticket Thread Modal -->
+    <div class="modal-overlay" id="ticketModal" onclick="closeTicketModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.1rem;" id="modal-ticket-subject">Subject</h3>
+                    <span class="status-badge" id="modal-ticket-status" style="margin-top: 4px; display: inline-block;">Open</span>
+                </div>
+                <button onclick="closeTicketModal()" style="background: none; border: none; color: var(--text-gray); cursor: pointer; padding: 8px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="chat-thread" id="chat-thread">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <div class="reply-box">
+                <textarea class="reply-input" id="reply-input" placeholder="Type your reply..." rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                <button class="send-btn" id="send-reply-btn" onclick="sendClientReply()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <a href="dashboard.html" class="nav-item">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h2v8H3zm6-4h2v12H9zm6-4h2v16h-2zm6-4h2v20h-2z"/></svg>
@@ -76,9 +135,9 @@
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
             <span>AI</span>
         </a>
-        <a href="profile.html" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Profile</span>
+        <a href="support.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Support</span>
         </a>
     </nav>
 
@@ -86,12 +145,177 @@
         const OBX_SUPABASE_URL = 'https://twvwwpywcmjdrocsfhya.supabase.co';
         const OBX_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3dnd3cHl3Y21qZHJvY3NmaHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzI4ODQsImV4cCI6MjEwNTkwODg4NH0.RPCR_K_GwxDJSWnxkjCdd_AxFHXJq3R87cOVDR7FBd8';
         let obxSupabase;
+        let currentUser = null;
+        let currentOpenTicketId = null;
+
         if (typeof window.supabase !== 'undefined') {
             obxSupabase = window.supabase.createClient(OBX_SUPABASE_URL, OBX_SUPABASE_ANON_KEY);
         }
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-theme');
+        }
+
+        // Initialize
+        window.addEventListener('load', async () => {
+            const { data: { user } } = await obxSupabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            loadMyTickets();
+        });
+
+        // ✅ NEW: Load user's tickets
+        async function loadMyTickets() {
+            const container = document.getElementById('my-tickets-list');
+            try {
+                const { data: tickets, error } = await obxSupabase
+                    .from('support_tickets')
+                    .select('id, subject, status, created_at')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!tickets || tickets.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">You have no open tickets. Create one below!</p>';
+                    return;
+                }
+
+                container.innerHTML = tickets.map(t => {
+                    let statusClass = 'status-open';
+                    if (t.status === 'In Progress') statusClass = 'status-progress';
+                    if (t.status === 'Resolved') statusClass = 'status-resolved';
+                    
+                    const date = new Date(t.created_at).toLocaleDateString();
+                    return `
+                        <div class="ticket-item" onclick="openTicketThread('${t.id}')">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">${t.subject}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-gray);">${date}</div>
+                            </div>
+                            <span class="status-badge ${statusClass}">${t.status}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error loading tickets:', err);
+                container.innerHTML = '<p style="text-align: center; color: var(--danger-red); padding: 20px;">Failed to load tickets.</p>';
+            }
+        }
+
+        // ✅ NEW: Open ticket thread modal
+        async function openTicketThread(ticketId) {
+            currentOpenTicketId = ticketId;
+            document.getElementById('ticketModal').classList.add('show');
+            document.getElementById('reply-input').value = '';
+            
+            try {
+                // 1. Get ticket details
+                const { data: ticket } = await obxSupabase.from('support_tickets').select('subject, status').eq('id', ticketId).single();
+                document.getElementById('modal-ticket-subject').innerText = ticket.subject;
+                
+                const statusEl = document.getElementById('modal-ticket-status');
+                statusEl.innerText = ticket.status;
+                statusEl.className = 'status-badge ' + (ticket.status === 'In Progress' ? 'status-progress' : ticket.status === 'Resolved' ? 'status-resolved' : 'status-open');
+
+                // 2. Get original message + replies
+                const { data: replies } = await obxSupabase
+                    .from('ticket_replies')
+                    .select('sender_role, message, created_at')
+                    .eq('ticket_id', ticketId)
+                    .order('created_at', { ascending: true });
+
+                const threadContainer = document.getElementById('chat-thread');
+                threadContainer.innerHTML = '';
+
+                // Add original message as first client bubble
+                const { data: originalTicket } = await obxSupabase.from('support_tickets').select('message, created_at').eq('id', ticketId).single();
+                appendChatBubble('client', originalTicket.message, originalTicket.created_at);
+
+                // Add replies
+                if (replies) {
+                    replies.forEach(r => {
+                        appendChatBubble(r.sender_role, r.message, r.created_at);
+                    });
+                }
+
+                // Scroll to bottom
+                setTimeout(() => {
+                    threadContainer.scrollTop = threadContainer.scrollHeight;
+                }, 100);
+
+            } catch (err) {
+                console.error('Error loading thread:', err);
+            }
+        }
+
+        function appendChatBubble(role, message, timestamp) {
+            const threadContainer = document.getElementById('chat-thread');
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${role}`;
+            
+            const timeStr = new Date(timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const senderLabel = role === 'admin' ? 'Support Team' : 'You';
+            
+            bubble.innerHTML = `
+                <div style="font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; opacity: 0.8;">${senderLabel}</div>
+                <div style="white-space: pre-wrap;">${message}</div>
+                <div class="chat-meta">${timeStr}</div>
+            `;
+            threadContainer.appendChild(bubble);
+        }
+
+        function closeTicketModal(event) {
+            if (!event || event.target.id === 'ticketModal') {
+                document.getElementById('ticketModal').classList.remove('show');
+                currentOpenTicketId = null;
+            }
+        }
+
+        // ✅ NEW: Send client reply
+        async function sendClientReply() {
+            const input = document.getElementById('reply-input');
+            const message = input.value.trim();
+            if (!message || !currentOpenTicketId) return;
+
+            const btn = document.getElementById('send-reply-btn');
+            btn.disabled = true;
+
+            try {
+                // 1. Insert reply
+                const { error: replyError } = await obxSupabase.from('ticket_replies').insert({
+                    ticket_id: currentOpenTicketId,
+                    sender_role: 'client',
+                    message: message,
+                    created_at: new Date().toISOString()
+                });
+                if (replyError) throw replyError;
+
+                // 2. If ticket was resolved, reopen it to "In Progress"
+                const { data: ticket } = await obxSupabase.from('support_tickets').select('status').eq('id', currentOpenTicketId).single();
+                if (ticket.status === 'Resolved') {
+                    await obxSupabase.from('support_tickets').update({ status: 'In Progress' }).eq('id', currentOpenTicketId);
+                }
+
+                // 3. Update UI
+                input.value = '';
+                input.style.height = '';
+                appendChatBubble('client', message, new Date().toISOString());
+                const threadContainer = document.getElementById('chat-thread');
+                threadContainer.scrollTop = threadContainer.scrollHeight;
+                
+                // Refresh list in background
+                loadMyTickets();
+
+            } catch (err) {
+                console.error('Error sending reply:', err);
+                alert('Failed to send reply. Please try again.');
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         async function submitTicket(event) {
@@ -104,15 +328,8 @@
             btn.innerText = 'Submitting...';
 
             try {
-                const { data: { user } } = await obxSupabase.auth.getUser();
-                if (!user) {
-                    alert('Please log in to submit a ticket.');
-                    window.location.href = 'index.html';
-                    return;
-                }
-
                 const { error } = await obxSupabase.from('support_tickets').insert({
-                    user_id: user.id,
+                    user_id: currentUser.id,
                     subject: subject,
                     message: message,
                     status: 'Open',
@@ -123,6 +340,7 @@
 
                 alert('✅ Support ticket submitted successfully! We will reply shortly.');
                 document.getElementById('supportForm').reset();
+                loadMyTickets(); // Refresh the list
             } catch (err) {
                 console.error('Error submitting ticket:', err);
                 alert('❌ Failed to submit ticket. Please try again or email us directly.');
