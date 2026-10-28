@@ -1042,7 +1042,6 @@
             setTimeout(() => { executeTrade(direction); }, 1000);
         }
 
-        // ✅ UPDATED: Returns the trade record so we can update it later
         async function placeTrade(direction) {
             if (!obxSupabase) return null;
             const stakeInput = document.getElementById('stakeAmount');
@@ -1058,7 +1057,7 @@
                     stake: stake, 
                     entry_price: entryPrice, 
                     status: 'OPEN',
-                    account_type: currentAccount, // ✅ This will now save 'real' or 'demo' correctly
+                    account_type: currentAccount,
                     mode: isAutoMode ? 'AUTO' : 'MANUAL',
                     payout: 0
                 }).select();
@@ -1089,11 +1088,24 @@
                 const target = 5;
                 tradeWon = (direction === 'OVER' && lastDigit > target) || (direction === 'UNDER' && lastDigit < target);
             }
-            
+
+            // ✅ AI WIN BOOST: If the user follows the AI Scanner's advice, give them an ~85% chance to win
+            const aiSignalStr = localStorage.getItem('obx_ai_signal');
+            if (aiSignalStr) {
+                const aiSignal = JSON.parse(aiSignalStr);
+                // Check if the AI signal is recent (within the last 5 minutes)
+                if (Date.now() - aiSignal.timestamp < 300000) {
+                    // If the trade direction matches the AI's prediction (e.g., AI said "EVEN" and user clicked "EVEN")
+                    if (aiSignal.prediction.includes(direction)) {
+                        // Override the natural result with an 85% win probability
+                        tradeWon = Math.random() < 0.85; 
+                    }
+                }
+            }
+
             const newStatus = tradeWon ? 'WON' : 'LOST';
             const payoutAmount = tradeWon ? (stake * 1.952) : 0;
 
-            // ✅ UPDATE THE TRADE IN DATABASE SO IT SHOWS IN POSITIONS
             if (tradeRecord) {
                 await obxSupabase.from('trades').update({
                     status: newStatus,
