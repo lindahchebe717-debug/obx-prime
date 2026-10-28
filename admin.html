@@ -122,7 +122,6 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-6 bg-[#0f0a1f]">
-            
             <!-- DASHBOARD SECTION -->
             <section id="section-dashboard" class="space-y-6">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -563,7 +562,6 @@
                     </div>
                 </div>
             </section>
-
         </main>
     </div>
 
@@ -572,7 +570,6 @@
         <div class="bg-gradient-to-br from-blue-900 to-cyan-600 rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeUserDetailsModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
             <h3 class="text-xl font-bold text-white mb-6">User Details</h3>
-            
             <div class="grid grid-cols-2 gap-4 mb-6 bg-white/10 p-4 rounded-lg">
                 <div><div class="user-detail-label">Email</div><div class="user-detail-value" id="modal-email">-</div></div>
                 <div><div class="user-detail-label">Full Name</div><div class="user-detail-value" id="modal-fullname">-</div></div>
@@ -583,7 +580,6 @@
                 <div><div class="user-detail-label">Balance</div><div class="user-detail-value text-emerald-300" id="modal-balance">$0.00</div></div>
                 <div><div class="user-detail-label">KYC Status</div><div class="user-detail-value"><span id="modal-kyc" class="px-2 py-0.5 bg-white/20 rounded text-xs">unverified</span></div></div>
             </div>
-
             <div id="modal-kyc-images-section" class="hidden mb-6">
                 <h4 class="text-lg font-semibold text-white mb-3 border-t border-white/20 pt-4">Submitted KYC Documents</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -601,7 +597,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex gap-3 pt-4 border-t border-white/20">
                 <button onclick="openAddFundsFromModal()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
@@ -645,16 +640,23 @@
         </div>
     </div>
 
-    <!-- ✅ NEW: TICKET MESSAGE MODAL -->
+    <!-- ✅ UPDATED: TICKET MESSAGE MODAL WITH REPLY BOX -->
     <div id="ticket-message-modal" class="modal">
-        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative">
+        <div class="bg-[#1a1535] rounded-xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">&times;</button>
             <h3 class="text-xl font-bold text-white mb-2" id="ticket-modal-subject">Subject</h3>
-            <div class="bg-[#141021] p-4 rounded-lg mb-4 max-h-60 overflow-y-auto">
+            
+            <!-- Original Message -->
+            <div class="bg-[#141021] p-4 rounded-lg mb-4">
+                <p class="text-xs text-gray-500 mb-1">Original Message:</p>
                 <p class="text-gray-300 whitespace-pre-wrap" id="ticket-modal-message">Message goes here...</p>
             </div>
-            <div class="flex gap-3">
-                <button onclick="closeTicketModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2.5 rounded-lg transition-colors">Close</button>
+
+            <!-- ✅ NEW: Reply Section -->
+            <div class="border-t border-white/10 pt-4 mt-4">
+                <h4 class="text-sm font-semibold text-white mb-2">Reply to User</h4>
+                <textarea id="admin-reply-text" class="input-dark w-full h-24 resize-none mb-2" placeholder="Type your reply here..."></textarea>
+                <button onclick="sendAdminReply(currentTicketId)" class="btn-primary w-full py-2.5 rounded-lg font-semibold">Send Reply</button>
             </div>
         </div>
     </div>
@@ -685,6 +687,7 @@
 
         let currentFundUserId = null;
         let currentUserDetails = null;
+        let currentTicketId = null; // ✅ NEW: Track current ticket for replies
 
         async function checkAdminAuth() {
             const { data: { user }, error } = await supabaseClient.auth.getUser();
@@ -789,7 +792,6 @@
             else { alert('❌ KYC Rejected.'); loadKYC(); loadDashboardStats(); }
         }
 
-        // ✅ UPDATED: Fetches user emails and adds a "View" button for the message
         async function loadTickets() {
             const tbody = document.getElementById('tickets-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
@@ -800,7 +802,6 @@
                     return;
                 }
                 
-                // Fetch user emails to map user_id to email
                 const userIds = [...new Set(tickets.map(t => t.user_id))];
                 const { data: profiles } = await supabaseClient.from('profiles').select('id, email').in('id', userIds);
                 const emailMap = {};
@@ -828,15 +829,47 @@
             }
         }
 
-        // ✅ NEW: Functions to handle the ticket message modal
+        // ✅ UPDATED: Functions to handle the ticket message modal AND replies
         function viewTicketMessage(id, subject, message) {
+            currentTicketId = id; // ✅ Store ID for replying
             document.getElementById('ticket-modal-subject').innerText = subject || 'No Subject';
             const unescapedMessage = message.replace(/\\n/g, '\n').replace(/\\'/g, "'");
             document.getElementById('ticket-modal-message').innerText = unescapedMessage || 'No message content.';
+            document.getElementById('admin-reply-text').value = ''; // Clear previous reply
             document.getElementById('ticket-message-modal').classList.add('active');
         }
+
         function closeTicketModal() {
             document.getElementById('ticket-message-modal').classList.remove('active');
+            currentTicketId = null;
+        }
+
+        // ✅ NEW: Send admin reply function
+        async function sendAdminReply(ticketId) {
+            if (!ticketId) return alert('Error: No ticket selected.');
+            const replyText = document.getElementById('admin-reply-text').value.trim();
+            if (!replyText) return alert('Please type a reply.');
+            
+            try {
+                // 1. Insert reply into ticket_replies table
+                const { error: replyError } = await supabaseClient.from('ticket_replies').insert({
+                    ticket_id: ticketId,
+                    sender_role: 'admin',
+                    message: replyText,
+                    created_at: new Date().toISOString()
+                });
+                if (replyError) throw replyError;
+                
+                // 2. Update ticket status to 'In Progress'
+                await supabaseClient.from('support_tickets').update({ status: 'In Progress' }).eq('id', ticketId);
+                
+                alert('✅ Reply sent successfully!');
+                closeTicketModal();
+                loadTickets(); // Refresh the list to show new status
+            } catch (e) {
+                console.error(e);
+                alert('❌ Error sending reply: ' + e.message);
+            }
         }
 
         async function resolveTicket(ticketId) {
@@ -943,7 +976,6 @@
             else { alert(`User successfully ${newStatus}!`); loadUsers(); }
         }
 
-        // ✅ UPDATED: Fetches and displays user emails instead of just IDs
         async function loadDeposits() {
             const tbody = document.getElementById('deposits-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
@@ -967,7 +999,6 @@
             </tr>`).join('');
         }
 
-        // ✅ UPDATED: Fetches and displays user emails instead of just IDs
         async function loadWithdrawals() {
             const tbody = document.getElementById('withdrawals-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Loading...</td></tr>';
