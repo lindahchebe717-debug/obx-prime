@@ -250,7 +250,6 @@
     </style>
 </head>
 <body>
-    <!-- [KEEP ALL YOUR HTML EXACTLY AS IT WAS, from app-banner down to bottom-nav] -->
     <div class="app-banner" id="appBanner">
         <div class="app-banner-content">
             <div class="app-banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
@@ -284,7 +283,7 @@
         </div>
         <div class="nav-right">
             <button class="icon-btn"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
-            <button class="deposit-btn">Deposit</button>
+            <button class="deposit-btn" onclick="window.location.href='deposit.html'">Deposit</button>
             <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></button>
         </div>
     </nav>
@@ -342,15 +341,40 @@
         }
 
         function toggleAccountMenu() { document.getElementById('accountDropdown').classList.toggle('show'); }
+        
         function switchAccount(type) {
             currentAccount = type;
             localStorage.setItem('obx_account_mode', type);
             document.getElementById('accountDropdown').classList.remove('show');
-            updateTopNav(); loadPositions();
+            loadPositions(); // Reload positions and balances when account switches
         }
+        
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.account-selector-wrap')) document.getElementById('accountDropdown').classList.remove('show');
         });
+
+        // ✅ NEW: Fetch real balance from Supabase so it shows correctly here too
+        async function loadUserBalances() {
+            if (!window.obxSupabase) return;
+            try {
+                const { data: { user } } = await window.obxSupabase.auth.getUser();
+                if (user) {
+                    const { data: profile, error } = await window.obxSupabase
+                        .from('profiles')
+                        .select('balance, demo_balance')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (!error && profile) {
+                        realBalance = parseFloat(profile.balance || 0);
+                        demoBalance = parseFloat(profile.demo_balance || 10000);
+                        localStorage.setItem('obx_demo_balance', demoBalance);
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading balances:", e);
+            }
+        }
 
         function updateTopNav() {
             const icon = document.getElementById('navAccountIcon');
@@ -461,7 +485,7 @@
                     container.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><h2 class="empty-title">No transactions</h2><p class="empty-subtitle">Your history will appear here</p></div>`;
                 } else {
                     let html = '<div class="tx-list">';
-                    let runningBalance = demoBalance;
+                    let runningBalance = currentAccount === 'real' ? realBalance : demoBalance;
                     const sortedTrades = [...allTrades].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     
                     sortedTrades.forEach(t => {
@@ -489,16 +513,36 @@
         }
 
         async function loadPositions() {
+            // ✅ Fetch balances first so the UI shows the correct Real/Demo balance
+            await loadUserBalances();
             updateTopNav();
+            
             if (!window.obxSupabase) { renderView(); return; }
             try {
                 const { data: { user }, error: authError } = await window.obxSupabase.auth.getUser();
                 if (authError || !user) { renderView(); return; }
-                const { data: trades, error } = await window.obxSupabase.from('trades').select('*').eq('user_id', user.id).eq('account_type', currentAccount).order('created_at', { ascending: false });
-                if (!error && trades) allTrades = trades;
+                
+                // ✅ Fetch trades specifically for the current account type ('real' or 'demo')
+                const { data: trades, error } = await window.obxSupabase
+                    .from('trades')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('account_type', currentAccount)
+                    .order('created_at', { ascending: false });
+                
+                if (!error && trades) {
+                    allTrades = trades;
+                } else if (error) {
+                    console.error("Supabase error fetching trades:", error);
+                }
                 renderView();
-            } catch (e) { console.error('Error:', e); renderView(); }
+            } catch (e) { 
+                console.error('Error loading positions:', e); 
+                renderView(); 
+            }
         }
+        
+        // Initial load
         loadPositions();
     </script>
 </body>
