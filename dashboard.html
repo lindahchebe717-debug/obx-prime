@@ -75,15 +75,40 @@
         .live-pnl.negative { color: var(--danger-red); }
         
         .digit-row { display: flex; justify-content: space-between; padding: 6px 12px 8px; gap: 2px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin: 0 12px 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-        .circle-container { width: 28px; height: 28px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; position: relative; }
+        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        
+        /* ✅ NEW: Three-ring progress system */
+        .digit-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .prog-circle-base { stroke: var(--border-color); stroke-width: 2.5; fill: none; }
+        .prog-circle-win { stroke: var(--success-green); stroke-width: 2.5; fill: none; stroke-dasharray: 87.96; stroke-dashoffset: 87.96; transition: stroke-dashoffset 0.3s ease; }
+        .prog-circle-loss { stroke: var(--danger-red); stroke-width: 2.5; fill: none; stroke-dasharray: 87.96; stroke-dashoffset: 87.96; transition: stroke-dashoffset 0.3s ease; }
+        
         .circle-container.win { background: var(--success-green); }
         .circle-container.win .digit-num { color: white; }
-        .circle-container.loss .prog-circle-loss { stroke: var(--danger-red); stroke-width: 3; }
-        .digit-num { position: absolute; font-weight: 800; font-size: 0.75rem; color: var(--text-white); z-index: 2; }
-        .digit-pct { font-size: 0.5rem; color: var(--text-gray); font-weight: 500; }
-        .digit-arrow { display: none; color: var(--success-green); font-size: 12px; margin-top: -2px; font-weight: bold; }
-        .digit-arrow.show { display: block; }
+        .circle-container.loss { background: rgba(239, 68, 68, 0.1); }
+        
+        .digit-num { position: absolute; font-weight: 800; font-size: 0.8rem; color: var(--text-white); z-index: 2; }
+        .digit-pct { font-size: 0.5rem; color: var(--text-gray); font-weight: 500; margin-top: 18px; }
+        
+        /* ✅ NEW: Moving arrow pointer */
+        .digit-arrow { 
+            position: absolute; 
+            top: -8px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            color: var(--success-green); 
+            font-size: 14px; 
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        .digit-arrow.show { opacity: 1; animation: bounce 0.5s ease; }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-3px); }
+        }
         
         .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .btn-trade { border: none; padding: 12px 8px; border-radius: 12px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.2s; min-height: 55px; justify-content: center; }
@@ -849,26 +874,63 @@
             if (!row) return;
             row.innerHTML = '';
             for(let i=0; i<=9; i++) {
-                row.innerHTML += `<div class="digit-circle"><div class="circle-container" id="circle-${i}"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/><circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/></svg><div class="digit-num">${i}</div></div><div class="digit-pct" id="pct-${i}">0%</div><div class="digit-arrow" id="arrow-${i}">▼</div></div>`;
+                row.innerHTML += `
+                    <div class="digit-circle">
+                        <div class="circle-container" id="circle-${i}">
+                            <svg class="digit-svg" width="32" height="32" viewBox="0 0 32 32">
+                                <!-- Grey baseline ring -->
+                                <circle class="prog-circle-base" cx="16" cy="16" r="${RADIUS}"></circle>
+                                <!-- Green win ring -->
+                                <circle id="prog-win-${i}" class="prog-circle-win" cx="16" cy="16" r="${RADIUS}"></circle>
+                                <!-- Red loss ring -->
+                                <circle id="prog-loss-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}"></circle>
+                            </svg>
+                            <div class="digit-num">${i}</div>
+                            <div class="digit-arrow" id="arrow-${i}">▼</div>
+                        </div>
+                        <div class="digit-pct" id="pct-${i}">0%</div>
+                    </div>
+                `;
             }
         }
+
         function updateDigitStats(price, isWin = undefined, winDigit = -1) {
             const lastDigit = Math.floor(price) % 10;
-            digitCounts[lastDigit]++; totalDigits++;
+            digitCounts[lastDigit]++; 
+            totalDigits++;
+            
+            // Move arrow pointer to current digit
+            document.querySelectorAll('.digit-arrow').forEach(arrow => arrow.classList.remove('show'));
+            const currentArrow = document.getElementById(`arrow-${lastDigit}`);
+            if (currentArrow) currentArrow.classList.add('show');
+
             for(let i=0; i<=9; i++) {
                 const pct = totalDigits > 0 ? (digitCounts[i] / totalDigits) * 100 : 0;
                 const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
+                
                 const pctEl = document.getElementById(`pct-${i}`);
-                const progCircle = document.getElementById(`prog-${i}`);
+                const winCircle = document.getElementById(`prog-win-${i}`);
+                const lossCircle = document.getElementById(`prog-loss-${i}`);
                 const circleContainer = document.getElementById(`circle-${i}`);
-                const arrowEl = document.getElementById(`arrow-${i}`);
+                
                 if(pctEl) pctEl.innerText = pct.toFixed(1) + '%';
-                if(progCircle) { progCircle.style.strokeDashoffset = offset; progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)'; }
+                
+                // Update green (win) and red (loss) rings
+                if(winCircle) {
+                    winCircle.style.strokeDashoffset = offset;
+                    winCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'rgba(16, 185, 129, 0.3)';
+                }
+                if(lossCircle) {
+                    lossCircle.style.strokeDashoffset = offset;
+                    lossCircle.style.stroke = pct >= 10 ? 'var(--danger-red)' : 'rgba(239, 68, 68, 0.3)';
+                }
+                
                 if(circleContainer) {
                     circleContainer.classList.remove('win', 'loss');
-                    if (isWin !== undefined && i === winDigit) { circleContainer.classList.add(isWin ? 'win' : 'loss'); }
+                    if (isWin !== undefined && i === winDigit) { 
+                        circleContainer.classList.add(isWin ? 'win' : 'loss'); 
+                    }
                 }
-                if(arrowEl) { if (isWin !== undefined && i === winDigit && isWin) { arrowEl.classList.add('show'); } else { arrowEl.classList.remove('show'); } }
             }
         }
         initDigitRow();
@@ -1228,4 +1290,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
