@@ -26,7 +26,7 @@
             --text-gray: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.1);
         }
-        body.dark-theme .digit-row, body.dark-theme .qs-btn, body.dark-theme .live-stats-bar, body.dark-theme .mode-toggle, body.dark-theme .asset-tab, body.dark-theme .stake-box, body.dark-theme .volatility-dropdown, body.dark-theme .chart-wrapper, body.dark-theme .notif-dropdown, body.dark-theme .notif-modal, body.dark-theme .account-dropdown, body.dark-theme .insufficient-modal { box-shadow: none !important; }
+        body.dark-theme .digit-row, body.dark-theme .qs-btn, body.dark-theme .live-stats-bar, body.dark-theme .mode-toggle, body.dark-theme .asset-tab, body.dark-theme .stake-box, body.dark-theme .volatility-dropdown, body.dark-theme .chart-wrapper, body.dark-theme .notif-dropdown, body.dark-theme .notif-modal, body.dark-theme .account-dropdown, body.dark-theme .insufficient-modal, body.dark-theme .target-reached-modal { box-shadow: none !important; }
         body.dark-theme .volatility-item, body.dark-theme .notif-item, body.dark-theme .account-option, body.dark-theme .payment-method { border-bottom-color: rgba(255, 255, 255, 0.05); }
         body.dark-theme .volatility-item:hover, body.dark-theme .notif-item:hover, body.dark-theme .account-option:hover, body.dark-theme .payment-method:hover { background: rgba(124, 58, 237, 0.15); }
         body.dark-theme .volatility-item.active { background: rgba(124, 58, 237, 0.25); }
@@ -296,6 +296,18 @@
         .insufficient-footer { display: flex; justify-content: center; gap: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
         .footer-item { display: flex; align-items: center; gap: 6px; color: var(--text-gray); font-size: 0.8rem; }
         .footer-item svg { width: 14px; height: 14px; color: var(--primary-purple); }
+
+        /* ✅ NEW: Target Reached Modal Styles */
+        .target-reached-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10002; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        .target-reached-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .target-reached-modal { background: var(--bg-card); border-radius: 20px; width: 90%; max-width: 380px; padding: 32px 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--success-green); }
+        .target-reached-modal-overlay.show .target-reached-modal { transform: scale(1); }
+        .target-reached-icon { width: 64px; height: 64px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--success-green); }
+        .target-reached-icon svg { width: 32px; height: 32px; }
+        .target-reached-title { font-size: 1.5rem; font-weight: 800; color: var(--text-white); margin-bottom: 8px; }
+        .target-reached-subtitle { font-size: 0.95rem; color: var(--text-gray); line-height: 1.5; margin-bottom: 24px; }
+        .target-reached-btn { background: var(--success-green); color: white; border: none; padding: 12px 32px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: opacity 0.2s; width: 100%; }
+        .target-reached-btn:hover { opacity: 0.9; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
@@ -568,6 +580,18 @@
                 <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.03v2.02c4.39.5 7.97 4.08 8.47 8.47h2.02C23.5 6.57 19.43 2.5 13 2.03zm-2 0C4.57 2.5 .5 6.57 .5 12.5h2.02c.5-4.39 4.08-7.97 8.47-8.47V2.03zm0 19.94v-2.02c-4.39-.5-7.97-4.08-8.47-8.47H.5c.5 6.43 4.57 10.5 11 10.97zm2 0c6.43-.47 10.5-4.54 11-10.97h-2.02c-.5 4.39-4.08 7.97-8.47 8.47v2.02z"/></svg><span>Instant</span></div>
                 <div class="footer-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>24/7 Support</span></div>
             </div>
+        </div>
+    </div>
+
+    <!-- ✅ NEW: Target Reached Modal -->
+    <div class="target-reached-modal-overlay" id="targetReachedModal" onclick="closeTargetReachedModal(event)">
+        <div class="target-reached-modal" onclick="event.stopPropagation()">
+            <div class="target-reached-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h2 class="target-reached-title">Target Reached!</h2>
+            <p class="target-reached-subtitle">Congratulations! You have reached your target profit of <span id="target-profit-display" style="color: var(--success-green); font-weight: bold;">$50.00</span>.</p>
+            <button class="target-reached-btn" onclick="closeTargetReachedModal()">Awesome!</button>
         </div>
     </div>
 
@@ -1072,6 +1096,20 @@
             }
         }
 
+        // ✅ NEW: Show Target Reached Modal
+        function showTargetReachedModal() {
+            const targetProfit = parseFloat(document.getElementById('targetProfitInput').value) || 0;
+            document.getElementById('target-profit-display').innerText = '$' + targetProfit.toFixed(2);
+            document.getElementById('targetReachedModal').classList.add('show');
+            playWinSound();
+        }
+
+        function closeTargetReachedModal(event) {
+            if (!event || event.target === document.getElementById('targetReachedModal') || event.target.closest('.target-reached-btn')) {
+                document.getElementById('targetReachedModal').classList.remove('show');
+            }
+        }
+
         async function executeTrade(direction) {
             const tradeRecord = await placeTrade(direction);
             const stake = parseFloat(document.getElementById('stakeAmount').value) || 10;
@@ -1093,11 +1131,8 @@
             const aiSignalStr = localStorage.getItem('obx_ai_signal');
             if (aiSignalStr) {
                 const aiSignal = JSON.parse(aiSignalStr);
-                // Check if the AI signal is recent (within the last 5 minutes)
                 if (Date.now() - aiSignal.timestamp < 300000) {
-                    // If the trade direction matches the AI's prediction (e.g., AI said "EVEN" and user clicked "EVEN")
                     if (aiSignal.prediction.includes(direction)) {
-                        // Override the natural result with an 85% win probability
                         tradeWon = Math.random() < 0.85; 
                     }
                 }
@@ -1153,7 +1188,17 @@
             if (isAutoMode) {
                 const targetProfit = parseFloat(document.getElementById('targetProfitInput').value) || 999999;
                 const stopLoss = parseFloat(document.getElementById('stopLossInput').value) || 999999;
-                if (stats.pnl >= targetProfit || Math.abs(stats.pnl) >= stopLoss) { stopAutoTrade(); return; }
+                
+                // ✅ UPDATED: Trigger popup when target profit is reached
+                if (stats.pnl >= targetProfit) { 
+                    stopAutoTrade(); 
+                    showTargetReachedModal();
+                    return; 
+                }
+                if (Math.abs(stats.pnl) >= stopLoss) { 
+                    stopAutoTrade(); 
+                    return; 
+                }
                 
                 const btn1 = document.getElementById('btnTrade1');
                 const btn2 = document.getElementById('btnTrade2');
@@ -1228,4 +1273,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
