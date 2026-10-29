@@ -75,15 +75,32 @@
         .live-pnl.negative { color: var(--danger-red); }
         
         .digit-row { display: flex; justify-content: space-between; padding: 6px 12px 8px; gap: 2px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin: 0 12px 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-        .circle-container { width: 28px; height: 28px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; position: relative; }
+        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
         .circle-container.win { background: var(--success-green); }
         .circle-container.win .digit-num { color: white; }
         .circle-container.loss .prog-circle-loss { stroke: var(--danger-red); stroke-width: 3; }
-        .digit-num { position: absolute; font-weight: 800; font-size: 0.75rem; color: var(--text-white); z-index: 2; }
-        .digit-pct { font-size: 0.5rem; color: var(--text-gray); font-weight: 500; }
-        .digit-arrow { display: none; color: var(--success-green); font-size: 12px; margin-top: -2px; font-weight: bold; }
-        .digit-arrow.show { display: block; }
+        .digit-num { position: absolute; font-weight: 800; font-size: 0.8rem; color: var(--text-white); z-index: 2; }
+        .digit-pct { font-size: 0.5rem; color: var(--text-gray); font-weight: 500; margin-top: 2px; }
+        
+        /* ✅ UPDATED: Orange pointer positioned BELOW the circle */
+        .digit-arrow { 
+            position: absolute; 
+            bottom: -14px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            color: #f59e0b; 
+            font-size: 14px; 
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        .digit-arrow.show { opacity: 1; animation: bounce 0.5s ease; }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-3px); }
+        }
         
         .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .btn-trade { border: none; padding: 12px 8px; border-radius: 12px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.2s; min-height: 55px; justify-content: center; }
@@ -879,20 +896,25 @@
         function updateDigitStats(price, isWin = undefined, winDigit = -1) {
             const lastDigit = Math.floor(price) % 10;
             digitCounts[lastDigit]++; totalDigits++;
+            
+            // ✅ Move the orange pointer to the current digit
+            document.querySelectorAll('.digit-arrow').forEach(arrow => arrow.classList.remove('show'));
+            const currentArrow = document.getElementById(`arrow-${lastDigit}`);
+            if (currentArrow) currentArrow.classList.add('show');
+            
             for(let i=0; i<=9; i++) {
                 const pct = totalDigits > 0 ? (digitCounts[i] / totalDigits) * 100 : 0;
                 const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
                 const pctEl = document.getElementById(`pct-${i}`);
                 const progCircle = document.getElementById(`prog-${i}`);
                 const circleContainer = document.getElementById(`circle-${i}`);
-                const arrowEl = document.getElementById(`arrow-${i}`);
+                
                 if(pctEl) pctEl.innerText = pct.toFixed(1) + '%';
                 if(progCircle) { progCircle.style.strokeDashoffset = offset; progCircle.style.stroke = pct >= 10 ? 'var(--success-green)' : 'var(--danger-red)'; }
                 if(circleContainer) {
                     circleContainer.classList.remove('win', 'loss');
                     if (isWin !== undefined && i === winDigit) { circleContainer.classList.add(isWin ? 'win' : 'loss'); }
                 }
-                if(arrowEl) { if (isWin !== undefined && i === winDigit && isWin) { arrowEl.classList.add('show'); } else { arrowEl.classList.remove('show'); } }
             }
         }
         initDigitRow();
