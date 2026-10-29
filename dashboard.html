@@ -9,22 +9,22 @@
     
     <style>
         :root {
-            --bg-main: #0f0a1a;
-            --bg-card: #1a1530;
-            --text-white: #ffffff;
-            --text-gray: #9ca3af;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-white: #1e293b;
+            --text-gray: #64748b;
             --primary-purple: #7c3aed;
             --danger-red: #ef4444;
             --success-green: #10b981;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(0, 0, 0, 0.08);
         }
 
         body.dark-theme {
-            --bg-main: #0f0a1a;
-            --bg-card: #1a1530;
+            --bg-main: #141021;
+            --bg-card: #1e1b4b;
             --text-white: #ffffff;
             --text-gray: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
         body.dark-theme .digit-row, body.dark-theme .qs-btn, body.dark-theme .live-stats-bar, body.dark-theme .mode-toggle, body.dark-theme .asset-tab, body.dark-theme .stake-box, body.dark-theme .volatility-dropdown, body.dark-theme .chart-wrapper, body.dark-theme .notif-dropdown, body.dark-theme .notif-modal, body.dark-theme .account-dropdown, body.dark-theme .insufficient-modal { box-shadow: none !important; }
         body.dark-theme .volatility-item, body.dark-theme .notif-item, body.dark-theme .account-option, body.dark-theme .payment-method { border-bottom-color: rgba(255, 255, 255, 0.05); }
@@ -37,24 +37,12 @@
         body.has-app-banner .top-header { top: 40px; } 
         .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-        .deposit-btn { flex-shrink: 0; white-space: nowrap; padding: 8px 16px; background: var(--primary-purple); color: white; border-radius: 8px; font-size: 0.85rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .deposit-btn { flex-shrink: 0; white-space: nowrap; padding: 6px 12px; background: var(--primary-purple); color: white; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
         .deposit-btn:hover { opacity: 0.9; }
         .notif-wrapper { position: relative; flex-shrink: 0; }
 
         #chartCanvas { width: 100%; height: 100%; display: block; }
-        .chart-wrapper { 
-            position: relative; 
-            height: 260px; 
-            padding: 0 12px; 
-            background: var(--bg-card); 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            margin: 8px 12px; 
-            overflow: hidden; 
-            flex-shrink: 0; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-            transition: background 0.3s, border-color 0.3s; 
-        }
+        .chart-wrapper { position: relative; height: 340px; padding: 0 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin: 8px 12px; overflow: hidden; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
         .axis-labels-right { position: absolute; right: 12px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 5; }
         .axis-label-r { font-size: 0.65rem; color: var(--text-gray); text-align: right; width: 45px; }
         .axis-labels-bottom { position: absolute; left: 12px; right: 55px; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
@@ -63,73 +51,50 @@
         .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; flex-shrink: 0; }
         .icon-btn svg { width: 22px; height: 22px; stroke: var(--text-white); stroke-width: 2; fill: none; }
         .menu-icon { margin-right: -8px; } 
-        .p-logo { width: 36px; height: 36px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; margin-left: 8px; flex-shrink: 0; }
+        .p-logo { width: 32px; height: 32px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-left: 8px; flex-shrink: 0; }
         .bell-icon { position: relative; }
         .bell-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-main); }
         .sound-btn svg { stroke: var(--primary-purple); }
         
         .stake-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .stake-adjust-btn { width: 40px; height: 40px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .stake-box { flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 12px; text-align: center; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .stake-label { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: var(--bg-main); padding: 0 6px; color: var(--primary-purple); font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; }
-        .stake-input { background: transparent; border: none; color: var(--text-white); font-size: 1.5rem; font-weight: 800; text-align: center; width: 100%; outline: none; }
-        .stake-currency { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--primary-purple); font-weight: 700; font-size: 1rem; }
+        .stake-adjust-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .stake-box { flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 12px; text-align: center; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .stake-label { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--bg-main); padding: 0 6px; color: var(--primary-purple); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px; }
+        .stake-input { background: transparent; border: none; color: var(--text-white); font-size: 1.4rem; font-weight: 800; text-align: center; width: 100%; outline: none; }
+        .stake-currency { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--primary-purple); font-weight: 700; font-size: 0.9rem; }
         .quick-stakes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 8px; }
-        .qs-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 8px 0; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .qs-btn:hover { background: rgba(124, 58, 237, 0.1); }
-        .qs-btn.active { background: var(--primary-purple); color: white; border-color: var(--primary-purple); }
-        .live-stats-bar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .qs-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray); padding: 6px 0; border-radius: 6px; font-size: 0.65rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .live-stats-bar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .live-left { display: flex; align-items: center; gap: 6px; }
-        .live-label { font-size: 0.7rem; font-weight: 800; color: var(--text-gray); letter-spacing: 0.5px; }
-        .live-stats { font-size: 0.7rem; color: var(--text-gray); font-weight: 600; }
-        .live-pnl { font-size: 0.9rem; font-weight: 800; }
+        .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .live-label { font-size: 0.65rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px; }
+        .live-stats { font-size: 0.65rem; color: var(--text-gray); font-weight: 600; }
+        .live-pnl { font-size: 0.8rem; font-weight: 800; }
         .live-pnl.positive { color: var(--success-green); }
         .live-pnl.negative { color: var(--danger-red); }
         
-        .digit-row { display: flex; justify-content: space-between; padding: 8px 12px 10px; gap: 2px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin: 0 12px 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .digit-row { display: flex; justify-content: space-between; padding: 6px 12px 8px; gap: 2px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin: 0 12px 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
         .digit-circle { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-        .circle-container { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .circle-container { width: 28px; height: 28px; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
         .circle-container.win { background: var(--success-green); }
         .circle-container.win .digit-num { color: white; }
         .circle-container.loss .prog-circle-loss { stroke: var(--danger-red); stroke-width: 3; }
-        .digit-num { position: absolute; font-weight: 800; font-size: 0.8rem; color: var(--text-white); z-index: 2; }
-        .digit-pct { font-size: 0.55rem; color: var(--text-gray); font-weight: 500; }
-        .digit-arrow { display: none; font-size: 10px; margin-top: -2px; font-weight: bold; }
+        .digit-num { position: absolute; font-weight: 800; font-size: 0.75rem; color: var(--text-white); z-index: 2; }
+        .digit-pct { font-size: 0.5rem; color: var(--text-gray); font-weight: 500; }
+        .digit-arrow { display: none; color: var(--success-green); font-size: 12px; margin-top: -2px; font-weight: bold; }
         .digit-arrow.show { display: block; }
-        .digit-arrow.up { color: var(--success-green); }
-        .digit-arrow.down { color: var(--danger-red); }
         
-        .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-        .btn-trade { 
-            border: none; 
-            padding: 16px 8px; 
-            border-radius: 12px; 
-            color: white; 
-            font-size: 1.1rem; 
-            font-weight: 800; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 4px; 
-            transition: all 0.2s; 
-            min-height: 70px; 
-            justify-content: center; 
-        }
-        .btn-even { 
-            background: var(--success-green); 
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); 
-        }
-        .btn-odd { 
-            background: var(--danger-red); 
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); 
-        }
+        .trade-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-trade { border: none; padding: 12px 8px; border-radius: 12px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.2s; min-height: 55px; justify-content: center; }
+        .btn-even { background: var(--success-green); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .btn-odd { background: var(--danger-red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
         .btn-stop { background: #f59e0b !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important; }
         .btn-grayed { background: #4a5568 !important; box-shadow: none !important; opacity: 0.6; pointer-events: none; }
         .btn-starting { background: #4a5568 !important; box-shadow: none !important; pointer-events: none; }
-        .payout-info { font-size: 0.65rem; font-weight: 600; opacity: 0.95; }
-        .mode-toggle { display: flex; background: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 10px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .mode-btn { flex: 1; padding: 8px; border: none; border-radius: 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; background: transparent; color: var(--text-gray); letter-spacing: 0.5px; transition: all 0.2s; }
+        .payout-info { font-size: 0.55rem; font-weight: 500; opacity: 0.9; }
+        .mode-toggle { display: flex; background: var(--bg-card); border-radius: 8px; padding: 3px; margin-bottom: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .mode-btn { flex: 1; padding: 6px; border: none; border-radius: 6px; font-weight: 700; font-size: 0.7rem; cursor: pointer; background: transparent; color: var(--text-gray); letter-spacing: 0.5px; transition: all 0.2s; }
         .mode-btn.active { background: var(--primary-purple); color: white; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -147,16 +112,16 @@
             overflow-x: auto !important;
             scrollbar-width: none !important;
             align-items: center !important;
-            background-color: var(--bg-card) !important; 
+            background-color: #1e1b4b !important; 
             margin: 0 !important;
-            border-bottom: 1px solid var(--border-color) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         .asset-tabs::-webkit-scrollbar { display: none !important; }
         
         .asset-tab {
             background: transparent !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-gray) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #9ca3af !important;
             padding: 6px 14px !important;
             border-radius: 9999px !important;
             font-size: 14px !important;
@@ -173,8 +138,8 @@
         .asset-tab svg { width: 14px !important; height: 14px !important; fill: currentColor !important; opacity: 0.7 !important; }
         
         .asset-tab.active { 
-            background: rgba(124, 58, 237, 0.2) !important;
-            border-color: var(--primary-purple) !important;
+            background: #282041 !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
             color: #ffffff !important;
             font-weight: 600 !important;
         }
@@ -336,7 +301,8 @@
         .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
         .btn-starting-content { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        .advanced-settings { display: flex; gap: 8px; margin-bottom: 12px; }
+        .advanced-settings { display: none; margin-bottom: 12px; }
+        .advanced-settings.show { display: flex; gap: 8px; }
     </style>
 </head>
 <body>
@@ -458,14 +424,14 @@
                     <div style="display: flex; flex-direction: column; align-items: flex-start;">
                         <span style="font-size: 10px; font-weight: 600; color: var(--text-white);" id="selected-volatility">Vol 10 (1s)</span>
                         <div style="display: flex; align-items: center; gap: 4px;">
-                            <span style="font-size: 9px; color: var(--text-gray);" id="chart-price-display">9449.46</span>
-                            <span style="font-size: 9px; color: var(--danger-red); font-weight: 600;" id="chart-change-display">-0.53%</span>
+                            <span style="font-size: 9px; color: var(--text-gray);" id="chart-price-display">9607.39</span>
+                            <span style="font-size: 9px; color: var(--success-green); font-weight: 600;" id="chart-change-display">+1.13%</span>
                         </div>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text-gray)" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                 </button>
                 <div id="volatility-dropdown" class="volatility-dropdown">
-                    <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)"><div class="volatility-item-name">Volatility 10 (1s) Index</div><div class="volatility-item-price">9449.46 -0.53%</div></div>
+                    <div class="volatility-item active" onclick="selectVolatility('Volatility 10 (1s) Index', this)"><div class="volatility-item-name">Volatility 10 (1s) Index</div><div class="volatility-item-price">9607.39 +1.13%</div></div>
                     <div class="volatility-item" onclick="selectVolatility('Volatility 10 Index', this)"><div class="volatility-item-name">Volatility 10 Index</div><div class="volatility-item-price">9487.35 +0.85%</div></div>
                     <div class="volatility-item" onclick="selectVolatility('Volatility 15 (1s) Index', this)"><div class="volatility-item-name">Volatility 15 (1s) Index</div><div class="volatility-item-price">8923.67 +0.42%</div></div>
                     <div class="volatility-item" onclick="selectVolatility('Volatility 25 Index', this)"><div class="volatility-item-name">Volatility 25 Index</div><div class="volatility-item-price">7621.45 +0.12%</div></div>
@@ -483,7 +449,8 @@
         </div>
         <div style="position: absolute; top: 12px; right: 12px; z-index: 20; text-align: right;">
             <div style="background: var(--bg-card); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div style="font-size: 14px; font-weight: 700; color: var(--text-white);" id="currentPrice">100%</div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-white);" id="currentPrice">9607.39</div>
+                <div style="font-size: 9px; color: var(--success-green); font-weight: 600;" id="price-change">+1.13%</div>
             </div>
         </div>
         <canvas id="chartCanvas"></canvas>
@@ -513,7 +480,7 @@
         </div>
         <div class="quick-stakes">
             <button class="qs-btn" onclick="setStake(1)">$1</button><button class="qs-btn" onclick="setStake(5)">$5</button>
-            <button class="qs-btn active" onclick="setStake(10)">$10</button><button class="qs-btn" onclick="setStake(25)">$25</button>
+            <button class="qs-btn" onclick="setStake(10)">$10</button><button class="qs-btn" onclick="setStake(25)">$25</button>
             <button class="qs-btn" onclick="setStake(50)">$50</button><button class="qs-btn" onclick="setStake(100)">$100</button>
         </div>
 
@@ -536,20 +503,18 @@
         </div>
 
         <div class="live-stats-bar">
-            <div class="live-left"><span class="live-label">LAST</span><span class="live-stats" id="liveStatsText">1T · 1W · 0L</span></div>
-            <div class="live-pnl positive" id="livePnl">+$9.52</div>
+            <div class="live-left"><div class="live-dot"></div><span class="live-label">LIVE</span><span class="live-stats" id="liveStatsText">0T · 0W · 0L</span></div>
+            <div class="live-pnl positive" id="livePnl">+$0.00</div>
         </div>
         
         <div class="trade-actions" id="tradeActions">
             <button class="btn-trade btn-even" id="btnTrade1" onclick="checkBalanceAndTrade('EVEN')">
                 <span class="btn-text">Even</span>
-                <span class="payout-info">$19.52 Payout</span>
-                <span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>
+                <span class="payout-info">95.2% Payout</span>
             </button>
             <button class="btn-trade btn-odd" id="btnTrade2" onclick="checkBalanceAndTrade('ODD')">
                 <span class="btn-text">Odd</span>
-                <span class="payout-info">$19.52 Payout</span>
-                <span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>
+                <span class="payout-info">95.2% Payout</span>
             </button>
         </div>
     </div>
@@ -610,7 +575,7 @@
         let isTrading = false;
         let isAutoMode = true;
         let currentTradeDirection = null;
-        let stats = { total: 1, wins: 1, losses: 0, pnl: 9.52 };
+        let stats = { total: 0, wins: 0, losses: 0, pnl: 0 };
         let currentMarket = 'even_odd';
 
         function closeAppBanner() {
@@ -874,8 +839,8 @@
             loadUserBalances();
         })();
 
-        const digitCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 1];
-        let totalDigits = 10;
+        const digitCounts = new Array(10).fill(0);
+        let totalDigits = 0;
         const RADIUS = 14;
         const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
@@ -884,7 +849,7 @@
             if (!row) return;
             row.innerHTML = '';
             for(let i=0; i<=9; i++) {
-                row.innerHTML += `<div class="digit-circle"><div class="circle-container" id="circle-${i}"><svg width="36" height="36" viewBox="0 0 32 32"><circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/><circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/></svg><div class="digit-num">${i}</div></div><div class="digit-pct" id="pct-${i}">0%</div><div class="digit-arrow" id="arrow-${i}">▼</div></div>`;
+                row.innerHTML += `<div class="digit-circle"><div class="circle-container" id="circle-${i}"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="${RADIUS}" stroke="var(--border-color)" stroke-width="2.5" fill="none"/><circle id="prog-${i}" class="prog-circle-loss" cx="16" cy="16" r="${RADIUS}" stroke="var(--text-gray)" stroke-width="2.5" fill="none" stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="${CIRCUMFERENCE}" transform="rotate(-90 16 16)"/></svg><div class="digit-num">${i}</div></div><div class="digit-pct" id="pct-${i}">0%</div><div class="digit-arrow" id="arrow-${i}">▼</div></div>`;
             }
         }
         function updateDigitStats(price, isWin = undefined, winDigit = -1) {
@@ -903,25 +868,14 @@
                     circleContainer.classList.remove('win', 'loss');
                     if (isWin !== undefined && i === winDigit) { circleContainer.classList.add(isWin ? 'win' : 'loss'); }
                 }
-                if(arrowEl) { 
-                    if (i === 8) { 
-                        arrowEl.innerText = '▲'; 
-                        arrowEl.className = 'digit-arrow show up'; 
-                    } else if (i === 9) { 
-                        arrowEl.innerText = '▼'; 
-                        arrowEl.className = 'digit-arrow show down'; 
-                    } else { 
-                        arrowEl.classList.remove('show'); 
-                    }
-                }
+                if(arrowEl) { if (isWin !== undefined && i === winDigit && isWin) { arrowEl.classList.add('show'); } else { arrowEl.classList.remove('show'); } }
             }
         }
         initDigitRow();
-        updateDigitStats(9449.46);
 
         const canvas = document.getElementById('chartCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
-        let priceData = [], timeData = [], currentPrice = 9449.46;
+        let priceData = [], timeData = [], currentPrice = 9607.39;
         const MAX_POINTS = 60; 
 
         function resizeCanvas() {
@@ -978,10 +932,6 @@
             if (priceData.length > MAX_POINTS) { priceData.shift(); timeData.shift(); }
             document.getElementById('currentPrice').innerText = currentPrice.toFixed(2);
             document.getElementById('chart-price-display').innerText = currentPrice.toFixed(2);
-            const changeEl = document.getElementById('chart-change-display');
-            const changePct = ((currentPrice - 9449.46) / 9449.46 * 100).toFixed(2);
-            changeEl.innerText = (changePct > 0 ? '+' : '') + changePct + '%';
-            changeEl.style.color = changePct > 0 ? 'var(--success-green)' : 'var(--danger-red)';
             updateDigitStats(currentPrice);
             drawChart();
         }
@@ -1000,12 +950,12 @@
         }
         function updateChartForVolatility(volatilityName) {
             const basePrices = { 
-                'Volatility 10 (1s) Index': 9449.46, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 
+                'Volatility 10 (1s) Index': 9607.39, 'Volatility 10 Index': 9487.35, 'Volatility 15 (1s) Index': 8923.67, 
                 'Volatility 25 (1s) Index': 7654.89, 'Volatility 25 Index': 7621.45, 'Volatility 30 (1s) Index': 6789.23, 
                 'Volatility 50 (1s) Index': 5432.10, 'Volatility 50 Index': 5398.76, 'Volatility 75 (1s) Index': 4123.45,
                 'Volatility 75 Index': 4567.89, 'Volatility 100 Index': 3456.78, 'Volatility 100 (1s) Index': 3234.56, 'Volatility 150 (1s) Index': 2345.67
             };
-            currentPrice = basePrices[volatilityName] || 9449.46;
+            currentPrice = basePrices[volatilityName] || 9607.39;
             priceData = []; timeData = [];
             for(let i=0; i<MAX_POINTS; i++) { priceData.push(currentPrice + (Math.random() - 0.5) * 10); timeData.push(Math.floor(Date.now() / 1000) - (MAX_POINTS - i)); }
             drawChart();
@@ -1016,12 +966,7 @@
             if (dropdown && (!button || !button.onclick || !button.onclick.toString().includes('toggleVolatilityDropdown'))) { dropdown.classList.remove('show'); }
         });
 
-        function setStake(val) { 
-            const el = document.getElementById('stakeAmount'); 
-            if(el) el.value = val;
-            document.querySelectorAll('.qs-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+        function setStake(val) { const el = document.getElementById('stakeAmount'); if(el) el.value = val; }
         function adjustStake(delta) {
             const input = document.getElementById('stakeAmount');
             if(!input) return;
@@ -1055,19 +1000,19 @@
             btn2.className = 'btn-trade btn-odd';
             
             if (market === 'even_odd') {
-                btn1.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn1.innerHTML = '<span class="btn-text">Even</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('EVEN');
-                btn2.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn2.innerHTML = '<span class="btn-text">Odd</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('ODD');
             } else if (market === 'matches_differs') {
-                btn1.innerHTML = '<span class="btn-text">Matches</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn1.innerHTML = '<span class="btn-text">Matches</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('MATCHES');
-                btn2.innerHTML = '<span class="btn-text">Differs</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn2.innerHTML = '<span class="btn-text">Differs</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('DIFFERS');
             } else if (market === 'over_under') {
-                btn1.innerHTML = '<span class="btn-text">Over</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn1.innerHTML = '<span class="btn-text">Over</span><span class="payout-info">95.2% Payout</span>';
                 btn1.onclick = () => checkBalanceAndTrade('OVER');
-                btn2.innerHTML = '<span class="btn-text">Under</span><span class="payout-info">$19.52 Payout</span><span class="payout-info" style="font-size: 0.6rem; opacity: 0.8;">95.2%</span>';
+                btn2.innerHTML = '<span class="btn-text">Under</span><span class="payout-info">95.2% Payout</span>';
                 btn2.onclick = () => checkBalanceAndTrade('UNDER');
             }
         }
@@ -1144,11 +1089,15 @@
                 tradeWon = (direction === 'OVER' && lastDigit > target) || (direction === 'UNDER' && lastDigit < target);
             }
 
+            // ✅ AI WIN BOOST: If the user follows the AI Scanner's advice, give them an ~85% chance to win
             const aiSignalStr = localStorage.getItem('obx_ai_signal');
             if (aiSignalStr) {
                 const aiSignal = JSON.parse(aiSignalStr);
+                // Check if the AI signal is recent (within the last 5 minutes)
                 if (Date.now() - aiSignal.timestamp < 300000) {
+                    // If the trade direction matches the AI's prediction (e.g., AI said "EVEN" and user clicked "EVEN")
                     if (aiSignal.prediction.includes(direction)) {
+                        // Override the natural result with an 85% win probability
                         tradeWon = Math.random() < 0.85; 
                     }
                 }
@@ -1279,4 +1228,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
